@@ -7,6 +7,9 @@ import com.google.inject.Guice;
 import com.google.inject.Module;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 /*
  import javafx.application.Application;
  import javafx.event.ActionEvent;
@@ -16,8 +19,6 @@ import java.util.List;
  import javafx.scene.layout.StackPane;
  import javafx.stage.Stage;
  */
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  *
