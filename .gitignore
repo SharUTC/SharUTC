@@ -12,3 +12,6 @@ nb-configuration.xml
 # Package Files #
 *.war
 *.ear
+
+# Logging Files #
+*.log

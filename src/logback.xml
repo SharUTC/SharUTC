@@ -1,0 +1,75 @@
+<configuration>
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <!-- encoders are assigned the type
+        ch.qos.logback.classic.encoder.PatternLayoutEncoder by default -->
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} [%file:%line] - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="FILE" class="ch.qos.logback.core.FileAppender">
+        <file>sharutc.log</file>
+        <append>true</append>
+        <!-- encoders are assigned the type
+        ch.qos.logback.classic.encoder.PatternLayoutEncoder by default -->
+        <encoder>
+            <pattern>%-108(%date %level [%thread] %logger{10} [%file:%line]) %msg%n</pattern>
+        </encoder>
+    </appender>
+    
+    <!-- Loggers -->
+    
+    <!-- COMMANDS -->
+    <!-- <logger name="fr.utc.lo23.sharutc.controler.command" level="INFO" /> -->
+    <logger name="fr.utc.lo23.sharutc.controler.command.account" level="INFO" />
+    <logger name="fr.utc.lo23.sharutc.controler.command.music" level="INFO" />
+    <logger name="fr.utc.lo23.sharutc.controler.command.player" level="INFO" />
+    <logger name="fr.utc.lo23.sharutc.controler.command.profile" level="INFO" />
+    <logger name="fr.utc.lo23.sharutc.controler.command.search" level="INFO" />
+	
+    <!-- SERVICES -->
+    <!-- <logger name="fr.utc.lo23.sharutc.controler.service" level="WARN" /> -->
+    <logger name="fr.utc.lo23.sharutc.controler.service.MusicServiceImpl" level="INFO" />
+    <logger name="fr.utc.lo23.sharutc.controler.service.UserServiceImpl" level="INFO" />
+    <logger name="fr.utc.lo23.sharutc.controler.service.FileServiceImpl" level="INFO" />
+    <logger name="fr.utc.lo23.sharutc.controler.service.PlayerServiceImpl" level="INFO" />
+    <!-- NETWORK -->
+    <logger name="fr.utc.lo23.sharutc.controler.network.NetworkServiceImpl" level="INFO" />
+    <logger name="fr.utc.lo23.sharutc.controler.network.MessageParserImpl" level="DEBUG" />
+    <logger name="fr.utc.lo23.sharutc.controler.network.Message" level="INFO" />
+
+    <!-- APP MODEL -->
+    <logger name="fr.utc.lo23.sharutc.model.AppModelImpl" level="INFO" />
+    <logger name="fr.utc.lo23.sharutc.model.Peer" level="INFO" />
+    <logger name="fr.utc.lo23.sharutc.model.ErrorBus" level="INFO" />
+    <logger name="fr.utc.lo23.sharutc.model.ErrorMessage" level="INFO" />
+
+    <!-- APP MODEL : DOMAIN -->
+    <logger name="fr.utc.lo23.sharutc.model.domain.Catalog" level="INFO" />
+    <logger name="fr.utc.lo23.sharutc.model.domain.Comment" level="INFO" />
+    <logger name="fr.utc.lo23.sharutc.model.domain.Music" level="INFO" />
+    <logger name="fr.utc.lo23.sharutc.model.domain.Rights" level="INFO" />
+    <logger name="fr.utc.lo23.sharutc.model.domain.RightsList" level="INFO" />
+    <logger name="fr.utc.lo23.sharutc.model.domain.Score" level="INFO" />
+    <logger name="fr.utc.lo23.sharutc.model.domain.SearchCriteria" level="INFO" />
+    <logger name="fr.utc.lo23.sharutc.model.domain.TagMap" level="INFO" />
+    
+    <!-- APP MODEL : USERDATA -->
+    <logger name="fr.utc.lo23.sharutc.model.userdata.ActivePeerList" level="INFO" />
+    <logger name="fr.utc.lo23.sharutc.model.userdata.Category" level="INFO" />
+    <logger name="fr.utc.lo23.sharutc.model.userdata.Categories" level="INFO" />
+    <logger name="fr.utc.lo23.sharutc.model.userdata.Contact" level="INFO" />
+    <logger name="fr.utc.lo23.sharutc.model.userdata.Contacts" level="INFO" />
+    <logger name="fr.utc.lo23.sharutc.model.userdata.KnownPeerList" level="INFO" />
+    <logger name="fr.utc.lo23.sharutc.model.userdata.Peer" level="INFO" />
+    <logger name="fr.utc.lo23.sharutc.model.userdata.Profile" level="INFO" />
+    <logger name="fr.utc.lo23.sharutc.model.userdata.UserInfo" level="INFO" />
+  
+    <!-- TRACE / DEBUG / INFO / WARN / ERROR -->
+    <root level="INFO">
+        <appender-ref ref="STDOUT" />
+        <appender-ref ref="FILE" />
+    </root>
+  
+</configuration>
