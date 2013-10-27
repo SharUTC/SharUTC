@@ -9,7 +9,7 @@ import java.io.Serializable;
  */
 public class Peer implements Serializable {
 
-    private static final long sSerialVersionUID = 8410656879206380403L;
+    private static final long serialVersionUID = 8410656879206380403L;
     private PropertyChangeSupport mPropertyChangeSupport = new PropertyChangeSupport(this);
     /**
      * Unique ID generated at profile creation (new Date())

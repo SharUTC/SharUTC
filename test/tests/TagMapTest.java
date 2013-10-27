@@ -58,14 +58,11 @@ public class TagMapTest {
     public void tagMapMerge() {
 
         // first step, we create a TagMap instance, and work with it,
-        // here I'm testing both merge method
+        // here I'm testing both merge methods
         TagMap dummyTagMap = new TagMap();
 
         TagMap dummyTagMap1 = new TagMap();
-        dummyTagMap1.merge("Rock", 5);
-        dummyTagMap1.merge("Pop", 3);
-        dummyTagMap1.merge("Rock", 5);
-        dummyTagMap1.merge("Disco", 2000);
+        dummyTagMap1.merge("Rock", 1);
 
         dummyTagMap1.merge(dummyTagMap);
         // here is the first test, it's advised to always put a short  

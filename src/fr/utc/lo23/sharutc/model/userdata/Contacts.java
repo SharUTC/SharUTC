@@ -13,7 +13,7 @@ import java.util.HashSet;
  */
 public class Contacts implements Serializable {
 
-    private static final long sSerialVersionUID = -8656809069835780866L;
+    private static final long serialVersionUID = -8656809069835780866L;
     private HashSet<Contact> mContacts;
     @JsonIgnore
     private CollectionChangeSupport mCollectionChangeSupport = new CollectionChangeSupport(this);

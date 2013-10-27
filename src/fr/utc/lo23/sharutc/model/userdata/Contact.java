@@ -7,7 +7,7 @@ import java.io.Serializable;
  */
 public class Contact implements Serializable {
 
-    private static final long sSerialVersionUID = 2934900084513371081L;
+    private static final long serialVersionUID = 2934900084513371081L;
     private Long mPeerId;
     private Categories mCategories;
 

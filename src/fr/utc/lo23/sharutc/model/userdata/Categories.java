@@ -13,7 +13,7 @@ import java.util.HashSet;
  */
 public class Categories implements Serializable {
 
-    private static final long sSerialVersionUID = -1740797994155053145L;
+    private static final long serialVersionUID = -1740797994155053145L;
     @JsonIgnore
     private CollectionChangeSupport mCollectionChangeSupport = new CollectionChangeSupport(this);
     private HashSet<Category> mCategories;

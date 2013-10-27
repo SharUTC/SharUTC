@@ -7,7 +7,7 @@ import java.io.Serializable;
  */
 public class Category implements Serializable {
 
-    private static final long sSerialVersionUID = 3790688676428360970L;
+    private static final long serialVersionUID = 3790688676428360970L;
     /**
      * Undeletable category ID
      */

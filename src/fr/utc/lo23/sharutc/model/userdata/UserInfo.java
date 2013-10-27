@@ -10,7 +10,7 @@ import java.io.Serializable;
  */
 public class UserInfo implements Serializable {
 
-    private static final long sSerialVersionUID = -5092432482763935439L;
+    private static final long serialVersionUID = -5092432482763935439L;
     private Long mPeerId;
     private String mLogin;
     @JsonInclude(NON_NULL)

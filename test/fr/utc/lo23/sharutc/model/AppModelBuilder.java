@@ -3,6 +3,7 @@ package fr.utc.lo23.sharutc.model;
 import com.google.inject.Inject;
 import fr.utc.lo23.sharutc.controler.service.FileService;
 import fr.utc.lo23.sharutc.model.domain.Catalog;
+import fr.utc.lo23.sharutc.model.domain.Music;
 import fr.utc.lo23.sharutc.model.domain.RightsList;
 import fr.utc.lo23.sharutc.model.userdata.ActivePeerList;
 import fr.utc.lo23.sharutc.model.userdata.KnownPeerList;
@@ -72,7 +73,9 @@ public class AppModelBuilder {
         Catalog catalog = new Catalog();
         for (String mp3File : TEST_MP3_FILENAMES) {
             try {
-                catalog.add(fileService.readFile(new File(TEST_MP3_FOLDER + mp3File)));
+                Music music = fileService.readFile(new File(TEST_MP3_FOLDER + mp3File));
+                music.addTag("ROCK");
+                catalog.add(music);
             } catch (Exception ex) {
                 log.error(ex.toString());
             }

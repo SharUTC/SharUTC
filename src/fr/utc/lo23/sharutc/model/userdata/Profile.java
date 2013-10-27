@@ -7,13 +7,13 @@ import java.io.Serializable;
  */
 public class Profile implements Serializable {
 
-    private static final long sSerialVersionUID = 4883249865688142273L;
+    private static final long serialVersionUID = 4883249865688142273L;
     private Long mMtimeStampProfile;
     private KnownPeerList mKnownPeerList;
     private Contacts mContacts;
     private Categories mCategories;
     private UserInfo mUserInfo;
-
+    private Long counter;
     /**
      *
      */

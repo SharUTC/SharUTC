@@ -14,10 +14,10 @@ import java.util.Map;
  */
 public class ActivePeerList implements Serializable {
 
-    private static final long sSerialVersionUID = 7777378837435596771L;
+    private static final long serialVersionUID = 7777378837435596771L;
     @JsonIgnore
-    private CollectionChangeSupport collectionChangeSupport = new CollectionChangeSupport(this);
-    private HashMap<Peer, Date> activePeers = new HashMap<Peer, Date>();
+    private CollectionChangeSupport mCollectionChangeSupport = new CollectionChangeSupport(this);
+    private HashMap<Peer, Date> mActivePeers = new HashMap<Peer, Date>();
 
     /**
      *
