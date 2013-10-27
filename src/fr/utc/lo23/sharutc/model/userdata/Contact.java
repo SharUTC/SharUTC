@@ -7,9 +7,9 @@ import java.io.Serializable;
  */
 public class Contact implements Serializable {
 
-    private static final long serialVersionUID = 2934900084513371081L;
-    private Long peerId;
-    private Categories categories;
+    private static final long sSerialVersionUID = 2934900084513371081L;
+    private Long mPeerId;
+    private Categories mCategories;
 
     /**
      *
@@ -22,8 +22,8 @@ public class Contact implements Serializable {
      * @param peerId
      */
     public Contact(Long peerId) {
-        this.peerId = peerId;
-        this.categories = new Categories();
+        this.mPeerId = peerId;
+        this.mCategories = new Categories();
     }
 
     /**
@@ -31,7 +31,7 @@ public class Contact implements Serializable {
      * @return
      */
     public Long getPeerId() {
-        return peerId;
+        return mPeerId;
     }
 
     /**
@@ -39,7 +39,7 @@ public class Contact implements Serializable {
      * @param peerId
      */
     public void setPeerId(Long peerId) {
-        this.peerId = peerId;
+        this.mPeerId = peerId;
     }
 
     /**
@@ -47,7 +47,7 @@ public class Contact implements Serializable {
      * @return
      */
     public Categories getCategories() {
-        return categories;
+        return mCategories;
     }
 
     /**
@@ -55,6 +55,6 @@ public class Contact implements Serializable {
      * @param categories
      */
     public void setCategorieds(Categories categories) {
-        this.categories = categories;
+        this.mCategories = categories;
     }
 }

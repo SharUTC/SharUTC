@@ -13,10 +13,10 @@ import java.util.HashSet;
  */
 public class Categories implements Serializable {
 
-    private static final long serialVersionUID = -1740797994155053145L;
+    private static final long sSerialVersionUID = -1740797994155053145L;
     @JsonIgnore
-    private CollectionChangeSupport collectionChangeSupport = new CollectionChangeSupport(this);
-    private HashSet<Category> categories;
+    private CollectionChangeSupport mCollectionChangeSupport = new CollectionChangeSupport(this);
+    private HashSet<Category> mCategories;
 
     /**
      *
@@ -29,7 +29,7 @@ public class Categories implements Serializable {
      * @return
      */
     public HashSet<Category> getCategories() {
-        return categories;
+        return mCategories;
     }
 
     /**
@@ -37,7 +37,7 @@ public class Categories implements Serializable {
      * @param categories
      */
     public void setCategories(HashSet<Category> categories) {
-        this.categories = categories;
+        this.mCategories = categories;
     }
 
     /**
@@ -46,9 +46,9 @@ public class Categories implements Serializable {
      * @return
      */
     public boolean add(Category category) {
-        boolean added = categories.add(category);
+        boolean added = mCategories.add(category);
         if (added) {
-            collectionChangeSupport.fireCollectionChanged(category, -1, CollectionEvent.Type.ADD);
+            mCollectionChangeSupport.fireCollectionChanged(category, -1, CollectionEvent.Type.ADD);
         }
         return added;
     }
@@ -71,9 +71,9 @@ public class Categories implements Serializable {
      * @return
      */
     public boolean remove(Category category) {
-        boolean removed = categories.remove(category);
+        boolean removed = mCategories.remove(category);
         if (removed) {
-            collectionChangeSupport.fireCollectionChanged(category, -1, CollectionEvent.Type.REMOVE);
+            mCollectionChangeSupport.fireCollectionChanged(category, -1, CollectionEvent.Type.REMOVE);
         }
         return removed;
     }
@@ -82,9 +82,9 @@ public class Categories implements Serializable {
      *
      */
     public void clear() {
-        if (!categories.isEmpty()) {
-            categories.clear();
-            collectionChangeSupport.fireCollectionChanged(null, -1, CollectionEvent.Type.CLEAR);
+        if (!mCategories.isEmpty()) {
+            mCategories.clear();
+            mCollectionChangeSupport.fireCollectionChanged(null, -1, CollectionEvent.Type.CLEAR);
         }
     }
 
@@ -93,7 +93,7 @@ public class Categories implements Serializable {
      * @return
      */
     public int size() {
-        return categories.size();
+        return mCategories.size();
     }
 
     /**
@@ -102,7 +102,7 @@ public class Categories implements Serializable {
      * @return
      */
     public boolean contains(Category category) {
-        return categories.contains(category);
+        return mCategories.contains(category);
     }
 
     /**
@@ -110,7 +110,7 @@ public class Categories implements Serializable {
      * @return
      */
     public boolean isEmpty() {
-        return categories.isEmpty();
+        return mCategories.isEmpty();
     }
 
     /**
@@ -118,7 +118,7 @@ public class Categories implements Serializable {
      * @param listener
      */
     public void addPropertyChangeListener(CollectionChangeListener listener) {
-        collectionChangeSupport.addCollectionListener(listener);
+        mCollectionChangeSupport.addCollectionListener(listener);
     }
 
     /**
@@ -126,6 +126,6 @@ public class Categories implements Serializable {
      * @param listener
      */
     public void removePropertyChangeListener(CollectionChangeListener listener) {
-        collectionChangeSupport.removeCollectionListener(listener);
+        mCollectionChangeSupport.removeCollectionListener(listener);
     }
 }
