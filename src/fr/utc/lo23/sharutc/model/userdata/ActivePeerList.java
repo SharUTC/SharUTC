@@ -14,10 +14,10 @@ import java.util.Map;
  */
 public class ActivePeerList implements Serializable {
 
-    private static final long serialVersionUID = 7777378837435596771L;
+    private static final long sSerialVersionUID = 7777378837435596771L;
     @JsonIgnore
-    private CollectionChangeSupport collectionChangeSupport = new CollectionChangeSupport(this);
-    private HashMap<Peer, Date> activePeers;
+    private CollectionChangeSupport mCollectionChangeSupport = new CollectionChangeSupport(this);
+    private HashMap<Peer, Date> mActivePeers;
 
     /**
      *
@@ -30,7 +30,7 @@ public class ActivePeerList implements Serializable {
      * @return
      */
     public HashMap<Peer, Date> getActivePeers() {
-        return activePeers;
+        return mActivePeers;
     }
 
     /**
@@ -38,7 +38,7 @@ public class ActivePeerList implements Serializable {
      * @param activePeers
      */
     public void setActivePeers(HashMap<Peer, Date> activePeers) {
-        this.activePeers = activePeers;
+        this.mActivePeers = activePeers;
     }
 
     /**
@@ -46,8 +46,8 @@ public class ActivePeerList implements Serializable {
      * @param peer
      */
     public void update(Peer peer) {
-        activePeers.put(peer, new Date());
-        collectionChangeSupport.fireCollectionChanged(peer, -1, CollectionEvent.Type.ADD);
+        mActivePeers.put(peer, new Date());
+        mCollectionChangeSupport.fireCollectionChanged(peer, -1, CollectionEvent.Type.ADD);
     }
 
     /**
@@ -55,9 +55,9 @@ public class ActivePeerList implements Serializable {
      * @param peer
      */
     public void remove(Peer peer) {
-        if (activePeers.containsKey(peer)) {
-            activePeers.remove(peer);
-            collectionChangeSupport.fireCollectionChanged(peer, -1, CollectionEvent.Type.REMOVE);
+        if (mActivePeers.containsKey(peer)) {
+            mActivePeers.remove(peer);
+            mCollectionChangeSupport.fireCollectionChanged(peer, -1, CollectionEvent.Type.REMOVE);
         }
     }
 
@@ -65,9 +65,9 @@ public class ActivePeerList implements Serializable {
      *
      */
     public void clear() {
-        if (!activePeers.isEmpty()) {
-            activePeers.clear();
-            collectionChangeSupport.fireCollectionChanged(null, -1, CollectionEvent.Type.CLEAR);
+        if (!mActivePeers.isEmpty()) {
+            mActivePeers.clear();
+            mCollectionChangeSupport.fireCollectionChanged(null, -1, CollectionEvent.Type.CLEAR);
         }
     }
 
@@ -76,7 +76,7 @@ public class ActivePeerList implements Serializable {
      * @return
      */
     public int size() {
-        return activePeers.size();
+        return mActivePeers.size();
     }
 
     /**
@@ -85,7 +85,7 @@ public class ActivePeerList implements Serializable {
      * @return
      */
     public boolean contains(Peer peer) {
-        return activePeers.containsKey(peer);
+        return mActivePeers.containsKey(peer);
     }
 
     /**
@@ -93,7 +93,7 @@ public class ActivePeerList implements Serializable {
      * @return
      */
     public boolean isEmpty() {
-        return activePeers.isEmpty();
+        return mActivePeers.isEmpty();
     }
 
     /**
@@ -101,7 +101,7 @@ public class ActivePeerList implements Serializable {
      * @param listener
      */
     public void addPropertyChangeListener(CollectionChangeListener listener) {
-        collectionChangeSupport.addCollectionListener(listener);
+        mCollectionChangeSupport.addCollectionListener(listener);
     }
 
     /**
@@ -109,7 +109,7 @@ public class ActivePeerList implements Serializable {
      * @param listener
      */
     public void removePropertyChangeListener(CollectionChangeListener listener) {
-        collectionChangeSupport.removeCollectionListener(listener);
+        mCollectionChangeSupport.removeCollectionListener(listener);
     }
 
     /**
@@ -119,7 +119,7 @@ public class ActivePeerList implements Serializable {
      */
     public Peer getByPeerId(Long peerId) {
         if (peerId != null) {
-            for (Map.Entry<Peer, Date> activePeer : activePeers.entrySet()) {
+            for (Map.Entry<Peer, Date> activePeer : mActivePeers.entrySet()) {
                 if (activePeer.getKey().getId() == peerId.longValue()) {
                     return activePeer.getKey();
                 }

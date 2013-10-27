@@ -8,8 +8,8 @@ import java.util.HashMap;
  */
 public class KnownPeerList implements Serializable {
 
-    private static final long serialVersionUID = -8430180174515199083L;
-    private HashMap<Long, String> knownPeers;
+    private static final long sSerialVersionUID = -8430180174515199083L;
+    private HashMap<Long, String> mKnownPeers;
 
     /**
      *
@@ -22,7 +22,7 @@ public class KnownPeerList implements Serializable {
      * @return
      */
     public HashMap<Long, String> getKnownPeers() {
-        return knownPeers;
+        return mKnownPeers;
     }
 
     /**
@@ -30,7 +30,7 @@ public class KnownPeerList implements Serializable {
      * @param knownPeers
      */
     public void setKnownPeers(HashMap<Long, String> knownPeers) {
-        this.knownPeers = knownPeers;
+        this.mKnownPeers = knownPeers;
     }
 
     /**
@@ -39,7 +39,7 @@ public class KnownPeerList implements Serializable {
      * @return
      */
     public String getPeerNameById(Long id) {
-        return knownPeers.get(id);
+        return mKnownPeers.get(id);
     }
 
     /**
@@ -47,7 +47,7 @@ public class KnownPeerList implements Serializable {
      * @param peer
      */
     public void update(Peer peer) {
-        knownPeers.put(peer.getId(), peer.getDisplayName());
+        mKnownPeers.put(peer.getId(), peer.getDisplayName());
     }
 
     /**
@@ -55,7 +55,7 @@ public class KnownPeerList implements Serializable {
      * @return
      */
     public int size() {
-        return knownPeers.size();
+        return mKnownPeers.size();
     }
 
     /**
@@ -64,7 +64,7 @@ public class KnownPeerList implements Serializable {
      * @return
      */
     public boolean contains(Peer peer) {
-        return knownPeers.containsKey(peer.getId());
+        return mKnownPeers.containsKey(peer.getId());
     }
 
     /**
@@ -72,6 +72,6 @@ public class KnownPeerList implements Serializable {
      * @return
      */
     public boolean isEmpty() {
-        return knownPeers.isEmpty();
+        return mKnownPeers.isEmpty();
     }
 }

@@ -13,10 +13,10 @@ import java.util.HashSet;
  */
 public class Contacts implements Serializable {
 
-    private static final long serialVersionUID = -8656809069835780866L;
-    private HashSet<Contact> contacts;
+    private static final long sSerialVersionUID = -8656809069835780866L;
+    private HashSet<Contact> mContacts;
     @JsonIgnore
-    private CollectionChangeSupport collectionChangeSupport = new CollectionChangeSupport(this);
+    private CollectionChangeSupport mCollectionChangeSupport = new CollectionChangeSupport(this);
 
     /**
      *
@@ -29,7 +29,7 @@ public class Contacts implements Serializable {
      * @return
      */
     public HashSet<Contact> getContacts() {
-        return contacts;
+        return mContacts;
     }
 
     /**
@@ -37,7 +37,7 @@ public class Contacts implements Serializable {
      * @param contacts
      */
     public void setContacts(HashSet<Contact> contacts) {
-        this.contacts = contacts;
+        this.mContacts = contacts;
     }
 
     /**
@@ -46,9 +46,9 @@ public class Contacts implements Serializable {
      * @return
      */
     public boolean add(Contact contact) {
-        boolean added = contacts.add(contact);
+        boolean added = mContacts.add(contact);
         if (added) {
-            collectionChangeSupport.fireCollectionChanged(contact, contacts.size() - 1, CollectionEvent.Type.ADD);
+            mCollectionChangeSupport.fireCollectionChanged(contact, mContacts.size() - 1, CollectionEvent.Type.ADD);
         }
         return added;
     }
@@ -71,9 +71,9 @@ public class Contacts implements Serializable {
      * @return
      */
     public boolean remove(Contact contact) {
-        boolean removed = contacts.remove(contact);
+        boolean removed = mContacts.remove(contact);
         if (removed) {
-            collectionChangeSupport.fireCollectionChanged(contact, -1, CollectionEvent.Type.REMOVE);
+            mCollectionChangeSupport.fireCollectionChanged(contact, -1, CollectionEvent.Type.REMOVE);
         }
         return removed;
     }
@@ -82,9 +82,9 @@ public class Contacts implements Serializable {
      *
      */
     public void clear() {
-        if (!contacts.isEmpty()) {
-            contacts.clear();
-            collectionChangeSupport.fireCollectionChanged(null, -1, CollectionEvent.Type.CLEAR);
+        if (!mContacts.isEmpty()) {
+            mContacts.clear();
+            mCollectionChangeSupport.fireCollectionChanged(null, -1, CollectionEvent.Type.CLEAR);
         }
     }
 
@@ -93,7 +93,7 @@ public class Contacts implements Serializable {
      * @return
      */
     public int size() {
-        return contacts.size();
+        return mContacts.size();
     }
 
     /**
@@ -102,7 +102,7 @@ public class Contacts implements Serializable {
      * @return
      */
     public boolean contains(Contact contact) {
-        return contacts.contains(contact);
+        return mContacts.contains(contact);
     }
 
     /**
@@ -110,7 +110,7 @@ public class Contacts implements Serializable {
      * @return
      */
     public boolean isEmpty() {
-        return contacts.isEmpty();
+        return mContacts.isEmpty();
     }
 
     /**
@@ -118,7 +118,7 @@ public class Contacts implements Serializable {
      * @param listener
      */
     public void addPropertyChangeListener(CollectionChangeListener listener) {
-        collectionChangeSupport.addCollectionListener(listener);
+        mCollectionChangeSupport.addCollectionListener(listener);
     }
 
     /**
@@ -126,6 +126,6 @@ public class Contacts implements Serializable {
      * @param listener
      */
     public void removePropertyChangeListener(CollectionChangeListener listener) {
-        collectionChangeSupport.removeCollectionListener(listener);
+        mCollectionChangeSupport.removeCollectionListener(listener);
     }
 }

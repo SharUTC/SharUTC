@@ -7,13 +7,13 @@ import java.io.Serializable;
  */
 public class Category implements Serializable {
 
-    private static final long serialVersionUID = 3790688676428360970L;
+    private static final long sSerialVersionUID = 3790688676428360970L;
     /**
      * Undeletable category ID
      */
     public static final Integer PUBLIC_CATEGORY_ID = new Integer(0);
-    private Integer id;
-    private String name;
+    private Integer mId;
+    private String mMame;
 
     /**
      *
@@ -26,7 +26,7 @@ public class Category implements Serializable {
      * @return
      */
     public Integer getId() {
-        return id;
+        return mId;
     }
 
     /**
@@ -34,7 +34,7 @@ public class Category implements Serializable {
      * @param id
      */
     public void setId(Integer id) {
-        this.id = id;
+        this.mId = id;
     }
 
     /**
@@ -42,7 +42,7 @@ public class Category implements Serializable {
      * @return
      */
     public String getName() {
-        return name;
+        return mMame;
     }
 
     /**
@@ -50,6 +50,6 @@ public class Category implements Serializable {
      * @param name
      */
     public void setName(String name) {
-        this.name = name;
+        this.mMame = name;
     }
 }
