@@ -15,8 +15,12 @@ public class PlayerServiceImpl implements PlayerService {
 
     private static final Logger log = LoggerFactory
             .getLogger(PlayerServiceImpl.class);
+    private final AppModel appModel;
+
     @Inject
-    AppModel model;
+    public PlayerServiceImpl(AppModel appModel) {
+        this.appModel = appModel;
+    }
 
     /**
      *

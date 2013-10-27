@@ -6,16 +6,23 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.File;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  *
-
+ *
  */
 public class Music implements Serializable {
 
+    private static final Logger log = LoggerFactory
+            .getLogger(Music.class);
     private static final long serialVersionUID = 6722258623736849911L;
     @JsonIgnore
     private PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
@@ -34,7 +41,9 @@ public class Music implements Serializable {
     private String title;
     private String artist;
     private String album;
-    private Integer num;
+    private String track;
+    private Integer trackLength;
+    private Integer year;
     private List<Comment> comments;
     private Set<Score> scores;
     private Set<String> tags;
@@ -52,37 +61,36 @@ public class Music implements Serializable {
      * To use for importing a new local file
      *
      * @param id
-     * @param fileName
-     * @param realName
-     * @param fileMissing
      * @param ownerPeerId
-     * @param hash
-     * @param categories
      * @param file
+     * @param fileName
      * @param title
      * @param artist
      * @param album
-     * @param num
-     * @param comments
-     * @param scores
-     * @param tags
+     * @param track
+     * @param trackLength
      */
-    public Music(Long id, String fileName, String realName, Boolean fileMissing, Long ownerPeerId, Integer hash, Categories categories, File file, String title, String artist, String album, Integer num, List<Comment> comments, Set<Score> scores, Set<String> tags) {
+    public Music(Long id, Long ownerPeerId, File file, String fileName, String title, String artist, String album, String track, Integer trackLength) {
         this.id = id;
-        this.fileName = fileName;
-        this.realName = realName;
-        this.fileMissing = fileMissing;
+        this.fileName = fileName != null ? fileName : file.getName();
+        this.realName = file.getName();
+        this.fileMissing = false;
         this.ownerPeerId = ownerPeerId;
-        this.hash = hash;
-        this.categories = categories;
+        this.hash = file.hashCode();
+        this.categories = new Categories();
         this.file = file;
+
+        this.comments = new ArrayList<Comment>();
+        this.scores = new HashSet<Score>();
+        this.tags = new HashSet<String>();
         this.title = title;
         this.artist = artist;
         this.album = album;
-        this.num = num;
-        this.comments = comments;
-        this.scores = scores;
-        this.tags = tags;
+        this.track = track;
+        this.trackLength = trackLength;
+        this.mayReadInfo = null;
+        this.mayListen = null;
+        this.mayCommentAndNote = null;
     }
 
     /**
@@ -274,18 +282,37 @@ public class Music implements Serializable {
      *
      * @return
      */
-    public Integer getNum() {
-        return num;
+    public String getTrack() {
+        return track;
     }
 
     /**
      *
      * @param num
      */
-    public void setNum(Integer num) {
-        Integer oldNum = this.num;
-        this.num = num;
-        propertyChangeSupport.firePropertyChange(Property.NUM.name(), oldNum, num);
+    public void setTrack(String track) {
+        String oldTrack = this.track;
+        this.track = track;
+        propertyChangeSupport.firePropertyChange(Property.TRACK.name(), oldTrack, track);
+    }
+
+    public Integer getTrackLength() {
+        return trackLength;
+    }
+
+    public void setTrackLength(Integer trackLength) {
+        this.trackLength = trackLength;
+    }
+
+    public Integer getYear() {
+        return year;
+    }
+
+    public void setYear(Integer year) {
+        Integer oldYear = this.year;
+        this.year = year;
+        propertyChangeSupport.firePropertyChange(Property.YEAR.name(), oldYear, year);
+
     }
 
     /**
@@ -408,6 +435,10 @@ public class Music implements Serializable {
         return file != null ? file.hashCode() : 0;
     }
 
+    public void addTag(String tag) {
+        tags.add(tag);
+    }
+
     /**
      *
      */
@@ -436,10 +467,14 @@ public class Music implements Serializable {
         /**
          *
          */
-        NUM,
+        TRACK,
         /**
          *
          */
-        FILE_MISSING
+        FILE_MISSING,
+        /**
+         *
+         */
+        YEAR
     }
 }

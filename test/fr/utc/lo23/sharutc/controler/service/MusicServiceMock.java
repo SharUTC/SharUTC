@@ -1,6 +1,8 @@
 package fr.utc.lo23.sharutc.controler.service;
 
+import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import fr.utc.lo23.sharutc.model.AppModel;
 import fr.utc.lo23.sharutc.model.domain.Catalog;
 import fr.utc.lo23.sharutc.model.domain.Music;
 import fr.utc.lo23.sharutc.model.domain.SearchCriteria;
@@ -16,108 +18,103 @@ import org.slf4j.LoggerFactory;
  *
  */
 @Singleton
-public class MusicServiceMock implements MusicService {
+public class MusicServiceMock extends MusicServiceImpl implements MusicService {
 
     private static final Logger log = LoggerFactory
             .getLogger(MusicServiceMock.class);
 
+    @Inject
+    public MusicServiceMock(AppModel appModel) {
+        super(appModel);
+    }
+
     @Override
     public void addToLocalCatalog(List<File> mp3Files) {
-        log.warn("Not supported yet.");
+        super.addToLocalCatalog(mp3Files);
     }
 
     @Override
     public void removeFromLocalCatalog(List<Music> musics) {
-        log.warn("Not supported yet.");
+        super.removeFromLocalCatalog(musics);
     }
 
     @Override
     public void integrateRemoteCatalog(Peer peer, Catalog catalog) {
-        log.warn("Not supported yet.");
-    }
-
-    @Override
-    public void buildLocalTagMap() {
-        log.warn("Not supported yet.");
+        super.integrateRemoteCatalog(peer, catalog);
     }
 
     @Override
     public TagMap getLocalTagMap() {
-        TagMap dummyTagMap = new TagMap();
-        dummyTagMap.merge("Rock", 10);
-        dummyTagMap.merge("Pop", 3);
-        dummyTagMap.merge("Disco", 2000);
-        return dummyTagMap;
+        return super.getLocalTagMap();
     }
 
     @Override
     public void integrateRemoteTagMap(TagMap tagMap) {
-        log.warn("Not supported yet.");
+        super.integrateRemoteTagMap(tagMap);
     }
 
     @Override
     public void addTag(Music music, String tag) {
-        log.warn("Not supported yet.");
+        super.addTag(music, tag);
     }
 
     @Override
     public void removeTag(Music music, String tag) {
-        log.warn("Not supported yet.");
+        super.removeTag(music, tag);
     }
 
     @Override
     public void addComment(Peer peer, Music music, String comment) {
-        log.warn("Not supported yet.");
+        super.addComment(peer, music, comment);
     }
 
     @Override
     public void editComment(Peer peer, Music music, String comment, Integer commentIndex) {
-        log.warn("Not supported yet.");
+        super.editComment(peer, music, comment, commentIndex);
     }
 
     @Override
     public void removeComment(Peer peer, Music music, Integer commentIndex) {
-        log.warn("Not supported yet.");
+        super.removeComment(peer, music, commentIndex);
     }
 
     @Override
     public void setScore(Peer peer, Music music, Integer score) {
-        log.warn("Not supported yet.");
+        super.setScore(peer, music, score);
     }
 
     @Override
     public void unsetScore(Peer peer, Music music) {
-        log.warn("Not supported yet.");
+        super.unsetScore(peer, music);
     }
 
     @Override
     public void saveUserMusicFiles() {
-        log.warn("Not supported yet.");
+        super.saveUserMusicFiles();
     }
 
     @Override
     public void loadUserMusicFiles(String path) {
-        log.warn("Not supported yet.");
+        super.loadUserMusicFiles(path);
     }
 
     @Override
     public void searchMusic(Peer peer, SearchCriteria criteria) {
-        log.warn("Not supported yet.");
+        super.searchMusic(peer, criteria);
     }
 
     @Override
     public void integrateMusicSearch(Catalog catalog) {
-        log.warn("Not supported yet.");
+        super.integrateMusicSearch(catalog);
     }
 
     @Override
     public Music getMusicWithFile(Music music) {
-        log.warn("Not supported yet.");
-        return null;
+        return super.getMusicWithFile(music);
     }
 
     @Override
     public void installMusics(Catalog catalog) {
-        log.warn("Not supported yet.");
+        super.installMusics(catalog);
     }
 }

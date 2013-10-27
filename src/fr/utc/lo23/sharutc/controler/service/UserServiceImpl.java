@@ -19,8 +19,12 @@ public class UserServiceImpl implements UserService {
 
     private static final Logger log = LoggerFactory
             .getLogger(UserServiceImpl.class);
+    private final AppModel appModel;
+
     @Inject
-    AppModel model;
+    public UserServiceImpl(AppModel appModel) {
+        this.appModel = appModel;
+    }
 
     @Override
     public void addContact(Peer peer) {

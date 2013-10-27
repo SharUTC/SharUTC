@@ -15,15 +15,18 @@ import org.slf4j.LoggerFactory;
 
 /**
  *
-
+ *
  */
 @Singleton
 public class MusicServiceImpl implements MusicService {
 
-    private static final Logger log = LoggerFactory
-            .getLogger(MusicServiceImpl.class);
+    private static final Logger log = LoggerFactory.getLogger(MusicServiceImpl.class);
+    private final AppModel appModel;
+
     @Inject
-    AppModel model;
+    public MusicServiceImpl(AppModel appModel) {
+        this.appModel = appModel;
+    }
 
     @Override
     public void addToLocalCatalog(List<File> mp3Files) {
@@ -41,14 +44,8 @@ public class MusicServiceImpl implements MusicService {
     }
 
     @Override
-    public void buildLocalTagMap() {
-        log.warn("Not supported yet.");
-    }
-
-    @Override
     public TagMap getLocalTagMap() {
-        log.warn("Not supported yet.");
-        return null;
+        return new TagMap(appModel.getLocalCatalog());
     }
 
     @Override

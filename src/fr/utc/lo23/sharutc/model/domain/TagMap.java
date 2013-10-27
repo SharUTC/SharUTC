@@ -74,7 +74,7 @@ public class TagMap implements Serializable {
     /**
      * Add or update TagMap with tags associated to a music
      *
-     * @param music 
+     * @param music
      */
     public final void merge(Music music) {
         for (String tag : music.getTags()) {
@@ -139,7 +139,19 @@ public class TagMap implements Serializable {
 
     @Override
     public boolean equals(Object tagMap) {
-        return tagMap != null && (tagMap instanceof TagMap) && ((TagMap) tagMap).map.equals(map);
+        if (tagMap == null || !(tagMap instanceof TagMap)) {
+            return false;
+        }
+        TagMap tm = (TagMap) tagMap;
+        if (tm.getMap().size() != map.size()) {
+            return false;
+        }
+        for (Entry<String, Integer> entry : map.entrySet()) {
+            if (!tm.map.containsKey(entry.getKey()) || !tm.map.get(entry.getKey()).equals(entry.getValue())) {
+                return false;
+            }
+        }
+        return true;
     }
 
     @Override
@@ -167,5 +179,15 @@ public class TagMap implements Serializable {
          * When a new tag name appears in the map
          */
         TAG_NEW
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        builder.append("TagMap :\n");
+        for (Entry<String, Integer> entry : map.entrySet()) {
+            builder.append(entry.getKey()).append(" : ").append(entry.getValue()).append("\n");
+        }
+        return builder.toString();
     }
 }

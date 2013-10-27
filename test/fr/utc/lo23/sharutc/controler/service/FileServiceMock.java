@@ -1,15 +1,23 @@
 package fr.utc.lo23.sharutc.controler.service;
 
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
+import fr.utc.lo23.sharutc.model.AppModel;
+import fr.utc.lo23.sharutc.model.domain.Music;
+import java.io.File;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- *
- */
-public class FileServiceMock implements FileService {
+@Singleton
+public class FileServiceMock extends FileServiceImpl implements FileService {
 
     private static final Logger log = LoggerFactory
             .getLogger(FileServiceMock.class);
+
+    @Inject
+    public FileServiceMock(AppModel appModel) {
+        super(appModel);
+    }
 
     /**
      *
@@ -18,7 +26,7 @@ public class FileServiceMock implements FileService {
      */
     @Override
     public void importFile(String path, String password) {
-        log.warn("Not supported yet.");
+        super.importFile(path, password);
     }
 
     /**
@@ -27,6 +35,17 @@ public class FileServiceMock implements FileService {
      */
     @Override
     public void writeExportFile(String path) {
-        log.warn("Not supported yet.");
+        super.writeExportFile(path);
+    }
+
+    /**
+     *
+     * @param file
+     * @return
+     * @throws Exception
+     */
+    @Override
+    public Music readFile(File file) throws Exception {
+        return super.readFile(file);
     }
 }

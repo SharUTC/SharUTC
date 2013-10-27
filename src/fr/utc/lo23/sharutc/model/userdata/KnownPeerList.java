@@ -9,7 +9,7 @@ import java.util.HashMap;
 public class KnownPeerList implements Serializable {
 
     private static final long serialVersionUID = -8430180174515199083L;
-    private HashMap<Long, String> knownPeers;
+    private HashMap<Long, String> knownPeers = new HashMap<Long, String>();
 
     /**
      *

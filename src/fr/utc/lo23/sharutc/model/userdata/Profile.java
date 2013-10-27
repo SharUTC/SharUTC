@@ -18,6 +18,7 @@ public class Profile implements Serializable {
      *
      */
     public Profile() {
+        counter = 0l;
     }
 
     /**
@@ -34,6 +35,14 @@ public class Profile implements Serializable {
      */
     public void setCounter(Long counter) {
         this.counter = counter;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public Long getNewMusicId() {
+        return ++counter;
     }
 
     /**

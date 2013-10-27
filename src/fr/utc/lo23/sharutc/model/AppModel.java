@@ -1,6 +1,7 @@
 package fr.utc.lo23.sharutc.model;
 
 import fr.utc.lo23.sharutc.model.domain.Catalog;
+import fr.utc.lo23.sharutc.model.domain.RightsList;
 import fr.utc.lo23.sharutc.model.domain.TagMap;
 import fr.utc.lo23.sharutc.model.userdata.ActivePeerList;
 import fr.utc.lo23.sharutc.model.userdata.KnownPeerList;
@@ -129,4 +130,16 @@ public interface AppModel {
      * @param remoteUserCatalog
      */
     public void setRemoteUserCatalog(Catalog remoteUserCatalog);
+
+    /**
+     *
+     * @return
+     */
+    public RightsList getRightsList();
+
+    /**
+     *
+     * @param rightsList
+     */
+    public void setRightsList(RightsList rightsList);
 }

@@ -34,11 +34,6 @@ public interface MusicService {
 
     /**
      *
-     */
-    public void buildLocalTagMap();
-
-    /**
-     *
      * @return
      */
     public TagMap getLocalTagMap();

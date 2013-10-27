@@ -1,31 +1,55 @@
-package fr.utc.lo23.sharutc.controler.service;
+package tests;
 
 import com.google.inject.Inject;
 import fr.utc.lo23.sharutc.GuiceJUnitRunner;
 import fr.utc.lo23.sharutc.GuiceJUnitRunner.GuiceModules;
 import fr.utc.lo23.sharutc.controler.command.music.IntegrateRemoteTagMapCommand;
-import fr.utc.lo23.sharutc.injection.CommandTestModule;
-import fr.utc.lo23.sharutc.injection.ModelTestModule;
-import fr.utc.lo23.sharutc.injection.ServiceTestModule;
+import fr.utc.lo23.sharutc.controler.service.FileService;
+import fr.utc.lo23.sharutc.controler.service.MusicService;
 import fr.utc.lo23.sharutc.model.AppModel;
+import fr.utc.lo23.sharutc.model.AppModelBuilder;
 import fr.utc.lo23.sharutc.model.domain.TagMap;
+import org.junit.After;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
  */
 @RunWith(GuiceJUnitRunner.class)
-@GuiceModules({ModelTestModule.class, ServiceTestModule.class, CommandTestModule.class})
-public class SampleServiceMockTest {
+@GuiceModules({TagMapTestModule.class})
+public class TagMapTest {
 
+    private static final Logger log = LoggerFactory
+            .getLogger(TagMapTest.class);
     @Inject
     private AppModel appModel;
+    @Inject
+    private FileService fileService;
     @Inject
     private MusicService musicService;
     @Inject
     private IntegrateRemoteTagMapCommand integrateRemoteTagMapCommand;
+    private AppModelBuilder appModelBuilder = null;
+
+    @Before
+    public void before() {
+        log.trace("building appModel");
+        if (appModelBuilder == null) {
+            appModelBuilder = new AppModelBuilder(appModel, fileService);
+        }
+        appModelBuilder.mockAppModel();
+    }
+
+    @After
+    public void after() {
+        log.trace("cleaning appModel");
+        appModelBuilder.clearAppModel();
+    }
 
     /**
      *
@@ -59,13 +83,13 @@ public class SampleServiceMockTest {
         // here I'm testing one of the commands of the application,
         // we set its attributes as we would do in the code
         //
-        //TagMap dummyTagMap = new TagMap();
-        //dummyTagMap.merge("Rock", 5);
-        //dummyTagMap.merge("Pop", 3);
-        //dummyTagMap.merge("Rock", 5);
-        //dummyTagMap.merge("Disco", 2000);
+        TagMap dummyTagMap = new TagMap();
+        dummyTagMap.merge("Rock", 5);
+        dummyTagMap.merge("Pop", 3);
+        dummyTagMap.merge("Rock", 5);
+        dummyTagMap.merge("Disco", 2000);
         //
-        //integrateRemoteTagMapCommand.setTagMap(dummyTagMap1);
+        integrateRemoteTagMapCommand.setTagMap(dummyTagMap);
         //
         // then we continue to simulate the application, here it should modify
         // the application model but for this it requires to write a few more 
@@ -73,34 +97,34 @@ public class SampleServiceMockTest {
         // account and catalog, that other developper could also reuse or 
         // complete at the beginning
         //
-        //integrateRemoteTagMapCommand.execute();
+        integrateRemoteTagMapCommand.execute();
+
+        TagMap dummyTagMap1 = new TagMap();
+        dummyTagMap1.merge("Rock", 5);
+        dummyTagMap1.merge("Pop", 3);
+        dummyTagMap1.merge("Rock", 5);
+        dummyTagMap1.merge("Disco", 2000);
         //
-        //TagMap dummyTagMap1 = new TagMap();
-        //dummyTagMap1.merge("Rock", 5);
-        //dummyTagMap1.merge("Pop", 3);
-        //dummyTagMap1.merge("Rock", 5);
-        //dummyTagMap1.merge("Disco", 2000);
-        //
-        //Assert.assertEquals("IntegrateRemoteTagMapCommand failed", dummyTagMap1,
-        //appModel.getNetworkTagMap());
+        Assert.assertEquals("IntegrateRemoteTagMapCommand failed", dummyTagMap1,
+                appModel.getNetworkTagMap());
         //
         // here is a second test, the same as the previous but with different
         // instances, it is highly preferable to create a new instance of the
         // TagMap here, don't use the previous instances
         //
-        //TagMap dummyTagMap2 = new TagMap();
-        //dummyTagMap2.merge("Rock", 10);
-        //dummyTagMap2.merge("Pop", 3);
-        //dummyTagMap2.merge("Jazz", 5);
-        //integrateRemoteTagMapCommand.setTagMap(dummyTagMap2);
-        //integrateRemoteTagMapCommand.execute();
+        TagMap dummyTagMap2 = new TagMap();
+        dummyTagMap2.merge("Rock", 10);
+        dummyTagMap2.merge("Pop", 3);
+        dummyTagMap2.merge("Jazz", 5);
+        integrateRemoteTagMapCommand.setTagMap(dummyTagMap2);
+        integrateRemoteTagMapCommand.execute();
         //
-        //TagMap dummyTagMap3 = new TagMap();
-        //dummyTagMap3.merge("Rock", 20);
-        //dummyTagMap3.merge("Pop", 6);
-        //dummyTagMap3.merge("Jazz", 5);
-        //dummyTagMap.merge("Disco", 2000);
-        //Assert.assertEquals("IntegrateRemoteTagMapCommand failed", dummyTagMap3,
-        //appModel.getNetworkTagMap());
+        TagMap dummyTagMap3 = new TagMap();
+        dummyTagMap3.merge("Rock", 20);
+        dummyTagMap3.merge("Pop", 6);
+        dummyTagMap3.merge("Jazz", 5);
+        dummyTagMap3.merge("Disco", 2000);
+        Assert.assertEquals("IntegrateRemoteTagMapCommand failed", dummyTagMap3,
+                appModel.getNetworkTagMap());
     }
 }

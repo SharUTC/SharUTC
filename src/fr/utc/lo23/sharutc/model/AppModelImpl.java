@@ -1,6 +1,7 @@
 package fr.utc.lo23.sharutc.model;
 
 import fr.utc.lo23.sharutc.model.domain.Catalog;
+import fr.utc.lo23.sharutc.model.domain.RightsList;
 import fr.utc.lo23.sharutc.model.domain.TagMap;
 import fr.utc.lo23.sharutc.model.userdata.ActivePeerList;
 import fr.utc.lo23.sharutc.model.userdata.KnownPeerList;
@@ -32,11 +33,12 @@ public class AppModelImpl implements AppModel, Serializable {
     private Profile profile;
     private Catalog localCatalog;
     private KnownPeerList knownPeerList;
+    private RightsList rightsList;
 
     /**
      *
      */
-        public AppModelImpl() {
+    public AppModelImpl() {
     }
 
     @Override
@@ -221,6 +223,16 @@ public class AppModelImpl implements AppModel, Serializable {
     @Override
     public void setRemoteUserCatalog(Catalog remoteUserCatalog) {
         this.remoteUserCatalog = remoteUserCatalog;
+    }
+
+    @Override
+    public RightsList getRightsList() {
+        return rightsList;
+    }
+
+    @Override
+    public void setRightsList(RightsList rightsList) {
+        this.rightsList = rightsList;
     }
 
     /**

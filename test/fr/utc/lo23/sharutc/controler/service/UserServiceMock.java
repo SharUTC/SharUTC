@@ -1,5 +1,8 @@
 package fr.utc.lo23.sharutc.controler.service;
 
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
+import fr.utc.lo23.sharutc.model.AppModel;
 import fr.utc.lo23.sharutc.model.domain.Music;
 import fr.utc.lo23.sharutc.model.userdata.Category;
 import fr.utc.lo23.sharutc.model.userdata.Contact;
@@ -11,79 +14,84 @@ import org.slf4j.LoggerFactory;
 /**
  *
  */
-public class UserServiceMock implements UserService {
+@Singleton
+public class UserServiceMock extends UserServiceImpl implements UserService {
 
     private static final Logger log = LoggerFactory
             .getLogger(UserServiceMock.class);
 
+    @Inject
+    public UserServiceMock(AppModel appModel) {
+        super(appModel);
+    }
+
     @Override
     public void addContact(Peer peer) {
-        log.warn("Not supported yet.");
+        super.addContact(peer);
     }
 
     @Override
     public void deleteContact(Contact contact) {
-        log.warn("Not supported yet.");
+        super.deleteContact(contact);
     }
 
     @Override
     public void createCategory(String categoryName) {
-        log.warn("Not supported yet.");
+        super.createCategory(categoryName);
     }
 
     @Override
     public void deleteCategory(Category category) {
-        log.warn("Not supported yet.");
+        super.deleteCategory(category);
     }
 
     @Override
     public void addContactToCategory(Peer peer, Category category) {
-        log.warn("Not supported yet.");
+        super.addContactToCategory(peer, category);
     }
 
     @Override
     public void removeContactFromCategory(Peer peer, Category category) {
-        log.warn("Not supported yet.");
+        super.removeContactFromCategory(peer, category);
     }
 
     @Override
     public void manageGroupRights(Category category, Music music, boolean readInfo, boolean listen, boolean noteAndComment) {
-        log.warn("Not supported yet.");
+        super.manageGroupRights(category, music, readInfo, listen, noteAndComment);
     }
 
     @Override
     public void createProfile(UserInfo userInfo) {
-        log.warn("Not supported yet.");
+        super.createProfile(userInfo);
     }
 
     @Override
     public void loadUserProfileFiles(String path) {
-        log.warn("Not supported yet.");
+        super.loadUserProfileFiles(path);
     }
 
     @Override
     public void connectionRequest(String login, String password) {
-        log.warn("Not supported yet.");
+        super.connectionRequest(login, password);
     }
 
     @Override
     public void updateConnectedPeers(UserInfo userInfo) {
-        log.warn("Not supported yet.");
+        super.updateConnectedPeers(userInfo);
     }
 
     @Override
     public void removeFromConnectedPeers(long peerId) {
-        log.warn("Not supported yet.");
+        super.removeFromConnectedPeers(peerId);
     }
 
     @Override
     public void saveUserProfileFiles() {
-        log.warn("Not supported yet.");
+        super.saveUserProfileFiles();
     }
 
     @Override
     public void integrateHeartbeat(UserInfo userinfo) {
-        log.warn("Not supported yet.");
+        super.integrateHeartbeat(userinfo);
     }
-
 }
