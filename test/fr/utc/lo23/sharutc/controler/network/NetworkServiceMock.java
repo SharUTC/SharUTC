@@ -16,38 +16,21 @@ import org.slf4j.LoggerFactory;
  */
 @Singleton
 public class NetworkServiceMock implements NetworkService {
-
     private static final Logger log = LoggerFactory
             .getLogger(NetworkServiceMock.class);
 
-    /**
-     * Entry method, parses message from String to Message switch on
-     * Message.type, creates and runs approriate Command
-     *
-     * @param string
-     */
     @Override
-    public void handleMessage(String string) {
+    public void start() {
         log.warn("Not supported yet.");
     }
 
     @Override
-    public void startListening() {
+    public void addPeer(long peerId, PeerSocket peerSocket) {
         log.warn("Not supported yet.");
     }
 
     @Override
-    public void startHeartbeat() {
-        log.warn("Not supported yet.");
-    }
-
-    @Override
-    public void stopListening() {
-        log.warn("Not supported yet.");
-    }
-
-    @Override
-    public void stopHeartbeat() {
+    public void removePeer(PeerSocket peerSocket) {
         log.warn("Not supported yet.");
     }
 
@@ -57,7 +40,7 @@ public class NetworkServiceMock implements NetworkService {
     }
 
     @Override
-    public void sendUnicastCatalog(Peer peer) {
+    public void sendUnicastCatalog(Peer peer, Catalog catalog) {
         log.warn("Not supported yet.");
     }
 
@@ -107,7 +90,7 @@ public class NetworkServiceMock implements NetworkService {
     }
 
     @Override
-    public void sendDownloadRequest(Peer peer, Music music) {
+    public void sendDownloadRequest(Peer peer, Catalog catalog) {
         log.warn("Not supported yet.");
     }
 
