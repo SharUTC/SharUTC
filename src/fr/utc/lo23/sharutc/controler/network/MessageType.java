@@ -44,13 +44,13 @@ public enum MessageType {
     /**
      *
      */
-    MUSIC_SEARCH, 
+    MUSIC_SEARCH,
     /**
-     * 
+     *
      */
     MUSIC_RESULTS,
     /**
-     * 
+     *
      */
     MUSIC_GET,
     /**

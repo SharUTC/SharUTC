@@ -15,21 +15,26 @@ public class SendTagMapCommandImpl implements SendTagMapCommand {
 
     private static final Logger log = LoggerFactory
             .getLogger(SendTagMapCommandImpl.class);
-    @Inject
-    private NetworkService networkService;
-    @Inject
-    private AppModel appModel;
+    private final NetworkService networkService;
+    private final AppModel appModel;
     private Peer peer;
+    private Long conversationId;
 
     /**
+     * AppModel is injected
      *
+     * @param appModel the local instance of AppModel
+     * @param networkService the local instance of NetworkService
      */
-    public SendTagMapCommandImpl() {
+    @Inject
+    public SendTagMapCommandImpl(AppModel appModel, NetworkService networkService) {
+        this.appModel = appModel;
+        this.networkService = networkService;
     }
 
     /**
      *
-     * @return
+     * @return the destination Peer
      */
     @Override
     public Peer getPeer() {
@@ -38,15 +43,25 @@ public class SendTagMapCommandImpl implements SendTagMapCommand {
 
     /**
      *
-     * @param peer
+     * @param peer the destination Peer
      */
     @Override
     public void setPeer(Peer peer) {
         this.peer = peer;
     }
 
+    @Override
+    public Long getConversationId() {
+        return conversationId;
+    }
+
+    @Override
+    public void setConversationId(Long conversationId) {
+        this.conversationId = conversationId;
+    }
+
     /**
-     *
+     * Compute local TagMap and send it to required peer
      */
     @Override
     public void execute() {
@@ -56,7 +71,7 @@ public class SendTagMapCommandImpl implements SendTagMapCommand {
         TagMap tagMap = new TagMap(appModel.getLocalCatalog());
 
         // sending TagMap response in unicast
-        networkService.sendUnicastTagMap(peer, tagMap);
+        networkService.sendUnicastTagMap(peer, conversationId, tagMap);
 
         log.info("SendTagMapCommand DONE");
     }

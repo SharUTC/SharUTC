@@ -60,7 +60,7 @@ public interface NetworkService {
      * @param peer
      * @param tagMap
      */
-    public void sendUnicastTagMap(Peer peer, TagMap tagMap);
+    public void sendUnicastTagMap(Peer peer, Long conversationId, TagMap tagMap);
 
     /**
      *

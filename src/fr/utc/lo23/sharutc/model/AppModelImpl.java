@@ -47,8 +47,8 @@ public class AppModelImpl implements AppModel, Serializable {
     }
 
     @Override
-    public void incrementConversationId() {
-        currentConversationId++;
+    public Long getNextConversationId() {
+        return ++currentConversationId;
     }
 
     @Override

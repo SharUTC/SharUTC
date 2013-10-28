@@ -6,10 +6,11 @@ import fr.utc.lo23.sharutc.model.userdata.Peer;
 
 /**
  *
-
+ *
  */
 public interface UnsetScoreCommand extends Command {
-     /**
+
+    /**
      *
      * @return
      */
@@ -32,5 +33,4 @@ public interface UnsetScoreCommand extends Command {
      * @param music
      */
     public void setMusic(Music music);
-
 }

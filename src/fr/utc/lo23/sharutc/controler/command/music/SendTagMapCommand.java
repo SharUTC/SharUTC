@@ -20,4 +20,16 @@ public interface SendTagMapCommand extends Command {
      * @param peer
      */
     public void setPeer(Peer peer);
+
+    /**
+     *
+     * @return
+     */
+    public Long getConversationId();
+
+    /**
+     *
+     * @param conversationId
+     */
+    public void setConversationId(Long conversationId);
 }

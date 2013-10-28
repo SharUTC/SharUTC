@@ -55,7 +55,7 @@ public interface UserService {
      * @param music
      * @param readInfo
      * @param listen
-     * @param noteAndComment  
+     * @param noteAndComment
      */
     public void manageGroupRights(Category category, Music music, boolean readInfo, boolean listen, boolean noteAndComment);
 

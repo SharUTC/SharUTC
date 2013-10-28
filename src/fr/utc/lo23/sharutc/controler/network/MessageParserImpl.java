@@ -53,12 +53,28 @@ public class MessageParserImpl implements MessageParser {
         }
     }
 
+    private void checkMessageRead() throws RuntimeException {
+        if (message == null || messageContent == null) {
+            log.warn("The parser must read a Message first");
+        }
+    }
+
+    /**
+     *
+     * @return
+     */
+    @Override
+    public Long getConversationId() {
+        return (Long) getValue(Message.CONVERSATION_ID);
+    }
+
     /**
      *
      * @return
      */
     @Override
     public Peer getSource() {
+        checkMessageRead();
         Peer destinationPeer = appModel.getActivePeerList().getByPeerId(message.getFromPeerId());
         if (destinationPeer == null) {
             log.error("Missing arg : no destination");
@@ -73,9 +89,7 @@ public class MessageParserImpl implements MessageParser {
      */
     @Override
     public Object getValue(String field) {
-        if (message == null || messageContent == null) {
-            log.warn("You must initialize the parser with a Message first");
-        }
+        checkMessageRead();
         Object object = messageContent.get(field);
         if (object == null) {
             log.error("Field \"{}\" not found in message", field);
@@ -91,7 +105,7 @@ public class MessageParserImpl implements MessageParser {
      */
     @Override
     public Message write(MessageType messageType, Object[][] content) {
-        if (fromPeerId == 0) {
+        if (fromPeerId == 0l) {
             log.error("Missing fromPeerId");
         }
         if (messageType == null) {

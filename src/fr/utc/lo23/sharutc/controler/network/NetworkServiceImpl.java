@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import fr.utc.lo23.sharutc.controler.command.Command;
-import fr.utc.lo23.sharutc.controler.command.music.AddCommentCommand;
 import fr.utc.lo23.sharutc.controler.command.music.IntegrateRemoteTagMapCommand;
 import fr.utc.lo23.sharutc.controler.command.music.SendTagMapCommand;
 import static fr.utc.lo23.sharutc.controler.network.MessageType.*;
@@ -39,13 +38,13 @@ public class NetworkServiceImpl implements NetworkService {
     private UserService userService;
     // all command interfaces used by network service
     @Inject
-    private AddCommentCommand addCommentCommand;
-    @Inject
     private SendTagMapCommand sendTagMapCommand;
     @Inject
     private IntegrateRemoteTagMapCommand integrateRemoteTagMapCommand;
+    // @Inject
+    // private AddCommentCommand addCommentCommand;
     // more...
-    
+
     /**
      *
      */
@@ -85,20 +84,14 @@ public class NetworkServiceImpl implements NetworkService {
     private void sendUnicast(Message message, Peer peer) {
         log.warn("sendUnicast - Not supported yet.");
     }
-    /*
-     private Message buildMessage(MessageType messageType, Object object) {
-     if (messageType == null) {
-     throw new RuntimeException("Missing messageType");
-     }
-     Message message = null;
-     try {
-     message = new Message(messageType, object != null ? mapper.writeValueAsString(object) : "", userService.getUID());
-     } catch (JsonProcessingException ex) {
-     log.error(ex.toString());
-     }
-     return message;
-     }
-     */
+
+    private boolean isMessageForCurrentConversation(Message message) {
+        return appModel.getCurrentConversationId().equals(message.getConversationId());
+    }
+
+    private long getLocalPeerId() {
+        return appModel.getProfile().getUserInfo().getPeerId();
+    }
 
     @Override
     public void handleMessage(String string) {
@@ -112,6 +105,7 @@ public class NetworkServiceImpl implements NetworkService {
         if (incomingMessage != null) {
             try {
                 messageParser.read(incomingMessage);
+                // don't remove this setting, user may change, so localPeerId too
                 messageParser.setFromPeerId(getLocalPeerId());
                 Command command = null;
                 // searching which command to execute following message type
@@ -121,9 +115,10 @@ public class NetworkServiceImpl implements NetworkService {
                     case MUSIC_CATALOG:
                         break;
                     case TAG_GET_MAP:
-                        // nothing relative to local UI, no need to check conversation ID
+                        // nothing relative to local UI, no need to check conversation ID, but we have to forward it
                         Peer destinationPeer = messageParser.getSource();
                         sendTagMapCommand.setPeer(destinationPeer);
+                        sendTagMapCommand.setConversationId(messageParser.getConversationId());
                         command = sendTagMapCommand;
                         break;
                     case TAG_MAP:
@@ -192,20 +187,20 @@ public class NetworkServiceImpl implements NetworkService {
 
     @Override
     public void sendBroadcastGetTagMap() {
-        Message message = messageParser.write(MessageType.TAG_GET_MAP, new Object[][]{});
+        Message message = messageParser.write(MessageType.TAG_GET_MAP, new Object[][]{{Message.CONVERSATION_ID, appModel.getCurrentConversationId()}});
         sendBroadcast(message);
     }
 
     @Override
-    public void sendUnicastTagMap(Peer peer, TagMap tagMap) {
-        Message message = messageParser.write(MessageType.TAG_MAP, new Object[][]{{Message.TAG_MAP, tagMap}});
-        sendBroadcast(message);
+    public void sendUnicastTagMap(Peer peer, Long conversationId, TagMap tagMap) {
+        Message message = messageParser.write(MessageType.TAG_MAP, new Object[][]{{Message.CONVERSATION_ID, conversationId}, {Message.TAG_MAP, tagMap}});
+        sendUnicast(message, peer);
     }
 
     @Override
     public void addComment(Peer peer, Music music, String comment) {
-        Message message = messageParser.write(MessageType.COMMENT_ADD, new Object[][]{{Message.OWNER_PEER_ID, peer.getId()}, {Message.AUTHOR_PEER_ID, getLocalPeerId()}, {Message.MUSIC_ID, music.getId()}, {Message.COMMENT, comment}});
-        sendUnicast(message, peer);
+        // Message message = messageParser.write(MessageType.COMMENT_ADD, new Object[][]{{Message.OWNER_PEER_ID, peer.getId()}, {Message.AUTHOR_PEER_ID, getLocalPeerId()}, {Message.MUSIC_ID, music.getId()}, {Message.COMMENT, comment}});
+        // sendUnicast(message, peer);
     }
 
     @Override
@@ -267,13 +262,4 @@ public class NetworkServiceImpl implements NetworkService {
     public void disconnectionBroadcast() {
         log.warn("Not supported yet.");
     }
-
-    private boolean isMessageForCurrentConversation(Message message) {
-        return appModel.getCurrentConversationId().equals(message.getConversationId());
-    }
-
-    private long getLocalPeerId() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
 }

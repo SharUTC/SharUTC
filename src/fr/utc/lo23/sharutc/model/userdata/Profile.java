@@ -8,33 +8,17 @@ import java.io.Serializable;
 public class Profile implements Serializable {
 
     private static final long serialVersionUID = 4883249865688142273L;
-    private Long mMtimeStampProfile;
     private KnownPeerList mKnownPeerList;
     private Contacts mContacts;
     private Categories mCategories;
     private UserInfo mUserInfo;
     private Long counter;
+
     /**
      *
      */
     public Profile() {
         counter = 0l;
-    }
-
-    /**
-     *
-     * @return
-     */
-    public Long getTimeStampProfile() {
-        return mMtimeStampProfile;
-    }
-
-    /**
-     *
-     * @param timeStampProfile
-     */
-    public void setTimeStampProfile(Long timeStampProfile) {
-        this.mMtimeStampProfile = timeStampProfile;
     }
 
     /**

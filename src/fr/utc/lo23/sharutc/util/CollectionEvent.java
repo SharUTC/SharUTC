@@ -6,7 +6,7 @@ import java.util.EventObject;
  * Type of event notified when an item is added or deleted from a list.
  * <code>T</code> is the type of item stored in the collection.
  *
- * @param <T> 
+ * @param <T>
  */
 public class CollectionEvent<T> extends EventObject {
 
@@ -17,9 +17,10 @@ public class CollectionEvent<T> extends EventObject {
 
     /**
      * Creates an event for an item that has no index.
-     * @param source 
-     * @param item 
-     * @param type 
+     *
+     * @param source
+     * @param item
+     * @param type
      */
     public CollectionEvent(Object source, T item, Type type) {
         this(source, item, -1, type);
@@ -27,10 +28,11 @@ public class CollectionEvent<T> extends EventObject {
 
     /**
      * Creates an event for an item with its index.
-     * @param source 
+     *
+     * @param source
      * @param type
-     * @param item 
-     * @param index  
+     * @param item
+     * @param index
      */
     public CollectionEvent(Object source, T item, int index, Type type) {
         super(source);
@@ -41,7 +43,8 @@ public class CollectionEvent<T> extends EventObject {
 
     /**
      * Returns the added or deleted item.
-     * @return 
+     *
+     * @return
      */
     public T getItem() {
         return this.item;
@@ -50,7 +53,8 @@ public class CollectionEvent<T> extends EventObject {
     /**
      * Returns the index of the item in collection or -1 if this index is
      * unknown.
-     * @return 
+     *
+     * @return
      */
     public int getIndex() {
         return this.index;
@@ -58,7 +62,8 @@ public class CollectionEvent<T> extends EventObject {
 
     /**
      * Returns the type of event.
-     * @return 
+     *
+     * @return
      */
     public Type getType() {
         return this.type;

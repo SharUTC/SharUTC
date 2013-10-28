@@ -7,22 +7,22 @@ import java.io.Serializable;
 
 /**
  *
-
+ *
  */
 public class Score implements Serializable {
-    
+
     private static final long serialVersionUID = 8217480208364879598L;
     @JsonIgnore
     private PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
     private Integer value;
     private Long peerId;
-    
+
     /**
      *
      */
     public Score() {
     }
-    
+
     /**
      *
      * @param value
@@ -32,7 +32,7 @@ public class Score implements Serializable {
         this.value = value;
         this.peerId = peerId;
     }
-    
+
     /**
      *
      * @return
@@ -40,7 +40,7 @@ public class Score implements Serializable {
     public Integer getValue() {
         return value;
     }
-    
+
     /**
      *
      * @param value
@@ -50,7 +50,7 @@ public class Score implements Serializable {
         this.value = value;
         propertyChangeSupport.firePropertyChange(Property.VALUE.name(), oldValue, value);
     }
-    
+
     /**
      *
      * @return
@@ -58,7 +58,7 @@ public class Score implements Serializable {
     public Long getPeerId() {
         return peerId;
     }
-    
+
     /**
      *
      * @param peerId
@@ -66,7 +66,7 @@ public class Score implements Serializable {
     public void setPeerId(Long peerId) {
         this.peerId = peerId;
     }
-    
+
     /**
      *
      * @param listener
@@ -74,7 +74,7 @@ public class Score implements Serializable {
     public void addPropertyChangeListener(PropertyChangeListener listener) {
         propertyChangeSupport.addPropertyChangeListener(listener);
     }
-    
+
     /**
      *
      * @param listener
@@ -82,12 +82,12 @@ public class Score implements Serializable {
     public void removePropertyChangeListener(PropertyChangeListener listener) {
         propertyChangeSupport.removePropertyChangeListener(listener);
     }
-    
+
     /**
      *
      */
     public enum Property {
-        
+
         /**
          *
          */

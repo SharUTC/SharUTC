@@ -37,7 +37,6 @@ public class Message {
      */
     public final static String TAG_MAP = "TAG_MAP";
     // more...
-
     /**
      * MessageType helps to read the content of the message
      */

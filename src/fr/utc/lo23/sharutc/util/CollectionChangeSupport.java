@@ -6,7 +6,8 @@ import java.util.List;
 /**
  * A helper class for {@link CollectionListener CollectionListener} management.
  * <code>T</code> is the type of item stored in the collection.
- * @param <T> 
+ *
+ * @param <T>
  */
 public class CollectionChangeSupport<T> {
 
@@ -15,7 +16,8 @@ public class CollectionChangeSupport<T> {
 
     /**
      * Creates a collection change support.
-     * @param source 
+     *
+     * @param source
      */
     public CollectionChangeSupport(Object source) {
         this.source = source;
@@ -26,7 +28,8 @@ public class CollectionChangeSupport<T> {
      * Adds the
      * <code>listener</code> in parameter to the list of listeners that may be
      * notified.
-     * @param listener 
+     *
+     * @param listener
      */
     public void addCollectionListener(CollectionChangeListener<T> listener) {
         this.collectionListeners.add(listener);
@@ -36,7 +39,8 @@ public class CollectionChangeSupport<T> {
      * Removes the
      * <code>listener</code> in parameter to the list of listeners that may be
      * notified.
-     * @param listener 
+     *
+     * @param listener
      */
     public void removeCollectionListener(CollectionChangeListener<T> listener) {
         this.collectionListeners.remove(listener);
@@ -45,8 +49,9 @@ public class CollectionChangeSupport<T> {
     /**
      * Fires a collection event about
      * <code>item</code>.
+     *
      * @param item
-     * @param eventType  
+     * @param eventType
      */
     public void fireCollectionChanged(T item, CollectionEvent.Type eventType) {
         fireCollectionChanged(item, -1, eventType);
@@ -56,9 +61,10 @@ public class CollectionChangeSupport<T> {
      * Fires a collection event about
      * <code>item</code> at a given
      * <code>index</code>.
-     * @param item 
+     *
+     * @param item
      * @param eventType
-     * @param index  
+     * @param index
      */
     @SuppressWarnings("unchecked")
     public void fireCollectionChanged(T item, int index,

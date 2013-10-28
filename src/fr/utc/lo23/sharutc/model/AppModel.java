@@ -69,7 +69,7 @@ public interface AppModel {
     /**
      *
      */
-    public void incrementConversationId();
+    public Long getNextConversationId();
 
     /**
      *

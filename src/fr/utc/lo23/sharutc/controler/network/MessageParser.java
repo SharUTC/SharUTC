@@ -40,4 +40,10 @@ public interface MessageParser {
      * @param localPeerId
      */
     public void setFromPeerId(long localPeerId);
+
+    /**
+     *
+     * @return
+     */
+    public Long getConversationId();
 }

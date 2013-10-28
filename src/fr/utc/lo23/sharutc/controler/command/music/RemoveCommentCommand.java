@@ -8,7 +8,7 @@ import fr.utc.lo23.sharutc.model.userdata.Peer;
  *
  */
 public interface RemoveCommentCommand extends Command {
-    
+
     /**
      *
      * @return
@@ -34,14 +34,14 @@ public interface RemoveCommentCommand extends Command {
     public void setMusic(Music music);
 
     /**
-     * 
-     * @return 
+     *
+     * @return
      */
     public int getCommentId();
 
     /**
-     * 
-     * @param commentId 
+     *
+     * @param commentId
      */
     public void setCommentId(int commentId);
 }

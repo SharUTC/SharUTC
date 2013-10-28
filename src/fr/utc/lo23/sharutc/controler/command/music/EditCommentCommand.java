@@ -58,14 +58,14 @@ public interface EditCommentCommand extends Command {
     public void setComment(String comment);
 
     /**
-     * 
-     * @return 
+     *
+     * @return
      */
     public int getCommentId();
 
     /**
-     * 
-     * @param commentId 
+     *
+     * @param commentId
      */
     public void setCommentId(int commentId);
 }

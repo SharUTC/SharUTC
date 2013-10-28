@@ -27,7 +27,7 @@ public interface MusicService {
 
     /**
      *
-     * @param peer 
+     * @param peer
      * @param catalog
      */
     public void integrateRemoteCatalog(Peer peer, Catalog catalog);
@@ -60,7 +60,7 @@ public interface MusicService {
 
     /**
      *
-     * @param peer 
+     * @param peer
      * @param music
      * @param comment
      */
@@ -68,7 +68,7 @@ public interface MusicService {
 
     /**
      *
-     * @param peer 
+     * @param peer
      * @param music
      * @param comment
      * @param commentIndex
@@ -77,7 +77,7 @@ public interface MusicService {
 
     /**
      *
-     * @param peer 
+     * @param peer
      * @param music
      * @param commentIndex
      */
@@ -85,7 +85,7 @@ public interface MusicService {
 
     /**
      *
-     * @param peer 
+     * @param peer
      * @param music
      * @param score
      */
@@ -93,7 +93,7 @@ public interface MusicService {
 
     /**
      *
-     * @param peer 
+     * @param peer
      * @param music
      */
     public void unsetScore(Peer peer, Music music);
