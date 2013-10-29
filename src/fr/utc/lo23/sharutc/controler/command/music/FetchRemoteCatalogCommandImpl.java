@@ -5,40 +5,38 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- *
+ * {@inheritDoc}
  */
 public class FetchRemoteCatalogCommandImpl implements FetchRemoteCatalogCommand {
 
     private static final Logger log = LoggerFactory
             .getLogger(FetchRemoteCatalogCommandImpl.class);
-    private Peer peer;
+    private Peer mPeer;
 
     /**
-     *
+     * {@inheritDoc}
      */
     public FetchRemoteCatalogCommandImpl() {
     }
 
     /**
-     *
-     * @return
+     * {@inheritDoc}
      */
     @Override
     public Peer getPeer() {
-        return peer;
+        return mPeer;
     }
 
     /**
-     *
-     * @param peer
+     * {@inheritDoc}
      */
     @Override
     public void setPeer(Peer peer) {
-        this.peer = peer;
+        this.mPeer = peer;
     }
 
     /**
-     *
+     * {@inheritDoc}
      */
     @Override
     public void execute() {

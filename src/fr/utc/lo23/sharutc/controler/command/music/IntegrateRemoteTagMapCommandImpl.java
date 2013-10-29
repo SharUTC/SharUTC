@@ -7,52 +7,45 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Merge TagMap received from Peers
+ * {@inheritDoc}
  */
 public class IntegrateRemoteTagMapCommandImpl implements IntegrateRemoteTagMapCommand {
 
     private static final Logger log = LoggerFactory
             .getLogger(IntegrateRemoteTagMapCommandImpl.class);
     private final AppModel appModel;
-    private TagMap tagMap;
+    private TagMap mTagMap;
 
-    /**
-     * AppModel is injected
-     *
-     * @param appModel the local instance of AppModel
-     */
     @Inject
     public IntegrateRemoteTagMapCommandImpl(AppModel appModel) {
         this.appModel = appModel;
     }
 
     /**
-     *
-     * @return the TagMap received from a peer
+     * {@inheritDoc}
      */
     @Override
     public TagMap getTagMap() {
-        return tagMap;
+        return mTagMap;
     }
 
     /**
-     *
-     * @param tagMap the TagMap received from a peer
+     * {@inheritDoc}
      */
     @Override
     public void setTagMap(TagMap tagMap) {
-        this.tagMap = tagMap;
+        this.mTagMap = tagMap;
     }
 
     /**
-     * Merge TagMap received from Peers
+     * {@inheritDoc}
      */
     @Override
     public void execute() {
         log.info("IntegrateRemoteTagMapCommand ...");
 
         // merging remote and local TagMap in local TagMap
-        appModel.getNetworkTagMap().merge(tagMap);
+        appModel.getNetworkTagMap().merge(mTagMap);
 
         log.info("IntegrateRemoteTagMapCommand DONE");
     }

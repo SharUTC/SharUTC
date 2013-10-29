@@ -7,40 +7,38 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- *
+ * {@inheritDoc}
  */
 public class RemoveFromLocalCatalogCommandImpl implements RemoveFromLocalCatalogCommand {
 
     private static final Logger log = LoggerFactory
             .getLogger(RemoveFromLocalCatalogCommandImpl.class);
-    private Collection<Music> musics;
+    private Collection<Music> mMusics;
 
     /**
-     *
+     * {@inheritDoc}
      */
     public RemoveFromLocalCatalogCommandImpl() {
     }
 
     /**
-     *
-     * @return
+     * {@inheritDoc}
      */
     @Override
     public Collection<Music> getMusics() {
-        return Collections.unmodifiableCollection(musics);
+        return Collections.unmodifiableCollection(mMusics);
     }
 
     /**
-     *
-     * @param musics
+     * {@inheritDoc}
      */
     @Override
     public void setMusics(Collection<Music> musics) {
-        this.musics = musics;
+        this.mMusics = musics;
     }
 
     /**
-     *
+     * {@inheritDoc}
      */
     @Override
     public void execute() {

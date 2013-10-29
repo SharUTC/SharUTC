@@ -440,7 +440,15 @@ public class Music implements Serializable {
     }
 
     public void addTag(String tag) {
-        mTags.add(tag);
+        if (mTags.add(tag)) {
+            propertyChangeSupport.firePropertyChange(Property.TAGS.name(), null, tag);
+        }
+    }
+
+    public void removeTag(String tag) {
+        if (mTags.remove(tag)) {
+            propertyChangeSupport.firePropertyChange(Property.TAGS.name(), tag, null);
+        }
     }
 
     /**
@@ -479,6 +487,10 @@ public class Music implements Serializable {
         /**
          *
          */
-        YEAR
+        YEAR,
+        /**
+         *
+         */
+        TAGS
     }
 }

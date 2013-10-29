@@ -5,59 +5,55 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- *
+ * {@inheritDoc}
  */
 public class IntegrateRemoteCatalogCommandImpl implements IntegrateRemoteCatalogCommand {
 
     private static final Logger log = LoggerFactory
             .getLogger(IntegrateRemoteCatalogCommandImpl.class);
-    private Catalog catalog;
-    private Long peerId;
+    private Catalog mCatalog;
+    private Long mPeerId;
 
     /**
-     *
+     * {@inheritDoc}
      */
     public IntegrateRemoteCatalogCommandImpl() {
     }
 
     /**
-     *
-     * @return
+     * {@inheritDoc}
      */
     @Override
     public Catalog getCatalog() {
-        return catalog;
+        return mCatalog;
     }
 
     /**
-     *
-     * @param catalog
+     * {@inheritDoc}
      */
     @Override
     public void setCatalog(Catalog catalog) {
-        this.catalog = catalog;
+        this.mCatalog = catalog;
     }
 
     /**
-     *
-     * @return
+     * {@inheritDoc}
      */
     @Override
     public Long getPeerId() {
-        return peerId;
+        return mPeerId;
     }
 
     /**
-     *
-     * @param peerId
+     * {@inheritDoc}
      */
     @Override
     public void setPeerId(Long peerId) {
-        this.peerId = peerId;
+        this.mPeerId = peerId;
     }
 
     /**
-     *
+     * {@inheritDoc}
      */
     @Override
     public void execute() {

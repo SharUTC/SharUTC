@@ -6,70 +6,72 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- *
+ * {@inheritDoc}
  */
 public class RemoveCommentCommandImpl implements RemoveCommentCommand {
 
     private static final Logger log = LoggerFactory
             .getLogger(RemoveCommentCommandImpl.class);
-    private Peer peer;
-    private Music music;
-    private int commentId;
+    private Peer mPeer;
+    private Music mMusic;
+    private int mCommentId;
 
     /**
-     *
+     * {@inheritDoc}
      */
     public RemoveCommentCommandImpl() {
     }
 
     /**
-     *
-     * @return
+     * {@inheritDoc}
      */
     @Override
     public Peer getPeer() {
-        return peer;
+        return mPeer;
     }
 
     /**
-     *
-     * @param peer
+     * {@inheritDoc}
      */
     @Override
     public void setPeer(Peer peer) {
-        this.peer = peer;
+        this.mPeer = peer;
     }
 
     /**
-     *
-     * @return
+     * {@inheritDoc}
      */
     @Override
     public Music getMusic() {
-        return music;
+        return mMusic;
     }
 
     /**
-     *
-     * @param music
+     * {@inheritDoc}
      */
     @Override
     public void setMusic(Music music) {
-        this.music = music;
-    }
-
-    @Override
-    public int getCommentId() {
-        return commentId;
-    }
-
-    @Override
-    public void setCommentId(int commentId) {
-        this.commentId = commentId;
+        this.mMusic = music;
     }
 
     /**
-     *
+     * {@inheritDoc}
+     */
+    @Override
+    public int getCommentId() {
+        return mCommentId;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void setCommentId(int commentId) {
+        this.mCommentId = commentId;
+    }
+
+    /**
+     * {@inheritDoc}
      */
     @Override
     public void execute() {

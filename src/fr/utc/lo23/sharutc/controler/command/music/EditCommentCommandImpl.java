@@ -6,108 +6,106 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- *
+ * {@inheritDoc}
  */
 public class EditCommentCommandImpl implements EditCommentCommand {
 
     private static final Logger log = LoggerFactory
             .getLogger(EditCommentCommandImpl.class);
-    private Peer ownerPeer;
-    private Peer authorPeer;
-    private Music music;
-    private String comment;
-    private int commentId;
+    private Peer mOwnerPeer;
+    private Peer mAuthorPeer;
+    private Music mMusic;
+    private String mComment;
+    private int mCommentId;
 
     /**
-     *
+     * {@inheritDoc}
      */
     public EditCommentCommandImpl() {
     }
 
     /**
-     *
-     * @return
+     * {@inheritDoc}
      */
     @Override
     public Peer getOwnerPeer() {
-        return ownerPeer;
+        return mOwnerPeer;
     }
 
     /**
-     *
-     * @param ownerPeer
+     * {@inheritDoc}
      */
     @Override
     public void setOwnerPeer(Peer ownerPeer) {
-        this.ownerPeer = ownerPeer;
+        this.mOwnerPeer = ownerPeer;
     }
 
     /**
-     *
-     * @return
+     * {@inheritDoc}
      */
     @Override
     public Peer getAuthorPeer() {
-        return authorPeer;
+        return mAuthorPeer;
     }
 
     /**
-     *
-     * @param authorPeer
+     * {@inheritDoc}
      */
     @Override
     public void setAuthorPeer(Peer authorPeer) {
-        this.authorPeer = authorPeer;
+        this.mAuthorPeer = authorPeer;
     }
 
     /**
-     *
-     * @return
+     * {@inheritDoc}
      */
     @Override
     public Music getMusic() {
-        return music;
+        return mMusic;
     }
 
     /**
-     *
-     * @param music
+     * {@inheritDoc}
      */
     @Override
     public void setMusic(Music music) {
-        this.music = music;
+        this.mMusic = music;
     }
 
     /**
-     *
-     * @return
+     * {@inheritDoc}
      */
     @Override
     public String getComment() {
-        return comment;
+        return mComment;
     }
 
     /**
-     *
-     * @param comment
+     * {@inheritDoc}
      */
     @Override
     public void setComment(String comment) {
-        this.comment = comment;
-    }
-
-    @Override
-    public int getCommentId() {
-        return commentId;
-    }
-
-    @Override
-    public void setCommentId(int commentId) {
-        this.commentId = commentId;
+        this.mComment = comment;
     }
 
     /**
-     *
+     * {@inheritDoc}
+     */
+    @Override
+    public int getCommentId() {
+        return mCommentId;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void setCommentId(int commentId) {
+        this.mCommentId = commentId;
+    }
+
+    /**
+     * {@inheritDoc}
      */
     @Override
     public void execute() {

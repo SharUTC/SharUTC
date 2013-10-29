@@ -8,8 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Clean the network TagMap, add local music tags and ask other peers's TagMap
- * in a broadcast request uses a new CONVERSATION ID
+ * {@inheritDoc}
  */
 public class ShowTagMapCommandImpl implements ShowTagMapCommand {
 
@@ -18,12 +17,6 @@ public class ShowTagMapCommandImpl implements ShowTagMapCommand {
     private final NetworkService networkService;
     private final AppModel appModel;
 
-    /**
-     * AppModel is injected
-     *
-     * @param appModel the local instance of AppModel
-     * @param networkService the local instance of NetworkService
-     */
     @Inject
     public ShowTagMapCommandImpl(AppModel appModel, NetworkService networkService) {
         this.appModel = appModel;
@@ -31,8 +24,7 @@ public class ShowTagMapCommandImpl implements ShowTagMapCommand {
     }
 
     /**
-     * Clean the network TagMap, add local music tags and ask other peers's
-     * TagMap in a broadcast request uses a new CONVERSATION ID
+     * {@inheritDoc}
      */
     @Override
     public void execute() {

@@ -1,66 +1,66 @@
 package fr.utc.lo23.sharutc.controler.command.music;
 
+import com.google.inject.Inject;
+import fr.utc.lo23.sharutc.model.AppModel;
 import fr.utc.lo23.sharutc.model.domain.Music;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- *
+ * {@inheritDoc}
  */
 public class AddTagCommandImpl implements AddTagCommand {
 
     private static final Logger log = LoggerFactory
             .getLogger(AddTagCommandImpl.class);
-    private Music music;
-    private String tag;
+    private final AppModel appModel;
+    private Music mMusic;
+    private String mTag;
 
-    /**
-     *
-     */
-    public AddTagCommandImpl() {
+    @Inject
+    public AddTagCommandImpl(AppModel appModel) {
+        this.appModel = appModel;
     }
 
     /**
-     *
-     * @return
+     * {@inheritDoc}
      */
     @Override
     public Music getMusic() {
-        return music;
+        return mMusic;
     }
 
     /**
-     *
-     * @param music
+     * {@inheritDoc}
      */
     @Override
     public void setMusic(Music music) {
-        this.music = music;
+        this.mMusic = music;
     }
 
     /**
-     *
-     * @return
+     * {@inheritDoc}
      */
     @Override
     public String getTag() {
-        return tag;
+        return mTag;
     }
 
     /**
-     *
-     * @param tag
+     * {@inheritDoc}
      */
     @Override
     public void setTag(String tag) {
-        this.tag = tag;
+        this.mTag = tag;
     }
 
     /**
-     *
+     * {@inheritDoc}
      */
     @Override
     public void execute() {
-        log.warn("Not supported yet.");
+        log.info("AddTagCommand ...");
+        mMusic.addTag(mTag);
+        log.info("AddTagCommand DONE");
     }
 }
