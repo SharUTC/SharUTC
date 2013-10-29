@@ -6,59 +6,55 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- *
+ * {@inheritDoc}
  */
 public class SendCatalogCommandImpl implements SendCatalogCommand {
 
     private static final Logger log = LoggerFactory
             .getLogger(SendCatalogCommandImpl.class);
-    private Peer peer;
-    private Catalog catalog;
+    private Peer mPeer;
+    private Catalog mCatalog;
 
     /**
-     *
+     * {@inheritDoc}
      */
     public SendCatalogCommandImpl() {
     }
 
     /**
-     *
-     * @return
+     * {@inheritDoc}
      */
     @Override
     public Peer getPeer() {
-        return peer;
+        return mPeer;
     }
 
     /**
-     *
-     * @param peer
+     * {@inheritDoc}
      */
     @Override
     public void setPeer(Peer peer) {
-        this.peer = peer;
+        this.mPeer = peer;
     }
 
     /**
-     *
-     * @return
+     * {@inheritDoc}
      */
     @Override
     public Catalog getCatalog() {
-        return catalog;
+        return mCatalog;
     }
 
     /**
-     *
-     * @param catalog
+     * {@inheritDoc}
      */
     @Override
     public void setCatalog(Catalog catalog) {
-        this.catalog = catalog;
+        this.mCatalog = catalog;
     }
 
     /**
-     *
+     * {@inheritDoc}
      */
     @Override
     public void execute() {

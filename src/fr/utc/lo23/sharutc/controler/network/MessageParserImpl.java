@@ -11,8 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- *
- * @author Arnaud
+ * {@inheritDoc}
  */
 public class MessageParserImpl implements MessageParser {
 
@@ -26,8 +25,7 @@ public class MessageParserImpl implements MessageParser {
     private long fromPeerId;
 
     /**
-     *
-     * @param fromPeerId
+     * {@inheritDoc}
      */
     @Override
     public void setFromPeerId(long fromPeerId) {
@@ -35,8 +33,7 @@ public class MessageParserImpl implements MessageParser {
     }
 
     /**
-     *
-     * @param message
+     * {@inheritDoc}
      */
     @Override
     public void read(Message message) {
@@ -60,8 +57,7 @@ public class MessageParserImpl implements MessageParser {
     }
 
     /**
-     *
-     * @return
+     * {@inheritDoc}
      */
     @Override
     public Long getConversationId() {
@@ -69,8 +65,7 @@ public class MessageParserImpl implements MessageParser {
     }
 
     /**
-     *
-     * @return
+     * {@inheritDoc}
      */
     @Override
     public Peer getSource() {
@@ -83,9 +78,7 @@ public class MessageParserImpl implements MessageParser {
     }
 
     /**
-     *
-     * @param field
-     * @return
+     * {@inheritDoc}
      */
     @Override
     public Object getValue(String field) {
@@ -98,10 +91,7 @@ public class MessageParserImpl implements MessageParser {
     }
 
     /**
-     *
-     * @param messageType
-     * @param content
-     * @return
+     * {@inheritDoc}
      */
     @Override
     public Message write(MessageType messageType, Object[][] content) {

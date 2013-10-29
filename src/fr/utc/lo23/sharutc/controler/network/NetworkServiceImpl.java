@@ -20,10 +20,14 @@ public class NetworkServiceImpl implements NetworkService {
 
     private static final Logger log = LoggerFactory
             .getLogger(NetworkServiceImpl.class);
+    private final AppModel appModel;
+    private final MessageParser messageParser;
+
     @Inject
-    private AppModel appModel;
-    @Inject
-    private MessageParser messageParser;
+    public NetworkServiceImpl(AppModel appModel, MessageParser messageParser) {
+        this.appModel = appModel;
+        this.messageParser = messageParser;
+    }
 
     /**
      * {@inheritDoc}
@@ -50,14 +54,14 @@ public class NetworkServiceImpl implements NetworkService {
     }
 
     /**
-     *
+     * {inheritDoc}
      */
     private void sendBroadcast(Message message) {
         log.warn("sendBroadcast - Not supported yet.");
     }
 
     /**
-     *
+     * {inheritDoc}
      */
     private void sendUnicast(Message message, Peer peer) {
         log.warn("sendUnicast - Not supported yet.");

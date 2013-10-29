@@ -12,7 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- *
+ * {@inheritDoc}
  */
 @Singleton
 public class UserServiceImpl implements UserService {
@@ -26,71 +26,113 @@ public class UserServiceImpl implements UserService {
         this.appModel = appModel;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void addContact(Peer peer) {
         log.warn("Not supported yet.");
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void deleteContact(Contact contact) {
         log.warn("Not supported yet.");
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void createCategory(String categoryName) {
         log.warn("Not supported yet.");
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void deleteCategory(Category category) {
         log.warn("Not supported yet.");
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void addContactToCategory(Peer peer, Category category) {
         log.warn("Not supported yet.");
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void removeContactFromCategory(Peer peer, Category category) {
         log.warn("Not supported yet.");
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void manageGroupRights(Category category, Music music, boolean readInfo, boolean listen, boolean noteAndComment) {
         log.warn("Not supported yet.");
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void createProfile(UserInfo userInfo) {
         log.warn("Not supported yet.");
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void loadUserProfileFiles(String path) {
         log.warn("Not supported yet.");
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void connectionRequest(String login, String password) {
         log.warn("Not supported yet.");
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void updateConnectedPeers(UserInfo userInfo) {
         log.warn("Not supported yet.");
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void removeFromConnectedPeers(long peerId) {
         log.warn("Not supported yet.");
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void saveUserProfileFiles() {
         log.warn("Not supported yet.");
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void integrateHeartbeat(UserInfo userinfo) {
         log.warn("Not supported yet.");

@@ -9,7 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Compute local TagMap and send it to required peer
+ * {@inheritDoc}
  */
 public class SendTagMapCommandImpl implements SendTagMapCommand {
 
@@ -17,15 +17,9 @@ public class SendTagMapCommandImpl implements SendTagMapCommand {
             .getLogger(SendTagMapCommandImpl.class);
     private final NetworkService networkService;
     private final AppModel appModel;
-    private Peer peer;
-    private Long conversationId;
+    private Peer mPeer;
+    private Long mConversationId;
 
-    /**
-     * AppModel is injected
-     *
-     * @param appModel the local instance of AppModel
-     * @param networkService the local instance of NetworkService
-     */
     @Inject
     public SendTagMapCommandImpl(AppModel appModel, NetworkService networkService) {
         this.appModel = appModel;
@@ -33,35 +27,39 @@ public class SendTagMapCommandImpl implements SendTagMapCommand {
     }
 
     /**
-     *
-     * @return the destination Peer
+     * {@inheritDoc}
      */
     @Override
     public Peer getPeer() {
-        return peer;
+        return mPeer;
     }
 
     /**
-     *
-     * @param peer the destination Peer
+     * {@inheritDoc}
      */
     @Override
     public void setPeer(Peer peer) {
-        this.peer = peer;
-    }
-
-    @Override
-    public Long getConversationId() {
-        return conversationId;
-    }
-
-    @Override
-    public void setConversationId(Long conversationId) {
-        this.conversationId = conversationId;
+        this.mPeer = peer;
     }
 
     /**
-     * Compute local TagMap and send it to required peer
+     * {@inheritDoc}
+     */
+    @Override
+    public Long getConversationId() {
+        return mConversationId;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void setConversationId(Long conversationId) {
+        this.mConversationId = conversationId;
+    }
+
+    /**
+     * {@inheritDoc}
      */
     @Override
     public void execute() {
@@ -71,7 +69,7 @@ public class SendTagMapCommandImpl implements SendTagMapCommand {
         TagMap tagMap = new TagMap(appModel.getLocalCatalog());
 
         // sending TagMap response in unicast
-        networkService.sendUnicastTagMap(peer, conversationId, tagMap);
+        networkService.sendUnicastTagMap(mPeer, mConversationId, tagMap);
 
         log.info("SendTagMapCommand DONE");
     }

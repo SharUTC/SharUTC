@@ -6,7 +6,9 @@ import java.beans.PropertyChangeSupport;
 import java.io.Serializable;
 
 /**
- *
+ * Users may attach a score to a music. Only one instance per music and user is
+ * possible. Score value goes between 1 and 5, a score of 0 leads to removing a
+ * Score instance from the music (at command/service level)
  *
  */
 public class Score implements Serializable {
@@ -14,8 +16,14 @@ public class Score implements Serializable {
     private static final long serialVersionUID = 8217480208364879598L;
     @JsonIgnore
     private PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
-    private Integer value;
-    private Long peerId;
+    /**
+     * the score value
+     */
+    private Integer mValue;
+    /**
+     * the id of the peer that added this score
+     */
+    private Long mPeerId;
 
     /**
      *
@@ -25,59 +33,67 @@ public class Score implements Serializable {
 
     /**
      *
-     * @param value
-     * @param peerId
+     * @param value the score value, between 1 and 5
+     * @param peerId the id of the peer who added this score
      */
     public Score(Integer value, Long peerId) {
-        this.value = value;
-        this.peerId = peerId;
+        this.mValue = value;
+        this.mPeerId = peerId;
     }
 
     /**
+     * Return the score value, between 1 and 5
      *
-     * @return
+     * @return the score value, between 1 and 5
      */
     public Integer getValue() {
-        return value;
+        return mValue;
     }
 
     /**
+     * Set the score value, between 1 and 5
      *
-     * @param value
+     * @param value the score value, between 1 and 5
      */
     public void setValue(Integer value) {
-        Integer oldValue = this.value;
-        this.value = value;
+        Integer oldValue = this.mValue;
+        this.mValue = value;
         propertyChangeSupport.firePropertyChange(Property.VALUE.name(), oldValue, value);
     }
 
     /**
+     * Return the id of the peer who added this score
      *
-     * @return
+     * @return the id of the peer who added this score
      */
     public Long getPeerId() {
-        return peerId;
+        return mPeerId;
     }
 
     /**
+     * Set the id of the peer who added this score
      *
-     * @param peerId
+     * @param peerId the id of the peer who added this score
      */
     public void setPeerId(Long peerId) {
-        this.peerId = peerId;
+        this.mPeerId = peerId;
     }
 
     /**
+     * Add the listener in parameter to the list of listeners that may be
+     * notified
      *
-     * @param listener
+     * @param listener the listener to add
      */
     public void addPropertyChangeListener(PropertyChangeListener listener) {
         propertyChangeSupport.addPropertyChangeListener(listener);
     }
 
     /**
+     * Removes the listener in parameter to the list of listeners that may be
+     * notified
      *
-     * @param listener
+     * @param listener the listener to remove
      */
     public void removePropertyChangeListener(PropertyChangeListener listener) {
         propertyChangeSupport.removePropertyChangeListener(listener);
