@@ -41,16 +41,19 @@ public class TagMap implements Serializable {
     }
 
     /**
+     * Return the contained TagMap, don't use it directly since it won't use the
+     * PropertyChangeSupport
      *
-     * @return
+     * @return the contained TagMap as a HashMap
      */
     public HashMap<String, Integer> getMap() {
         return map;
     }
 
     /**
+     * Set the contained TagMap with a HashMap
      *
-     * @param map
+     * @param map the contained TagMap with a HashMap
      */
     public void setMap(HashMap<String, Integer> map) {
         this.map = map;
@@ -122,16 +125,20 @@ public class TagMap implements Serializable {
     }
 
     /**
+     * Add the listener in parameter to the list of listeners that may be
+     * notified
      *
-     * @param listener
+     * @param listener the listener to add
      */
     public void addPropertyChangeListener(PropertyChangeListener listener) {
         propertyChangeSupport.addPropertyChangeListener(listener);
     }
 
     /**
+     * Removes the listener in parameter to the list of listeners that may be
+     * notified
      *
-     * @param listener
+     * @param listener the listener to remove
      */
     public void removePropertyChangeListener(PropertyChangeListener listener) {
         propertyChangeSupport.removePropertyChangeListener(listener);

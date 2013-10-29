@@ -8,7 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- *
+ * {@inheritDoc}
  */
 @Singleton
 public class PlayerServiceImpl implements PlayerService {
@@ -23,8 +23,7 @@ public class PlayerServiceImpl implements PlayerService {
     }
 
     /**
-     *
-     * @param music
+     * {@inheritDoc}
      */
     @Override
     public void addToPlaylist(Music music) {
@@ -32,8 +31,7 @@ public class PlayerServiceImpl implements PlayerService {
     }
 
     /**
-     *
-     * @param music
+     * {@inheritDoc}
      */
     @Override
     public void removeFromPlaylist(Music music) {
@@ -41,8 +39,7 @@ public class PlayerServiceImpl implements PlayerService {
     }
 
     /**
-     *
-     * @param music
+     * {@inheritDoc}
      */
     @Override
     public void play(Music music) {
@@ -50,8 +47,7 @@ public class PlayerServiceImpl implements PlayerService {
     }
 
     /**
-     *
-     * @param music
+     * {@inheritDoc}
      */
     @Override
     public void updatePlaylist(Music music) {
@@ -59,7 +55,7 @@ public class PlayerServiceImpl implements PlayerService {
     }
 
     /**
-     *
+     * {@inheritDoc}
      */
     @Override
     public void play() {
@@ -67,7 +63,7 @@ public class PlayerServiceImpl implements PlayerService {
     }
 
     /**
-     *
+     * {@inheritDoc}
      */
     @Override
     public void pause() {
@@ -75,7 +71,7 @@ public class PlayerServiceImpl implements PlayerService {
     }
 
     /**
-     *
+     * {@inheritDoc}
      */
     @Override
     public void stop() {
@@ -83,7 +79,7 @@ public class PlayerServiceImpl implements PlayerService {
     }
 
     /**
-     *
+     * {@inheritDoc}
      */
     @Override
     public void next() {
@@ -91,7 +87,7 @@ public class PlayerServiceImpl implements PlayerService {
     }
 
     /**
-     *
+     * {@inheritDoc}
      */
     @Override
     public void previous() {

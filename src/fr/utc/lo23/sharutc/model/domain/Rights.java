@@ -3,16 +3,17 @@ package fr.utc.lo23.sharutc.model.domain;
 import java.io.Serializable;
 
 /**
- *
+ * Represents the 3 rights a user may have on a music. readInfo, listen,
+ * noteAndComment. A Rights instance concerns only one category and one music
  */
 public class Rights implements Serializable {
 
     private static final long serialVersionUID = -5429412462872354915L;
-    private Integer categoryId;
-    private Long musicId;
-    private Boolean mayReadInfo;
-    private Boolean mayListen;
-    private Boolean mayNoteAndComment;
+    private Integer mCategoryId;
+    private Long mMusicId;
+    private Boolean mMayReadInfo;
+    private Boolean mMayListen;
+    private Boolean mMayNoteAndComment;
 
     /**
      *
@@ -29,11 +30,11 @@ public class Rights implements Serializable {
      * @param mayNoteAndComment
      */
     public Rights(Integer categoryId, Long musicId, Boolean mayReadInfo, Boolean mayListen, Boolean mayNoteAndComment) {
-        this.categoryId = categoryId;
-        this.musicId = musicId;
-        this.mayReadInfo = mayReadInfo;
-        this.mayListen = mayListen;
-        this.mayNoteAndComment = mayNoteAndComment;
+        this.mCategoryId = categoryId;
+        this.mMusicId = musicId;
+        this.mMayReadInfo = mayReadInfo;
+        this.mMayListen = mayListen;
+        this.mMayNoteAndComment = mayNoteAndComment;
     }
 
     /**
@@ -41,7 +42,7 @@ public class Rights implements Serializable {
      * @return
      */
     public Integer getCategoryId() {
-        return categoryId;
+        return mCategoryId;
     }
 
     /**
@@ -49,7 +50,7 @@ public class Rights implements Serializable {
      * @param categoryId
      */
     public void setCategoryId(Integer categoryId) {
-        this.categoryId = categoryId;
+        this.mCategoryId = categoryId;
     }
 
     /**
@@ -57,7 +58,7 @@ public class Rights implements Serializable {
      * @return
      */
     public Long getMusicId() {
-        return musicId;
+        return mMusicId;
     }
 
     /**
@@ -65,7 +66,7 @@ public class Rights implements Serializable {
      * @param musicId
      */
     public void setMusicId(Long musicId) {
-        this.musicId = musicId;
+        this.mMusicId = musicId;
     }
 
     /**
@@ -73,7 +74,7 @@ public class Rights implements Serializable {
      * @return
      */
     public Boolean getMayReadInfo() {
-        return mayReadInfo;
+        return mMayReadInfo;
     }
 
     /**
@@ -81,7 +82,7 @@ public class Rights implements Serializable {
      * @param mayReadInfo
      */
     public void setMayReadInfo(Boolean mayReadInfo) {
-        this.mayReadInfo = mayReadInfo;
+        this.mMayReadInfo = mayReadInfo;
     }
 
     /**
@@ -89,7 +90,7 @@ public class Rights implements Serializable {
      * @return
      */
     public Boolean getMayListen() {
-        return mayListen;
+        return mMayListen;
     }
 
     /**
@@ -97,7 +98,7 @@ public class Rights implements Serializable {
      * @param mayListen
      */
     public void setMayListen(Boolean mayListen) {
-        this.mayListen = mayListen;
+        this.mMayListen = mayListen;
     }
 
     /**
@@ -105,7 +106,7 @@ public class Rights implements Serializable {
      * @return
      */
     public Boolean getMayNoteAndComment() {
-        return mayNoteAndComment;
+        return mMayNoteAndComment;
     }
 
     /**
@@ -113,6 +114,6 @@ public class Rights implements Serializable {
      * @param mayNoteAndComment
      */
     public void setMayNoteAndComment(Boolean mayNoteAndComment) {
-        this.mayNoteAndComment = mayNoteAndComment;
+        this.mMayNoteAndComment = mayNoteAndComment;
     }
 }

@@ -30,9 +30,7 @@ public class FileServiceImpl implements FileService {
     }
 
     /**
-     *
-     * @param path
-     * @param password
+     * {@inheritDoc}
      */
     @Override
     public void importFile(String path, String password) {
@@ -40,8 +38,7 @@ public class FileServiceImpl implements FileService {
     }
 
     /**
-     *
-     * @param path
+     * {@inheritDoc}
      */
     @Override
     public void writeExportFile(String path) {
@@ -49,12 +46,7 @@ public class FileServiceImpl implements FileService {
     }
 
     /**
-     * Used for reading a local mp3 file and creating a new Music, increments
-     * profile's counter If reading id3tag fails, then values are set to null
-     *
-     * @param file a mp3 file
-     * @return music whose filename equals realname
-     * @throws Exception if file is null or not an mp3
+     * {@inheritDoc}
      */
     @Override
     public Music readFile(File file) throws Exception {
@@ -89,6 +81,14 @@ public class FileServiceImpl implements FileService {
         }
     }
 
+    /**
+     * Return true if the file extension is one of the authorized extensions,
+     * false otherwise
+     *
+     * @param file the file to check
+     * @return true if the file extension is one of the authorized extensions,
+     * false otherwise
+     */
     private boolean isMusicFile(File file) {
         for (String extension : AUTHORIZED_MUSIC_FILES) {
             if (file.getName().endsWith("." + extension)) {

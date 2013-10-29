@@ -38,6 +38,7 @@
     <!-- NETWORK -->
     <logger name="fr.utc.lo23.sharutc.controler.network.NetworkServiceMock" level="DEBUG" />
     <logger name="fr.utc.lo23.sharutc.controler.network.MessageParserImpl" level="DEBUG" />
+    <logger name="fr.utc.lo23.sharutc.controler.network.MessageHandlerImpl" level="DEBUG" />
     <logger name="fr.utc.lo23.sharutc.controler.network.Message" level="DEBUG" />
 
     <!-- APP MODEL -->
