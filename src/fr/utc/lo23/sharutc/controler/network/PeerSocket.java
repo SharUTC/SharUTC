@@ -12,7 +12,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author Tudor Luchiancenco <tudorluchy@gmail.com>
  */
-class PeerSocket implements Runnable {
+public class PeerSocket implements Runnable {
 
     /**
      *
