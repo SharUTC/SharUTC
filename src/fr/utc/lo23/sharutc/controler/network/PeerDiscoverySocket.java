@@ -27,15 +27,15 @@ public class PeerDiscoverySocket implements Runnable {
     /**
      * 
      */
-    private static final Logger mLog = LoggerFactory.getLogger(PeerDiscoverySocket.class);
+    private static final Logger log = LoggerFactory.getLogger(PeerDiscoverySocket.class);
     /**
      * 
      */
-    private Thread mThread;
+    private Thread thread;
     /**
      * 
      */
-    private boolean mThreadShouldStop = false;
+    private boolean threadShouldStop = false;
     /**
      * 
      */
@@ -64,15 +64,15 @@ public class PeerDiscoverySocket implements Runnable {
         this.mPort = port;
         this.mGroup = group;
         this.mNs = ns;
-        this.mThreadShouldStop = false;
+        this.threadShouldStop = false;
         try {
             mSocket = new MulticastSocket(mPort);
             mSocket.joinGroup(mGroup);
         } catch (IOException e) {
-            mLog.error(e.toString());
+            log.error(e.toString());
         }
         // start thread
-        mThread = new Thread(this);
+        thread = new Thread(this);
         start();
     }
     
@@ -80,14 +80,14 @@ public class PeerDiscoverySocket implements Runnable {
      * Start the thread
      */
     public void start() {
-        mThread.start();
+        thread.start();
     }
 
     /**
      * Stop the thread
      */
     public void stop() {   
-        mThreadShouldStop = true;
+        threadShouldStop = true;
     }
     
     /**
@@ -99,7 +99,7 @@ public class PeerDiscoverySocket implements Runnable {
         try {
             mSocket.send(p);
         } catch (IOException e) {
-            mLog.error(e.toString());
+            log.error(e.toString());
         }
     }
 
@@ -120,7 +120,7 @@ public class PeerDiscoverySocket implements Runnable {
         try {
             mSocket.send(p);
         } catch (IOException e) {
-            mLog.error(e.toString());
+            log.error(e.toString());
         }
     }
 
@@ -157,7 +157,7 @@ public class PeerDiscoverySocket implements Runnable {
      */
     @Override
     public void run() {
-        while (!mThreadShouldStop) {
+        while (!threadShouldStop) {
             byte[] buf = new byte[1000];
             DatagramPacket p = new DatagramPacket(buf, buf.length);
             ByteArrayInputStream baos = null;
@@ -175,20 +175,20 @@ public class PeerDiscoverySocket implements Runnable {
                 try {
                     msgReceived = (Message)oos.readObject();
                 } catch (ClassNotFoundException ex) {
-                    mLog.error(ex.toString());
+                    log.error(ex.toString());
                 }
                 // print more info
                 if (msgReceived.getFromPeerId() != null) {
                     System.out.println("Message received from peerId " + msgReceived.getFromPeerId() + ", message type = " + msgReceived.getType());
                 } else {
-                    mLog.error("Received message with peerId = null !");
+                    log.error("Received message with peerId = null !");
                 }
                 // add a new peer 
                 PeerSocket newPeer = addPeer(p, msgReceived);
                 // send personal information to the new peer
                 sendPersonalInformationToPeer(newPeer);
             } catch (IOException e) {
-                mLog.error(e.toString());
+                log.error(e.toString());
             }
         }
     }
