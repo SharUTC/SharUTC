@@ -73,20 +73,20 @@ public class PeerDiscoverySocket implements Runnable {
         }
         // start thread
         thread = new Thread(this);
-        start();
+        startThread();
     }
     
     /**
      * Start the thread
      */
-    public void start() {
+    public void startThread() {
         thread.start();
     }
 
     /**
      * Stop the thread
      */
-    public void stop() {   
+    public void stopThread() {   
         threadShouldStop = true;
     }
     
