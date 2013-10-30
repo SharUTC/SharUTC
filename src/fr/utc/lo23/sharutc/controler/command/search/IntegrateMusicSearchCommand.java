@@ -12,7 +12,7 @@ public interface IntegrateMusicSearchCommand extends Command {
      *
      * @return
      */
-    public Catalog getResultsCatalog();
+ //   public Catalog getResultsCatalog();
 
     /**
      *
