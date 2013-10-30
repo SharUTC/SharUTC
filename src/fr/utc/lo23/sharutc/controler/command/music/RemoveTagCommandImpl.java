@@ -1,5 +1,7 @@
 package fr.utc.lo23.sharutc.controler.command.music;
 
+import com.google.inject.Inject;
+import fr.utc.lo23.sharutc.controler.service.MusicService;
 import fr.utc.lo23.sharutc.model.domain.Music;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,13 +13,16 @@ public class RemoveTagCommandImpl implements RemoveTagCommand {
 
     private static final Logger log = LoggerFactory
             .getLogger(RemoveTagCommandImpl.class);
+    private final MusicService musicService;
     private Music mMusic;
     private String mTag;
 
     /**
      * {@inheritDoc}
      */
-    public RemoveTagCommandImpl() {
+    @Inject
+    public RemoveTagCommandImpl(MusicService musicService) {
+        this.musicService = musicService;
     }
 
     /**
@@ -58,7 +63,7 @@ public class RemoveTagCommandImpl implements RemoveTagCommand {
     @Override
     public void execute() {
         log.info("RemoveTagCommand ...");
-        mMusic.removeTag(mTag);
+        musicService.removeTag(mMusic, mTag);
         log.info("RemoveTagCommand DONE");
     }
 }

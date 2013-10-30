@@ -7,9 +7,12 @@ import fr.utc.lo23.sharutc.controler.command.Command;
 import fr.utc.lo23.sharutc.controler.command.music.AddCommentCommand;
 import fr.utc.lo23.sharutc.controler.command.music.IntegrateRemoteTagMapCommand;
 import fr.utc.lo23.sharutc.controler.command.music.SendTagMapCommand;
+import fr.utc.lo23.sharutc.controler.command.search.InstallRemoteMusicsCommand;
+import fr.utc.lo23.sharutc.controler.command.search.SendMusicsCommand;
 import fr.utc.lo23.sharutc.controler.service.MusicService;
 import fr.utc.lo23.sharutc.controler.service.UserService;
 import fr.utc.lo23.sharutc.model.AppModel;
+import fr.utc.lo23.sharutc.model.domain.Catalog;
 import fr.utc.lo23.sharutc.model.domain.TagMap;
 import fr.utc.lo23.sharutc.model.userdata.Peer;
 import org.slf4j.Logger;
@@ -41,6 +44,10 @@ public class MessageHandlerImpl implements MessageHandler {
     private SendTagMapCommand sendTagMapCommand;
     @Inject
     private IntegrateRemoteTagMapCommand integrateRemoteTagMapCommand;
+    @Inject
+    private SendMusicsCommand sendMusicsCommand;
+    @Inject
+    private InstallRemoteMusicsCommand installRemoteMusicsCommand;
     //@Inject
     //private AddCommentCommand addCommentCommand;
     // more...
@@ -70,16 +77,14 @@ public class MessageHandlerImpl implements MessageHandler {
                         break;
                     case TAG_GET_MAP:
                         // nothing relative to local UI, no need to check conversation ID, but we have to forward it
-                        Peer destinationPeer = messageParser.getSource();
-                        sendTagMapCommand.setPeer(destinationPeer);
+                        sendTagMapCommand.setPeer(messageParser.getSource());
                         sendTagMapCommand.setConversationId(incomingMessage.getConversationId());
                         command = sendTagMapCommand;
                         break;
                     case TAG_MAP:
                         // we must check the conversation ID, the user may have left the cloud of tags screen
                         if (isMessageForCurrentConversation(incomingMessage)) {
-                            TagMap tagMap = (TagMap) messageParser.getValue(Message.TAG_MAP);
-                            integrateRemoteTagMapCommand.setTagMap(tagMap);
+                            integrateRemoteTagMapCommand.setTagMap((TagMap) messageParser.getValue(Message.TAG_MAP));
                             command = integrateRemoteTagMapCommand;
                         }
                         break;
@@ -103,8 +108,13 @@ public class MessageHandlerImpl implements MessageHandler {
                     case MUSIC_RESULTS:
                         break;
                     case MUSIC_GET:
+                        sendMusicsCommand.setPeer(messageParser.getSource());
+                        sendMusicsCommand.setCatalog((Catalog) messageParser.getValue(Message.CATALOG));
+                        command = sendMusicsCommand;
                         break;
                     case MUSIC_INSTALL:
+                        installRemoteMusicsCommand.setCatalog((Catalog) messageParser.getValue(Message.CATALOG));
+                        command = installRemoteMusicsCommand;
                         break;
                     case MUSIC_GET_TO_PLAY:
                         break;

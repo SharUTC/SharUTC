@@ -124,14 +124,16 @@ public interface MusicService {
 
     /**
      *
-     * @param music
-     * @return
-     */
-    public Music getMusicWithFile(Music music);
-
-    /**
-     *
      * @param catalog
      */
     public void installMusics(Catalog catalog);
+
+    /**
+     * Load file into passed catalog of musics, work with the instance in
+     * parameter
+     *
+     * @param catalog the catalog containing the music files to load
+     * @return the instance of catalog with modified musics inside
+     */
+    public Catalog loadMusicFiles(Catalog catalog);
 }

@@ -37,7 +37,7 @@ public class Music implements Serializable {
      * No JsonIgnore annotation, but when searching a music, file must be set to
      * null before returning the results, file must be present for transfers
      */
-    private File mFile;
+    private Byte[] mFile;
     private Boolean mFileMissing;
     private Long mOwnerPeerId;
     private Integer mHash;
@@ -74,13 +74,13 @@ public class Music implements Serializable {
      * @param track
      * @param trackLength
      */
-    public Music(Long id, Long ownerPeerId, File file, String fileName, String title, String artist, String album, String track, Integer trackLength) {
+    public Music(Long id, Long ownerPeerId, Byte[] file, String fileName, String realName, Integer hashcode,String title, String artist, String album, String track, Integer trackLength) {
         this.mId = id;
-        this.mFileName = fileName != null ? fileName : file.getName();
-        this.mRealName = file.getName();
+        this.mFileName = fileName;
+        this.mRealName = realName;
         this.mFileMissing = false;
         this.mOwnerPeerId = ownerPeerId;
-        this.mHash = file.hashCode();
+        this.mHash = hashcode;
         this.mCategories = new Categories();
         this.mFile = file;
 
@@ -151,7 +151,7 @@ public class Music implements Serializable {
      *
      * @return
      */
-    public File getFile() {
+    public Byte[] getFile() {
         return mFile;
     }
 
@@ -159,7 +159,7 @@ public class Music implements Serializable {
      *
      * @param file
      */
-    public void setFile(File file) {
+    public void setFile(Byte[] file) {
         this.mFile = file;
     }
 

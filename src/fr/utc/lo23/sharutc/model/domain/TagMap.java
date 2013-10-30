@@ -92,23 +92,12 @@ public class TagMap implements Serializable {
      * @param occurence
      */
     public void merge(String tag, int occurence) {
-        if (tag != null) {
-            tag = tag.trim();
-            if (tag.length() > 0) {
-                tag = tag.toLowerCase();
-                tag = tag.substring(0, 1).toUpperCase() + (tag.length() > 1 ? tag.substring(1) : "");
-                int oldOccurence = map.containsKey(tag) ? (map.get(tag).intValue()) : 0;
-                map.put(tag, occurence + oldOccurence);
-                if (oldOccurence == 0) {
-                    propertyChangeSupport.firePropertyChange(Property.TAG_NEW.name(), 0, occurence);
-                } else {
-                    propertyChangeSupport.firePropertyChange(Property.TAG_OCCURENCE.name(), oldOccurence, occurence + oldOccurence);
-                }
-            } else {
-                log.warn("Using empty tag name, skipping it");
-            }
+        int oldOccurence = map.containsKey(tag) ? (map.get(tag).intValue()) : 0;
+        map.put(tag, occurence + oldOccurence);
+        if (oldOccurence == 0) {
+            propertyChangeSupport.firePropertyChange(Property.TAG_NEW.name(), 0, occurence);
         } else {
-            log.warn("Using null tag name, skipping it");
+            propertyChangeSupport.firePropertyChange(Property.TAG_OCCURENCE.name(), oldOccurence, occurence + oldOccurence);
         }
     }
 

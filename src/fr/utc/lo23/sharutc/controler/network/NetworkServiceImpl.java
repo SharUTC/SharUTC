@@ -163,7 +163,8 @@ public class NetworkServiceImpl implements NetworkService {
      */
     @Override
     public void sendDownloadRequest(Peer peer, Catalog catalog) {
-        log.warn("Not supported yet.");
+        Message message = messageParser.write(MessageType.MUSIC_GET, new Object[][]{{Message.CATALOG, catalog}});
+        sendUnicast(message, peer);
     }
 
     /**
@@ -171,7 +172,8 @@ public class NetworkServiceImpl implements NetworkService {
      */
     @Override
     public void sendMusics(Peer peer, Catalog catalog) {
-        log.warn("Not supported yet.");
+        Message message = messageParser.write(MessageType.MUSIC_INSTALL, new Object[][]{{Message.CATALOG, catalog}});
+        sendUnicast(message, peer);
     }
 
     /**

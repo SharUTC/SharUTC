@@ -1,7 +1,7 @@
 package fr.utc.lo23.sharutc.controler.command.music;
 
 import com.google.inject.Inject;
-import fr.utc.lo23.sharutc.model.AppModel;
+import fr.utc.lo23.sharutc.controler.service.MusicService;
 import fr.utc.lo23.sharutc.model.domain.Music;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,15 +11,14 @@ import org.slf4j.LoggerFactory;
  */
 public class AddTagCommandImpl implements AddTagCommand {
 
-    private static final Logger log = LoggerFactory
-            .getLogger(AddTagCommandImpl.class);
-    private final AppModel appModel;
+    private static final Logger log = LoggerFactory.getLogger(AddTagCommandImpl.class);
     private Music mMusic;
     private String mTag;
+    private final MusicService musicService;
 
     @Inject
-    public AddTagCommandImpl(AppModel appModel) {
-        this.appModel = appModel;
+    public AddTagCommandImpl(MusicService musicService) {
+        this.musicService = musicService;
     }
 
     /**
@@ -60,7 +59,7 @@ public class AddTagCommandImpl implements AddTagCommand {
     @Override
     public void execute() {
         log.info("AddTagCommand ...");
-        mMusic.addTag(mTag);
+        musicService.addTag(mMusic, mTag);
         log.info("AddTagCommand DONE");
     }
 }

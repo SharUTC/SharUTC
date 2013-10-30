@@ -9,7 +9,9 @@ import fr.utc.lo23.sharutc.model.domain.SearchCriteria;
 import fr.utc.lo23.sharutc.model.domain.TagMap;
 import fr.utc.lo23.sharutc.model.userdata.Peer;
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
+import java.util.logging.Level;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,13 +23,15 @@ public class MusicServiceImpl implements MusicService {
 
     private static final Logger log = LoggerFactory.getLogger(MusicServiceImpl.class);
     private final AppModel appModel;
+    private final FileService fileService;
 
     /**
      * {@inheritDoc}
      */
     @Inject
-    public MusicServiceImpl(AppModel appModel) {
+    public MusicServiceImpl(AppModel appModel, FileService fileService) {
         this.appModel = appModel;
+        this.fileService = fileService;
     }
 
     /**
@@ -75,6 +79,13 @@ public class MusicServiceImpl implements MusicService {
      */
     @Override
     public void addTag(Music music, String tag) {
+        if (tag != null && tag.trim().length() > 0) {
+            tag = tag.toLowerCase();
+            tag = tag.substring(0, 1).toUpperCase() + (tag.length() > 1 ? tag.substring(1) : "");
+            music.addTag(tag);
+        } else {
+            log.warn("Using null or empty tag name, skipping it");
+        }
         log.warn("Not supported yet.");
     }
 
@@ -83,7 +94,13 @@ public class MusicServiceImpl implements MusicService {
      */
     @Override
     public void removeTag(Music music, String tag) {
-        log.warn("Not supported yet.");
+        if (tag != null && tag.trim().length() > 0) {
+            tag = tag.toLowerCase();
+            tag = tag.substring(0, 1).toUpperCase() + (tag.length() > 1 ? tag.substring(1) : "");
+            music.removeTag(tag);
+        } else {
+            log.warn("Using null or empty tag name, skipping it");
+        }
     }
 
     /**
@@ -162,9 +179,18 @@ public class MusicServiceImpl implements MusicService {
      * {@inheritDoc}
      */
     @Override
-    public Music getMusicWithFile(Music music) {
-        log.warn("Not supported yet.");
-        return null;
+    public Catalog loadMusicFiles(Catalog catalog) {
+        for (Music music : catalog.getMusics()) {
+            Music modifiableMusicFromRequestCatalog = catalog.get(catalog.indexOf(music));
+            Byte[] byteArray;
+            try {
+                byteArray = fileService.getFileAsByteArray(new File(".\\" + appModel.getProfile().getUserInfo().getLogin() + "\\" + music.getFileName()));
+                modifiableMusicFromRequestCatalog.setFile(byteArray);
+            } catch (IOException ex) {
+                log.error(ex.toString());
+            }
+        }
+        return catalog;
     }
 
     /**

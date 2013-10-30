@@ -5,6 +5,7 @@ import com.google.inject.Singleton;
 import fr.utc.lo23.sharutc.model.AppModel;
 import fr.utc.lo23.sharutc.model.domain.Music;
 import java.io.File;
+import java.io.IOException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,5 +48,15 @@ public class FileServiceMock extends FileServiceImpl implements FileService {
     @Override
     public Music readFile(File file) throws Exception {
         return super.readFile(file);
+    }
+
+    /**
+     *
+     * @param realName
+     * @return
+     */
+    @Override
+    public Byte[] getFileAsByteArray(File file) throws IOException {
+        return super.getFileAsByteArray(file);
     }
 }

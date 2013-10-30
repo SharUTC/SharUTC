@@ -2,6 +2,7 @@ package fr.utc.lo23.sharutc.controler.service;
 
 import fr.utc.lo23.sharutc.model.domain.Music;
 import java.io.File;
+import java.io.IOException;
 
 /**
  * Used for import/export all data relative to an acocunt
@@ -31,4 +32,12 @@ public interface FileService {
      * @throws Exception if file is null or not an mp3
      */
     public Music readFile(File file) throws Exception;
+
+    /**
+     * Read a file and return its content as an array of Bytes
+     *
+     * @param file the file to read
+     * @return the content of the file as an array of Bytes
+     */
+    public Byte[] getFileAsByteArray(File file) throws IOException;
 }

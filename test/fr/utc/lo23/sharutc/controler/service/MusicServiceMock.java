@@ -24,8 +24,8 @@ public class MusicServiceMock extends MusicServiceImpl implements MusicService {
             .getLogger(MusicServiceMock.class);
 
     @Inject
-    public MusicServiceMock(AppModel appModel) {
-        super(appModel);
+    public MusicServiceMock(AppModel appModel, FileService fileService) {
+        super(appModel, fileService);
     }
 
     @Override
@@ -109,8 +109,8 @@ public class MusicServiceMock extends MusicServiceImpl implements MusicService {
     }
 
     @Override
-    public Music getMusicWithFile(Music music) {
-        return super.getMusicWithFile(music);
+    public Catalog loadMusicFiles(Catalog catalog) {
+        return super.loadMusicFiles(catalog);
     }
 
     @Override
