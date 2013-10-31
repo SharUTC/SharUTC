@@ -31,7 +31,8 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public void addContact(Peer peer) {
-        log.warn("Not supported yet.");
+        Contact contact = new Contact(peer.getId());
+        appModel.getProfile().getContacts().add(contact);
     }
 
     /**
