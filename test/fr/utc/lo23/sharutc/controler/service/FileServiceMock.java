@@ -31,12 +31,14 @@ public class FileServiceMock extends FileServiceImpl implements FileService {
     }
 
     /**
-     *
-     * @param path
+     * 
+     * @param srcPath
+     * @param destPath
+     * @throws IOException 
      */
     @Override
-    public void writeExportFile(String path) {
-        super.writeExportFile(path);
+    public void exportFile(String srcPath, String destPath) throws IOException {
+        super.exportFile(srcPath, destPath);
     }
 
     /**

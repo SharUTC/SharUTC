@@ -18,10 +18,13 @@ public interface FileService {
     public void importFile(String path, String password);
 
     /**
-     *
-     * @param path
+     * Compress the folder srcPath and write it at destPath
+     * 
+     * @param srcPath path of the folder to compress
+     * @param destPath path of the destination
+     * @throws java.io.IOException
      */
-    public void writeExportFile(String path);
+    public void exportFile(String srcPath, String destPath) throws IOException;
 
     /**
      * Used for reading a local mp3 file and creating a new Music, increments
