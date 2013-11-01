@@ -1,5 +1,7 @@
 package fr.utc.lo23.sharutc.controler.command.music;
 
+import com.google.inject.Inject;
+import fr.utc.lo23.sharutc.controler.network.NetworkService;
 import fr.utc.lo23.sharutc.model.domain.Catalog;
 import fr.utc.lo23.sharutc.model.userdata.Peer;
 import org.slf4j.Logger;
@@ -12,13 +14,16 @@ public class SendCatalogCommandImpl implements SendCatalogCommand {
 
     private static final Logger log = LoggerFactory
             .getLogger(SendCatalogCommandImpl.class);
+    private final NetworkService networkService;
     private Peer mPeer;
     private Catalog mCatalog;
 
     /**
      * {@inheritDoc}
      */
-    public SendCatalogCommandImpl() {
+    @Inject
+    public SendCatalogCommandImpl(NetworkService networkService) {
+        this.networkService = networkService;
     }
 
     /**
@@ -57,7 +62,9 @@ public class SendCatalogCommandImpl implements SendCatalogCommand {
      * {@inheritDoc}
      */
     @Override
-    public void execute() {
-        log.warn("Not supported yet.");
+    public void execute() { 
+        log.info("SendCatalogCommand ...");
+        networkService.sendUnicastCatalog(mPeer, mCatalog);
+        log.info("SendCatalogCommand DONE");
     }
 }

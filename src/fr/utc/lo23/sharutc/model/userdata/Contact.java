@@ -54,7 +54,7 @@ public class Contact implements Serializable {
      *
      * @param categories
      */
-    public void setCategorieds(Categories categories) {
+    public void setCategories(Categories categories) {
         this.mCategories = categories;
     }
 }

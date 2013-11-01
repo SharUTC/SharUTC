@@ -4,11 +4,18 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import fr.utc.lo23.sharutc.model.AppModel;
 import fr.utc.lo23.sharutc.model.domain.Music;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 import org.jaudiotagger.audio.AudioFile;
 import org.jaudiotagger.audio.AudioFileIO;
 import org.jaudiotagger.audio.AudioHeader;
@@ -22,7 +29,10 @@ import org.slf4j.LoggerFactory;
  */
 @Singleton
 public class FileServiceImpl implements FileService {
-
+    private static final int BUFFER_SIZE        = 2048;
+    private static final int COMPRESSION_LEVEL  = 9;
+    private String mSourceFolder;
+    
     private static final Logger log = LoggerFactory
             .getLogger(FileServiceImpl.class);
     private final AppModel appModel;
@@ -45,8 +55,56 @@ public class FileServiceImpl implements FileService {
      * {@inheritDoc}
      */
     @Override
-    public void writeExportFile(String path) {
-        log.warn("Not supported yet.");
+    public void exportFile(String srcPath, String destPath) throws IOException {
+        List<String> fileList = new ArrayList<String>();
+        byte data[] = new byte[BUFFER_SIZE];
+        mSourceFolder = srcPath;
+        
+        getFilesRec(fileList, new File(srcPath));
+        
+        //Traitement de la sortie
+        FileOutputStream dest = new FileOutputStream(destPath);
+        BufferedOutputStream outBuffer = new BufferedOutputStream(dest);
+        ZipOutputStream outStream = new ZipOutputStream(outBuffer);
+        outStream.setMethod(ZipOutputStream.DEFLATED);
+        outStream.setLevel(COMPRESSION_LEVEL);
+        
+        for(String path: fileList){
+            //traitement de l'entree
+            FileInputStream srcFile = new FileInputStream(srcPath + File.separator + path);
+            BufferedInputStream inBuffer = new BufferedInputStream(srcFile, BUFFER_SIZE);
+            ZipEntry entry = new ZipEntry(path);
+            outStream.putNextEntry(entry);
+            
+            int count = 0;
+            while( (count = inBuffer.read(data, 0, BUFFER_SIZE)) != -1)
+                outStream.write(data, 0, count);
+            
+            inBuffer.close();
+            outStream.closeEntry();
+        }
+        outStream.close();
+    }
+    
+    /**
+     * Traverse a directory and get all files,
+     * and add the file into fileList 
+     * @param fileList list of file names
+     * @param node file or directory
+     */
+    private void getFilesRec(List<String> fileList, File node){
+        if(node.isFile()){
+            String filePath = node.getAbsoluteFile().toString();
+            //Format the file path for zip
+            filePath = filePath.substring(mSourceFolder.length()+1, filePath.length());
+            fileList.add(filePath);
+        }
+
+        if(node.isDirectory()){
+            String[] subNote = node.list();
+            for(String filename : subNote)
+                getFilesRec(fileList, new File(node, filename));
+        }
     }
 
     /**
