@@ -164,7 +164,13 @@ public class MusicServiceImpl implements MusicService {
      */
     @Override
     public void searchMusic(Peer peer, SearchCriteria criteria) {
-        log.warn("Not supported yet.");
+        //log.warn("Not supported yet.")
+   
+        if (criteria.getSearch() != null && criteria.getSearch().trim().length() >0 ) {
+        
+            
+        }
+        
     }
 
     /**
