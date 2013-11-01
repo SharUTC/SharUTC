@@ -1,6 +1,8 @@
 package fr.utc.lo23.sharutc.model.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import fr.utc.lo23.sharutc.model.userdata.Peer;
+import fr.utc.lo23.sharutc.model.domain.Music;
 import fr.utc.lo23.sharutc.util.CollectionChangeListener;
 import fr.utc.lo23.sharutc.util.CollectionChangeSupport;
 import fr.utc.lo23.sharutc.util.CollectionEvent;
@@ -63,6 +65,11 @@ public class RightsList implements Serializable {
         return added;
     }
 
+  //  public RightsList getRightsListByMusicAndPeer(Peer peer, Music music) {
+        
+       
+    
+  //  }
     /**
      * Add a Rights instancve to the RightsList at the specified index, send
      * update (ADD)

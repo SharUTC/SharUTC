@@ -40,6 +40,14 @@ public class Contacts implements Serializable {
         this.mContacts = contacts;
     }
 
+   public Contact findById(Long peerID) {
+       for (Contact contact : mContacts) {
+           if (contact.getPeerId().equals(peerID)){
+               return contact;
+           }
+       }
+       return null;
+   }  
     /**
      *
      * @param contact

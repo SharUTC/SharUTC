@@ -5,8 +5,12 @@ import com.google.inject.Singleton;
 import fr.utc.lo23.sharutc.model.AppModel;
 import fr.utc.lo23.sharutc.model.domain.Catalog;
 import fr.utc.lo23.sharutc.model.domain.Music;
+import fr.utc.lo23.sharutc.model.domain.RightsList;
+import fr.utc.lo23.sharutc.model.domain.Rights;
 import fr.utc.lo23.sharutc.model.domain.SearchCriteria;
 import fr.utc.lo23.sharutc.model.domain.TagMap;
+import fr.utc.lo23.sharutc.model.userdata.Categories;
+import fr.utc.lo23.sharutc.model.userdata.Contact;
 import fr.utc.lo23.sharutc.model.userdata.Peer;
 import java.io.File;
 import java.io.IOException;
@@ -163,14 +167,52 @@ public class MusicServiceImpl implements MusicService {
      * {@inheritDoc}
      */
     @Override
-    public void searchMusic(Peer peer, SearchCriteria criteria) {
-        //log.warn("Not supported yet.")
-   
+    public Catalog searchMusic(Peer peer, SearchCriteria criteria) {
+         
         if (criteria.getSearch() != null && criteria.getSearch().trim().length() >0 ) {
+        Catalog catalogResult=new Catalog();
+        Catalog catalogLocal= appModel.getLocalCatalog();
         
-            
+        //Arnaud's part
+        Contact contact = appModel.getProfile().getContacts().findById(peer.getId());
+       // RightsList listRights = appModel.getRightsList();
+        
+        if (contact!=null){
+            Categories contactCategories = contact.getCategories();
+             for (Music music : catalogLocal.getMusics()) {
+               // List<Integer> musicCategories = music.getCategoryIds();
+               // List<Integer> matchingCategoryIds = new ArrayList<Integer>();
+
+                // ...  
+
+              //  if (matchingCategoryIds.isEmpty()) {
+                    // check true/false, use tmp boolean values in a 
+                    // small loop to check true/false values
+              //  }
+                // if at least one "mayReadInfo" ...
+                //searchResults.add(copyOfMusic);
+             }
         }
         
+        // Amandine's part
+        for (Music music : catalogLocal.getMusics()) {
+        //Vérifier les droits avant de vérifier le reste
+        //Récupère les droits, et je les copies dans le champs Musics.
+            for(Rights rights : appModel.getRightsList().getRightsList()) {
+                if(rights.getMusicId()==music.getId()){ 
+                    if (rights.getMayReadInfo()==true) {
+                       //Search based on title, album, artist
+                        if (music.getTitle().contains(criteria.getSearch()) || music.getArtist().contains(criteria.getSearch()) ||  music.getAlbum().contains(criteria.getSearch())) {
+                        catalogResult.add(music);
+                        }
+                     } 
+                }
+            }
+        }
+                   
+      return catalogResult;
+        }
+     return null;
     }
 
     /**
