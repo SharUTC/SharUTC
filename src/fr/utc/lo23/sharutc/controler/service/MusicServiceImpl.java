@@ -44,7 +44,18 @@ public class MusicServiceImpl implements MusicService {
      */
     @Override
     public void addToLocalCatalog(Collection<File> mp3Files) {
-        log.warn("Not supported yet.");
+        Catalog localCatalog = appModel.getLocalCatalog();
+        Music currentMusic = null;
+        
+        for(File currentFile : mp3Files) {
+            try {
+           currentMusic = fileService.readFile(currentFile);
+            }
+            catch (Exception ex) {
+                log.error(ex.toString());
+            }
+           localCatalog.add(currentMusic);
+        }
     }
 
     /**
