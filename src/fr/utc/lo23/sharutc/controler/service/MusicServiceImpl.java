@@ -63,7 +63,16 @@ public class MusicServiceImpl implements MusicService {
      */
     @Override
     public void removeFromLocalCatalog(Collection<Music> musics) {
-        log.warn("Not supported yet.");
+        Catalog localCatalog = appModel.getLocalCatalog();
+        
+        for(Music currentMusic : musics) {
+            try {
+               localCatalog.remove(currentMusic);
+            }
+            catch (Exception ex) {
+                log.error(ex.toString());
+            }
+        }
     }
 
     /**
