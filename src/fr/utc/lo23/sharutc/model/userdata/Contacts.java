@@ -41,6 +41,22 @@ public class Contacts implements Serializable {
     }
 
     /**
+     * Return the Peer who has the Id given in parameter if exists
+     *
+     * @param peerID the Peer id of a Contact
+     * @return the Peer who has the Id given in parameter, null is the peer
+     * isn't a Contact
+     */
+    public Contact findById(Long peerID) {
+        for (Contact contact : mContacts) {
+            if (contact.getPeerId().equals(peerID)) {
+                return contact;
+            }
+        }
+        return null;
+    }
+
+    /**
      *
      * @param contact
      * @return

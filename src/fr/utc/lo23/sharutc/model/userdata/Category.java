@@ -13,7 +13,7 @@ public class Category implements Serializable {
      */
     public static final Integer PUBLIC_CATEGORY_ID = new Integer(0);
     private Integer mId;
-    private String mMame;
+    private String mName;
 
     /**
      *
@@ -42,7 +42,7 @@ public class Category implements Serializable {
      * @return
      */
     public String getName() {
-        return mMame;
+        return mName;
     }
 
     /**
@@ -50,6 +50,6 @@ public class Category implements Serializable {
      * @param name
      */
     public void setName(String name) {
-        this.mMame = name;
+        this.mName = name;
     }
 }

@@ -26,14 +26,22 @@ public class Comment implements Serializable {
     private PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
     private Integer mIndex;
     private String mText;
-    private Long mPeerId;
+    private Long mAuthorPeerId;
     private Date mCreationDate;
-    private String mPeerDisplayName;
+    private String mAuthorName;
 
     /**
      * Empty constructor, used for Json
      */
     public Comment() {
+    }
+
+    public Comment(Comment comment) {
+        this.mIndex = new Integer(comment.mIndex);
+        this.mText = comment.mText;
+        this.mAuthorPeerId = new Long(comment.mAuthorPeerId);
+        this.mCreationDate = new Date(comment.mCreationDate.getTime());
+        this.mAuthorName = comment.mAuthorName;
     }
 
     //TODO there are others constructors to write here, index might be setted another way or moment
@@ -48,7 +56,7 @@ public class Comment implements Serializable {
     public Comment(Integer index, String text, Long peerId, Date creationDate) {
         this.mIndex = index;
         this.mText = text;
-        this.mPeerId = peerId;
+        this.mAuthorPeerId = peerId;
         this.mCreationDate = creationDate;
     }
 
@@ -90,16 +98,16 @@ public class Comment implements Serializable {
      *
      * @return
      */
-    public Long getPeerId() {
-        return mPeerId;
+    public Long getAuthorPeerId() {
+        return mAuthorPeerId;
     }
 
     /**
      *
-     * @param peerId
+     * @param authorPeerId
      */
-    public void setPeerId(Long peerId) {
-        this.mPeerId = peerId;
+    public void setAuthorPeerId(Long authorPeerId) {
+        this.mAuthorPeerId = authorPeerId;
     }
 
     /**
@@ -122,16 +130,16 @@ public class Comment implements Serializable {
      *
      * @return
      */
-    public String getPeerDisplayName() {
-        return mPeerDisplayName;
+    public String getAuthorName() {
+        return mAuthorName;
     }
 
     /**
      *
-     * @param peerDisplayName
+     * @param authorName
      */
-    public void setPeerDisplayName(String peerDisplayName) {
-        this.mPeerDisplayName = peerDisplayName;
+    public void setAuthorName(String authorName) {
+        this.mAuthorName = authorName;
     }
 
     /**
@@ -159,5 +167,10 @@ public class Comment implements Serializable {
          *
          */
         TEXT
+    }
+
+    @Override
+    public Comment clone() {
+        return new Comment(this);
     }
 }

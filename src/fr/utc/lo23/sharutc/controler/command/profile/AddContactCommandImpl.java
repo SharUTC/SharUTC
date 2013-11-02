@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package fr.utc.lo23.sharutc.controler.command.profile;
 
 import com.google.inject.Inject;
@@ -11,12 +7,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- *
- * @author Mathilde
+ * {@inheritDoc}
  */
 public class AddContactCommandImpl implements AddContactCommand {
 
-     private static final Logger log = LoggerFactory
+    private static final Logger log = LoggerFactory
             .getLogger(AddContactCommandImpl.class);
     private Peer mPeer;
     final private UserService mUserService;
@@ -28,8 +23,7 @@ public class AddContactCommandImpl implements AddContactCommand {
     public AddContactCommandImpl(UserService userService) {
         this.mUserService = userService;
     }
-    
-    
+
     /**
      * {@inheritDoc}
      */
@@ -55,7 +49,4 @@ public class AddContactCommandImpl implements AddContactCommand {
         mUserService.addContact(mPeer);
         log.info("AddContactCommand DONE");
     }
-
-
-    
 }

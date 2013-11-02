@@ -99,8 +99,8 @@ public class MusicServiceMock extends MusicServiceImpl implements MusicService {
     }
 
     @Override
-    public void searchMusic(Peer peer, SearchCriteria criteria) {
-        super.searchMusic(peer, criteria);
+    public Catalog searchMusic(Peer peer, SearchCriteria criteria) {
+        return super.searchMusic(peer, criteria);
     }
 
     @Override

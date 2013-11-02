@@ -63,6 +63,8 @@ public class RightsList implements Serializable {
         return added;
     }
 
+    //  public RightsList getRightsListByMusicAndPeer(Peer peer, Music music) {
+    //  }
     /**
      * Add a Rights instancve to the RightsList at the specified index, send
      * update (ADD)
@@ -184,5 +186,14 @@ public class RightsList implements Serializable {
      */
     public void removePropertyChangeListener(CollectionChangeListener listener) {
         collectionChangeSupport.removeCollectionListener(listener);
+    }
+
+    public Rights getByMusicIdAndCategoryId(Long musicId, Integer categoryId) {
+        for (Rights rights : mRightsList) {
+            if (rights.getMusicId().equals(musicId) && rights.getCategoryId().equals(categoryId)) {
+                return rights;
+            }
+        }
+        return null;
     }
 }

@@ -4,17 +4,18 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import fr.utc.lo23.sharutc.model.AppModel;
 import fr.utc.lo23.sharutc.model.domain.Catalog;
+import fr.utc.lo23.sharutc.model.domain.Comment;
 import fr.utc.lo23.sharutc.model.domain.Music;
+import fr.utc.lo23.sharutc.model.domain.Rights;
 import fr.utc.lo23.sharutc.model.domain.SearchCriteria;
 import fr.utc.lo23.sharutc.model.domain.TagMap;
-import fr.utc.lo23.sharutc.model.userdata.Categories;
 import fr.utc.lo23.sharutc.model.userdata.Contact;
 import fr.utc.lo23.sharutc.model.userdata.Peer;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
+import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -167,43 +168,106 @@ public class MusicServiceImpl implements MusicService {
      */
     @Override
     public Catalog searchMusic(Peer peer, SearchCriteria criteria) {
-        Catalog searchResults = new Catalog();
+        Catalog catalogResult = new Catalog();
 
-        /*
-         * DO NOT SET RIGHTS DIRECTLY ON MUSIC CONTAINED IN THE CATALOG
-         * use a copy of each instead
-         */
+        if (criteria.getSearch() != null && criteria.getSearch().trim().length() > 0) {
 
-        Contact contact = null;//appModel.getProfile().getContacts().findById(peer.getId());
+            // 2 modes : when peer is a contact and when peer isn't a contact
+            Contact contact = appModel.getProfile().getContacts().findById(peer.getId());
+            if (contact != null) {
+                Set<Integer> contactCategoryIds = contact.getCategoryIds();
 
-        if (contact != null) {
-            Categories contactCategories = contact.getCategories();
-            // use categories to filter :
-            // loop each music in the local catalog, see music.getCategoryIds and check if the peer has at least one of them
-            // -> one music may be linked to several categories, we must loop on all the results unless we find that all right values are set to true
-            // if at least one "mayReadInfo" is set to true, then first make a copy of the music instance (add a clone method to Music class)
-            // then use RightsList to load the rights for this music and category (set directly the music attribute on the copy)
-            for (Music music : appModel.getLocalCatalog().getMusics()) {
-                List<Integer> musicCategories = music.getCategoryIds();
-                List<Integer> matchingCategoryIds = new ArrayList<Integer>();
+                // looping on whole catalog, searching for matching music informations
+                for (Music music : appModel.getLocalCatalog().getMusics()) {
+                    // only deal with needed musics
+                    if (musicMatchesSearchCriteria(music, criteria)) {
 
-                // ...  
+                        // searching for useful categories only
+                        List<Integer> matchingCategoryIds = getAllMatchingCategoryIds(music, contactCategoryIds);
 
-                if (matchingCategoryIds.isEmpty()) {
-                    // check true/false, use tmp boolean values in a 
-                    // small loop to check true/false values
+                        // searching Rights values to be set directly on a copy of music instance if added to the results
+                        boolean mayReadInfo = false;
+                        boolean mayListen = false;
+                        boolean mayNoteAndComment = false;
+                        if (matchingCategoryIds.isEmpty()) {
+                            for (Integer categoryId : matchingCategoryIds) {
+                                // avoid useless loop
+                                if (mayReadInfo && mayListen && mayNoteAndComment) {
+                                    break; //true > false, then skip the remaining ids since all is already set to true
+                                }
+                                // get the unique Rights instance for this music and category from RightsList
+                                // set tmp boolean values to true if rights values are set to true
+                                Rights rights = appModel.getRightsList().getByMusicIdAndCategoryId(music.getId(), categoryId);
+                                if (rights.getMayReadInfo()) {
+                                    mayReadInfo = true;
+                                }
+                                if (rights.getMayListen()) {
+                                    mayListen = true;
+                                }
+                                if (rights.getMayNoteAndComment()) {
+                                    mayNoteAndComment = true;
+                                }
+                            }
+                        }
+                        // if the peer is autorized to get the music
+                        if (mayReadInfo) {
+                            // using a new instance to set specific attributes
+                            Music musicToReturn = music.clone();
+                            // copying rights values
+                            musicToReturn.setMayReadInfo(true); // useless... not used by other peers
+                            musicToReturn.setMayListen(mayListen);
+                            musicToReturn.setMayCommentAndNote(mayNoteAndComment);
+                            // loading last used and known peer name
+                            fillCommentAuthorNames(musicToReturn);
+                            // add the music to the returned set of music
+                            catalogResult.add(musicToReturn);
+                        }
+                    }
                 }
-                // if at least one "mayReadInfo" ...
-                //searchResults.add(copyOfMusic);
-
+            } else {
+                // peer isn't a contact, check PUBLIC category only and associated rights values, as they may change like others
+                /*
+                 * 
+                 * TODO : complete method
+                 * 
+                 */
             }
-        } else {
-            // simply check for each music in the catalog if the categorie is 0 (=PUBLIC, which one is exclusive) and if the music for this category has readInfo right = true
-            // we still have to copy each PUBLIC right value since user may also change rights on PUBLIC category
-            // if readInfo = true then searchResults.add(copyOfMusic);
         }
-        log.warn("Not supported yet.");
-        return searchResults;
+        return catalogResult;
+    }
+
+    private void fillCommentAuthorNames(Music musicToReturn) {
+        // use known peer list from app model to set each author name in the comments
+        for (Comment comment : musicToReturn.getComments()) {
+            musicToReturn.setCommentAuthor(comment.getIndex(), appModel.getKnownPeerList().getPeerNameById(comment.getAuthorPeerId()));
+        }
+    }
+
+    private boolean musicMatchesSearchCriteria(Music music, SearchCriteria criteria) {
+        String searchString = criteria.getSearch().toLowerCase();
+        boolean match = music.getTitle().toLowerCase().contains(searchString)
+                || music.getArtist().toLowerCase().contains(searchString)
+                || music.getAlbum().toLowerCase().contains(searchString);
+        if (match) {
+            return true;
+        }
+        for (String tag : music.getTags()) {
+            if (tag.toLowerCase().contains(searchString)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private List<Integer> getAllMatchingCategoryIds(Music music, Set<Integer> contactCategoryIds) {
+        Set<Integer> musicCategories = music.getCategoryIds();
+        List<Integer> matchingCategoryIds = new ArrayList<Integer>();
+        for (Integer musicCategoryId : musicCategories) {
+            if (contactCategoryIds.contains(musicCategoryId)) {
+                matchingCategoryIds.add(musicCategoryId);
+            }
+        }
+        return matchingCategoryIds;
     }
 
     /**
