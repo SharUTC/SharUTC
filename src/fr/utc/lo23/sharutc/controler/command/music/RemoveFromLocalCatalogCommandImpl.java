@@ -1,5 +1,6 @@
 package fr.utc.lo23.sharutc.controler.command.music;
 
+import fr.utc.lo23.sharutc.controler.service.MusicService;
 import fr.utc.lo23.sharutc.model.domain.Music;
 import java.util.Collection;
 import java.util.Collections;
@@ -13,12 +14,14 @@ public class RemoveFromLocalCatalogCommandImpl implements RemoveFromLocalCatalog
 
     private static final Logger log = LoggerFactory
             .getLogger(RemoveFromLocalCatalogCommandImpl.class);
+    private final MusicService musicService;
     private Collection<Music> mMusics;
 
     /**
      * {@inheritDoc}
      */
-    public RemoveFromLocalCatalogCommandImpl() {
+    public RemoveFromLocalCatalogCommandImpl(MusicService musicService) {
+        this.musicService = musicService;
     }
 
     /**
@@ -42,6 +45,8 @@ public class RemoveFromLocalCatalogCommandImpl implements RemoveFromLocalCatalog
      */
     @Override
     public void execute() {
-        log.warn("Not supported yet.");
+        log.info("RemoveFromLocalCatalogCommand ...");
+        musicService.removeFromLocalCatalog(mMusics);
+        log.info("RemoveFromLocalCatalogCommand DONE");
     }
 }

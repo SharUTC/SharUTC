@@ -14,6 +14,7 @@ import fr.utc.lo23.sharutc.model.userdata.Peer;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import org.slf4j.Logger;
@@ -42,7 +43,7 @@ public class MusicServiceImpl implements MusicService {
      * {@inheritDoc}
      */
     @Override
-    public void addToLocalCatalog(List<File> mp3Files) {
+    public void addToLocalCatalog(Collection<File> mp3Files) {
         log.warn("Not supported yet.");
     }
 
@@ -50,7 +51,7 @@ public class MusicServiceImpl implements MusicService {
      * {@inheritDoc}
      */
     @Override
-    public void removeFromLocalCatalog(List<Music> musics) {
+    public void removeFromLocalCatalog(Collection<Music> musics) {
         log.warn("Not supported yet.");
     }
 

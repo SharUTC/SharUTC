@@ -6,6 +6,7 @@ import fr.utc.lo23.sharutc.model.domain.SearchCriteria;
 import fr.utc.lo23.sharutc.model.domain.TagMap;
 import fr.utc.lo23.sharutc.model.userdata.Peer;
 import java.io.File;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -17,13 +18,13 @@ public interface MusicService {
      *
      * @param mp3Files
      */
-    public void addToLocalCatalog(List<File> mp3Files);
+    public void addToLocalCatalog(Collection<File> mp3Files);
 
     /**
      *
      * @param musics
      */
-    public void removeFromLocalCatalog(List<Music> musics);
+    public void removeFromLocalCatalog(Collection<Music> musics);
 
     /**
      *

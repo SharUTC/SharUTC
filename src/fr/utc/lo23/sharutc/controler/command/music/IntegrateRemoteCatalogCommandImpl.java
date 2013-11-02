@@ -1,5 +1,6 @@
 package fr.utc.lo23.sharutc.controler.command.music;
 
+import fr.utc.lo23.sharutc.controler.service.MusicService;
 import fr.utc.lo23.sharutc.model.domain.Catalog;
 import fr.utc.lo23.sharutc.model.userdata.Peer;
 import org.slf4j.Logger;
@@ -12,13 +13,15 @@ public class IntegrateRemoteCatalogCommandImpl implements IntegrateRemoteCatalog
 
     private static final Logger log = LoggerFactory
             .getLogger(IntegrateRemoteCatalogCommandImpl.class);
+    private final MusicService musicService;
     private Catalog mCatalog;
     private Peer mPeer;
 
     /**
      * {@inheritDoc}
      */
-    public IntegrateRemoteCatalogCommandImpl() {
+    public IntegrateRemoteCatalogCommandImpl(MusicService musicService) {
+        this.musicService = musicService;
     }
 
     /**
@@ -58,6 +61,8 @@ public class IntegrateRemoteCatalogCommandImpl implements IntegrateRemoteCatalog
      */
     @Override
     public void execute() {
-        log.warn("Not supported yet.");
+        log.info("IntegrateRemoteCatalogCommand ...");
+        musicService.integrateRemoteCatalog(mPeer, mCatalog);
+        log.info("IntegrateRemoteCatalogCommand DONE");
     }
 }

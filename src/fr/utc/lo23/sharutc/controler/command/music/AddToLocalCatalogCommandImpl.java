@@ -1,5 +1,6 @@
 package fr.utc.lo23.sharutc.controler.command.music;
 
+import fr.utc.lo23.sharutc.controler.service.MusicService;
 import java.io.File;
 import java.util.Collection;
 import java.util.Collections;
@@ -13,12 +14,14 @@ public class AddToLocalCatalogCommandImpl implements AddToLocalCatalogCommand {
 
     private static final Logger log = LoggerFactory
             .getLogger(AddToLocalCatalogCommandImpl.class);
+    private final MusicService musicService;
     private Collection<File> mFiles;
 
     /**
      * {@inheritDoc}
      */
-    public AddToLocalCatalogCommandImpl() {
+    public AddToLocalCatalogCommandImpl(MusicService musicService) {
+        this.musicService = musicService;
     }
 
     /**
@@ -42,6 +45,8 @@ public class AddToLocalCatalogCommandImpl implements AddToLocalCatalogCommand {
      */
     @Override
     public void execute() {
-        log.warn("Not supported yet.");
+        log.info("AddToLocalCatalogCommand ...");
+        musicService.addToLocalCatalog(mFiles);
+        log.info("AddToLocalCatalogCommand DONE");
     }
 }

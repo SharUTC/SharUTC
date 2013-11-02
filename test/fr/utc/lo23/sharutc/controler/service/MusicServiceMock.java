@@ -9,6 +9,7 @@ import fr.utc.lo23.sharutc.model.domain.SearchCriteria;
 import fr.utc.lo23.sharutc.model.domain.TagMap;
 import fr.utc.lo23.sharutc.model.userdata.Peer;
 import java.io.File;
+import java.util.Collection;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,12 +30,12 @@ public class MusicServiceMock extends MusicServiceImpl implements MusicService {
     }
 
     @Override
-    public void addToLocalCatalog(List<File> mp3Files) {
+    public void addToLocalCatalog(Collection<File> mp3Files) {
         super.addToLocalCatalog(mp3Files);
     }
 
     @Override
-    public void removeFromLocalCatalog(List<Music> musics) {
+    public void removeFromLocalCatalog(Collection<Music> musics) {
         super.removeFromLocalCatalog(musics);
     }
 
