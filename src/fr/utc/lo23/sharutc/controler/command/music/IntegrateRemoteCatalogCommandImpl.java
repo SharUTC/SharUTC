@@ -1,6 +1,7 @@
 package fr.utc.lo23.sharutc.controler.command.music;
 
 import fr.utc.lo23.sharutc.model.domain.Catalog;
+import fr.utc.lo23.sharutc.model.userdata.Peer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -12,7 +13,7 @@ public class IntegrateRemoteCatalogCommandImpl implements IntegrateRemoteCatalog
     private static final Logger log = LoggerFactory
             .getLogger(IntegrateRemoteCatalogCommandImpl.class);
     private Catalog mCatalog;
-    private Long mPeerId;
+    private Peer mPeer;
 
     /**
      * {@inheritDoc}
@@ -40,16 +41,16 @@ public class IntegrateRemoteCatalogCommandImpl implements IntegrateRemoteCatalog
      * {@inheritDoc}
      */
     @Override
-    public Long getPeerId() {
-        return mPeerId;
+    public Peer getPeer() {
+        return mPeer;
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void setPeerId(Long peerId) {
-        this.mPeerId = peerId;
+    public void setPeer(Peer peer) {
+        this.mPeer = peer;
     }
 
     /**

@@ -2,6 +2,7 @@ package fr.utc.lo23.sharutc.controler.command.music;
 
 import fr.utc.lo23.sharutc.controler.command.Command;
 import fr.utc.lo23.sharutc.model.domain.Catalog;
+import fr.utc.lo23.sharutc.model.userdata.Peer;
 
 /**
  *
@@ -24,11 +25,11 @@ public interface IntegrateRemoteCatalogCommand extends Command {
      *
      * @return
      */
-    public Long getPeerId();
+    public Peer getPeer();
 
     /**
      *
-     * @param peerId
+     * @param peer
      */
-    public void setPeerId(Long peerId);
+    public void setPeer(Peer peer);
 }
