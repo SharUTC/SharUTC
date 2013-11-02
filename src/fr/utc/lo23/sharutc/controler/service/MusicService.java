@@ -114,7 +114,7 @@ public interface MusicService {
      * @param peer
      * @param criteria
      */
-    public void searchMusic(Peer peer, SearchCriteria criteria);
+    public Catalog searchMusic(Peer peer, SearchCriteria criteria);
 
     /**
      *

@@ -7,9 +7,12 @@ import fr.utc.lo23.sharutc.model.domain.Catalog;
 import fr.utc.lo23.sharutc.model.domain.Music;
 import fr.utc.lo23.sharutc.model.domain.SearchCriteria;
 import fr.utc.lo23.sharutc.model.domain.TagMap;
+import fr.utc.lo23.sharutc.model.userdata.Categories;
+import fr.utc.lo23.sharutc.model.userdata.Contact;
 import fr.utc.lo23.sharutc.model.userdata.Peer;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import org.slf4j.Logger;
@@ -163,8 +166,44 @@ public class MusicServiceImpl implements MusicService {
      * {@inheritDoc}
      */
     @Override
-    public void searchMusic(Peer peer, SearchCriteria criteria) {
+    public Catalog searchMusic(Peer peer, SearchCriteria criteria) {
+        Catalog searchResults = new Catalog();
+
+        /*
+         * DO NOT SET RIGHTS DIRECTLY ON MUSIC CONTAINED IN THE CATALOG
+         * use a copy of each instead
+         */
+
+        Contact contact = null;//appModel.getProfile().getContacts().findById(peer.getId());
+
+        if (contact != null) {
+            Categories contactCategories = contact.getCategories();
+            // use categories to filter :
+            // loop each music in the local catalog, see music.getCategoryIds and check if the peer has at least one of them
+            // -> one music may be linked to several categories, we must loop on all the results unless we find that all right values are set to true
+            // if at least one "mayReadInfo" is set to true, then first make a copy of the music instance (add a clone method to Music class)
+            // then use RightsList to load the rights for this music and category (set directly the music attribute on the copy)
+            for (Music music : appModel.getLocalCatalog().getMusics()) {
+                List<Integer> musicCategories = music.getCategoryIds();
+                List<Integer> matchingCategoryIds = new ArrayList<Integer>();
+
+                // ...  
+
+                if (matchingCategoryIds.isEmpty()) {
+                    // check true/false, use tmp boolean values in a 
+                    // small loop to check true/false values
+                }
+                // if at least one "mayReadInfo" ...
+                //searchResults.add(copyOfMusic);
+
+            }
+        } else {
+            // simply check for each music in the catalog if the categorie is 0 (=PUBLIC, which one is exclusive) and if the music for this category has readInfo right = true
+            // we still have to copy each PUBLIC right value since user may also change rights on PUBLIC category
+            // if readInfo = true then searchResults.add(copyOfMusic);
+        }
         log.warn("Not supported yet.");
+        return searchResults;
     }
 
     /**

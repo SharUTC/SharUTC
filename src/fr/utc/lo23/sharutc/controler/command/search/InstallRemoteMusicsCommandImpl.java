@@ -1,5 +1,6 @@
 package fr.utc.lo23.sharutc.controler.command.search;
 
+import com.google.inject.Inject;
 import fr.utc.lo23.sharutc.controler.service.MusicService;
 import fr.utc.lo23.sharutc.model.domain.Catalog;
 import org.slf4j.Logger;
@@ -14,6 +15,7 @@ public class InstallRemoteMusicsCommandImpl implements InstallRemoteMusicsComman
     private final MusicService musicService;
     private Catalog mCatalog;
 
+    @Inject
     public InstallRemoteMusicsCommandImpl(MusicService musicService) {
         this.musicService = musicService;
     }
