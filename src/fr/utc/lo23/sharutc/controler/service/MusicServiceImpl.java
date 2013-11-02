@@ -46,14 +46,15 @@ public class MusicServiceImpl implements MusicService {
     public void addToLocalCatalog(Collection<File> mp3Files) {
         Catalog localCatalog = appModel.getLocalCatalog();
         Music currentMusic = null;
-
-        for (File currentFile : mp3Files) {
+        
+        for(File currentFile : mp3Files) {
             try {
-                currentMusic = fileService.readFile(currentFile);
-                localCatalog.add(currentMusic);
-            } catch (Exception ex) {
+           currentMusic = fileService.readFile(currentFile);
+            }
+            catch (Exception ex) {
                 log.error(ex.toString());
             }
+           localCatalog.add(currentMusic);
         }
     }
 
