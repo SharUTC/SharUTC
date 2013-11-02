@@ -12,6 +12,12 @@ import fr.utc.lo23.sharutc.model.userdata.UserInfo;
 public interface UserService {
 
     /**
+     * Save the currently connected user profile, by writing the java data into
+     * a JSON file.
+     */
+    public void saveProfile();
+    
+    /**
      *
      * @param peer
      */

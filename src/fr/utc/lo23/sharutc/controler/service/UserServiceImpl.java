@@ -1,5 +1,6 @@
 package fr.utc.lo23.sharutc.controler.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import fr.utc.lo23.sharutc.model.AppModel;
@@ -7,7 +8,10 @@ import fr.utc.lo23.sharutc.model.domain.Music;
 import fr.utc.lo23.sharutc.model.userdata.Category;
 import fr.utc.lo23.sharutc.model.userdata.Contact;
 import fr.utc.lo23.sharutc.model.userdata.Peer;
+import fr.utc.lo23.sharutc.model.userdata.Profile;
 import fr.utc.lo23.sharutc.model.userdata.UserInfo;
+import java.io.File;
+import java.io.IOException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,12 +24,32 @@ public class UserServiceImpl implements UserService {
     private static final Logger log = LoggerFactory
             .getLogger(UserServiceImpl.class);
     private final AppModel appModel;
+    
+    private static final String dataPath = "";
 
     @Inject
     public UserServiceImpl(AppModel appModel) {
         this.appModel = appModel;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void saveProfile(){
+        Profile profile = appModel.getProfile();
+        if(profile != null){
+            ObjectMapper mapper = new ObjectMapper();
+            try {
+                mapper.writeValue(new File(dataPath + "\\profile.json"), profile);
+            } catch (IOException ex) {
+                log.error(ex.toString());
+            }
+        }
+        else
+            log.warn("Can't save current profile(null)");
+    }
+    
     /**
      * {@inheritDoc}
      */

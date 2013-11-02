@@ -1,6 +1,5 @@
 package fr.utc.lo23.sharutc.model;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import fr.utc.lo23.sharutc.model.domain.Catalog;
 import fr.utc.lo23.sharutc.model.domain.RightsList;
 import fr.utc.lo23.sharutc.model.domain.TagMap;
@@ -9,8 +8,6 @@ import fr.utc.lo23.sharutc.model.userdata.KnownPeerList;
 import fr.utc.lo23.sharutc.model.userdata.Profile;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
-import java.io.File;
-import java.io.IOException;
 import java.io.Serializable;
 import javax.inject.Singleton;
 import org.slf4j.Logger;
@@ -37,8 +34,6 @@ public class AppModelImpl implements AppModel, Serializable {
     private Catalog localCatalog;
     private KnownPeerList knownPeerList;
     private RightsList rightsList;
-    
-    private static final String dataPath = "";
 
     /**
      * Empty constructor, no real use in application, created by injection
@@ -131,23 +126,6 @@ public class AppModelImpl implements AppModel, Serializable {
         propertyChangeSupport.firePropertyChange(
                 Property.PROFILE.name(), oldLoadedProfile,
                 profile);
-    }
-    
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void saveProfile(){
-        if(profile != null){
-            ObjectMapper mapper = new ObjectMapper();
-            try {
-                mapper.writeValue(new File(dataPath + "\\profile.json"), profile);
-            } catch (IOException ex) {
-                log.error(ex.toString());
-            }
-        }
-        else
-            log.warn("Can't save current profile(null)");
     }
 
     /**

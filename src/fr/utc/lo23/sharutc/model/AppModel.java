@@ -56,12 +56,6 @@ public interface AppModel {
      * @param profile the currently connected user profile
      */
     public void setProfile(Profile profile);
-    
-    /**
-     * Save the currently connected user profile, by writing the java data into
-     * a JSON file.
-     */
-    public void saveProfile();
 
     /**
      * Return the current image of the network tagmap, connected to view via
