@@ -9,6 +9,8 @@ import fr.utc.lo23.sharutc.model.domain.SearchCriteria;
 import fr.utc.lo23.sharutc.model.domain.TagMap;
 import fr.utc.lo23.sharutc.model.userdata.Peer;
 import fr.utc.lo23.sharutc.model.userdata.UserInfo;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.HashMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,8 +38,12 @@ public class NetworkServiceImpl implements NetworkService {
      * {@inheritDoc}
      */
     @Override
-    public void start() {
-        log.warn("start - Not supported yet.");
+    public void start(int port, String group) throws UnknownHostException {
+        InetAddress g = InetAddress.getByName(group);
+        ListenThread lt = new ListenThread(port, this);
+        lt.start();
+        PeerDiscoverySocket pds = new PeerDiscoverySocket(port, g, this);
+        pds.start();
     }
 
     /**

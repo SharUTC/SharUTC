@@ -6,6 +6,7 @@ import fr.utc.lo23.sharutc.model.domain.SearchCriteria;
 import fr.utc.lo23.sharutc.model.domain.TagMap;
 import fr.utc.lo23.sharutc.model.userdata.Peer;
 import fr.utc.lo23.sharutc.model.userdata.UserInfo;
+import java.net.UnknownHostException;
 
 /**
  * Service managing the network part of the p2p application.
@@ -20,8 +21,13 @@ import fr.utc.lo23.sharutc.model.userdata.UserInfo;
 public interface NetworkService {
     /**
      * Setup the NetworkService and start it.
+     *
+     * @param port  the port to bind sockets to
+     * @param group the UDP group to join (a class D IP address)
+     * @throws java.net.UnknownHostException if the given group is not a valid class D IP
+     * address.
      */
-    public void start();
+    public void start(int port, String group) throws UnknownHostException;
 
     /**
      * Register a new peer and its PeerSocket to the NetworkService.
