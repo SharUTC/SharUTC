@@ -9,6 +9,7 @@ import fr.utc.lo23.sharutc.model.domain.SearchCriteria;
 import fr.utc.lo23.sharutc.model.domain.TagMap;
 import fr.utc.lo23.sharutc.model.userdata.Peer;
 import fr.utc.lo23.sharutc.model.userdata.UserInfo;
+import java.util.HashMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,11 +23,13 @@ public class NetworkServiceImpl implements NetworkService {
             .getLogger(NetworkServiceImpl.class);
     private final AppModel appModel;
     private final MessageParser messageParser;
+    private final HashMap<Long, PeerSocket> mPeers;
 
     @Inject
     public NetworkServiceImpl(AppModel appModel, MessageParser messageParser) {
         this.appModel = appModel;
         this.messageParser = messageParser;
+        mPeers = new HashMap();
     }
 
     /**
