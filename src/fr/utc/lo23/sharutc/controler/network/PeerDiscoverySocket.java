@@ -65,28 +65,31 @@ public class PeerDiscoverySocket implements Runnable {
         this.mGroup = group;
         this.mNs = ns;
         this.threadShouldStop = false;
+        this.thread = null;
         try {
             mSocket = new MulticastSocket(mPort);
             mSocket.joinGroup(mGroup);
         } catch (IOException e) {
             log.error(e.toString());
         }
-        // start thread
-        thread = new Thread(this);
-        startThread();
     }
 
     /**
      * Start the thread
      */
-    public void startThread() {
-        thread.start();
+    public void start() {
+        if (thread == null) {
+            thread = new Thread(this);
+            thread.start();
+        } else {
+            log.warn("Can't start PeerDiscoverySocket: already running.");
+        }
     }
 
     /**
      * Stop the thread
      */
-    public void stopThread() {
+    public void stop() {
         threadShouldStop = true;
     }
 
