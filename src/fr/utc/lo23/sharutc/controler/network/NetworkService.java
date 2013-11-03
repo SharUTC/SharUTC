@@ -30,6 +30,11 @@ public interface NetworkService {
     public void start(int port, String group) throws UnknownHostException;
 
     /**
+     * Stop the NetworkService and all its components.
+     */
+    public void stop();
+
+    /**
      * Register a new peer and its PeerSocket to the NetworkService.
      *
      * @param peerId     the id of the new peer

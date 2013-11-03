@@ -20,18 +20,21 @@ import org.slf4j.LoggerFactory;
  */
 @Singleton
 public class NetworkServiceImpl implements NetworkService {
-
     private static final Logger log = LoggerFactory
             .getLogger(NetworkServiceImpl.class);
     private final AppModel appModel;
     private final MessageParser messageParser;
     private final HashMap<Long, PeerSocket> mPeers;
+    private ListenThread mListenThread;
+    private PeerDiscoverySocket mPeerDiscoverySocket;
 
     @Inject
     public NetworkServiceImpl(AppModel appModel, MessageParser messageParser) {
         this.appModel = appModel;
         this.messageParser = messageParser;
         mPeers = new HashMap();
+        mListenThread = null;
+        mPeerDiscoverySocket = null;
     }
 
     /**
@@ -40,10 +43,19 @@ public class NetworkServiceImpl implements NetworkService {
     @Override
     public void start(int port, String group) throws UnknownHostException {
         InetAddress g = InetAddress.getByName(group);
-        ListenThread lt = new ListenThread(port, this);
-        lt.start();
-        PeerDiscoverySocket pds = new PeerDiscoverySocket(port, g, this);
-        pds.start();
+        mListenThread = new ListenThread(port, this);
+        mListenThread.start();
+        mPeerDiscoverySocket = new PeerDiscoverySocket(port, g, this);
+        mPeerDiscoverySocket.start();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void stop() {
+        mListenThread.stop();
+        mPeerDiscoverySocket.stop();
     }
 
     /**
