@@ -66,7 +66,9 @@ public class NetworkServiceImpl implements NetworkService {
      * {inheritDoc}
      */
     private void sendBroadcast(Message message) {
-        log.warn("sendBroadcast - Not supported yet.");
+        for (PeerSocket peer: mPeers.values()) {
+            peer.send(message);
+        }
     }
 
     /**
