@@ -20,7 +20,12 @@ public class NetworkServiceMock implements NetworkService {
             .getLogger(NetworkServiceMock.class);
 
     @Override
-    public void start() {
+    public void start(int port, String group) {
+        log.warn("Not supported yet.");
+    }
+
+    @Override
+    public void stop() {
         log.warn("Not supported yet.");
     }
 
