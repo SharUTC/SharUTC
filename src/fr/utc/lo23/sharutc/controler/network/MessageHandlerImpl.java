@@ -120,8 +120,6 @@ public class MessageHandlerImpl implements MessageHandler {
                         break;
                     case MUSIC_SEND_TO_PLAY:
                         break;
-                    case HEARTBEAT:
-                        break;
                     case DISCONNECT:
                         break;
                     default:

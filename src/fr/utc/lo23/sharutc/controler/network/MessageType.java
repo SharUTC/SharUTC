@@ -68,10 +68,6 @@ public enum MessageType {
     /**
      *
      */
-    HEARTBEAT,
-    /**
-     *
-     */
     DISCONNECT,
     /**
      *
