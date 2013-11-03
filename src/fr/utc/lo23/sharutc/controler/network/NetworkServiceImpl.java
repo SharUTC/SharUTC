@@ -216,6 +216,6 @@ public class NetworkServiceImpl implements NetworkService {
      */
     @Override
     public void disconnectionBroadcast() {
-        log.warn("Not supported yet.");
+        sendBroadcast(messageParser.write(MessageType.DISCONNECT, null));
     }
 }
