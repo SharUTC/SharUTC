@@ -59,7 +59,7 @@ public class NetworkServiceImpl implements NetworkService {
      */
     @Override
     public void removePeer(PeerSocket peerSocket) {
-        log.warn("removePeer - Not supported yet.");
+        mPeers.values().remove(peerSocket);
     }
 
     /**
