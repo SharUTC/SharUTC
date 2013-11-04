@@ -63,12 +63,7 @@ public class NetworkServiceImpl implements NetworkService {
      */
     @Override
     public void addPeer(long peerId, PeerSocket peerSocket) {
-        if(peerId == 0 || peerSocket == null){
-            log.error("[NetworkService - addPeer()] - null object");
-        } else {
-            this.mPeers.put(peerId, peerSocket);
-            log.info("[NetworkService - addPeer()] - peer "+peerId+" had been adding succesfully");
-        }
+        log.warn("addPeer - Not supported yet.");
     }
 
     /**
@@ -92,11 +87,7 @@ public class NetworkServiceImpl implements NetworkService {
      * {inheritDoc}
      */
     private void sendUnicast(Message message, Peer peer) {
-        if(peer != null){
-            log.error("[NetworkService - sendUnicast()] - object Peer is null");
-        } else {
-            this.mPeers.get(peer.getId()).send(message);
-        }
+        log.warn("sendUnicast - Not supported yet.");
     }
 
     /**
@@ -229,11 +220,7 @@ public class NetworkServiceImpl implements NetworkService {
      */
     @Override
     public void userInfoBroadcast(UserInfo userInfo) {
-        if(userInfo != null){
-            sendBroadcast(messageParser.write(MessageType.CONNECTION, new Object[][]{{Message.CONVERSATION_ID,appModel.getCurrentConversationId()},{Message.USER_INFO, userInfo}}));
-        } else {
-            log.equals("[NetworkService - userInfoBroadCast()] - userInfo is null");
-        }
+        log.warn("Not supported yet.");
     }
 
     /**
