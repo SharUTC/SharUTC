@@ -31,8 +31,13 @@ import fr.utc.lo23.sharutc.controler.command.music.ShowTagMapCommand;
 import fr.utc.lo23.sharutc.controler.command.music.ShowTagMapCommandImpl;
 import fr.utc.lo23.sharutc.controler.command.music.UnsetScoreCommand;
 import fr.utc.lo23.sharutc.controler.command.music.UnsetScoreCommandImpl;
+import fr.utc.lo23.sharutc.controler.command.search.InstallRemoteMusicsCommand;
+import fr.utc.lo23.sharutc.controler.command.search.InstallRemoteMusicsCommandImpl;
 import fr.utc.lo23.sharutc.controler.command.search.IntegrateMusicSearchCommandImpl;
 import fr.utc.lo23.sharutc.controler.command.search.IntegrateMusicSearchCommand;
+import fr.utc.lo23.sharutc.controler.command.search.SendMusicsCommand;
+import fr.utc.lo23.sharutc.controler.command.search.SendMusicsCommandImpl;
+
 /**
  *
  */
@@ -59,7 +64,8 @@ public class CommandModule extends AbstractModule {
         bind(ShowTagMapCommand.class).to(ShowTagMapCommandImpl.class);
         bind(UnsetScoreCommand.class).to(UnsetScoreCommandImpl.class);
         bind(IntegrateMusicSearchCommand.class).to(IntegrateMusicSearchCommandImpl.class);
-   
+        bind(InstallRemoteMusicsCommand.class).to(InstallRemoteMusicsCommandImpl.class);
+        bind(SendMusicsCommand.class).to(SendMusicsCommandImpl.class);
         // more...
     }
 }

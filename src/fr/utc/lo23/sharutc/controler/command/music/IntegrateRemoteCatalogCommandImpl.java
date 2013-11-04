@@ -1,5 +1,6 @@
 package fr.utc.lo23.sharutc.controler.command.music;
 
+import com.google.inject.Inject;
 import fr.utc.lo23.sharutc.controler.service.MusicService;
 import fr.utc.lo23.sharutc.model.domain.Catalog;
 import fr.utc.lo23.sharutc.model.userdata.Peer;
@@ -20,6 +21,7 @@ public class IntegrateRemoteCatalogCommandImpl implements IntegrateRemoteCatalog
     /**
      * {@inheritDoc}
      */
+    @Inject
     public IntegrateRemoteCatalogCommandImpl(MusicService musicService) {
         this.musicService = musicService;
     }

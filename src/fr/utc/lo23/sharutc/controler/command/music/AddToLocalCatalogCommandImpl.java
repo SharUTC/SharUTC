@@ -1,5 +1,6 @@
 package fr.utc.lo23.sharutc.controler.command.music;
 
+import com.google.inject.Inject;
 import fr.utc.lo23.sharutc.controler.service.MusicService;
 import java.io.File;
 import java.util.Collection;
@@ -20,6 +21,7 @@ public class AddToLocalCatalogCommandImpl implements AddToLocalCatalogCommand {
     /**
      * {@inheritDoc}
      */
+    @Inject
     public AddToLocalCatalogCommandImpl(MusicService musicService) {
         this.musicService = musicService;
     }
