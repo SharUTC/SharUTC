@@ -164,7 +164,6 @@ public class FileServiceImpl implements FileService {
 
     @Override
     public Byte[] getFileAsByteArray(File file) throws IOException {
-        log.warn("Not supported yet.");
         ByteArrayOutputStream ous = null;
         InputStream ios = null;
         try {

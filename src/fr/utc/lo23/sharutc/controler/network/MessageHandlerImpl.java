@@ -31,6 +31,7 @@ public class MessageHandlerImpl implements MessageHandler {
     private final MessageParser messageParser;
     private final MusicService musicService;
     private final UserService userService;
+    private Command command = null;
 
     @Inject
     public MessageHandlerImpl(AppModel appModel, MusicService musicService, UserService userService, MessageParser messageParser) {
@@ -68,7 +69,6 @@ public class MessageHandlerImpl implements MessageHandler {
             try {
                 messageParser.read(incomingMessage);
                 messageParser.setFromPeerId(getLocalPeerId());
-                Command command = null;
                 // searching which command to execute following message type
                 switch (incomingMessage.getType()) {
                     case MUSIC_GET_ALL:
@@ -127,9 +127,13 @@ public class MessageHandlerImpl implements MessageHandler {
                         break;
                 }
                 if (command != null) {
-                    //WARNING: some commands have to check if they have to be executed with a conversationId
-                    //FIXME: open a new thread and let it run the execute() method
-                    command.execute();
+                    Thread thread = new Thread() {
+                        @Override
+                        public void run() {
+                            command.execute();
+                        }
+                    };
+                    thread.start();
                 }
             } catch (Exception ex) {
                 log.error(ex.toString());

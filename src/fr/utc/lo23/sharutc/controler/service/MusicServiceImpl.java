@@ -46,15 +46,14 @@ public class MusicServiceImpl implements MusicService {
     public void addToLocalCatalog(Collection<File> mp3Files) {
         Catalog localCatalog = appModel.getLocalCatalog();
         Music currentMusic = null;
-        
-        for(File currentFile : mp3Files) {
+
+        for (File currentFile : mp3Files) {
             try {
-           currentMusic = fileService.readFile(currentFile);
-            }
-            catch (Exception ex) {
+                currentMusic = fileService.readFile(currentFile);
+            } catch (Exception ex) {
                 log.error(ex.toString());
             }
-           localCatalog.add(currentMusic);
+            localCatalog.add(currentMusic);
         }
     }
 
@@ -64,12 +63,11 @@ public class MusicServiceImpl implements MusicService {
     @Override
     public void removeFromLocalCatalog(Collection<Music> musics) {
         Catalog localCatalog = appModel.getLocalCatalog();
-        
-        for(Music currentMusic : musics) {
+
+        for (Music currentMusic : musics) {
             try {
-               localCatalog.remove(currentMusic);
-            }
-            catch (Exception ex) {
+                localCatalog.remove(currentMusic);
+            } catch (Exception ex) {
                 log.error(ex.toString());
             }
         }
@@ -96,7 +94,7 @@ public class MusicServiceImpl implements MusicService {
      */
     @Override
     public void integrateRemoteTagMap(TagMap tagMap) {
-        log.warn("Not supported yet.");
+        appModel.getNetworkTagMap().merge(tagMap);
     }
 
     /**
@@ -104,14 +102,9 @@ public class MusicServiceImpl implements MusicService {
      */
     @Override
     public void addTag(Music music, String tag) {
-        if (tag != null && tag.trim().length() > 0) {
-            tag = tag.toLowerCase();
-            tag = tag.substring(0, 1).toUpperCase() + (tag.length() > 1 ? tag.substring(1) : "");
+        if (music != null && tag != null && !tag.isEmpty()) {
             music.addTag(tag);
-        } else {
-            log.warn("Using null or empty tag name, skipping it");
         }
-        log.warn("Not supported yet.");
     }
 
     /**
@@ -119,12 +112,8 @@ public class MusicServiceImpl implements MusicService {
      */
     @Override
     public void removeTag(Music music, String tag) {
-        if (tag != null && tag.trim().length() > 0) {
-            tag = tag.toLowerCase();
-            tag = tag.substring(0, 1).toUpperCase() + (tag.length() > 1 ? tag.substring(1) : "");
+        if (music != null && tag != null && !tag.isEmpty()) {
             music.removeTag(tag);
-        } else {
-            log.warn("Using null or empty tag name, skipping it");
         }
     }
 
