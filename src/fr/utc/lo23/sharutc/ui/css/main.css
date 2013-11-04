@@ -1,0 +1,64 @@
+/* 
+    Document   : style
+    Created on : 3 oct. 2013, 22:07:59
+    Author     : Alexandre
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+#leftpane {
+    -fx-font-size:24;
+    -fx-font-style: italic;
+}
+
+#topbar {
+    -fx-background-color: #95A5A6;
+}
+
+#bottombar {
+    -fx-background-color: #95A5A6;
+}
+
+#songsbutton {
+    -fx-background-color: #33B5E5;
+    -fx-background-radius: 0;
+}
+
+#songsbutton:hover {
+    -fx-background-color: #0099CC;
+}
+
+#peoplebutton {
+    -fx-background-color: #99CC00;
+    -fx-background-radius: 0;
+}
+
+#peoplebutton:hover {
+    -fx-background-color: #669900;
+}
+
+#artistsbutton {
+    -fx-background-color: #FF4444;
+    -fx-background-radius: 0;
+}
+
+#artistsbutton:hover {
+    -fx-background-color: #CC0000;
+}
+
+#albumsbutton {
+    -fx-background-color: #FFBB33;
+    -fx-background-radius: 0;
+}
+
+#albumsbutton:hover {
+    -fx-background-color: #FF8800;
+}
+
+#gridPane {
+    -fx-background-color: #ECF0F1;
+}
+
+#rightpane {
+
+}
