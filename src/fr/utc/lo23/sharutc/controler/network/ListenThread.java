@@ -11,7 +11,7 @@ import java.net.ServerSocket;
 public class ListenThread implements Runnable {
     private static final Logger log = LoggerFactory.getLogger(PeerDiscoverySocket.class);
     private final int port;//final static int port;
-    private final NetworkService networkService;
+    final NetworkService networkService;
     
     /**
      *
