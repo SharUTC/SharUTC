@@ -5,6 +5,7 @@
  */
 package fr.utc.lo23.sharutc.controler.network;
 
+import fr.utc.lo23.sharutc.model.AppModel;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
@@ -52,6 +53,10 @@ public class PeerDiscoverySocket implements Runnable {
      *
      */
     private NetworkService mNs;
+    /**
+     *
+     */
+    private AppModel mAppModel;
 
     /**
      *
@@ -59,13 +64,14 @@ public class PeerDiscoverySocket implements Runnable {
      * @param group
      * @param ns
      */
-    public PeerDiscoverySocket(int port, InetAddress group, NetworkService ns) {
+    public PeerDiscoverySocket(int port, InetAddress group, NetworkService ns, AppModel appModel) {
         // preparation
         this.mPort = port;
         this.mGroup = group;
         this.mNs = ns;
         this.threadShouldStop = false;
         this.thread = null;
+        this.mAppModel = appModel;
         try {
             mSocket = new MulticastSocket(mPort);
             mSocket.joinGroup(mGroup);
@@ -112,10 +118,11 @@ public class PeerDiscoverySocket implements Runnable {
      *
      * @param msg
      */
-    public void sendConnectionBroadcast(String msg) {
+    public void send(Message msg) {
         try {
-            // TODO - recuperer peerId
-            Message msgToSend = new Message(11, MessageType.CONNECTION, msg);
+            Long myPeerId = mAppModel.getProfile().getUserInfo().getPeerId();
+            // TODO attention ici je recupere string du msg seulement
+            Message msgToSend = new Message(myPeerId, MessageType.CONNECTION, msg.getContent());
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             ObjectOutputStream oos = new ObjectOutputStream(baos);
             oos.writeObject(msgToSend);
@@ -160,9 +167,8 @@ public class PeerDiscoverySocket implements Runnable {
      * @param pSocket
      */
     public void sendPersonalInformationToPeer(PeerSocket pSocket) {
-        // TODO - get my peerId
-        Message msgInfo;
-        Long myPeerId = new Long(11111);
+        Message msgInfo = null;
+        Long myPeerId = mAppModel.getProfile().getUserInfo().getPeerId();
         msgInfo = new Message(myPeerId, MessageType.CONNECTION_RESPONSE, "I send you my personal information (peerId = " + myPeerId + ")");
         pSocket.send(msgInfo);
     }
