@@ -10,4 +10,4 @@
 <?import javafx.scene.control.cell.*?>
 
 <?import fr.utc.lo23.sharutc.ui.*?>
-<Label text="This is the songs layout"/>
+<Label text="Manage your songs list" styleClass="panetitle"/>

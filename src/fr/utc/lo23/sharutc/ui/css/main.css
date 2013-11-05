@@ -60,5 +60,9 @@
 }
 
 #rightpane {
+    fx-padding : 16px;
+}
 
+.panetitle {
+	-fx-font-size : 28px;
 }

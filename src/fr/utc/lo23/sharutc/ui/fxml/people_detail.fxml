@@ -10,4 +10,4 @@
 <?import javafx.scene.control.cell.*?>
 
 <?import fr.utc.lo23.sharutc.ui.*?>
-<Label text="This is the people layout"/>
+<Label text="This is the people layout" styleClass="panetitle"/>

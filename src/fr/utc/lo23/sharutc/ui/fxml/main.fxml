@@ -10,6 +10,7 @@
 <?import javafx.scene.control.cell.*?>
 
 <?import fr.utc.lo23.sharutc.ui.*?>
+<?import javafx.geometry.Insets?>
 <VBox id="gridPane" prefWidth="800" prefHeight="600" xmlns:fx="http://javafx.com/fxml"
           fx:controller="fr.utc.lo23.sharutc.ui.MainController">
 
@@ -30,6 +31,12 @@
         </VBox>
 
         <GridPane fx:id="rightpane" GridPane.columnIndex="1" GridPane.vgrow="ALWAYS" GridPane.hgrow="ALWAYS">
+            <GridPane.margin>
+                <Insets>
+                    <left>8</left>
+                    <right>8</right>
+                </Insets>
+            </GridPane.margin>
         </GridPane>
     </GridPane>
 
