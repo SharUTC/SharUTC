@@ -32,4 +32,16 @@ public interface SendCatalogCommand extends Command {
      * @param catalog
      */
     public void setCatalog(Catalog catalog);
+    
+     /**
+     *
+     * @return
+     */
+    public Long getConversationId();
+
+    /**
+     * @param conversationId
+     */
+    public void setConversationId(Long conversationId);
+    
 }

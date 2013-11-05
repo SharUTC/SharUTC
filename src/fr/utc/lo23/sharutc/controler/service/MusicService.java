@@ -84,17 +84,19 @@ public interface MusicService {
     public void removeComment(Peer peer, Music music, Integer commentIndex);
 
     /**
+     * Define the score on a music given by a peer
      *
-     * @param peer
-     * @param music
-     * @param score
+     * @param peer The peer who gives the score
+     * @param music The music which has to be scored
+     * @param score The value of the score
      */
     public void setScore(Peer peer, Music music, Integer score);
 
     /**
+     * Unset the score on a music given by a peer
      *
-     * @param peer
-     * @param music
+     * @param peer The peer who gives the score
+     * @param music The music which has to be scored
      */
     public void unsetScore(Peer peer, Music music);
 
