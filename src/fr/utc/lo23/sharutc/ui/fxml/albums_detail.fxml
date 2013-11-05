@@ -10,4 +10,4 @@
 <?import javafx.scene.control.cell.*?>
 
 <?import fr.utc.lo23.sharutc.ui.*?>
-<Label text="This is the albums layout" styleClass="panetitle"/>
+<Label xmlns:fx="http://javafx.com/fxml" fx:controller="fr.utc.lo23.sharutc.ui.AlbumsDetailController" text="This is the albums layout" styleClass="panetitle"/>
