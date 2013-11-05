@@ -1,5 +1,6 @@
 package fr.utc.lo23.sharutc.controler.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import fr.utc.lo23.sharutc.model.AppModel;
@@ -32,6 +33,7 @@ public class MusicServiceImpl implements MusicService {
     private final FileService fileService;
     private TagMap localTagMap = null;
     private boolean localTagMapDirty = true;
+    private static final String dataPath = "";
 
     /**
      * {@inheritDoc}
@@ -200,7 +202,17 @@ public class MusicServiceImpl implements MusicService {
      */
     @Override
     public void saveUserMusicFiles() {
-        log.warn("Not supported yet.");
+        Catalog localCatalog = appModel.getLocalCatalog(); 
+        if(localCatalog != null){
+            ObjectMapper mapper = new ObjectMapper();
+            try {
+                mapper.writeValue(new File(dataPath + "\\music.json"), localCatalog);
+            } catch (IOException ex) {
+                log.error(ex.toString());
+            }
+        }
+        else
+            log.warn("Can't save current music Catalog(null)");
     }
 
     /**
@@ -208,7 +220,17 @@ public class MusicServiceImpl implements MusicService {
      */
     @Override
     public void loadUserMusicFiles(String path) {
-        log.warn("Not supported yet.");
+       if(path != null){
+       ObjectMapper mapper = new ObjectMapper();
+            try {
+                Catalog tmpCatalog = mapper.readValue(new File(path), Catalog.class);
+                appModel.setTmpCatalog(tmpCatalog);
+            } catch (IOException ex) {
+                log.error(ex.toString());
+            }
+        }
+        else
+            log.warn("Don't have any path(null)");
 
     }
 
