@@ -20,7 +20,7 @@ import org.slf4j.LoggerFactory;
  * id3tags are parsed when the music is added locally, user changes are reported
  * to the file also, a copy of these informations is stored with the Music
  * object to enhance search trough a list of musics
- * 
+ *
  * Music equality is based on the file Byte[] hash value only
  *
  */
@@ -381,19 +381,39 @@ public class Music implements Serializable {
     }
 
     /**
+     * Return the list of scores
      *
-     * @return
+     * @return The list of scores
      */
     public Set<Score> getScores() {
         return Collections.unmodifiableSet(mScores);
     }
 
     /**
+     * Define the list of scores
      *
-     * @param scores
+     * @param scores The list of scores
      */
     public void setScores(Set<Score> scores) {
         this.mScores = scores;
+    }
+
+    /**
+     * Add a score to the list of scores
+     *
+     * @param score The score to add
+     */
+    public void addScore(Score score) {
+        this.mScores.add(score);
+    }
+
+    /**
+     * Remove a score to the list of scores
+     *
+     * @param score The score to remove
+     */
+    public void removeScore(Score score) {
+        this.mScores.remove(score);
     }
 
     /**
