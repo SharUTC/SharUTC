@@ -6,7 +6,7 @@ import fr.utc.lo23.sharutc.model.userdata.UserInfo;
 /**
  *
  */
-public interface IntegrateHeartbeatCommand1 extends Command {
+public interface IntegrateConnectionCommand extends Command {
 
     /**
      *
