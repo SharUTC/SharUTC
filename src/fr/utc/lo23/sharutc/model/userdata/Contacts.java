@@ -14,7 +14,7 @@ import java.util.HashSet;
 public class Contacts implements Serializable {
 
     private static final long serialVersionUID = -8656809069835780866L;
-    private HashSet<Contact> mContacts;
+    private HashSet<Long> mContactIds;
     @JsonIgnore
     private CollectionChangeSupport mCollectionChangeSupport = new CollectionChangeSupport(this);
 
@@ -28,29 +28,29 @@ public class Contacts implements Serializable {
      *
      * @return
      */
-    public HashSet<Contact> getContacts() {
-        return mContacts;
+    public HashSet<Long> getContacts() {
+        return mContactIds;
     }
 
     /**
      *
      * @param contacts
      */
-    public void setContacts(HashSet<Contact> contacts) {
-        this.mContacts = contacts;
+    public void setContacts(HashSet<Long> contacts) {
+        this.mContactIds = contacts;
     }
 
     /**
      * Return the Peer who has the Id given in parameter if exists
      *
-     * @param peerID the Peer id of a Contact
+     * @param peerID the Peer id of a Long
      * @return the Peer who has the Id given in parameter, null is the peer
-     * isn't a Contact
+ isn't a Long
      */
-    public Contact findById(Long peerID) {
-        for (Contact contact : mContacts) {
-            if (contact.getPeerId().equals(peerID)) {
-                return contact;
+    public Long findById(Long peerID) {
+        for (Long contactId : mContactIds) {
+            if (contactId.equals(peerID)) {
+                return contactId;
             }
         }
         return null;
@@ -61,10 +61,10 @@ public class Contacts implements Serializable {
      * @param contact
      * @return
      */
-    public boolean add(Contact contact) {
-        boolean added = mContacts.add(contact);
+    public boolean add(Long contact) {
+        boolean added = mContactIds.add(contact);
         if (added) {
-            mCollectionChangeSupport.fireCollectionChanged(contact, mContacts.size() - 1, CollectionEvent.Type.ADD);
+            mCollectionChangeSupport.fireCollectionChanged(contact, mContactIds.size() - 1, CollectionEvent.Type.ADD);
         }
         return added;
     }
@@ -73,9 +73,9 @@ public class Contacts implements Serializable {
      *
      * @param contacts
      */
-    public void addAll(Collection<Contact> contacts) {
+    public void addAll(Collection<Long> contacts) {
         if (contacts != null && !contacts.isEmpty()) {
-            for (Contact contact : contacts) {
+            for (Long contact : contacts) {
                 this.add(contact);
             }
         }
@@ -86,8 +86,8 @@ public class Contacts implements Serializable {
      * @param contact
      * @return
      */
-    public boolean remove(Contact contact) {
-        boolean removed = mContacts.remove(contact);
+    public boolean remove(Long contact) {
+        boolean removed = mContactIds.remove(contact);
         if (removed) {
             mCollectionChangeSupport.fireCollectionChanged(contact, -1, CollectionEvent.Type.REMOVE);
         }
@@ -98,8 +98,8 @@ public class Contacts implements Serializable {
      *
      */
     public void clear() {
-        if (!mContacts.isEmpty()) {
-            mContacts.clear();
+        if (!mContactIds.isEmpty()) {
+            mContactIds.clear();
             mCollectionChangeSupport.fireCollectionChanged(null, -1, CollectionEvent.Type.CLEAR);
         }
     }
@@ -109,7 +109,7 @@ public class Contacts implements Serializable {
      * @return
      */
     public int size() {
-        return mContacts.size();
+        return mContactIds.size();
     }
 
     /**
@@ -117,8 +117,8 @@ public class Contacts implements Serializable {
      * @param contact
      * @return
      */
-    public boolean contains(Contact contact) {
-        return mContacts.contains(contact);
+    public boolean contains(Long contact) {
+        return mContactIds.contains(contact);
     }
 
     /**
@@ -126,7 +126,7 @@ public class Contacts implements Serializable {
      * @return
      */
     public boolean isEmpty() {
-        return mContacts.isEmpty();
+        return mContactIds.isEmpty();
     }
 
     /**

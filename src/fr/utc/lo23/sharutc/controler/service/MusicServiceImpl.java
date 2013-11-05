@@ -12,7 +12,6 @@ import fr.utc.lo23.sharutc.model.domain.RightsList;
 import fr.utc.lo23.sharutc.model.domain.Score;
 import fr.utc.lo23.sharutc.model.domain.SearchCriteria;
 import fr.utc.lo23.sharutc.model.domain.TagMap;
-import fr.utc.lo23.sharutc.model.userdata.Contact;
 import fr.utc.lo23.sharutc.model.userdata.Peer;
 import java.io.File;
 import java.io.IOException;
@@ -272,9 +271,9 @@ public class MusicServiceImpl implements MusicService {
         Catalog catalogResult = new Catalog();
 
         if (criteria != null && criteria.getSearch() != null && criteria.getSearch().trim().length() > 0 && peer != null) {
-            Contact contact = userService.findContactByPeerId(peer.getId());
+            Long contact = userService.findContactByPeerId(peer.getId());
             if (contact != null) {
-                Set<Integer> contactCategoryIds = contact.getCategoryIds();
+                Set<Integer> contactCategoryIds = appModel.getProfile().getCategories().getCategoriesIdsByContactId(contact);
 
                 // looping on whole catalog, searching for matching music informations
                 for (Music music : appModel.getLocalCatalog().getMusics()) {

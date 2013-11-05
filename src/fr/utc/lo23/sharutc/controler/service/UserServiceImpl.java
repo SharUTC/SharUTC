@@ -5,7 +5,6 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import fr.utc.lo23.sharutc.model.AppModel;
 import fr.utc.lo23.sharutc.model.userdata.Category;
-import fr.utc.lo23.sharutc.model.userdata.Contact;
 import fr.utc.lo23.sharutc.model.userdata.Peer;
 import fr.utc.lo23.sharutc.model.userdata.Profile;
 import fr.utc.lo23.sharutc.model.userdata.UserInfo;
@@ -23,11 +22,13 @@ public class UserServiceImpl implements UserService {
     private static final Logger log = LoggerFactory
             .getLogger(UserServiceImpl.class);
     private final AppModel appModel;
+    private final Profile profile;
     private static final String dataPath = "";
 
     @Inject
     public UserServiceImpl(AppModel appModel) {
         this.appModel = appModel;
+        this.profile = appModel.getProfile();
     }
 
     /**
@@ -49,21 +50,20 @@ public class UserServiceImpl implements UserService {
             log.warn("Can't save current profile(null)");
         }
     }
-
+    
     /**
      * {@inheritDoc}
      */
     @Override
     public void addContact(Peer peer) {
-        Contact contact = new Contact(peer.getId());
-        appModel.getProfile().getContacts().add(contact);
+        profile.getCategories().findCategoryByName("default").addContactId(peer.getId());
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void deleteContact(Contact contact) {
+    public void deleteContact(Long contactId) {
         log.warn("Not supported yet.");
     }
 
@@ -149,9 +149,10 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Contact findContactByPeerId(Long peerId) {
+    public Long findContactByPeerId(Long peerId) {
         // 2 modes : when peer is a contact and when peer isn't a contact
-        Contact contact = appModel.getProfile().getContacts().findById(peerId);
+        Long contact = appModel.getProfile().getCategories().
+                findCategoryByName("default").getContacts().findById(peerId);
         return contact;
     }
 }
