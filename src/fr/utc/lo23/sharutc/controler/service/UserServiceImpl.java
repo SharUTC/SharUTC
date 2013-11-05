@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import fr.utc.lo23.sharutc.model.AppModel;
-import fr.utc.lo23.sharutc.model.domain.Music;
 import fr.utc.lo23.sharutc.model.userdata.Category;
 import fr.utc.lo23.sharutc.model.userdata.Contact;
 import fr.utc.lo23.sharutc.model.userdata.Peer;
@@ -20,11 +19,10 @@ import org.slf4j.LoggerFactory;
  */
 @Singleton
 public class UserServiceImpl implements UserService {
- 
+
     private static final Logger log = LoggerFactory
             .getLogger(UserServiceImpl.class);
     private final AppModel appModel;
-    
     private static final String dataPath = "";
 
     @Inject
@@ -35,21 +33,23 @@ public class UserServiceImpl implements UserService {
     /**
      * {@inheritDoc}
      */
+    //TODO : factorize code with any file by using/creating FileService.save(String filename, Object object);
+    //FIXME : ObjectMapper should be a static instance (singleton is we refer to doc), actually another instance is required in MessageParser, the solution could be to create a MapperService that only owns this instance of ObjectMapper
     @Override
-    public void saveProfile(){
+    public void saveProfileFiles() {
         Profile profile = appModel.getProfile();
-        if(profile != null){
+        if (profile != null) {
             ObjectMapper mapper = new ObjectMapper();
             try {
                 mapper.writeValue(new File(dataPath + "\\profile.json"), profile);
             } catch (IOException ex) {
                 log.error(ex.toString());
             }
-        }
-        else
+        } else {
             log.warn("Can't save current profile(null)");
+        }
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -103,9 +103,9 @@ public class UserServiceImpl implements UserService {
      * {@inheritDoc}
      */
     @Override
-    public void createProfile(UserInfo userInfo) {
-        Profile profile = new Profile();
-        profile.setUserInfo(userInfo);
+    public void createAndSetProfile(UserInfo userInfo) {
+        Profile profile = new Profile(userInfo);
+        appModel.setProfile(profile);
     }
 
     /**
@@ -144,15 +144,14 @@ public class UserServiceImpl implements UserService {
      * {@inheritDoc}
      */
     @Override
-    public void saveUserProfileFiles() {
+    public void integrateConnection(UserInfo userinfo) {
         log.warn("Not supported yet.");
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
-    public void integrateConnection(UserInfo userinfo) {
-        log.warn("Not supported yet.");
+    public Contact findContactByPeerId(Long peerId) {
+        // 2 modes : when peer is a contact and when peer isn't a contact
+        Contact contact = appModel.getProfile().getContacts().findById(peerId);
+        return contact;
     }
 }

@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package fr.utc.lo23.sharutc.controler.network;
 
 import fr.utc.lo23.sharutc.model.AppModel;
@@ -21,6 +16,10 @@ import org.slf4j.LoggerFactory;
  */
 public class PeerDiscoverySocket implements Runnable {
 
+    /**
+     *
+     */
+    private final MessageParser messageParser;
     /**
      *
      */
@@ -48,11 +47,11 @@ public class PeerDiscoverySocket implements Runnable {
     /**
      *
      */
-    private NetworkService mNs;
+    private final NetworkService mNs;
     /**
      *
      */
-    private AppModel mAppModel;
+    private final AppModel mAppModel;
 
     /**
      *
@@ -61,7 +60,7 @@ public class PeerDiscoverySocket implements Runnable {
      * @param ns
      * @param appModel
      */
-    public PeerDiscoverySocket(int port, InetAddress group, NetworkService ns, AppModel appModel) {
+    public PeerDiscoverySocket(int port, InetAddress group, NetworkService ns, AppModel appModel, MessageParser messageParser) {
         // preparation
         this.mPort = port;
         this.mGroup = group;
@@ -75,6 +74,7 @@ public class PeerDiscoverySocket implements Runnable {
         } catch (IOException e) {
             log.error(e.toString());
         }
+        this.messageParser = messageParser;
     }
 
     /**
@@ -116,7 +116,7 @@ public class PeerDiscoverySocket implements Runnable {
      * @param msg
      */
     public void send(Message msg) {
-        byte[] bytes = msg.toJSON().getBytes();
+        byte[] bytes = messageParser.toJSON(msg).getBytes();
         DatagramPacket p = new DatagramPacket(bytes, bytes.length, mGroup, mPort);
         try {
             mSocket.send(p);
@@ -148,7 +148,8 @@ public class PeerDiscoverySocket implements Runnable {
     }
 
     /**
-     * Send personal information in order to establish the connection with the new peer
+     * Send personal information in order to establish the connection with the
+     * new peer
      *
      * @param pSocket
      */
@@ -160,7 +161,8 @@ public class PeerDiscoverySocket implements Runnable {
     }
 
     /**
-     * Thread which receives a UDP packet, adds a new peer, and send personal information in order to establish the connection with the new peer
+     * Thread which receives a UDP packet, adds a new peer, and send personal
+     * information in order to establish the connection with the new peer
      */
     @Override
     public void run() {
@@ -177,7 +179,7 @@ public class PeerDiscoverySocket implements Runnable {
                 log.info("Got packet " + Arrays.toString(p.getData()));
                 // get message object
                 String json = new String(p.getData());
-                msgReceived = Message.fromJSON(json);
+                msgReceived = messageParser.fromJSON(json);
                 if (msgReceived.getType() == MessageType.CONNECTION) {
                     // print more info
                     if (msgReceived.getFromPeerId() != null) {

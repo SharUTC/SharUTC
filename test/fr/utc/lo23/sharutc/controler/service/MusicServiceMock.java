@@ -10,7 +10,6 @@ import fr.utc.lo23.sharutc.model.domain.TagMap;
 import fr.utc.lo23.sharutc.model.userdata.Peer;
 import java.io.File;
 import java.util.Collection;
-import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,8 +24,8 @@ public class MusicServiceMock extends MusicServiceImpl implements MusicService {
             .getLogger(MusicServiceMock.class);
 
     @Inject
-    public MusicServiceMock(AppModel appModel, FileService fileService) {
-        super(appModel, fileService);
+    public MusicServiceMock(AppModel appModel, UserService userService, FileService fileService) {
+        super(appModel, userService, fileService);
     }
 
     @Override

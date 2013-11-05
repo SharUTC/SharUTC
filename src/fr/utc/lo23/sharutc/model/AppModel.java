@@ -4,7 +4,6 @@ import fr.utc.lo23.sharutc.model.domain.Catalog;
 import fr.utc.lo23.sharutc.model.domain.RightsList;
 import fr.utc.lo23.sharutc.model.domain.TagMap;
 import fr.utc.lo23.sharutc.model.userdata.ActivePeerList;
-import fr.utc.lo23.sharutc.model.userdata.KnownPeerList;
 import fr.utc.lo23.sharutc.model.userdata.Profile;
 
 /**
@@ -12,20 +11,6 @@ import fr.utc.lo23.sharutc.model.userdata.Profile;
  * via a PropertyChangeListener to detect user connection at least.
  */
 public interface AppModel {
-
-    /**
-     * Return the object containing the list of known peers
-     *
-     * @return the object containing the list of known peers
-     */
-    public KnownPeerList getKnownPeerList();
-
-    /**
-     * Set the object containing the list of known peers
-     *
-     * @param knownPeerList the object containing the list of known peers
-     */
-    public void setKnownPeerList(KnownPeerList knownPeerList);
 
     /**
      * Return the object containing the list of active peers

@@ -1,12 +1,6 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package fr.utc.lo23.sharutc.controler.command.account;
 
 import com.google.inject.Inject;
-import fr.utc.lo23.sharutc.controler.command.music.SendTagMapCommandImpl;
 import fr.utc.lo23.sharutc.controler.service.UserService;
 import fr.utc.lo23.sharutc.model.AppModel;
 import fr.utc.lo23.sharutc.model.userdata.Peer;
@@ -15,15 +9,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- *
- * @author Tudor Luchiancenco <tudorluchy@gmail.com>
+ * {@inheritDoc}
  */
 public class IntegrateConnectionCommandImpl implements IntegrateConnectionCommand {
 
     private static final Logger log = LoggerFactory
-        .getLogger(SendTagMapCommandImpl.class);
-    private final AppModel mAppModel;
-    private final UserService mUserService;
+            .getLogger(IntegrateConnectionCommandImpl.class);
+    private final AppModel appModel;
+    private final UserService userService;
     private UserInfo mUserInfo;
 
     /**
@@ -33,14 +26,12 @@ public class IntegrateConnectionCommandImpl implements IntegrateConnectionComman
      */
     @Inject
     public IntegrateConnectionCommandImpl(AppModel appModel, UserService us) {
-        this.mAppModel = appModel;
-        this.mUserService = us;
+        this.appModel = appModel;
+        this.userService = us;
     }
 
     /**
-     * Get user info
-     * 
-     * @return 
+     * {@inheritDoc}
      */
     @Override
     public UserInfo getUserInfo() {
@@ -48,9 +39,7 @@ public class IntegrateConnectionCommandImpl implements IntegrateConnectionComman
     }
 
     /**
-     * Set user info
-     * 
-     * @param userInfo 
+     * {@inheritDoc}
      */
     @Override
     public void setUserInfo(UserInfo userInfo) {
@@ -58,14 +47,15 @@ public class IntegrateConnectionCommandImpl implements IntegrateConnectionComman
     }
 
     /**
-     * Add user info to model
-     * Add user info to active peer list
+     * Add user info to model Add user info to active peer list
      */
     @Override
     public void execute() {
-        mUserService.integrateConnection(mUserInfo);
+        log.info("IntegrateConnectionCommandImpl ...");
+        userService.integrateConnection(mUserInfo);
         // TODO ip adresse ?
         Peer peer = new Peer(mUserInfo.getPeerId(), mUserInfo.getLogin());
-        mAppModel.getActivePeerList().update(peer);
+        appModel.getActivePeerList().update(peer);
+        log.info("IntegrateConnectionCommandImpl DONE");
     }
 }

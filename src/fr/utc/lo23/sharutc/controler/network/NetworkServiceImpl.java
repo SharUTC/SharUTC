@@ -46,7 +46,7 @@ public class NetworkServiceImpl implements NetworkService {
         InetAddress g = InetAddress.getByName(group);
         mListenThread = new ListenThread(port, this, mAppModel);
         mListenThread.start();
-        mPeerDiscoverySocket = new PeerDiscoverySocket(port, g, this, mAppModel);
+        mPeerDiscoverySocket = new PeerDiscoverySocket(port, g, this, mAppModel,mMessageParser);
         mPeerDiscoverySocket.start();
     }
 

@@ -44,27 +44,9 @@ public class SendCatalogCommandMock implements SendCatalogCommand {
      * @return
      */
     @Override
-    public Catalog getCatalog() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    /**
-     *
-     * @param catalog
-     */
-    @Override
-    public void setCatalog(Catalog catalog) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-    
-     /**
-     *
-     * @return
-     */
-    @Override
     public Long getConversationId() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-        }
+    }
 
     /**
      * @param conversationId
@@ -72,6 +54,5 @@ public class SendCatalogCommandMock implements SendCatalogCommand {
     @Override
     public void setConversationId(Long conversationId) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }  
-    
+    }
 }

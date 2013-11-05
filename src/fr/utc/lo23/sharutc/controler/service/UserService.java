@@ -1,6 +1,5 @@
 package fr.utc.lo23.sharutc.controler.service;
 
-import fr.utc.lo23.sharutc.model.domain.Music;
 import fr.utc.lo23.sharutc.model.userdata.Category;
 import fr.utc.lo23.sharutc.model.userdata.Contact;
 import fr.utc.lo23.sharutc.model.userdata.Peer;
@@ -15,8 +14,8 @@ public interface UserService {
      * Save the currently connected user profile, by writing the java data into
      * a JSON file.
      */
-    public void saveProfile();
-    
+    public void saveProfileFiles();
+
     /**
      *
      * @param peer
@@ -59,7 +58,7 @@ public interface UserService {
      *
      * @param userInfo
      */
-    public void createProfile(UserInfo userInfo);
+    public void createAndSetProfile(UserInfo userInfo);
 
     /**
      *
@@ -88,12 +87,14 @@ public interface UserService {
 
     /**
      *
-     */
-    public void saveUserProfileFiles();
-
-    /**
-     *
      * @param userinfo
      */
     public void integrateConnection(UserInfo userinfo);
+
+    /**
+     *
+     * @param peerId
+     * @return
+     */
+    public Contact findContactByPeerId(Long peerId);
 }

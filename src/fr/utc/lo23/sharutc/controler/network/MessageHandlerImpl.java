@@ -16,7 +16,6 @@ import fr.utc.lo23.sharutc.controler.service.UserService;
 import fr.utc.lo23.sharutc.model.AppModel;
 import fr.utc.lo23.sharutc.model.domain.Catalog;
 import fr.utc.lo23.sharutc.model.domain.TagMap;
-import fr.utc.lo23.sharutc.model.userdata.Peer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,8 +26,7 @@ import org.slf4j.LoggerFactory;
 public class MessageHandlerImpl implements MessageHandler {
 
     private static final Logger log = LoggerFactory
-        .getLogger(MessageHandlerImpl.class);
-    private static final ObjectMapper mapper = new ObjectMapper();
+            .getLogger(MessageHandlerImpl.class);
     private final AppModel appModel;
     private final MessageParser messageParser;
     private final MusicService musicService;
@@ -64,12 +62,12 @@ public class MessageHandlerImpl implements MessageHandler {
      */
     @Override
     public void handleMessage(String string) {
-        Message incomingMessage = Message.fromJSON(string);
+        Message incomingMessage = messageParser.fromJSON(string);
         if (incomingMessage != null) {
             try {
                 messageParser.read(incomingMessage);
-                messageParser.setFromPeerId(getLocalPeerId());
                 // searching which command to execute following message type
+                log.info("Handling message '{}' from '{}'", incomingMessage.getType().name(), messageParser.getSource());
                 switch (incomingMessage.getType()) {
                     case MUSIC_GET_CATALOG:
                         sendCatalogCommand.setPeer(messageParser.getSource());
@@ -78,8 +76,9 @@ public class MessageHandlerImpl implements MessageHandler {
                         break;
                     case MUSIC_CATALOG:
                         if (isMessageForCurrentConversation(incomingMessage)) {
-                          integrateRemoteCatalogCommand.setCatalog((Catalog) messageParser.getValue(Message.CATALOG));
-                          command = integrateRemoteCatalogCommand;
+                            integrateRemoteCatalogCommand.setPeer(messageParser.getSource());
+                            integrateRemoteCatalogCommand.setCatalog((Catalog) messageParser.getValue(Message.CATALOG));
+                            command = integrateRemoteCatalogCommand;
                         }
                         break;
                     case TAG_GET_MAP:
@@ -130,13 +129,15 @@ public class MessageHandlerImpl implements MessageHandler {
                     case DISCONNECT:
                         break;
                     default:
-                        log.warn("MISSING COMMAND {}", incomingMessage.getType().name());
+                        command = null;
+                        log.warn("Missing command : {}", incomingMessage.getType().name());
                         break;
                 }
                 if (command != null) {
                     Thread thread = new Thread() {
                         @Override
                         public void run() {
+                            log.info("Running new command : {}", command.getClass().getName());
                             command.execute();
                         }
                     };
@@ -150,9 +151,5 @@ public class MessageHandlerImpl implements MessageHandler {
 
     private boolean isMessageForCurrentConversation(Message message) {
         return appModel.getCurrentConversationId().equals(message.getConversationId());
-    }
-
-    private long getLocalPeerId() {
-        return appModel.getProfile().getUserInfo().getPeerId();
     }
 }

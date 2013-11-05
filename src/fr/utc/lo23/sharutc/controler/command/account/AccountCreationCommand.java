@@ -4,9 +4,9 @@ import fr.utc.lo23.sharutc.controler.command.Command;
 import fr.utc.lo23.sharutc.model.userdata.UserInfo;
 
 /**
- *
+ * TODO: add comments
  */
-public interface ProfileCreationCommand extends Command {
+public interface AccountCreationCommand extends Command {
 
     /**
      *

@@ -3,7 +3,6 @@ package fr.utc.lo23.sharutc.controler.service;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import fr.utc.lo23.sharutc.model.AppModel;
-import fr.utc.lo23.sharutc.model.domain.Music;
 import fr.utc.lo23.sharutc.model.userdata.Category;
 import fr.utc.lo23.sharutc.model.userdata.Contact;
 import fr.utc.lo23.sharutc.model.userdata.Peer;
@@ -56,8 +55,8 @@ public class UserServiceMock extends UserServiceImpl implements UserService {
     }
 
     @Override
-    public void createProfile(UserInfo userInfo) {
-        super.createProfile(userInfo);
+    public void createAndSetProfile(UserInfo userInfo) {
+        super.createAndSetProfile(userInfo);
     }
 
     @Override
@@ -81,8 +80,8 @@ public class UserServiceMock extends UserServiceImpl implements UserService {
     }
 
     @Override
-    public void saveUserProfileFiles() {
-        super.saveUserProfileFiles();
+    public void saveProfileFiles() {
+        super.saveProfileFiles();
     }
 
     @Override

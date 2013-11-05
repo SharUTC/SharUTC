@@ -29,10 +29,10 @@ import org.slf4j.LoggerFactory;
  */
 @Singleton
 public class FileServiceImpl implements FileService {
-    private static final int BUFFER_SIZE        = 2048;
-    private static final int COMPRESSION_LEVEL  = 9;
+
+    private static final int BUFFER_SIZE = 2048;
+    private static final int COMPRESSION_LEVEL = 9;
     private String mSourceFolder;
-    
     private static final Logger log = LoggerFactory
             .getLogger(FileServiceImpl.class);
     private final AppModel appModel;
@@ -59,51 +59,53 @@ public class FileServiceImpl implements FileService {
         List<String> fileList = new ArrayList<String>();
         byte data[] = new byte[BUFFER_SIZE];
         mSourceFolder = srcPath;
-        
+
         getFilesRec(fileList, new File(srcPath));
-        
+
         //Traitement de la sortie
         FileOutputStream dest = new FileOutputStream(destPath);
         BufferedOutputStream outBuffer = new BufferedOutputStream(dest);
         ZipOutputStream outStream = new ZipOutputStream(outBuffer);
         outStream.setMethod(ZipOutputStream.DEFLATED);
         outStream.setLevel(COMPRESSION_LEVEL);
-        
-        for(String path: fileList){
+
+        for (String path : fileList) {
             //traitement de l'entree
             FileInputStream srcFile = new FileInputStream(srcPath + File.separator + path);
             BufferedInputStream inBuffer = new BufferedInputStream(srcFile, BUFFER_SIZE);
             ZipEntry entry = new ZipEntry(path);
             outStream.putNextEntry(entry);
-            
+
             int count = 0;
-            while( (count = inBuffer.read(data, 0, BUFFER_SIZE)) != -1)
+            while ((count = inBuffer.read(data, 0, BUFFER_SIZE)) != -1) {
                 outStream.write(data, 0, count);
-            
+            }
+
             inBuffer.close();
             outStream.closeEntry();
         }
         outStream.close();
     }
-    
+
     /**
-     * Traverse a directory and get all files,
-     * and add the file into fileList 
+     * Traverse a directory and get all files, and add the file into fileList
+     *
      * @param fileList list of file names
      * @param node file or directory
      */
-    private void getFilesRec(List<String> fileList, File node){
-        if(node.isFile()){
+    private void getFilesRec(List<String> fileList, File node) {
+        if (node.isFile()) {
             String filePath = node.getAbsoluteFile().toString();
             //Format the file path for zip
-            filePath = filePath.substring(mSourceFolder.length()+1, filePath.length());
+            filePath = filePath.substring(mSourceFolder.length() + 1, filePath.length());
             fileList.add(filePath);
         }
 
-        if(node.isDirectory()){
+        if (node.isDirectory()) {
             String[] subNote = node.list();
-            for(String filename : subNote)
+            for (String filename : subNote) {
                 getFilesRec(fileList, new File(node, filename));
+            }
         }
     }
 
@@ -137,12 +139,13 @@ public class FileServiceImpl implements FileService {
                     audioHeader.getTrackLength());
         } catch (Exception ex) {
             log.error("Unable to read music file informations : {}", ex.toString());
-            return new Music(appModel.getProfile().getNewMusicId(),
-                    appModel.getProfile().getUserInfo().getPeerId(),
-                    getFileAsByteArray(file),
-                    file.getName(), file.getName(), file.hashCode(),
-                    null, null, null, null, null);
+
         }
+        return new Music(appModel.getProfile().getNewMusicId(),
+                appModel.getProfile().getUserInfo().getPeerId(),
+                getFileAsByteArray(file),
+                file.getName(), file.getName(), file.hashCode(),
+                null, null, null, null, null);
     }
 
     /**
@@ -195,6 +198,7 @@ public class FileServiceImpl implements FileService {
         for (int i = 0; i < tmpArray.length; i++) {
             array[i] = new Byte(tmpArray[i]);
         }
+        log.warn("Music.Byte[].lengt = {}", array.length);
         return array;
     }
 }
