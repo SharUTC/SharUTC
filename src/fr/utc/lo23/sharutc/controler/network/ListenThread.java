@@ -18,7 +18,7 @@ public class ListenThread implements Runnable {
      */
     public ListenThread(int p, NetworkService ns) {
         this.port = p;
-        this.networkService = ns;
+        networkService = ns;
     }
 
     /**
@@ -47,7 +47,7 @@ public class ListenThread implements Runnable {
             
             while (socketServeur.isBound()) {
                 Socket socketClient = socketServeur.accept();
-                PeerSocket ps = new PeerSocket(socketClient,this.networkService,peerID);
+                PeerSocket ps = new PeerSocket(socketClient,networkService,peerID);
                 networkService.addPeer(peerID, ps);
                 socketClient.close();
             }
