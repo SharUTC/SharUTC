@@ -17,6 +17,7 @@ public class SendCatalogCommandImpl implements SendCatalogCommand {
     private final NetworkService networkService;
     private Peer mPeer;
     private Catalog mCatalog;
+    private Long mConversationId;
 
     /**
      * {@inheritDoc}
@@ -54,6 +55,22 @@ public class SendCatalogCommandImpl implements SendCatalogCommand {
      * {@inheritDoc}
      */
     @Override
+    public Long getConversationId() {
+        return mConversationId;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void setConversationId(Long conversationId) {
+        this.mConversationId = conversationId;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public void setCatalog(Catalog catalog) {
         this.mCatalog = catalog;
     }
@@ -62,9 +79,9 @@ public class SendCatalogCommandImpl implements SendCatalogCommand {
      * {@inheritDoc}
      */
     @Override
-    public void execute() { 
+    public void execute() {
         log.info("SendCatalogCommand ...");
-        networkService.sendUnicastCatalog(mPeer, mCatalog);
+        networkService.sendUnicastCatalog(mPeer, mConversationId, mCatalog);
         log.info("SendCatalogCommand DONE");
     }
 }

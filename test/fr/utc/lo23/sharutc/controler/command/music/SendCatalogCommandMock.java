@@ -56,4 +56,22 @@ public class SendCatalogCommandMock implements SendCatalogCommand {
     public void setCatalog(Catalog catalog) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+    
+     /**
+     *
+     * @return
+     */
+    @Override
+    public Long getConversationId() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+    /**
+     * @param conversationId
+     */
+    @Override
+    public void setConversationId(Long conversationId) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }  
+    
 }

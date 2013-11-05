@@ -112,7 +112,8 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public void createProfile(UserInfo userInfo) {
-        log.warn("Not supported yet.");
+        Profile profile = new Profile();
+        profile.setUserInfo(userInfo);
     }
 
     /**
