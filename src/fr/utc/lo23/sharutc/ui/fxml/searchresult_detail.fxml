@@ -10,4 +10,7 @@
 <?import javafx.scene.control.cell.*?>
 
 <?import fr.utc.lo23.sharutc.ui.*?>
-<Label xmlns:fx="http://javafx.com/fxml" fx:controller="fr.utc.lo23.sharutc.ui.SearchResultController" fx:id="title" styleClass="panetitle"/>
+<VBox   xmlns:fx="http://javafx.com/fxml" fx:controller="fr.utc.lo23.sharutc.ui.SearchResultController" prefWidth="-1.0" GridPane.hgrow="ALWAYS" fx:id="gridpane">
+    
+    
+</VBox>
