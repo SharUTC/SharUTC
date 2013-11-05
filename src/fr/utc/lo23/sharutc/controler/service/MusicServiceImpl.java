@@ -89,7 +89,62 @@ public class MusicServiceImpl implements MusicService {
      */
     @Override
     public void integrateRemoteCatalog(Peer peer, Catalog catalog) {
-        log.warn("Not supported yet.");
+            // 2 modes : when peer is a contact and when peer isn't a contact
+            Contact contact = appModel.getProfile().getContacts().findById(peer.getId());
+            if (contact != null) {
+                Set<Integer> contactCategoryIds = contact.getCategoryIds();
+
+                // looping on whole catalog, searching for matching music informations
+                for (Music music : appModel.getLocalCatalog().getMusics()) {
+                    // only deal with needed musics
+                        List<Integer> matchingCategoryIds = getAllMatchingCategoryIds(music, contactCategoryIds);
+
+                        // searching Rights values to be set directly on a copy of music instance if added to the results
+                        boolean mayReadInfo = false;
+                        boolean mayListen = false;
+                        boolean mayNoteAndComment = false;
+                        if (matchingCategoryIds.isEmpty()) {
+                            for (Integer categoryId : matchingCategoryIds) {
+                                // avoid useless loop
+                                if (mayReadInfo && mayListen && mayNoteAndComment) {
+                                    break; //true > false, then skip the remaining ids since all is already set to true
+                                }
+                                // get the unique Rights instance for this music and category from RightsList
+                                // set tmp boolean values to true if rights values are set to true
+                                Rights rights = appModel.getRightsList().getByMusicIdAndCategoryId(music.getId(), categoryId);
+                                if (rights.getMayReadInfo()) {
+                                    mayReadInfo = true;
+                                }
+                                if (rights.getMayListen()) {
+                                    mayListen = true;
+                                }
+                                if (rights.getMayNoteAndComment()) {
+                                    mayNoteAndComment = true;
+                                }
+                            }
+                        }
+                        // if the peer is autorized to get the music
+                        if (mayReadInfo) {
+                            // using a new instance to set specific attributes
+                            Music musicToReturn = music.clone();
+                            // copying rights values
+                            musicToReturn.setMayReadInfo(true); // useless... not used by other peers
+                            musicToReturn.setMayListen(mayListen);
+                            musicToReturn.setMayCommentAndNote(mayNoteAndComment);
+                            // loading last used and known peer name
+                            fillCommentAuthorNames(musicToReturn);
+                            // add the music to the returned set of music
+                            appModel.getRemoteUserCatalog().add(musicToReturn);
+                        }
+                }
+            } else {
+                // peer isn't a contact, check PUBLIC category only and associated rights values, as they may change like others
+                /*
+                 * 
+                 * TODO : complete method
+                 * 
+                 */
+            }
     }
 
     /**
