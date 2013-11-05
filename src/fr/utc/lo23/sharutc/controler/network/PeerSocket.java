@@ -63,20 +63,20 @@ public class PeerSocket implements Runnable {
         addMe(peerId);
         // start thread
         thread = new Thread(this);
-        startThread();
+        // TODO à appeller dans le ListenThread ou ailleurs => start();
     }
 
     /**
      * Start the thread
      */
-    public void startThread() {
+    public void start() {
         thread.start();
     }
 
     /**
      * Stop the thread
      */
-    public void stopThread() {
+    public void stop() {
         threadShouldStop = true;
     }
 
@@ -114,6 +114,9 @@ public class PeerSocket implements Runnable {
      */
     @Override
     public void run() {
+        // TODO en gros là le run log juste les messages qu'il reçoit, 
+        // il faudrait qu'il lise les objets messages, instancie la bonne Commande pour le traiter, 
+        // set tous les paramètres de cette commandes avec les valeurs contenues dans le message et lance a commande dans un nouveau thread
         while (!threadShouldStop) {
             try {
                 mBr = new BufferedReader(new InputStreamReader(mSocket.getInputStream()));

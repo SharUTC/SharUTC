@@ -23,16 +23,16 @@ public class NetworkServiceImpl implements NetworkService {
 
     private static final Logger log = LoggerFactory
             .getLogger(NetworkServiceImpl.class);
-    private final AppModel appModel;
-    private final MessageParser messageParser;
+    private final AppModel mAppModel;
+    private final MessageParser mMessageParser;
     private final HashMap<Long, PeerSocket> mPeers;
     private ListenThread mListenThread;
     private PeerDiscoverySocket mPeerDiscoverySocket;
 
     @Inject
     public NetworkServiceImpl(AppModel appModel, MessageParser messageParser) {
-        this.appModel = appModel;
-        this.messageParser = messageParser;
+        this.mAppModel = appModel;
+        this.mMessageParser = messageParser;
         mPeers = new HashMap();
         mListenThread = null;
         mPeerDiscoverySocket = null;
@@ -46,8 +46,11 @@ public class NetworkServiceImpl implements NetworkService {
         InetAddress g = InetAddress.getByName(group);
         mListenThread = new ListenThread(port, this);
         mListenThread.start();
-        mPeerDiscoverySocket = new PeerDiscoverySocket(port, g, this);
+        mPeerDiscoverySocket = new PeerDiscoverySocket(port, g, this, mAppModel);
         mPeerDiscoverySocket.start();
+        // TODO send le message "hello" de connection aux autres pairs !
+        // donc construire un object Message
+        // mais attention regarder avant : public void send(Message msg) de PeerDiscoverySocket
     }
 
     /**
@@ -123,7 +126,7 @@ public class NetworkServiceImpl implements NetworkService {
      */
     @Override
     public void sendBroadcastGetTagMap() {
-        Message message = messageParser.write(MessageType.TAG_GET_MAP, new Object[][]{{Message.CONVERSATION_ID, appModel.getCurrentConversationId()}});
+        Message message = mMessageParser.write(MessageType.TAG_GET_MAP, new Object[][]{{Message.CONVERSATION_ID, mAppModel.getCurrentConversationId()}});
         sendBroadcast(message);
     }
 
@@ -132,7 +135,7 @@ public class NetworkServiceImpl implements NetworkService {
      */
     @Override
     public void sendUnicastTagMap(Peer peer, Long conversationId, TagMap tagMap) {
-        Message message = messageParser.write(MessageType.TAG_MAP, new Object[][]{{Message.CONVERSATION_ID, conversationId}, {Message.TAG_MAP, tagMap}});
+        Message message = mMessageParser.write(MessageType.TAG_MAP, new Object[][]{{Message.CONVERSATION_ID, conversationId}, {Message.TAG_MAP, tagMap}});
         sendUnicast(message, peer);
     }
 
@@ -198,7 +201,7 @@ public class NetworkServiceImpl implements NetworkService {
      */
     @Override
     public void sendDownloadRequest(Peer peer, Catalog catalog) {
-        Message message = messageParser.write(MessageType.MUSIC_GET, new Object[][]{{Message.CATALOG, catalog}});
+        Message message = mMessageParser.write(MessageType.MUSIC_GET, new Object[][]{{Message.CATALOG, catalog}});
         sendUnicast(message, peer);
     }
 
@@ -207,7 +210,7 @@ public class NetworkServiceImpl implements NetworkService {
      */
     @Override
     public void sendMusics(Peer peer, Catalog catalog) {
-        Message message = messageParser.write(MessageType.MUSIC_INSTALL, new Object[][]{{Message.CATALOG, catalog}});
+        Message message = mMessageParser.write(MessageType.MUSIC_INSTALL, new Object[][]{{Message.CATALOG, catalog}});
         sendUnicast(message, peer);
     }
 
@@ -233,7 +236,7 @@ public class NetworkServiceImpl implements NetworkService {
     @Override
     public void userInfoBroadcast(UserInfo userInfo) {
         if (userInfo != null) {
-            sendBroadcast(messageParser.write(MessageType.CONNECTION, new Object[][]{{Message.CONVERSATION_ID, appModel.getCurrentConversationId()}, {Message.USER_INFO, userInfo}}));
+            sendBroadcast(mMessageParser.write(MessageType.CONNECTION, new Object[][]{{Message.CONVERSATION_ID, mAppModel.getCurrentConversationId()}, {Message.USER_INFO, userInfo}}));
         } else {
             log.error("[NetworkService - userInfoBroadCast()] - userInfo is null");
         }
@@ -244,6 +247,6 @@ public class NetworkServiceImpl implements NetworkService {
      */
     @Override
     public void disconnectionBroadcast() {
-        sendBroadcast(messageParser.write(MessageType.DISCONNECT, null));
+        sendBroadcast(mMessageParser.write(MessageType.DISCONNECT, null));
     }
 }
