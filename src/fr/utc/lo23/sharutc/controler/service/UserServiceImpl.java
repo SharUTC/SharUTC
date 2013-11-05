@@ -22,7 +22,7 @@ public class UserServiceImpl implements UserService {
     private static final Logger log = LoggerFactory
             .getLogger(UserServiceImpl.class);
     private final AppModel appModel;
-    private final Profile profile;
+    private Profile profile;
     private static final String dataPath = "";
 
     @Inject
@@ -38,7 +38,6 @@ public class UserServiceImpl implements UserService {
     //FIXME : ObjectMapper should be a static instance (singleton is we refer to doc), actually another instance is required in MessageParser, the solution could be to create a MapperService that only owns this instance of ObjectMapper
     @Override
     public void saveProfileFiles() {
-        Profile profile = appModel.getProfile();
         if (profile != null) {
             ObjectMapper mapper = new ObjectMapper();
             try {
@@ -104,8 +103,9 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public void createAndSetProfile(UserInfo userInfo) {
-        Profile profile = new Profile(userInfo);
-        appModel.setProfile(profile);
+        Profile nProfile = new Profile(userInfo);
+        appModel.setProfile(nProfile);
+        this.profile = nProfile;
     }
 
     /**
