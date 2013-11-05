@@ -35,6 +35,8 @@ import fr.utc.lo23.sharutc.controler.command.search.InstallRemoteMusicsCommand;
 import fr.utc.lo23.sharutc.controler.command.search.InstallRemoteMusicsCommandImpl;
 import fr.utc.lo23.sharutc.controler.command.search.IntegrateMusicSearchCommandImpl;
 import fr.utc.lo23.sharutc.controler.command.search.IntegrateMusicSearchCommand;
+import fr.utc.lo23.sharutc.controler.command.search.MusicSearchCommand;
+import fr.utc.lo23.sharutc.controler.command.search.MusicSearchCommandImpl;
 import fr.utc.lo23.sharutc.controler.command.search.SendMusicsCommand;
 import fr.utc.lo23.sharutc.controler.command.search.SendMusicsCommandImpl;
 
@@ -66,6 +68,7 @@ public class CommandModule extends AbstractModule {
         bind(IntegrateMusicSearchCommand.class).to(IntegrateMusicSearchCommandImpl.class);
         bind(InstallRemoteMusicsCommand.class).to(InstallRemoteMusicsCommandImpl.class);
         bind(SendMusicsCommand.class).to(SendMusicsCommandImpl.class);
+        bind(MusicSearchCommand.class).to(MusicSearchCommandImpl.class);
         // more...
     }
 }

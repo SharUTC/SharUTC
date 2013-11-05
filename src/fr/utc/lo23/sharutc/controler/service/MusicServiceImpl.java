@@ -29,6 +29,8 @@ public class MusicServiceImpl implements MusicService {
     private static final Logger log = LoggerFactory.getLogger(MusicServiceImpl.class);
     private final AppModel appModel;
     private final FileService fileService;
+    private TagMap localTagMap = null;
+    private boolean localTagMapDirty = true;
 
     /**
      * {@inheritDoc}
@@ -45,15 +47,23 @@ public class MusicServiceImpl implements MusicService {
     @Override
     public void addToLocalCatalog(Collection<File> mp3Files) {
         Catalog localCatalog = appModel.getLocalCatalog();
-        Music currentMusic = null;
 
         for (File currentFile : mp3Files) {
+            Music musicFromFile = null;
             try {
-                currentMusic = fileService.readFile(currentFile);
+                musicFromFile = fileService.readFile(currentFile);
             } catch (Exception ex) {
                 log.error(ex.toString());
             }
-            localCatalog.add(currentMusic);
+            if (musicFromFile != null) {
+                if (localCatalog.contains(musicFromFile)) {
+                    log.warn("Skipping add of already existing music (hash equals) :\n{}\n{}",
+                            localCatalog.findMusicByHash(musicFromFile.getMusicHash()).getRealName(),
+                            musicFromFile.getRealName());
+                } else {
+                    localCatalog.add(musicFromFile);
+                }
+            }
         }
     }
 
@@ -65,10 +75,10 @@ public class MusicServiceImpl implements MusicService {
         Catalog localCatalog = appModel.getLocalCatalog();
 
         for (Music currentMusic : musics) {
-            try {
+            if (localCatalog.contains(currentMusic)) {
                 localCatalog.remove(currentMusic);
-            } catch (Exception ex) {
-                log.error(ex.toString());
+            } else {
+                log.warn("Music to delete not found !\n{}", currentMusic.getRealName());
             }
         }
     }
@@ -86,7 +96,10 @@ public class MusicServiceImpl implements MusicService {
      */
     @Override
     public TagMap getLocalTagMap() {
-        return new TagMap(appModel.getLocalCatalog());
+        if (localTagMap == null || isLocalTagMapDirty()) {
+            buildLocalTagMap();
+        }
+        return localTagMap;
     }
 
     /**
@@ -103,7 +116,9 @@ public class MusicServiceImpl implements MusicService {
     @Override
     public void addTag(Music music, String tag) {
         if (music != null && tag != null && !tag.isEmpty()) {
-            music.addTag(tag);
+            if (music.addTag(tag)) {
+                localTagMapDirty = true;
+            }
         }
     }
 
@@ -113,7 +128,9 @@ public class MusicServiceImpl implements MusicService {
     @Override
     public void removeTag(Music music, String tag) {
         if (music != null && tag != null && !tag.isEmpty()) {
-            music.removeTag(tag);
+            if (music.removeTag(tag)) {
+                localTagMapDirty = true;
+            }
         }
     }
 
@@ -312,5 +329,14 @@ public class MusicServiceImpl implements MusicService {
     @Override
     public void installMusics(Catalog catalog) {
         log.warn("Not supported yet.");
+    }
+
+    private synchronized boolean isLocalTagMapDirty() {
+        return localTagMapDirty;
+    }
+
+    private synchronized void buildLocalTagMap() {
+        localTagMap = new TagMap(appModel.getLocalCatalog());
+        localTagMapDirty = false;
     }
 }

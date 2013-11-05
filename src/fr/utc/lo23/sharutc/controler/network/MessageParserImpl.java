@@ -18,11 +18,15 @@ public class MessageParserImpl implements MessageParser {
     private static final Logger log = LoggerFactory
             .getLogger(MessageParserImpl.class);
     private static ObjectMapper mapper = new ObjectMapper();
-    @Inject
-    private AppModel appModel;
+    private final AppModel appModel;
     private Message message;
     private HashMap<String, Object> messageContent = null;
     private long fromPeerId;
+
+    @Inject
+    public MessageParserImpl(AppModel appModel) {
+        this.appModel = appModel;
+    }
 
     /**
      * {@inheritDoc}
@@ -40,6 +44,7 @@ public class MessageParserImpl implements MessageParser {
         this.message = message;
         Map<String, Object> parsedContent = null;
         try {
+            log.debug("Reading Message : content = {}", message.getContent());
             parsedContent = mapper.readValue(message.getContent(), Map.class);
         } catch (Exception ex) {
             log.error(ex.toString());
@@ -53,6 +58,7 @@ public class MessageParserImpl implements MessageParser {
     private void checkMessageRead() throws RuntimeException {
         if (message == null || messageContent == null) {
             log.warn("The parser must read a Message first");
+            throw new RuntimeException("The parser must read a Message first");
         }
     }
 
@@ -95,7 +101,7 @@ public class MessageParserImpl implements MessageParser {
      */
     @Override
     public Message write(MessageType messageType, Object[][] content) {
-        if (fromPeerId == 0l) {
+        if (fromPeerId == 0L) {
             log.error("Missing fromPeerId");
         }
         if (messageType == null) {
@@ -103,7 +109,9 @@ public class MessageParserImpl implements MessageParser {
         }
         Message newMessage = null;
         try {
-            newMessage = new Message(fromPeerId, messageType, content != null ? mapper.writeValueAsString(content) : "");
+            String contentAsString = content != null ? mapper.writeValueAsString(content) : "";
+            log.debug("Writing Message : content = {}", contentAsString);
+            newMessage = new Message(fromPeerId, messageType, contentAsString);
         } catch (JsonProcessingException ex) {
             log.error(ex.toString());
         }

@@ -71,7 +71,7 @@ public class MessageHandlerImpl implements MessageHandler {
                 messageParser.setFromPeerId(getLocalPeerId());
                 // searching which command to execute following message type
                 switch (incomingMessage.getType()) {
-                    case MUSIC_GET_ALL:
+                    case MUSIC_GET_CATALOG:
                         break;
                     case MUSIC_CATALOG:
                         break;

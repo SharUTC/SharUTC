@@ -7,7 +7,6 @@ import fr.utc.lo23.sharutc.model.domain.TagMap;
 import fr.utc.lo23.sharutc.model.userdata.Peer;
 import java.io.File;
 import java.util.Collection;
-import java.util.List;
 
 /**
  *

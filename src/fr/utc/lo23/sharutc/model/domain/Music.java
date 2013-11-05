@@ -20,6 +20,8 @@ import org.slf4j.LoggerFactory;
  * id3tags are parsed when the music is added locally, user changes are reported
  * to the file also, a copy of these informations is stored with the Music
  * object to enhance search trough a list of musics
+ * 
+ * Music equality is based on the file Byte[] hash value only
  *
  */
 public class Music implements Serializable {
@@ -482,29 +484,46 @@ public class Music implements Serializable {
         return mFile != null ? mFile.hashCode() : 0;
     }
 
-    public void addTag(String tag) {
+    public boolean addTag(String tag) {
         if (tag != null && tag.trim().length() > 0) {
             tag = tag.toLowerCase();
             tag = tag.substring(0, 1).toUpperCase() + (tag.length() > 1 ? tag.substring(1) : "");
             if (mTags.add(tag)) {
                 propertyChangeSupport.firePropertyChange(Property.TAGS.name(), null, tag);
+                return true;
             }
         }
+        return false;
     }
 
-    public void removeTag(String tag) {
+    public boolean removeTag(String tag) {
         if (tag != null && tag.trim().length() > 0) {
             tag = tag.toLowerCase();
             tag = tag.substring(0, 1).toUpperCase() + (tag.length() > 1 ? tag.substring(1) : "");
             if (mTags.remove(tag)) {
                 propertyChangeSupport.firePropertyChange(Property.TAGS.name(), tag, null);
+                return true;
             }
         }
+        return false;
     }
 
     public void setCommentAuthor(Integer index, String authorName) {
         Comment comment = mComments.get(index);
         comment.setAuthorName(authorName);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        // be careful, don't use public int hashCode() here, equals is realized with from music Bytes directly
+        return (obj != null && obj instanceof Music && ((Music) obj).getMusicHash() == this.getMusicHash());
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 41 * hash + (this.mHash != null ? this.mHash.hashCode() : 0);
+        return hash;
     }
 
     /**
