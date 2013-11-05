@@ -20,7 +20,7 @@ import org.slf4j.LoggerFactory;
  */
 @Singleton
 public class UserServiceImpl implements UserService {
-
+ 
     private static final Logger log = LoggerFactory
             .getLogger(UserServiceImpl.class);
     private final AppModel appModel;
@@ -96,14 +96,6 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public void removeContactFromCategory(Peer peer, Category category) {
-        log.warn("Not supported yet.");
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void manageGroupRights(Category category, Music music, boolean readInfo, boolean listen, boolean noteAndComment) {
         log.warn("Not supported yet.");
     }
 

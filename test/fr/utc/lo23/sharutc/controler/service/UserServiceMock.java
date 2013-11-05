@@ -56,11 +56,6 @@ public class UserServiceMock extends UserServiceImpl implements UserService {
     }
 
     @Override
-    public void manageGroupRights(Category category, Music music, boolean readInfo, boolean listen, boolean noteAndComment) {
-        super.manageGroupRights(category, music, readInfo, listen, noteAndComment);
-    }
-
-    @Override
     public void createProfile(UserInfo userInfo) {
         super.createProfile(userInfo);
     }
