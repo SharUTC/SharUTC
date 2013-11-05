@@ -41,16 +41,19 @@ public class TagMap implements Serializable {
     }
 
     /**
+     * Return the contained TagMap, don't use it directly since it won't use the
+     * PropertyChangeSupport
      *
-     * @return
+     * @return the contained TagMap as a HashMap
      */
     public HashMap<String, Integer> getMap() {
         return map;
     }
 
     /**
+     * Set the contained TagMap with a HashMap
      *
-     * @param map
+     * @param map the contained TagMap with a HashMap
      */
     public void setMap(HashMap<String, Integer> map) {
         this.map = map;
@@ -74,7 +77,7 @@ public class TagMap implements Serializable {
     /**
      * Add or update TagMap with tags associated to a music
      *
-     * @param music 
+     * @param music
      */
     public final void merge(Music music) {
         for (String tag : music.getTags()) {
@@ -89,23 +92,12 @@ public class TagMap implements Serializable {
      * @param occurence
      */
     public void merge(String tag, int occurence) {
-        if (tag != null) {
-            tag = tag.trim();
-            if (tag.length() > 0) {
-                tag = tag.toLowerCase();
-                tag = tag.substring(0, 1).toUpperCase() + (tag.length() > 1 ? tag.substring(1) : "");
-                int oldOccurence = map.containsKey(tag) ? (map.get(tag).intValue()) : 0;
-                map.put(tag, occurence + oldOccurence);
-                if (oldOccurence == 0) {
-                    propertyChangeSupport.firePropertyChange(Property.TAG_NEW.name(), 0, occurence);
-                } else {
-                    propertyChangeSupport.firePropertyChange(Property.TAG_OCCURENCE.name(), oldOccurence, occurence + oldOccurence);
-                }
-            } else {
-                log.warn("Using empty tag name, skipping it");
-            }
+        int oldOccurence = map.containsKey(tag) ? (map.get(tag).intValue()) : 0;
+        map.put(tag, occurence + oldOccurence);
+        if (oldOccurence == 0) {
+            propertyChangeSupport.firePropertyChange(Property.TAG_NEW.name(), 0, occurence);
         } else {
-            log.warn("Using null tag name, skipping it");
+            propertyChangeSupport.firePropertyChange(Property.TAG_OCCURENCE.name(), oldOccurence, occurence + oldOccurence);
         }
     }
 
@@ -122,16 +114,20 @@ public class TagMap implements Serializable {
     }
 
     /**
+     * Add the listener in parameter to the list of listeners that may be
+     * notified
      *
-     * @param listener
+     * @param listener the listener to add
      */
     public void addPropertyChangeListener(PropertyChangeListener listener) {
         propertyChangeSupport.addPropertyChangeListener(listener);
     }
 
     /**
+     * Removes the listener in parameter to the list of listeners that may be
+     * notified
      *
-     * @param listener
+     * @param listener the listener to remove
      */
     public void removePropertyChangeListener(PropertyChangeListener listener) {
         propertyChangeSupport.removePropertyChangeListener(listener);
@@ -139,7 +135,19 @@ public class TagMap implements Serializable {
 
     @Override
     public boolean equals(Object tagMap) {
-        return tagMap != null && (tagMap instanceof TagMap) && ((TagMap) tagMap).map.equals(map);
+        if (tagMap == null || !(tagMap instanceof TagMap)) {
+            return false;
+        }
+        TagMap tm = (TagMap) tagMap;
+        if (tm.getMap().size() != map.size()) {
+            return false;
+        }
+        for (Entry<String, Integer> entry : map.entrySet()) {
+            if (!tm.map.containsKey(entry.getKey()) || !tm.map.get(entry.getKey()).equals(entry.getValue())) {
+                return false;
+            }
+        }
+        return true;
     }
 
     @Override
@@ -167,5 +175,15 @@ public class TagMap implements Serializable {
          * When a new tag name appears in the map
          */
         TAG_NEW
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        builder.append("TagMap :\n");
+        for (Entry<String, Integer> entry : map.entrySet()) {
+            builder.append(entry.getKey()).append(" : ").append(entry.getValue()).append("\n");
+        }
+        return builder.toString();
     }
 }

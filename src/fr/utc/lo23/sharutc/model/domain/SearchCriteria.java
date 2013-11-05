@@ -3,7 +3,7 @@ package fr.utc.lo23.sharutc.model.domain;
 import java.io.Serializable;
 
 /**
- *
+ * Simple container for a search, contains the value the user entered
  */
 public class SearchCriteria implements Serializable {
 
@@ -17,24 +17,28 @@ public class SearchCriteria implements Serializable {
     }
 
     /**
+     * Creates a new searchCriteria containing the string used to perform the
+     * search
      *
-     * @param search
+     * @param search the value the user entered
      */
     public SearchCriteria(String search) {
         this.search = search;
     }
 
     /**
+     * Return the value the user entered
      *
-     * @return
+     * @return the value the user entered
      */
     public String getSearch() {
         return search;
     }
 
     /**
+     * Set the value the user entered
      *
-     * @param search
+     * @param search the value the user entered
      */
     public void setSearch(String search) {
         this.search = search;

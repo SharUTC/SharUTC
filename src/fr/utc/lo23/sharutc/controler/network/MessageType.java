@@ -44,13 +44,13 @@ public enum MessageType {
     /**
      *
      */
-    MUSIC_SEARCH, 
+    MUSIC_SEARCH,
     /**
-     * 
+     *
      */
     MUSIC_RESULTS,
     /**
-     * 
+     *
      */
     MUSIC_GET,
     /**
@@ -68,9 +68,13 @@ public enum MessageType {
     /**
      *
      */
-    HEARTBEAT,
+    DISCONNECT,
     /**
      *
      */
-    DISCONNECT
+    CONNECTION, 
+    /**
+     * 
+     */
+    CONNECTION_RESPONSE
 }

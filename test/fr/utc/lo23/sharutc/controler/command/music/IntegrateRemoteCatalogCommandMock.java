@@ -1,6 +1,7 @@
 package fr.utc.lo23.sharutc.controler.command.music;
 
 import fr.utc.lo23.sharutc.model.domain.Catalog;
+import fr.utc.lo23.sharutc.model.userdata.Peer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,16 +44,16 @@ public class IntegrateRemoteCatalogCommandMock implements IntegrateRemoteCatalog
      * @return
      */
     @Override
-    public Long getPeerId() {
+    public Peer getPeer() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     /**
      *
-     * @param peerId
+     * @param peer
      */
     @Override
-    public void setPeerId(Long peerId) {
+    public void setPeer(Peer peer) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

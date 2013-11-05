@@ -6,59 +6,55 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- *
+ * {@inheritDoc}
  */
 public class UnsetScoreCommandImpl implements UnsetScoreCommand {
 
     private static final Logger log = LoggerFactory
             .getLogger(UnsetScoreCommandImpl.class);
-    private Peer peer;
-    private Music music;
+    private Peer mPeer;
+    private Music mMusic;
 
     /**
-     *
+     * {@inheritDoc}
      */
     public UnsetScoreCommandImpl() {
     }
 
     /**
-     *
-     * @return
+     * {@inheritDoc}
      */
     @Override
     public Peer getPeer() {
-        return peer;
+        return mPeer;
     }
 
     /**
-     *
-     * @param peer
+     * {@inheritDoc}
      */
     @Override
     public void setPeer(Peer peer) {
-        this.peer = peer;
+        this.mPeer = peer;
     }
 
     /**
-     *
-     * @return
+     * {@inheritDoc}
      */
     @Override
     public Music getMusic() {
-        return music;
+        return mMusic;
     }
 
     /**
-     *
-     * @param music
+     * {@inheritDoc}
      */
     @Override
     public void setMusic(Music music) {
-        this.music = music;
+        this.mMusic = music;
     }
 
     /**
-     *
+     * {@inheritDoc}
      */
     @Override
     public void execute() {

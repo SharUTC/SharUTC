@@ -1,46 +1,57 @@
 package fr.utc.lo23.sharutc.model.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import fr.utc.lo23.sharutc.model.userdata.Categories;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
-import java.io.File;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-/**
- *
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+/**
+ * The main object of the application, contains all relatives informations about
+ * the music file in memory via the catalogs.
+ *
+ * id3tags are parsed when the music is added locally, user changes are reported
+ * to the file also, a copy of these informations is stored with the Music
+ * object to enhance search trough a list of musics
+ *
  */
 public class Music implements Serializable {
-
+    
+    private static final Logger log = LoggerFactory.getLogger(Music.class);
     private static final long serialVersionUID = 6722258623736849911L;
     @JsonIgnore
     private PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
-    private Long id;
-    private String fileName;
-    private String realName;
+    private Long mId;
+    private String mFileName;
+    private String mRealName;
     /**
      * No JsonIgnore annotation, but when searching a music, file must be set to
      * null before returning the results, file must be present for transfers
      */
-    private File file;
-    private Boolean fileMissing;
-    private Long ownerPeerId;
-    private Integer hash;
-    private Categories categories;
-    private String title;
-    private String artist;
-    private String album;
-    private Integer num;
-    private List<Comment> comments;
-    private Set<Score> scores;
-    private Set<String> tags;
-    private Boolean mayReadInfo;
-    private Boolean mayListen;
-    private Boolean mayCommentAndNote;
+    private Byte[] mFile;
+    private Boolean mFileMissing;
+    private Long mOwnerPeerId;
+    private Integer mHash;
+    private Set<Integer> mCategoryIds;
+    private String mTitle;
+    private String mArtist;
+    private String mAlbum;
+    private String mTrack;
+    private Integer mTrackLength;
+    private Integer mYear;
+    private List<Comment> mComments;
+    private Set<Score> mScores;
+    private Set<String> mTags;
+    private Boolean mMayReadInfo;
+    private Boolean mMayListen;
+    private Boolean mMayCommentAndNote;
 
     /**
      *
@@ -49,40 +60,84 @@ public class Music implements Serializable {
     }
 
     /**
+     * Clone for sending result list
+     *
+     * @param music
+     */
+    public Music(Music music) {
+        
+        this.mId = new Long(music.mId);
+        this.mFileName = music.mFileName;
+        this.mRealName = music.mRealName;
+        if (music.getFile() != null) {
+            this.mFile = new Byte[music.getFile().length];
+            System.arraycopy(music.mFile, 0, this.mFile, 0, music.getFile().length);
+        } else {
+            this.mFile = null;
+        }
+        this.mFileMissing = music.mFileMissing;
+        this.mOwnerPeerId = new Long(music.mOwnerPeerId);
+        this.mHash = new Integer(music.mHash);
+        
+        this.mCategoryIds = new HashSet<Integer>();
+        for (Integer i : music.mCategoryIds) {
+            this.mCategoryIds.add(new Integer(i));
+        }
+        this.mTitle = music.mTitle;
+        this.mArtist = music.mArtist;
+        this.mAlbum = music.mAlbum;
+        this.mTrack = music.mTrack;
+        this.mTrackLength = new Integer(music.mTrackLength);
+        this.mYear = new Integer(music.mYear);
+        this.mComments = new ArrayList<Comment>();
+        // using a clone to not erase 
+        for (Comment comment : music.mComments) {
+            this.mComments.add(comment.clone());
+        }
+        this.mScores = new HashSet<Score>();
+        for (Score score : music.mScores) {
+            this.mScores.add(score);
+        }
+        this.mTags = music.mTags;
+        this.mMayReadInfo = music.mMayReadInfo;
+        this.mMayListen = music.mMayListen;
+        this.mMayCommentAndNote = music.mMayCommentAndNote;
+    }
+
+    /**
      * To use for importing a new local file
      *
      * @param id
-     * @param fileName
-     * @param realName
-     * @param fileMissing
      * @param ownerPeerId
-     * @param hash
-     * @param categories
      * @param file
+     * @param fileName
      * @param title
      * @param artist
      * @param album
-     * @param num
-     * @param comments
-     * @param scores
-     * @param tags
+     * @param track
+     * @param trackLength
      */
-    public Music(Long id, String fileName, String realName, Boolean fileMissing, Long ownerPeerId, Integer hash, Categories categories, File file, String title, String artist, String album, Integer num, List<Comment> comments, Set<Score> scores, Set<String> tags) {
-        this.id = id;
-        this.fileName = fileName;
-        this.realName = realName;
-        this.fileMissing = fileMissing;
-        this.ownerPeerId = ownerPeerId;
-        this.hash = hash;
-        this.categories = categories;
-        this.file = file;
-        this.title = title;
-        this.artist = artist;
-        this.album = album;
-        this.num = num;
-        this.comments = comments;
-        this.scores = scores;
-        this.tags = tags;
+    public Music(Long id, Long ownerPeerId, Byte[] file, String fileName, String realName, Integer hashcode, String title, String artist, String album, String track, Integer trackLength) {
+        this.mId = id;
+        this.mFileName = fileName;
+        this.mRealName = realName;
+        this.mFileMissing = false;
+        this.mOwnerPeerId = ownerPeerId;
+        this.mHash = hashcode;
+        this.mCategoryIds = new HashSet<Integer>();
+        this.mFile = file;
+        
+        this.mComments = new ArrayList<Comment>();
+        this.mScores = new HashSet<Score>();
+        this.mTags = new HashSet<String>();
+        this.mTitle = title;
+        this.mArtist = artist;
+        this.mAlbum = album;
+        this.mTrack = track;
+        this.mTrackLength = trackLength;
+        this.mMayReadInfo = null;
+        this.mMayListen = null;
+        this.mMayCommentAndNote = null;
     }
 
     /**
@@ -90,7 +145,7 @@ public class Music implements Serializable {
      * @return
      */
     public Long getId() {
-        return id;
+        return mId;
     }
 
     /**
@@ -98,7 +153,7 @@ public class Music implements Serializable {
      * @param id
      */
     public void setId(Long id) {
-        this.id = id;
+        this.mId = id;
     }
 
     /**
@@ -106,7 +161,7 @@ public class Music implements Serializable {
      * @return
      */
     public String getFileName() {
-        return fileName;
+        return mFileName;
     }
 
     /**
@@ -114,8 +169,8 @@ public class Music implements Serializable {
      * @param fileName
      */
     public void setFileName(String fileName) {
-        String oldFileName = this.fileName;
-        this.fileName = fileName;
+        String oldFileName = this.mFileName;
+        this.mFileName = fileName;
         propertyChangeSupport.firePropertyChange(Property.FILENAME.name(), oldFileName, fileName);
     }
 
@@ -124,7 +179,7 @@ public class Music implements Serializable {
      * @return
      */
     public String getRealName() {
-        return realName;
+        return mRealName;
     }
 
     /**
@@ -132,23 +187,23 @@ public class Music implements Serializable {
      * @param realName
      */
     public void setRealName(String realName) {
-        this.realName = realName;
+        this.mRealName = realName;
     }
 
     /**
      *
      * @return
      */
-    public File getFile() {
-        return file;
+    public Byte[] getFile() {
+        return mFile;
     }
 
     /**
      *
      * @param file
      */
-    public void setFile(File file) {
-        this.file = file;
+    public void setFile(Byte[] file) {
+        this.mFile = file;
     }
 
     /**
@@ -156,7 +211,7 @@ public class Music implements Serializable {
      * @return
      */
     public Boolean getFileMissing() {
-        return fileMissing;
+        return mFileMissing;
     }
 
     /**
@@ -164,7 +219,7 @@ public class Music implements Serializable {
      * @param fileMissing
      */
     public void setFileMissing(Boolean fileMissing) {
-        this.fileMissing = fileMissing;
+        this.mFileMissing = fileMissing;
         propertyChangeSupport.firePropertyChange(Property.FILE_MISSING.name(), !fileMissing.booleanValue(), fileMissing.booleanValue());
     }
 
@@ -173,7 +228,7 @@ public class Music implements Serializable {
      * @return
      */
     public Long getOwnerPeerId() {
-        return ownerPeerId;
+        return mOwnerPeerId;
     }
 
     /**
@@ -181,7 +236,7 @@ public class Music implements Serializable {
      * @param ownerPeerId
      */
     public void setOwnerPeerId(Long ownerPeerId) {
-        this.ownerPeerId = ownerPeerId;
+        this.mOwnerPeerId = ownerPeerId;
     }
 
     /**
@@ -189,7 +244,7 @@ public class Music implements Serializable {
      * @return
      */
     public Integer getHash() {
-        return hash;
+        return mHash;
     }
 
     /**
@@ -197,23 +252,23 @@ public class Music implements Serializable {
      * @param hash
      */
     public void setHash(Integer hash) {
-        this.hash = hash;
+        this.mHash = hash;
     }
 
     /**
      *
      * @return
      */
-    public Categories getCategories() {
-        return categories;
+    public Set<Integer> getCategoryIds() {
+        return mCategoryIds;
     }
 
     /**
      *
-     * @param categories
+     * @param categoryIds
      */
-    public void setCategories(Categories categories) {
-        this.categories = categories;
+    public void setCategoryIds(Set<Integer> categoryIds) {
+        this.mCategoryIds = categoryIds;
     }
 
     /**
@@ -221,7 +276,7 @@ public class Music implements Serializable {
      * @return
      */
     public String getTitle() {
-        return title;
+        return mTitle;
     }
 
     /**
@@ -229,8 +284,8 @@ public class Music implements Serializable {
      * @param title
      */
     public void setTitle(String title) {
-        String oldTitle = this.title;
-        this.title = title;
+        String oldTitle = this.mTitle;
+        this.mTitle = title;
         propertyChangeSupport.firePropertyChange(Property.TITLE.name(), oldTitle, title);
     }
 
@@ -239,7 +294,7 @@ public class Music implements Serializable {
      * @return
      */
     public String getArtist() {
-        return artist;
+        return mArtist;
     }
 
     /**
@@ -247,8 +302,8 @@ public class Music implements Serializable {
      * @param artist
      */
     public void setArtist(String artist) {
-        String oldArtist = this.artist;
-        this.artist = artist;
+        String oldArtist = this.mArtist;
+        this.mArtist = artist;
         propertyChangeSupport.firePropertyChange(Property.ARTIST.name(), oldArtist, artist);
     }
 
@@ -257,7 +312,7 @@ public class Music implements Serializable {
      * @return
      */
     public String getAlbum() {
-        return album;
+        return mAlbum;
     }
 
     /**
@@ -265,8 +320,8 @@ public class Music implements Serializable {
      * @param album
      */
     public void setAlbum(String album) {
-        String oldAlbum = this.album;
-        this.album = album;
+        String oldAlbum = this.mAlbum;
+        this.mAlbum = album;
         propertyChangeSupport.firePropertyChange(Property.ALBUM.name(), oldAlbum, album);
     }
 
@@ -274,18 +329,37 @@ public class Music implements Serializable {
      *
      * @return
      */
-    public Integer getNum() {
-        return num;
+    public String getTrack() {
+        return mTrack;
     }
 
     /**
      *
      * @param num
      */
-    public void setNum(Integer num) {
-        Integer oldNum = this.num;
-        this.num = num;
-        propertyChangeSupport.firePropertyChange(Property.NUM.name(), oldNum, num);
+    public void setTrack(String track) {
+        String oldTrack = this.mTrack;
+        this.mTrack = track;
+        propertyChangeSupport.firePropertyChange(Property.TRACK.name(), oldTrack, track);
+    }
+    
+    public Integer getTrackLength() {
+        return mTrackLength;
+    }
+    
+    public void setTrackLength(Integer trackLength) {
+        this.mTrackLength = trackLength;
+    }
+    
+    public Integer getYear() {
+        return mYear;
+    }
+    
+    public void setYear(Integer year) {
+        Integer oldYear = this.mYear;
+        this.mYear = year;
+        propertyChangeSupport.firePropertyChange(Property.YEAR.name(), oldYear, year);
+        
     }
 
     /**
@@ -293,7 +367,7 @@ public class Music implements Serializable {
      * @return
      */
     public List<Comment> getComments() {
-        return Collections.unmodifiableList(comments);
+        return Collections.unmodifiableList(mComments);
     }
 
     /**
@@ -301,7 +375,7 @@ public class Music implements Serializable {
      * @param comments
      */
     public void setComments(List<Comment> comments) {
-        this.comments = comments;
+        this.mComments = comments;
     }
 
     /**
@@ -309,7 +383,7 @@ public class Music implements Serializable {
      * @return
      */
     public Set<Score> getScores() {
-        return Collections.unmodifiableSet(scores);
+        return Collections.unmodifiableSet(mScores);
     }
 
     /**
@@ -317,7 +391,7 @@ public class Music implements Serializable {
      * @param scores
      */
     public void setScores(Set<Score> scores) {
-        this.scores = scores;
+        this.mScores = scores;
     }
 
     /**
@@ -325,7 +399,7 @@ public class Music implements Serializable {
      * @return
      */
     public Set<String> getTags() {
-        return Collections.unmodifiableSet(tags);
+        return Collections.unmodifiableSet(mTags);
     }
 
     /**
@@ -333,7 +407,7 @@ public class Music implements Serializable {
      * @param tags
      */
     public void setTags(Set<String> tags) {
-        this.tags = tags;
+        this.mTags = tags;
     }
 
     /**
@@ -341,7 +415,7 @@ public class Music implements Serializable {
      * @return
      */
     public Boolean getMayReadInfo() {
-        return mayReadInfo;
+        return mMayReadInfo;
     }
 
     /**
@@ -349,7 +423,7 @@ public class Music implements Serializable {
      * @param mayReadInfo
      */
     public void setMayReadInfo(Boolean mayReadInfo) {
-        this.mayReadInfo = mayReadInfo;
+        this.mMayReadInfo = mayReadInfo;
     }
 
     /**
@@ -357,7 +431,7 @@ public class Music implements Serializable {
      * @return
      */
     public Boolean getMayListen() {
-        return mayListen;
+        return mMayListen;
     }
 
     /**
@@ -365,7 +439,7 @@ public class Music implements Serializable {
      * @param mayListen
      */
     public void setMayListen(Boolean mayListen) {
-        this.mayListen = mayListen;
+        this.mMayListen = mayListen;
     }
 
     /**
@@ -373,7 +447,7 @@ public class Music implements Serializable {
      * @return
      */
     public Boolean getMayCommentAndNote() {
-        return mayCommentAndNote;
+        return mMayCommentAndNote;
     }
 
     /**
@@ -381,7 +455,7 @@ public class Music implements Serializable {
      * @param mayCommentAndNote
      */
     public void setMayCommentAndNote(Boolean mayCommentAndNote) {
-        this.mayCommentAndNote = mayCommentAndNote;
+        this.mMayCommentAndNote = mayCommentAndNote;
     }
 
     /**
@@ -405,7 +479,24 @@ public class Music implements Serializable {
      * @return
      */
     public int getMusicHash() {
-        return file != null ? file.hashCode() : 0;
+        return mFile != null ? mFile.hashCode() : 0;
+    }
+    
+    public void addTag(String tag) {
+        if (mTags.add(tag)) {
+            propertyChangeSupport.firePropertyChange(Property.TAGS.name(), null, tag);
+        }
+    }
+    
+    public void removeTag(String tag) {
+        if (mTags.remove(tag)) {
+            propertyChangeSupport.firePropertyChange(Property.TAGS.name(), tag, null);
+        }
+    }
+    
+    public void setCommentAuthor(Integer index, String authorName) {
+        Comment comment = mComments.get(index);
+        comment.setAuthorName(authorName);
     }
 
     /**
@@ -436,10 +527,23 @@ public class Music implements Serializable {
         /**
          *
          */
-        NUM,
+        TRACK,
         /**
          *
          */
-        FILE_MISSING
+        FILE_MISSING,
+        /**
+         *
+         */
+        YEAR,
+        /**
+         *
+         */
+        TAGS
+    }
+    
+    @Override
+    public Music clone() {
+        return new Music(this);
     }
 }

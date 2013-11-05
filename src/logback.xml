@@ -37,6 +37,7 @@
     <!-- NETWORK -->
     <logger name="fr.utc.lo23.sharutc.controler.network.NetworkServiceImpl" level="INFO" />
     <logger name="fr.utc.lo23.sharutc.controler.network.MessageParserImpl" level="DEBUG" />
+    <logger name="fr.utc.lo23.sharutc.controler.network.MessageHandlerImpl" level="DEBUG" />
     <logger name="fr.utc.lo23.sharutc.controler.network.Message" level="INFO" />
 
     <!-- APP MODEL -->

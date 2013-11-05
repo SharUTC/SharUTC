@@ -1,66 +1,68 @@
 package fr.utc.lo23.sharutc.controler.command.music;
 
+import fr.utc.lo23.sharutc.controler.service.MusicService;
 import fr.utc.lo23.sharutc.model.domain.Catalog;
+import fr.utc.lo23.sharutc.model.userdata.Peer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- *
+ * {@inheritDoc}
  */
 public class IntegrateRemoteCatalogCommandImpl implements IntegrateRemoteCatalogCommand {
 
     private static final Logger log = LoggerFactory
             .getLogger(IntegrateRemoteCatalogCommandImpl.class);
-    private Catalog catalog;
-    private Long peerId;
+    private final MusicService musicService;
+    private Catalog mCatalog;
+    private Peer mPeer;
 
     /**
-     *
+     * {@inheritDoc}
      */
-    public IntegrateRemoteCatalogCommandImpl() {
+    public IntegrateRemoteCatalogCommandImpl(MusicService musicService) {
+        this.musicService = musicService;
     }
 
     /**
-     *
-     * @return
+     * {@inheritDoc}
      */
     @Override
     public Catalog getCatalog() {
-        return catalog;
+        return mCatalog;
     }
 
     /**
-     *
-     * @param catalog
+     * {@inheritDoc}
      */
     @Override
     public void setCatalog(Catalog catalog) {
-        this.catalog = catalog;
+        this.mCatalog = catalog;
     }
 
     /**
-     *
-     * @return
+     * {@inheritDoc}
      */
     @Override
-    public Long getPeerId() {
-        return peerId;
+    public Peer getPeer() {
+        return mPeer;
     }
 
     /**
-     *
-     * @param peerId
+     * {@inheritDoc}
      */
     @Override
-    public void setPeerId(Long peerId) {
-        this.peerId = peerId;
+    public void setPeer(Peer peer) {
+        this.mPeer = peer;
     }
 
     /**
-     *
+     * {@inheritDoc}
      */
     @Override
     public void execute() {
-        log.warn("Not supported yet.");
+        log.info("IntegrateRemoteCatalogCommand ...");
+        musicService.integrateRemoteCatalog(mPeer, mCatalog);
+        log.info("IntegrateRemoteCatalogCommand DONE");
     }
 }

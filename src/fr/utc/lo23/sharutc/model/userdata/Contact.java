@@ -1,6 +1,8 @@
 package fr.utc.lo23.sharutc.model.userdata;
 
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  *
@@ -8,8 +10,8 @@ import java.io.Serializable;
 public class Contact implements Serializable {
 
     private static final long serialVersionUID = 2934900084513371081L;
-    private Long peerId;
-    private Categories categories;
+    private Long mPeerId;
+    private Set<Integer> mCategoryIds;
 
     /**
      *
@@ -22,8 +24,8 @@ public class Contact implements Serializable {
      * @param peerId
      */
     public Contact(Long peerId) {
-        this.peerId = peerId;
-        this.categories = new Categories();
+        this.mPeerId = peerId;
+        this.mCategoryIds = new HashSet<Integer>();
     }
 
     /**
@@ -31,7 +33,7 @@ public class Contact implements Serializable {
      * @return
      */
     public Long getPeerId() {
-        return peerId;
+        return mPeerId;
     }
 
     /**
@@ -39,22 +41,22 @@ public class Contact implements Serializable {
      * @param peerId
      */
     public void setPeerId(Long peerId) {
-        this.peerId = peerId;
+        this.mPeerId = peerId;
     }
 
     /**
      *
      * @return
      */
-    public Categories getCategories() {
-        return categories;
+    public Set<Integer> getCategoryIds() {
+        return mCategoryIds;
     }
 
     /**
      *
      * @param categories
      */
-    public void setCategorieds(Categories categories) {
-        this.categories = categories;
+    public void setCategoryId(Set<Integer> categoryIds) {
+        this.mCategoryIds = categoryIds;
     }
 }

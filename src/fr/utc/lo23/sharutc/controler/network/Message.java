@@ -36,8 +36,15 @@ public class Message {
      *
      */
     public final static String TAG_MAP = "TAG_MAP";
+    /**
+     *
+     */
+    public final static String CATALOG = "CATALOG";
+    /**
+     * User info send in the connection
+     */
+    public final static String USER_INFO = "USER_INFO";
     // more...
-
     /**
      * MessageType helps to read the content of the message
      */

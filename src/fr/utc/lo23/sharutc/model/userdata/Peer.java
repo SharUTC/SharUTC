@@ -10,23 +10,22 @@ import java.io.Serializable;
 public class Peer implements Serializable {
 
     private static final long serialVersionUID = 8410656879206380403L;
-    private PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
+    private PropertyChangeSupport mPropertyChangeSupport = new PropertyChangeSupport(this);
     /**
      * Unique ID generated at profile creation (new Date())
      */
-    private long id;
+    private long mId;
     /**
      * lattest knwon peer name displayed in comments
      */
-    private String displayName;
+    private String mDisplayName;
     /**
      * peer ip address currently in use, specific to network
      */
-    private String ipAddress;
+    private String mIpAddress;
 
-    // keep no arg. constructor in bean
     /**
-     *
+     * Default constructor
      */
     public Peer() {
     }
@@ -37,8 +36,8 @@ public class Peer implements Serializable {
      * @param displayName
      */
     public Peer(long id, String displayName) {
-        this.id = id;
-        this.displayName = displayName;
+        this.mId = id;
+        this.mDisplayName = displayName;
     }
 
     /**
@@ -48,9 +47,9 @@ public class Peer implements Serializable {
      * @param ipAddress
      */
     public Peer(long id, String displayName, String ipAddress) {
-        this.id = id;
-        this.displayName = displayName;
-        this.ipAddress = ipAddress;
+        this.mId = id;
+        this.mDisplayName = displayName;
+        this.mIpAddress = ipAddress;
     }
 
     /**
@@ -58,7 +57,7 @@ public class Peer implements Serializable {
      * @return
      */
     public long getId() {
-        return id;
+        return mId;
     }
 
     /**
@@ -66,7 +65,7 @@ public class Peer implements Serializable {
      * @param id
      */
     public void setId(long id) {
-        this.id = id;
+        this.mId = id;
     }
 
     /**
@@ -74,7 +73,7 @@ public class Peer implements Serializable {
      * @return
      */
     public String getDisplayName() {
-        return displayName;
+        return mDisplayName;
     }
 
     /**
@@ -82,9 +81,9 @@ public class Peer implements Serializable {
      * @param displayName
      */
     public void setDisplayName(String displayName) {
-        String oldDisplayName = this.displayName;
-        this.displayName = displayName;
-        propertyChangeSupport.firePropertyChange(Property.DISPLAY_NAME.name(), oldDisplayName, displayName);
+        String oldDisplayName = this.mDisplayName;
+        this.mDisplayName = displayName;
+        mPropertyChangeSupport.firePropertyChange(Property.DISPLAY_NAME.name(), oldDisplayName, displayName);
     }
 
     /**
@@ -92,7 +91,7 @@ public class Peer implements Serializable {
      * @return
      */
     public String getIpAddress() {
-        return ipAddress;
+        return mIpAddress;
     }
 
     /**
@@ -102,7 +101,7 @@ public class Peer implements Serializable {
      * @param ipAddress
      */
     public void setIpAddress(String ipAddress) {
-        this.ipAddress = ipAddress;
+        this.mIpAddress = ipAddress;
     }
 
     /**
@@ -110,7 +109,7 @@ public class Peer implements Serializable {
      * @param listener
      */
     public void addPropertyChangeListener(PropertyChangeListener listener) {
-        propertyChangeSupport.addPropertyChangeListener(listener);
+        mPropertyChangeSupport.addPropertyChangeListener(listener);
     }
 
     /**
@@ -118,7 +117,7 @@ public class Peer implements Serializable {
      * @param listener
      */
     public void removePropertyChangeListener(PropertyChangeListener listener) {
-        propertyChangeSupport.removePropertyChangeListener(listener);
+        mPropertyChangeSupport.removePropertyChangeListener(listener);
     }
 
     /**

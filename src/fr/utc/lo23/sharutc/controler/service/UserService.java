@@ -12,6 +12,12 @@ import fr.utc.lo23.sharutc.model.userdata.UserInfo;
 public interface UserService {
 
     /**
+     * Save the currently connected user profile, by writing the java data into
+     * a JSON file.
+     */
+    public void saveProfile();
+    
+    /**
      *
      * @param peer
      */
@@ -55,7 +61,7 @@ public interface UserService {
      * @param music
      * @param readInfo
      * @param listen
-     * @param noteAndComment  
+     * @param noteAndComment
      */
     public void manageGroupRights(Category category, Music music, boolean readInfo, boolean listen, boolean noteAndComment);
 

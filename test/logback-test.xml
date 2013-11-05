@@ -38,10 +38,11 @@
     <!-- NETWORK -->
     <logger name="fr.utc.lo23.sharutc.controler.network.NetworkServiceMock" level="DEBUG" />
     <logger name="fr.utc.lo23.sharutc.controler.network.MessageParserImpl" level="DEBUG" />
+    <logger name="fr.utc.lo23.sharutc.controler.network.MessageHandlerImpl" level="DEBUG" />
     <logger name="fr.utc.lo23.sharutc.controler.network.Message" level="DEBUG" />
 
     <!-- APP MODEL -->
-    <logger name="fr.utc.lo23.sharutc.model.AppModelMock" level="INFO" />
+    <logger name="fr.utc.lo23.sharutc.model.AppModelMock" level="TRACE" />
     <logger name="fr.utc.lo23.sharutc.model.Peer" level="INFO" />
     <logger name="fr.utc.lo23.sharutc.model.ErrorBus" level="INFO" />
     <logger name="fr.utc.lo23.sharutc.model.ErrorMessage" level="INFO" />

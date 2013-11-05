@@ -6,78 +6,72 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- *
+ * {@inheritDoc}
  */
 public class SetScoreCommandImpl implements SetScoreCommand {
 
     private static final Logger log = LoggerFactory
             .getLogger(SetScoreCommandImpl.class);
-    private Peer peer;
-    private Music music;
-    private int score;
+    private Peer mPeer;
+    private Music mMusic;
+    private int mScore;
 
     /**
-     *
+     * {@inheritDoc}
      */
     public SetScoreCommandImpl() {
     }
 
     /**
-     *
-     * @return
+     * {@inheritDoc}
      */
     @Override
     public Peer getPeer() {
-        return peer;
+        return mPeer;
     }
 
     /**
-     *
-     * @param peer
+     * {@inheritDoc}
      */
     @Override
     public void setPeer(Peer peer) {
-        this.peer = peer;
+        this.mPeer = peer;
     }
 
     /**
-     *
-     * @return
+     * {@inheritDoc}
      */
     @Override
     public Music getMusic() {
-        return music;
+        return mMusic;
     }
 
     /**
-     *
-     * @param music
+     * {@inheritDoc}
      */
     @Override
     public void setMusic(Music music) {
-        this.music = music;
+        this.mMusic = music;
     }
 
     /**
-     *
-     * @return
+     * {@inheritDoc}
      */
     @Override
     public int getScore() {
-        return score;
+        return mScore;
     }
 
     /**
-     *
-     * @param score
+     * {@inheritDoc}
      */
     @Override
     public void setScore(int score) {
-        this.score = score;
+        this.mScore = score;
     }
 
     /**
-     *
+     * {@inheritDoc}
      */
     @Override
     public void execute() {

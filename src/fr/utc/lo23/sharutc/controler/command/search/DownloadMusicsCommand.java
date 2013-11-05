@@ -2,34 +2,23 @@ package fr.utc.lo23.sharutc.controler.command.search;
 
 import fr.utc.lo23.sharutc.controler.command.Command;
 import fr.utc.lo23.sharutc.model.domain.Catalog;
-import fr.utc.lo23.sharutc.model.userdata.Peer;
 
 /**
- *
+ * Send a request to each owner of the file to download it
  */
 public interface DownloadMusicsCommand extends Command {
 
     /**
+     * Return all the musics the user wants to download
      *
-     * @return
-     */
-    public Peer getPeer();
-
-    /**
-     *
-     * @param peer
-     */
-    public void setPeer(Peer peer);
-
-    /**
-     *
-     * @return
+     * @return all the musics the user wants to download
      */
     public Catalog getCatalog();
 
     /**
+     * Set all the musics the user wants to download
      *
-     * @param catalog
+     * @param catalog all the musics the user wants to download
      */
     public void setCatalog(Catalog catalog);
 }

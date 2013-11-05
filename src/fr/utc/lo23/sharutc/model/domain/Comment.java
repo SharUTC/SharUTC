@@ -7,26 +7,45 @@ import java.io.Serializable;
 import java.util.Date;
 
 /**
+ * Users may add comments to a musics, a comment is a text with its creation
+ * date, its author, and an index. The index is relative to a Music, its purpose
+ * is to be able to identify the comment to delete or update when the music
+ * belongs to a peer
  *
+ * the peerDisplayName is required to name unknown peers when others are reading
+ * comments, it must be loaded with each comment when a search is being
+ * performed
  *
+ * There is a listener on the text only, if ever we update text edits in
+ * comments in live
  */
 public class Comment implements Serializable {
 
     private static final long serialVersionUID = -4908693993402023011L;
     @JsonIgnore
     private PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
-    private Integer index;
-    private String text;
-    private Long peerId;
-    private Date creationDate;
-    private String peerDisplayName;
+    private Integer mIndex;
+    private String mText;
+    private Long mAuthorPeerId;
+    private Date mCreationDate;
+    private String mAuthorName;
 
     /**
-     *
+     * Empty constructor, used for Json
      */
     public Comment() {
     }
 
+    public Comment(Comment comment) {
+        this.mIndex = new Integer(comment.mIndex);
+        this.mText = comment.mText;
+        this.mAuthorPeerId = new Long(comment.mAuthorPeerId);
+        this.mCreationDate = new Date(comment.mCreationDate.getTime());
+        this.mAuthorName = comment.mAuthorName;
+    }
+
+    //TODO there are others constructors to write here, index might be setted another way or moment
+    //
     /**
      *
      * @param index
@@ -35,10 +54,10 @@ public class Comment implements Serializable {
      * @param creationDate
      */
     public Comment(Integer index, String text, Long peerId, Date creationDate) {
-        this.index = index;
-        this.text = text;
-        this.peerId = peerId;
-        this.creationDate = creationDate;
+        this.mIndex = index;
+        this.mText = text;
+        this.mAuthorPeerId = peerId;
+        this.mCreationDate = creationDate;
     }
 
     /**
@@ -46,7 +65,7 @@ public class Comment implements Serializable {
      * @return
      */
     public Integer getIndex() {
-        return index;
+        return mIndex;
     }
 
     /**
@@ -54,7 +73,7 @@ public class Comment implements Serializable {
      * @param index
      */
     public void setIndex(Integer index) {
-        this.index = index;
+        this.mIndex = index;
     }
 
     /**
@@ -62,7 +81,7 @@ public class Comment implements Serializable {
      * @return
      */
     public String getText() {
-        return text;
+        return mText;
     }
 
     /**
@@ -70,8 +89,8 @@ public class Comment implements Serializable {
      * @param text
      */
     public void setText(String text) {
-        String oldText = this.text;
-        this.text = text;
+        String oldText = this.mText;
+        this.mText = text;
         propertyChangeSupport.firePropertyChange(Property.TEXT.name(), oldText, text);
     }
 
@@ -79,16 +98,16 @@ public class Comment implements Serializable {
      *
      * @return
      */
-    public Long getPeerId() {
-        return peerId;
+    public Long getAuthorPeerId() {
+        return mAuthorPeerId;
     }
 
     /**
      *
-     * @param peerId
+     * @param authorPeerId
      */
-    public void setPeerId(Long peerId) {
-        this.peerId = peerId;
+    public void setAuthorPeerId(Long authorPeerId) {
+        this.mAuthorPeerId = authorPeerId;
     }
 
     /**
@@ -96,7 +115,7 @@ public class Comment implements Serializable {
      * @return
      */
     public Date getCreationDate() {
-        return creationDate;
+        return mCreationDate;
     }
 
     /**
@@ -104,23 +123,23 @@ public class Comment implements Serializable {
      * @param creationDate
      */
     public void setCreationDate(Date creationDate) {
-        this.creationDate = creationDate;
+        this.mCreationDate = creationDate;
     }
 
     /**
      *
      * @return
      */
-    public String getPeerDisplayName() {
-        return peerDisplayName;
+    public String getAuthorName() {
+        return mAuthorName;
     }
 
     /**
      *
-     * @param peerDisplayName
+     * @param authorName
      */
-    public void setPeerDisplayName(String peerDisplayName) {
-        this.peerDisplayName = peerDisplayName;
+    public void setAuthorName(String authorName) {
+        this.mAuthorName = authorName;
     }
 
     /**
@@ -148,5 +167,10 @@ public class Comment implements Serializable {
          *
          */
         TEXT
+    }
+
+    @Override
+    public Comment clone() {
+        return new Comment(this);
     }
 }

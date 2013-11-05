@@ -1,6 +1,7 @@
 package fr.utc.lo23.sharutc.model;
 
 import fr.utc.lo23.sharutc.model.domain.Catalog;
+import fr.utc.lo23.sharutc.model.domain.RightsList;
 import fr.utc.lo23.sharutc.model.domain.TagMap;
 import fr.utc.lo23.sharutc.model.userdata.ActivePeerList;
 import fr.utc.lo23.sharutc.model.userdata.KnownPeerList;
@@ -13,7 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- *
+ * {@inheritDoc}
  */
 @Singleton
 public class AppModelImpl implements AppModel, Serializable {
@@ -32,28 +33,41 @@ public class AppModelImpl implements AppModel, Serializable {
     private Profile profile;
     private Catalog localCatalog;
     private KnownPeerList knownPeerList;
+    private RightsList rightsList;
 
     /**
-     *
+     * Empty constructor, no real use in application, created by injection
      */
-        public AppModelImpl() {
+    public AppModelImpl() {
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Long getCurrentConversationId() {
         return currentConversationId;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public void incrementConversationId() {
-        currentConversationId++;
+    public Long getNextConversationId() {
+        return ++currentConversationId;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public KnownPeerList getKnownPeerList() {
         return knownPeerList;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void setKnownPeerList(KnownPeerList knownPeerList) {
         if (knownPeerList != null) {
@@ -68,11 +82,17 @@ public class AppModelImpl implements AppModel, Serializable {
                 knownPeerList);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public ActivePeerList getActivePeerList() {
         return activePeerList;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void setActivePeerList(ActivePeerList activePeerList) {
         if (activePeerList != null) {
@@ -87,11 +107,17 @@ public class AppModelImpl implements AppModel, Serializable {
                 activePeerList);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Profile getProfile() {
         return profile;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void setProfile(Profile profile) {
         log.debug("Setting profile");
@@ -102,11 +128,17 @@ public class AppModelImpl implements AppModel, Serializable {
                 profile);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public TagMap getNetworkTagMap() {
         return networkTagMap;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void setNetworkTagMap(TagMap networkTagMap) {
         log.debug("Setting networkTagMap");
@@ -118,24 +150,21 @@ public class AppModelImpl implements AppModel, Serializable {
     }
 
     /**
-     *
-     * @param listener
+     * {@inheritDoc}
      */
     public void addPropertyChangeListener(PropertyChangeListener listener) {
         propertyChangeSupport.addPropertyChangeListener(listener);
     }
 
     /**
-     *
-     * @param listener
+     * {@inheritDoc}
      */
     public void removePropertyChangeListener(PropertyChangeListener listener) {
         propertyChangeSupport.removePropertyChangeListener(listener);
     }
 
     /**
-     *
-     * @return
+     * {@inheritDoc}
      */
     @Override
     public ErrorBus getErrorBus() {
@@ -143,8 +172,7 @@ public class AppModelImpl implements AppModel, Serializable {
     }
 
     /**
-     *
-     * @param errorBus
+     * {@inheritDoc}
      */
     @Override
     public void setErrorBus(ErrorBus errorBus) {
@@ -152,8 +180,7 @@ public class AppModelImpl implements AppModel, Serializable {
     }
 
     /**
-     *
-     * @return
+     * {@inheritDoc}
      */
     @Override
     public Catalog getLocalCatalog() {
@@ -161,8 +188,7 @@ public class AppModelImpl implements AppModel, Serializable {
     }
 
     /**
-     *
-     * @param localCatalog
+     * {@inheritDoc}
      */
     @Override
     public void setLocalCatalog(Catalog localCatalog) {
@@ -170,8 +196,7 @@ public class AppModelImpl implements AppModel, Serializable {
     }
 
     /**
-     *
-     * @return
+     * {@inheritDoc}
      */
     @Override
     public Catalog getTmpCatalog() {
@@ -179,8 +204,7 @@ public class AppModelImpl implements AppModel, Serializable {
     }
 
     /**
-     *
-     * @param tmpCatalog
+     * {@inheritDoc}
      */
     @Override
     public void setTmpCatalog(Catalog tmpCatalog) {
@@ -188,8 +212,7 @@ public class AppModelImpl implements AppModel, Serializable {
     }
 
     /**
-     *
-     * @return
+     * {@inheritDoc}
      */
     @Override
     public Catalog getSearchResults() {
@@ -197,8 +220,7 @@ public class AppModelImpl implements AppModel, Serializable {
     }
 
     /**
-     *
-     * @param searchResults
+     * {@inheritDoc}
      */
     @Override
     public void setSearchResults(Catalog searchResults) {
@@ -206,8 +228,7 @@ public class AppModelImpl implements AppModel, Serializable {
     }
 
     /**
-     *
-     * @return
+     * {@inheritDoc}
      */
     @Override
     public Catalog getRemoteUserCatalog() {
@@ -215,12 +236,27 @@ public class AppModelImpl implements AppModel, Serializable {
     }
 
     /**
-     *
-     * @param remoteUserCatalog
+     * {@inheritDoc}
      */
     @Override
     public void setRemoteUserCatalog(Catalog remoteUserCatalog) {
         this.remoteUserCatalog = remoteUserCatalog;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public RightsList getRightsList() {
+        return rightsList;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void setRightsList(RightsList rightsList) {
+        this.rightsList = rightsList;
     }
 
     /**

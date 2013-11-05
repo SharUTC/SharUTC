@@ -9,44 +9,57 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Compute local TagMap and send it to required peer
+ * {@inheritDoc}
  */
 public class SendTagMapCommandImpl implements SendTagMapCommand {
 
     private static final Logger log = LoggerFactory
             .getLogger(SendTagMapCommandImpl.class);
-    @Inject
-    private NetworkService networkService;
-    @Inject
-    private AppModel appModel;
-    private Peer peer;
+    private final NetworkService networkService;
+    private final AppModel appModel;
+    private Peer mPeer;
+    private Long mConversationId;
 
-    /**
-     *
-     */
-    public SendTagMapCommandImpl() {
+    @Inject
+    public SendTagMapCommandImpl(AppModel appModel, NetworkService networkService) {
+        this.appModel = appModel;
+        this.networkService = networkService;
     }
 
     /**
-     *
-     * @return
+     * {@inheritDoc}
      */
     @Override
     public Peer getPeer() {
-        return peer;
+        return mPeer;
     }
 
     /**
-     *
-     * @param peer
+     * {@inheritDoc}
      */
     @Override
     public void setPeer(Peer peer) {
-        this.peer = peer;
+        this.mPeer = peer;
     }
 
     /**
-     *
+     * {@inheritDoc}
+     */
+    @Override
+    public Long getConversationId() {
+        return mConversationId;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void setConversationId(Long conversationId) {
+        this.mConversationId = conversationId;
+    }
+
+    /**
+     * {@inheritDoc}
      */
     @Override
     public void execute() {
@@ -56,7 +69,7 @@ public class SendTagMapCommandImpl implements SendTagMapCommand {
         TagMap tagMap = new TagMap(appModel.getLocalCatalog());
 
         // sending TagMap response in unicast
-        networkService.sendUnicastTagMap(peer, tagMap);
+        networkService.sendUnicastTagMap(mPeer, mConversationId, tagMap);
 
         log.info("SendTagMapCommand DONE");
     }

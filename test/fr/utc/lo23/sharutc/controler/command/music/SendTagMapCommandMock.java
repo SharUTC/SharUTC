@@ -27,7 +27,8 @@ public class SendTagMapCommandMock implements SendTagMapCommand {
      */
     @Override
     public Peer getPeer() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        log.warn("Not supported yet.");
+        return null;
     }
 
     /**
@@ -36,6 +37,25 @@ public class SendTagMapCommandMock implements SendTagMapCommand {
      */
     @Override
     public void setPeer(Peer peer) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        log.warn("Not supported yet.");
+    }
+
+    /**
+     *
+     * @return
+     */
+    @Override
+    public Long getConversationId() {
+        log.warn("Not supported yet.");
+        return null;
+    }
+
+    /**
+     *
+     * @param conversationId
+     */
+    @Override
+    public void setConversationId(Long conversationId) {
+        log.warn("Not supported yet.");
     }
 }

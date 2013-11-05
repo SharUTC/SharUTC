@@ -12,8 +12,8 @@ public class Category implements Serializable {
      * Undeletable category ID
      */
     public static final Integer PUBLIC_CATEGORY_ID = new Integer(0);
-    private Integer id;
-    private String name;
+    private Integer mId;
+    private String mName;
 
     /**
      *
@@ -26,7 +26,7 @@ public class Category implements Serializable {
      * @return
      */
     public Integer getId() {
-        return id;
+        return mId;
     }
 
     /**
@@ -34,7 +34,7 @@ public class Category implements Serializable {
      * @param id
      */
     public void setId(Integer id) {
-        this.id = id;
+        this.mId = id;
     }
 
     /**
@@ -42,7 +42,7 @@ public class Category implements Serializable {
      * @return
      */
     public String getName() {
-        return name;
+        return mName;
     }
 
     /**
@@ -50,6 +50,6 @@ public class Category implements Serializable {
      * @param name
      */
     public void setName(String name) {
-        this.name = name;
+        this.mName = name;
     }
 }

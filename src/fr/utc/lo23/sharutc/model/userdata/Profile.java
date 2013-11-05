@@ -8,32 +8,25 @@ import java.io.Serializable;
 public class Profile implements Serializable {
 
     private static final long serialVersionUID = 4883249865688142273L;
+    private KnownPeerList mKnownPeerList;
+    private Contacts mContacts;
+    private Categories mCategories;
+    private UserInfo mUserInfo;
     private Long counter;
-    private KnownPeerList knownPeerList;
-    private Contacts contacts;
-    private Categories categories;
-    private UserInfo userInfo;
 
     /**
      *
      */
     public Profile() {
+        counter = 0l;
     }
 
     /**
      *
      * @return
      */
-    public Long getCounter() {
-        return counter;
-    }
-
-    /**
-     *
-     * @param counter
-     */
-    public void setCounter(Long counter) {
-        this.counter = counter;
+    public Long getNewMusicId() {
+        return ++counter;
     }
 
     /**
@@ -41,7 +34,7 @@ public class Profile implements Serializable {
      * @return
      */
     public KnownPeerList getKnownPeerList() {
-        return knownPeerList;
+        return mKnownPeerList;
     }
 
     /**
@@ -49,7 +42,7 @@ public class Profile implements Serializable {
      * @param knownPeerList
      */
     public void setKnownPeerList(KnownPeerList knownPeerList) {
-        this.knownPeerList = knownPeerList;
+        this.mKnownPeerList = knownPeerList;
     }
 
     /**
@@ -57,7 +50,7 @@ public class Profile implements Serializable {
      * @return
      */
     public Contacts getContacts() {
-        return contacts;
+        return mContacts;
     }
 
     /**
@@ -65,7 +58,7 @@ public class Profile implements Serializable {
      * @param contacts
      */
     public void setContacts(Contacts contacts) {
-        this.contacts = contacts;
+        this.mContacts = contacts;
     }
 
     /**
@@ -73,7 +66,7 @@ public class Profile implements Serializable {
      * @return
      */
     public Categories getCategories() {
-        return categories;
+        return mCategories;
     }
 
     /**
@@ -81,7 +74,7 @@ public class Profile implements Serializable {
      * @param categories
      */
     public void setCategories(Categories categories) {
-        this.categories = categories;
+        this.mCategories = categories;
     }
 
     /**
@@ -89,7 +82,7 @@ public class Profile implements Serializable {
      * @return
      */
     public UserInfo getUserInfo() {
-        return userInfo;
+        return mUserInfo;
     }
 
     /**
@@ -97,6 +90,6 @@ public class Profile implements Serializable {
      * @param userInfo
      */
     public void setUserInfo(UserInfo userInfo) {
-        this.userInfo = userInfo;
+        this.mUserInfo = userInfo;
     }
 }

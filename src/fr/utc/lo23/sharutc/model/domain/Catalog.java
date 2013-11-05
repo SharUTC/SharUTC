@@ -10,12 +10,17 @@ import java.util.Collections;
 import java.util.List;
 
 /**
+ * Contains a list of Music instance. Send updates when a music is addeed,
+ * removed, updated, and when the list is cleared through a
+ * CollectionChangeListener
  *
+ * getter for Musics returns an unmodifiable list, use the catalog to change
+ * them, getter is here for looping purpose or others, not altering
  */
 public class Catalog implements Serializable {
 
     private static final long serialVersionUID = -6927278754684107936L;
-    private List<Music> musics = new ArrayList<Music>();
+    private ArrayList<Music> mMusics = new ArrayList<Music>();
     @JsonIgnore
     private CollectionChangeSupport collectionChangeSupport = new CollectionChangeSupport(this);
 
@@ -26,18 +31,19 @@ public class Catalog implements Serializable {
     }
 
     /**
-     * Getter for serialization DO NOT do any changes on this list, use methods
-     * of the catalog instead to update the view
+     * Give access to the contained list of musics, but its content is locked
+     * and cannot be modified this way
      *
-     * @return direct references to all musics
+     * @return an unmodifiable List of Music instances
      */
     public List<Music> getMusics() {
-        return Collections.unmodifiableList(musics);
+        return Collections.unmodifiableList(mMusics);
     }
 
     /**
+     * Clear all previous Musics from this catalog and add the new musics
      *
-     * @param musics
+     * @param musics the musics to put in this catalog
      */
     public void setMusics(List<Music> musics) {
         clear();
@@ -45,21 +51,21 @@ public class Catalog implements Serializable {
     }
 
     /**
+     * Get the musics at the given index, uses same restriction as usual List
      *
-     * @param index
-     * @return
+     * @param index the index of the given music, >=0 && <size() @ return
      */
     public Music get(int index) {
-        return musics.get(index);
+        return mMusics.get(index);
     }
 
     /**
      *
-     * @param id
-     * @return
+     * @param id the id of the music
+     * @return the searched music if id exists in this catalog, else null
      */
     public Music findMusicById(long id) {
-        for (Music m : musics) {
+        for (Music m : mMusics) {
             if (m.getId().longValue() == id) {
                 return m;
             }
@@ -69,11 +75,11 @@ public class Catalog implements Serializable {
 
     /**
      *
-     * @param hash
-     * @return
+     * @param hash the hash of the music
+     * @return the searched music if hash exists in this catalog, else null
      */
     public Music findMusicByHash(int hash) {
-        for (Music m : musics) {
+        for (Music m : mMusics) {
             if (m.getFile() != null && m.getMusicHash() == hash) {
                 return m;
             }
@@ -82,43 +88,47 @@ public class Catalog implements Serializable {
     }
 
     /**
+     * Add a music to this catalog, send update (ADD)
      *
-     * @param music
-     * @return
+     * @param music the music to add
+     * @return true if the music was added (java norm, not used here)
      */
     public boolean add(Music music) {
-        boolean added = musics.add(music);
+        boolean added = mMusics.add(music);
         if (added) {
-            collectionChangeSupport.fireCollectionChanged(music, musics.size() - 1, CollectionEvent.Type.ADD);
+            collectionChangeSupport.fireCollectionChanged(music, mMusics.size() - 1, CollectionEvent.Type.ADD);
         }
         return added;
     }
 
     /**
+     * Add a music to this catalog at the specified index, send update (ADD)
      *
-     * @param index
-     * @param music
+     * @param index where to add the music, must be inside [0; size()]
+     * @param music the music to add
      */
     public void add(int index, Music music) {
-        musics.add(index, music);
+        mMusics.add(index, music);
         collectionChangeSupport.fireCollectionChanged(music, index, CollectionEvent.Type.ADD);
     }
 
     /**
+     * Replace the music at the specified index, send update (UPDATE)
      *
-     * @param index
-     * @param music
-     * @return
+     * @param index where to update the music, must be inside [0; size()[
+     * @param music the music to add
+     * @return the previously element at the given position
      */
     public Music set(int index, Music music) {
-        Music set = musics.set(index, music);
+        Music set = mMusics.set(index, music);
         collectionChangeSupport.fireCollectionChanged(music, index, CollectionEvent.Type.UPDATE);
         return set;
     }
 
     /**
+     * Add all musics to this catalog, send updates (ADD)
      *
-     * @param musics
+     * @param musics the musics to add
      */
     public void addAll(List<Music> musics) {
         if (musics != null && !musics.isEmpty()) {
@@ -129,12 +139,14 @@ public class Catalog implements Serializable {
     }
 
     /**
+     * Remove a given music from this catalog if it exists, send updates
+     * (REMOVE)
      *
-     * @param music
-     * @return
+     * @param music the music to remove
+     * @return true if the music was removed, else false
      */
     public boolean remove(Music music) {
-        boolean removed = musics.remove(music);
+        boolean removed = mMusics.remove(music);
         if (removed) {
             collectionChangeSupport.fireCollectionChanged(music, -1, CollectionEvent.Type.REMOVE);
         }
@@ -142,60 +154,69 @@ public class Catalog implements Serializable {
     }
 
     /**
-     *
+     * Remove all musics from this catalog, send update (CLEAR)
      */
     public void clear() {
-        if (!musics.isEmpty()) {
-            musics.clear();
+        if (!mMusics.isEmpty()) {
+            mMusics.clear();
             collectionChangeSupport.fireCollectionChanged(null, -1, CollectionEvent.Type.CLEAR);
         }
     }
 
     /**
+     * The number of Musics contained in this Catalog
      *
-     * @return
+     * @return the number of Musics in this Catalog
      */
     public int size() {
-        return musics.size();
+        return mMusics.size();
     }
 
     /**
+     * Gives the index of the music in this catalog
      *
-     * @param music
-     * @return
+     * @param music the music to find in this catalog
+     * @return the index of the music in this catalog, -1 if there's no such
+     * music
      */
     public int indexOf(Music music) {
-        return musics.indexOf(music);
+        return mMusics.indexOf(music);
     }
 
     /**
+     * Return true if the music exists in this catalog, else false
      *
-     * @param music
-     * @return
+     * @param music the music to find in this catalog
+     * @return true if the music exists in this catalog, else false
      */
     public boolean contains(Music music) {
-        return musics.contains(music);
+        return mMusics.contains(music);
     }
 
     /**
+     * Return true if the catalog has no musics, else false
      *
-     * @return
+     * @return true if the catalog has no musics, else false
      */
     public boolean isEmpty() {
-        return musics.isEmpty();
+        return mMusics.isEmpty();
     }
 
     /**
+     * Add the listener in parameter to the list of listeners that may be
+     * notified
      *
-     * @param listener
+     * @param listener the listener to add
      */
     public void addPropertyChangeListener(CollectionChangeListener listener) {
         collectionChangeSupport.addCollectionListener(listener);
     }
 
     /**
+     * Removes the listener in parameter to the list of listeners that may be
+     * notified
      *
-     * @param listener
+     * @param listener the listener to remove
      */
     public void removePropertyChangeListener(CollectionChangeListener listener) {
         collectionChangeSupport.removeCollectionListener(listener);

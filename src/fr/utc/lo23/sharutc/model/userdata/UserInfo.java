@@ -11,14 +11,14 @@ import java.io.Serializable;
 public class UserInfo implements Serializable {
 
     private static final long serialVersionUID = -5092432482763935439L;
-    private Long peerId;
-    private String login;
+    private Long mPeerId;
+    private String mLogin;
     @JsonInclude(NON_NULL)
-    private String password;
-    private String firstName;
-    private String lastName;
-    private Integer age;
-    private File avatarFile;
+    private String mPassword;
+    private String mFirstName;
+    private String mLastName;
+    private Integer mAge;
+    private File mAvatarFile;
 
     /**
      *
@@ -31,7 +31,7 @@ public class UserInfo implements Serializable {
      * @return
      */
     public Long getPeerId() {
-        return peerId;
+        return mPeerId;
     }
 
     /**
@@ -39,7 +39,7 @@ public class UserInfo implements Serializable {
      * @param peerId
      */
     public void setPeerId(Long peerId) {
-        this.peerId = peerId;
+        this.mPeerId = peerId;
     }
 
     /**
@@ -47,7 +47,7 @@ public class UserInfo implements Serializable {
      * @return
      */
     public String getLogin() {
-        return login;
+        return mLogin;
     }
 
     /**
@@ -55,7 +55,7 @@ public class UserInfo implements Serializable {
      * @param login
      */
     public void setLogin(String login) {
-        this.login = login;
+        this.mLogin = login;
     }
 
     /**
@@ -63,7 +63,7 @@ public class UserInfo implements Serializable {
      * @return
      */
     public String getPassword() {
-        return password;
+        return mPassword;
     }
 
     /**
@@ -71,7 +71,7 @@ public class UserInfo implements Serializable {
      * @param password
      */
     public void setPassword(String password) {
-        this.password = password;
+        this.mPassword = password;
     }
 
     /**
@@ -79,7 +79,7 @@ public class UserInfo implements Serializable {
      * @return
      */
     public String getFirstName() {
-        return firstName;
+        return mFirstName;
     }
 
     /**
@@ -87,7 +87,7 @@ public class UserInfo implements Serializable {
      * @param firstName
      */
     public void setFirstName(String firstName) {
-        this.firstName = firstName;
+        this.mFirstName = firstName;
     }
 
     /**
@@ -95,7 +95,7 @@ public class UserInfo implements Serializable {
      * @return
      */
     public String getLastName() {
-        return lastName;
+        return mLastName;
     }
 
     /**
@@ -103,7 +103,7 @@ public class UserInfo implements Serializable {
      * @param lastName
      */
     public void setLastName(String lastName) {
-        this.lastName = lastName;
+        this.mLastName = lastName;
     }
 
     /**
@@ -111,7 +111,7 @@ public class UserInfo implements Serializable {
      * @return
      */
     public Integer getAge() {
-        return age;
+        return mAge;
     }
 
     /**
@@ -119,7 +119,7 @@ public class UserInfo implements Serializable {
      * @param age
      */
     public void setAge(Integer age) {
-        this.age = age;
+        this.mAge = age;
     }
 
     /**
@@ -127,7 +127,7 @@ public class UserInfo implements Serializable {
      * @return
      */
     public File getAvatarFile() {
-        return avatarFile;
+        return mAvatarFile;
     }
 
     /**
@@ -135,6 +135,6 @@ public class UserInfo implements Serializable {
      * @param avatarFile
      */
     public void setAvatarFile(File avatarFile) {
-        this.avatarFile = avatarFile;
+        this.mAvatarFile = avatarFile;
     }
 }
