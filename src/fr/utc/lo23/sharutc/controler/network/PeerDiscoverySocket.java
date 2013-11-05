@@ -6,10 +6,6 @@
 package fr.utc.lo23.sharutc.controler.network;
 
 import fr.utc.lo23.sharutc.model.AppModel;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
@@ -120,20 +116,12 @@ public class PeerDiscoverySocket implements Runnable {
      * @param msg
      */
     public void send(Message msg) {
+        byte[] bytes = msg.toJSON().getBytes();
+        DatagramPacket p = new DatagramPacket(bytes, bytes.length, mGroup, mPort);
         try {
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            ObjectOutputStream oos = new ObjectOutputStream(baos);
-            oos.writeObject(msg);
-            oos.flush();
-            byte[] buf = baos.toByteArray();
-            DatagramPacket p = new DatagramPacket(buf, buf.length, mGroup, mPort);
-            try {
-                mSocket.send(p);
-            } catch (IOException e) {
-                log.error(e.toString());
-            }
-        } catch (IOException ex) {
-            log.error(ex.toString());
+            mSocket.send(p);
+        } catch (IOException e) {
+            log.error(e.toString());
         }
     }
 
@@ -180,8 +168,6 @@ public class PeerDiscoverySocket implements Runnable {
             final int SIZE = 1000;
             byte[] buf = new byte[SIZE];
             DatagramPacket p = new DatagramPacket(buf, buf.length);
-            ByteArrayInputStream baos = null;
-            ObjectInputStream oos = null;
             Message msgReceived = null;
             try {
                 // receiving UDP packet
@@ -189,14 +175,9 @@ public class PeerDiscoverySocket implements Runnable {
                 // print information about the sender
                 log.info("<broadcast from " + p.getAddress().toString() + " : " + p.getPort() + " >");
                 log.info("Got packet " + Arrays.toString(p.getData()));
-                baos = new ByteArrayInputStream(p.getData());
                 // get message object
-                oos = new ObjectInputStream(baos);
-                try {
-                    msgReceived = (Message) oos.readObject();
-                } catch (ClassNotFoundException ex) {
-                    log.error(ex.toString());
-                }
+                String json = new String(p.getData());
+                msgReceived = Message.fromJSON(json);
                 if (msgReceived.getType() == MessageType.CONNECTION) {
                     // print more info
                     if (msgReceived.getFromPeerId() != null) {
@@ -206,6 +187,8 @@ public class PeerDiscoverySocket implements Runnable {
                     }
                     // add a new peer 
                     PeerSocket newPeer = addPeer(p, msgReceived);
+                    // call model
+                    // TODO recuperer mesage handler to execute command : AddUserCommand
                     // send personal information to the new peer
                     sendPersonalInformationToPeer(newPeer);
                 } else {

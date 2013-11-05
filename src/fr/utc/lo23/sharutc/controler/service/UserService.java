@@ -57,16 +57,6 @@ public interface UserService {
 
     /**
      *
-     * @param category
-     * @param music
-     * @param readInfo
-     * @param listen
-     * @param noteAndComment
-     */
-    public void manageGroupRights(Category category, Music music, boolean readInfo, boolean listen, boolean noteAndComment);
-
-    /**
-     *
      * @param userInfo
      */
     public void createProfile(UserInfo userInfo);

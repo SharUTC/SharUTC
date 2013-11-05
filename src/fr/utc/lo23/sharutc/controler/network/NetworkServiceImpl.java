@@ -107,15 +107,17 @@ public class NetworkServiceImpl implements NetworkService {
      */
     @Override
     public void sendUnicastGetCatalog(Peer peer) {
-        log.warn("Not supported yet.");
+        Message message = mMessageParser.write(MessageType.MUSIC_GET, new Object[][]{{Message.OWNER_PEER_ID, peer.getId()}, {Message.CONVERSATION_ID, mAppModel.getCurrentConversationId()}});
+        sendUnicast(message, peer);
     }
 
     /**
      * {inheritDoc}
      */
     @Override
-    public void sendUnicastCatalog(Peer peer, Catalog catalog) {
-        log.warn("Not supported yet.");
+    public void sendUnicastCatalog(Peer peer, Long conversationID, Catalog catalog) {
+        Message message = mMessageParser.write(MessageType.MUSIC_CATALOG, new Object[][]{{Message.CONVERSATION_ID, conversationID}, {Message.CATALOG, catalog}, {Message.OWNER_PEER_ID, peer.getId()}});
+        sendUnicast(message, peer);
     }
 
     /**
