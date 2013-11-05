@@ -1,5 +1,6 @@
 package fr.utc.lo23.sharutc.controler.network;
 
+import fr.utc.lo23.sharutc.model.AppModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.net.Socket;
@@ -12,27 +13,32 @@ public class ListenThread implements Runnable {
     private static final Logger log = LoggerFactory.getLogger(PeerDiscoverySocket.class);
     private final int port;//final static int port;
     final NetworkService networkService;
+    private Thread thread;
+    private boolean threadShouldStop = false;
+    private final AppModel mAppModel;
     
     /**
      *
      */
-    public ListenThread(int p, NetworkService ns) {
+    public ListenThread(int p, NetworkService ns, AppModel appModel) {
         this.port = p;
         networkService = ns;
+        mAppModel = appModel;
     }
 
     /**
      *
      */
     public void start() {
-        this.start();
+        thread = new Thread(this);
+        thread.start();
     }
 
     /**
      *
      */
     public void stop() {
-        this.stop();
+        threadShouldStop = true;
     }
 
     /**
@@ -40,7 +46,7 @@ public class ListenThread implements Runnable {
      */
     @Override
     public void run() {
-        long peerID = 20;   //valeur arbitraire pour l'instant A CHANGER
+        long peerID = mAppModel.getProfile().getUserInfo().getPeerId();
         try {
             ServerSocket socketServeur = new ServerSocket(port);
             System.out.println("Lancement du serveur");
@@ -48,8 +54,7 @@ public class ListenThread implements Runnable {
             while (socketServeur.isBound()) {
                 Socket socketClient = socketServeur.accept();
                 PeerSocket ps = new PeerSocket(socketClient,networkService,peerID);
-                networkService.addPeer(peerID, ps);
-                socketClient.close();
+                ps.start();
             }
             
         } catch (Exception e) {
