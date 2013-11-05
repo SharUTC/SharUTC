@@ -160,7 +160,7 @@ public class UserServiceImpl implements UserService {
      * {@inheritDoc}
      */
     @Override
-    public void integrateHeartbeat(UserInfo userinfo) {
+    public void integrateConnection(UserInfo userinfo) {
         log.warn("Not supported yet.");
     }
 }

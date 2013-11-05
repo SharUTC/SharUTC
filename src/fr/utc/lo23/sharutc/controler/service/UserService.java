@@ -105,5 +105,5 @@ public interface UserService {
      *
      * @param userinfo
      */
-    public void integrateHeartbeat(UserInfo userinfo);
+    public void integrateConnection(UserInfo userinfo);
 }

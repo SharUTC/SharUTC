@@ -1,6 +1,8 @@
 package fr.utc.lo23.sharutc.injection;
 
 import com.google.inject.AbstractModule;
+import fr.utc.lo23.sharutc.controler.command.account.IntegrateConnectionCommand;
+import fr.utc.lo23.sharutc.controler.command.account.IntegrateConnectionCommandImpl;
 import fr.utc.lo23.sharutc.controler.command.music.AddCommentCommand;
 import fr.utc.lo23.sharutc.controler.command.music.AddCommentCommandImpl;
 import fr.utc.lo23.sharutc.controler.command.music.AddTagCommand;
@@ -69,6 +71,7 @@ public class CommandModule extends AbstractModule {
         bind(InstallRemoteMusicsCommand.class).to(InstallRemoteMusicsCommandImpl.class);
         bind(SendMusicsCommand.class).to(SendMusicsCommandImpl.class);
         bind(MusicSearchCommand.class).to(MusicSearchCommandImpl.class);
+        bind(IntegrateConnectionCommand.class).to(IntegrateConnectionCommandImpl.class);
         // more...
     }
 }

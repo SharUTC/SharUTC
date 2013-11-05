@@ -91,7 +91,7 @@ public class UserServiceMock extends UserServiceImpl implements UserService {
     }
 
     @Override
-    public void integrateHeartbeat(UserInfo userinfo) {
-        super.integrateHeartbeat(userinfo);
+    public void integrateConnection(UserInfo userinfo) {
+        super.integrateConnection(userinfo);
     }
 }
