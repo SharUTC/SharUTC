@@ -105,9 +105,11 @@ public class NetworkServiceImpl implements NetworkService {
     /**
      * {inheritDoc}
      */
+
     @Override
     public void sendUnicastGetCatalog(Peer peer) {
-        log.warn("Not supported yet.");
+        Message message = mMessageParser.write(MessageType.MUSIC_GET, new Object[][]{{Message.OWNER_PEER_ID, peer.getId()}});
+        sendUnicast(message, peer);
     }
 
     /**
@@ -115,7 +117,8 @@ public class NetworkServiceImpl implements NetworkService {
      */
     @Override
     public void sendUnicastCatalog(Peer peer, Catalog catalog) {
-        log.warn("Not supported yet.");
+        Message message = mMessageParser.write(MessageType.MUSIC_CATALOG, new Object[][]{{Message.CATALOG, catalog}, {Message.OWNER_PEER_ID, peer.getId()}});
+        sendUnicast(message, peer);
     }
 
     /**
