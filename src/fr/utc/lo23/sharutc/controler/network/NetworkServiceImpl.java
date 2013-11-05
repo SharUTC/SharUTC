@@ -105,10 +105,9 @@ public class NetworkServiceImpl implements NetworkService {
     /**
      * {inheritDoc}
      */
-
     @Override
     public void sendUnicastGetCatalog(Peer peer) {
-        Message message = mMessageParser.write(MessageType.MUSIC_GET, new Object[][]{{Message.OWNER_PEER_ID, peer.getId()}});
+        Message message = mMessageParser.write(MessageType.MUSIC_GET, new Object[][]{{Message.OWNER_PEER_ID, peer.getId()}, {Message.CONVERSATION_ID, mAppModel.getCurrentConversationId()}});
         sendUnicast(message, peer);
     }
 
@@ -116,8 +115,8 @@ public class NetworkServiceImpl implements NetworkService {
      * {inheritDoc}
      */
     @Override
-    public void sendUnicastCatalog(Peer peer, Catalog catalog) {
-        Message message = mMessageParser.write(MessageType.MUSIC_CATALOG, new Object[][]{{Message.CATALOG, catalog}, {Message.OWNER_PEER_ID, peer.getId()}});
+    public void sendUnicastCatalog(Peer peer, Long conversationID, Catalog catalog) {
+        Message message = mMessageParser.write(MessageType.MUSIC_CATALOG, new Object[][]{{Message.CONVERSATION_ID, conversationID}, {Message.CATALOG, catalog}, {Message.OWNER_PEER_ID, peer.getId()}});
         sendUnicast(message, peer);
     }
 

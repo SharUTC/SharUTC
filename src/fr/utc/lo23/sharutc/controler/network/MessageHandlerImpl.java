@@ -5,7 +5,9 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import fr.utc.lo23.sharutc.controler.command.Command;
 import fr.utc.lo23.sharutc.controler.command.music.AddCommentCommand;
+import fr.utc.lo23.sharutc.controler.command.music.IntegrateRemoteCatalogCommand;
 import fr.utc.lo23.sharutc.controler.command.music.IntegrateRemoteTagMapCommand;
+import fr.utc.lo23.sharutc.controler.command.music.SendCatalogCommand;
 import fr.utc.lo23.sharutc.controler.command.music.SendTagMapCommand;
 import fr.utc.lo23.sharutc.controler.command.search.InstallRemoteMusicsCommand;
 import fr.utc.lo23.sharutc.controler.command.search.SendMusicsCommand;
@@ -49,6 +51,10 @@ public class MessageHandlerImpl implements MessageHandler {
     private SendMusicsCommand sendMusicsCommand;
     @Inject
     private InstallRemoteMusicsCommand installRemoteMusicsCommand;
+    @Inject
+    private SendCatalogCommand sendCatalogCommand;
+    @Inject
+    private IntegrateRemoteCatalogCommand integrateRemoteCatalogCommand;
     //@Inject
     //private AddCommentCommand addCommentCommand;
     // more...
@@ -72,8 +78,15 @@ public class MessageHandlerImpl implements MessageHandler {
                 // searching which command to execute following message type
                 switch (incomingMessage.getType()) {
                     case MUSIC_GET_CATALOG:
+                        sendCatalogCommand.setPeer(messageParser.getSource());
+                        sendCatalogCommand.setConversationId(incomingMessage.getConversationId());
+                        command = sendCatalogCommand;
                         break;
                     case MUSIC_CATALOG:
+                        if (isMessageForCurrentConversation(incomingMessage)) {
+                          integrateRemoteCatalogCommand.setCatalog((Catalog) messageParser.getValue(Message.CATALOG));
+                          command = integrateRemoteCatalogCommand;
+                        }
                         break;
                     case TAG_GET_MAP:
                         // nothing relative to local UI, no need to check conversation ID, but we have to forward it
