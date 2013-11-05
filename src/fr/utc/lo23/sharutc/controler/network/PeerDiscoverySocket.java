@@ -63,6 +63,7 @@ public class PeerDiscoverySocket implements Runnable {
      * @param port
      * @param group
      * @param ns
+     * @param appModel
      */
     public PeerDiscoverySocket(int port, InetAddress group, NetworkService ns, AppModel appModel) {
         // preparation
@@ -120,12 +121,9 @@ public class PeerDiscoverySocket implements Runnable {
      */
     public void send(Message msg) {
         try {
-            Long myPeerId = mAppModel.getProfile().getUserInfo().getPeerId();
-            // TODO attention ici je recupere string du msg seulement
-            Message msgToSend = new Message(myPeerId, MessageType.CONNECTION, msg.getContent());
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             ObjectOutputStream oos = new ObjectOutputStream(baos);
-            oos.writeObject(msgToSend);
+            oos.writeObject(msg);
             oos.flush();
             byte[] buf = baos.toByteArray();
             DatagramPacket p = new DatagramPacket(buf, buf.length, mGroup, mPort);
@@ -154,6 +152,7 @@ public class PeerDiscoverySocket implements Runnable {
             Long peerId = msg.getFromPeerId();
             // add new peer
             peerSocket = new PeerSocket(socket, mNs, peerId);
+            peerSocket.start();
         } catch (IOException ex) {
             log.error(ex.toString());
         }
@@ -161,8 +160,7 @@ public class PeerDiscoverySocket implements Runnable {
     }
 
     /**
-     * Send personal information in order to establish the connection with the
-     * new peer
+     * Send personal information in order to establish the connection with the new peer
      *
      * @param pSocket
      */
@@ -174,13 +172,13 @@ public class PeerDiscoverySocket implements Runnable {
     }
 
     /**
-     * Thread which receives a UDP packet, adds a new peer, and send personal
-     * information in order to establish the connection with the new peer
+     * Thread which receives a UDP packet, adds a new peer, and send personal information in order to establish the connection with the new peer
      */
     @Override
     public void run() {
         while (!threadShouldStop) {
-            byte[] buf = new byte[1000];
+            final int SIZE = 1000;
+            byte[] buf = new byte[SIZE];
             DatagramPacket p = new DatagramPacket(buf, buf.length);
             ByteArrayInputStream baos = null;
             ObjectInputStream oos = null;
@@ -199,16 +197,20 @@ public class PeerDiscoverySocket implements Runnable {
                 } catch (ClassNotFoundException ex) {
                     log.error(ex.toString());
                 }
-                // print more info
-                if (msgReceived.getFromPeerId() != null) {
-                    log.info("Message received from peerId " + msgReceived.getFromPeerId() + ", message type = " + msgReceived.getType());
+                if (msgReceived.getType() == MessageType.CONNECTION) {
+                    // print more info
+                    if (msgReceived.getFromPeerId() != null) {
+                        log.info("Message received from peerId " + msgReceived.getFromPeerId() + ", message type = " + msgReceived.getType());
+                    } else {
+                        log.error("Received message with peerId = null !");
+                    }
+                    // add a new peer 
+                    PeerSocket newPeer = addPeer(p, msgReceived);
+                    // send personal information to the new peer
+                    sendPersonalInformationToPeer(newPeer);
                 } else {
-                    log.error("Received message with peerId = null !");
+                    log.warn("Message type must be CONNECTION !");
                 }
-                // add a new peer 
-                PeerSocket newPeer = addPeer(p, msgReceived);
-                // send personal information to the new peer
-                sendPersonalInformationToPeer(newPeer);
             } catch (IOException e) {
                 log.error(e.toString());
             }

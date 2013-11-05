@@ -48,9 +48,6 @@ public class NetworkServiceImpl implements NetworkService {
         mListenThread.start();
         mPeerDiscoverySocket = new PeerDiscoverySocket(port, g, this, mAppModel);
         mPeerDiscoverySocket.start();
-        // TODO send le message "hello" de connection aux autres pairs !
-        // donc construire un object Message
-        // mais attention regarder avant : public void send(Message msg) de PeerDiscoverySocket
     }
 
     /**
@@ -235,6 +232,8 @@ public class NetworkServiceImpl implements NetworkService {
      */
     @Override
     public void userInfoBroadcast(UserInfo userInfo) {
+//        Long myPeerId = mAppModel.getProfile().getUserInfo().getPeerId();
+//        Message msgToSend = new Message(myPeerId, MessageType.CONNECTION, msg.getContent());
         if (userInfo != null) {
             sendBroadcast(mMessageParser.write(MessageType.CONNECTION, new Object[][]{{Message.CONVERSATION_ID, mAppModel.getCurrentConversationId()}, {Message.USER_INFO, userInfo}}));
         } else {

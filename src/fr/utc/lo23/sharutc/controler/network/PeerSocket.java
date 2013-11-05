@@ -61,16 +61,19 @@ public class PeerSocket implements Runnable {
         }
         // add this new PeerSocket to the PeerSocket list 
         addMe(peerId);
-        // start thread
-        thread = new Thread(this);
-        // TODO à appeller dans le ListenThread ou ailleurs => start();
     }
 
     /**
      * Start the thread
      */
     public void start() {
-        thread.start();
+        // start thread
+        if (thread == null) {
+            thread = new Thread(this);
+            thread.start();
+        } else {
+            log.warn("Can't start PeerSocket: already running.");
+        }
     }
 
     /**
