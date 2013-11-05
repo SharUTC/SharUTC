@@ -89,6 +89,9 @@ public class MusicServiceImpl implements MusicService {
      */
     @Override
     public void integrateRemoteCatalog(Peer peer, Catalog catalog) {
+        
+            appModel.getRemoteUserCatalog().clear();
+        
             // 2 modes : when peer is a contact and when peer isn't a contact
             Contact contact = appModel.getProfile().getContacts().findById(peer.getId());
             if (contact != null) {
