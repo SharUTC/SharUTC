@@ -7,6 +7,7 @@ import fr.utc.lo23.sharutc.model.domain.Catalog;
 import fr.utc.lo23.sharutc.model.domain.Comment;
 import fr.utc.lo23.sharutc.model.domain.Music;
 import fr.utc.lo23.sharutc.model.domain.Rights;
+import fr.utc.lo23.sharutc.model.domain.Score;
 import fr.utc.lo23.sharutc.model.domain.SearchCriteria;
 import fr.utc.lo23.sharutc.model.domain.TagMap;
 import fr.utc.lo23.sharutc.model.userdata.Contact;
@@ -163,7 +164,19 @@ public class MusicServiceImpl implements MusicService {
      */
     @Override
     public void setScore(Peer peer, Music music, Integer score) {
-        log.warn("Not supported yet.");
+        if (peer == null || music == null) {
+            return;
+        }
+        for (Score musicScore : music.getScores()) {
+            if (musicScore.getPeerId() == peer.getId()) {
+                musicScore.setValue(score);
+                return;
+            }
+        }
+        Score musicScore = new Score();
+        musicScore.setPeerId(peer.getId());
+        musicScore.setValue(score);
+        music.addScore(musicScore);
     }
 
     /**
@@ -171,7 +184,15 @@ public class MusicServiceImpl implements MusicService {
      */
     @Override
     public void unsetScore(Peer peer, Music music) {
-        log.warn("Not supported yet.");
+        if (peer == null || music == null) {
+            return;
+        }
+        for (Score musicScore : music.getScores()) {
+            if (musicScore.getPeerId() == peer.getId()) {
+                music.removeScore(musicScore);
+                return;
+            }
+        }
     }
 
     /**
@@ -188,6 +209,7 @@ public class MusicServiceImpl implements MusicService {
     @Override
     public void loadUserMusicFiles(String path) {
         log.warn("Not supported yet.");
+
     }
 
     /**
