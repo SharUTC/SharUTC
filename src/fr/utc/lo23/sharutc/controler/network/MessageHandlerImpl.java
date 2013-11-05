@@ -25,7 +25,7 @@ import org.slf4j.LoggerFactory;
 public class MessageHandlerImpl implements MessageHandler {
 
     private static final Logger log = LoggerFactory
-            .getLogger(MessageHandlerImpl.class);
+        .getLogger(MessageHandlerImpl.class);
     private static final ObjectMapper mapper = new ObjectMapper();
     private final AppModel appModel;
     private final MessageParser messageParser;
@@ -58,13 +58,7 @@ public class MessageHandlerImpl implements MessageHandler {
      */
     @Override
     public void handleMessage(String string) {
-        Message incomingMessage = null;
-        try {
-            incomingMessage = mapper.readValue(string, Message.class);
-        } catch (Exception ex) {
-            log.error(ex.toString());
-        }
-
+        Message incomingMessage = Message.fromJSON(string);
         if (incomingMessage != null) {
             try {
                 messageParser.read(incomingMessage);
