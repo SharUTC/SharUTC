@@ -158,6 +158,7 @@ public class PlayerServiceImpl implements PlayerService {
             mCurrentMusic = mPlaylist.get(nextIndex);
         } else {
             // no effect
+            log.debug("playerNext on empty list");
         }
         // play current
         playerPlay();
@@ -182,6 +183,7 @@ public class PlayerServiceImpl implements PlayerService {
             mCurrentMusic = mPlaylist.get(previousIndex);
         } else {
             // no effect
+            log.debug("playerPrevious on empty list");
         }
         // play current
         playerPlay();

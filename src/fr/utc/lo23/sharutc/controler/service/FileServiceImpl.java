@@ -126,28 +126,33 @@ public class FileServiceImpl implements FileService {
             log.error("File is not a music File");
             throw new Exception("File is not a music File");
         }
+        String title;
+        String artist;
+        String album;
+        String track;
+        Integer trackLength;
         try {
             AudioFile audioFile = AudioFileIO.read(file);
             Tag tag = audioFile.getTag();
-            AudioHeader audioHeader = audioFile.getAudioHeader();
-            return new Music(appModel.getProfile().getNewMusicId(),
-                    appModel.getProfile().getUserInfo().getPeerId(),
-                    getFileAsByteArray(file),
-                    file.getName(), file.getName(), file.hashCode(),
-                    tag.getFirst(FieldKey.TITLE),
-                    tag.getFirst(FieldKey.ARTIST),
-                    tag.getFirst(FieldKey.ALBUM),
-                    tag.getFirst(FieldKey.TRACK),
-                    audioHeader.getTrackLength());
+            title = tag.getFirst(FieldKey.TITLE);
+            artist = tag.getFirst(FieldKey.ARTIST);
+            album = tag.getFirst(FieldKey.ALBUM);
+            track = tag.getFirst(FieldKey.TRACK);
+            trackLength = audioFile.getAudioHeader().getTrackLength();
         } catch (Exception ex) {
             log.error("Unable to read music file informations : {}", ex.toString());
-
+            title = null;
+            artist = null;
+            album = null;
+            track = null;
+            trackLength = null;
         }
         return new Music(appModel.getProfile().getNewMusicId(),
                 appModel.getProfile().getUserInfo().getPeerId(),
                 getFileAsByteArray(file),
-                file.getName(), file.getName(), file.hashCode(),
-                null, null, null, null, null);
+                file.getName(), file.getName(), file.hashCode(), title, artist, album, track,
+                trackLength);
+
     }
 
     /**
@@ -159,12 +164,13 @@ public class FileServiceImpl implements FileService {
      * false otherwise
      */
     private boolean isMusicFile(File file) {
+        boolean fileIsAMusic = false;
         for (String extension : AUTHORIZED_MUSIC_FILES) {
             if (file.getName().endsWith("." + extension)) {
-                return true;
+                fileIsAMusic = true;
             }
         }
-        return false;
+        return fileIsAMusic;
     }
 
     /**
@@ -172,35 +178,39 @@ public class FileServiceImpl implements FileService {
      */
     @Override
     public Byte[] getFileAsByteArray(File file) throws IOException {
-        ByteArrayOutputStream ous = null;
-        InputStream ios = null;
+        ByteArrayOutputStream baos = null;
+        InputStream inputStream = null;
         try {
             byte[] buffer = new byte[4096];
-            ous = new ByteArrayOutputStream();
-            ios = new FileInputStream(file);
+            baos = new ByteArrayOutputStream();
+            inputStream = new FileInputStream(file);
             int read = 0;
-            while ((read = ios.read(buffer)) != -1) {
-                ous.write(buffer, 0, read);
+            while ((read = inputStream.read(buffer)) != -1) {
+                baos.write(buffer, 0, read);
             }
+        } catch (Exception e) {
+            log.trace("getFileAsByteArray : reading file failed");
         } finally {
             try {
-                if (ous != null) {
-                    ous.close();
+                if (baos != null) {
+                    baos.close();
                 }
             } catch (IOException e) {
                 // swallow, since not that important
+                log.trace("getFileAsByteArray : closing ByteArrayOutputStream failed");
             }
             try {
-                if (ios != null) {
-                    ios.close();
+                if (inputStream != null) {
+                    inputStream.close();
                 }
             } catch (IOException e) {
                 // swallow, since not that important
+                log.trace("getFileAsByteArray : closing InputStream failed");
             }
         }
         Byte[] array;
-        if (ous != null) {
-            byte[] tmpArray = ous.toByteArray();
+        if (baos != null) {
+            byte[] tmpArray = baos.toByteArray();
             array = new Byte[tmpArray.length];
             for (int i = 0; i < tmpArray.length; i++) {
                 array[i] = new Byte(tmpArray[i]);
