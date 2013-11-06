@@ -7,71 +7,83 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<VBox id="loginRoot" prefHeight="700.0" prefWidth="900.0" 
-      xmlns:fx="http://javafx.com/fxml"
-      fx:controller="fr.utc.lo23.sharutc.ui.LoginController" >
+
+<StackPane prefHeight="700.0" prefWidth="900.0" 
+           xmlns:fx="http://javafx.com/fxml"
+           fx:controller="fr.utc.lo23.sharutc.ui.LoginController"
+           id="loginRoot" onDragEntered="#handleDragEntered"
+           onDragOver="#handleDragOver" onDragDropped="#handleDragDropped"
+           onDragExited="#handleDragExited">
+    
     <stylesheets>
         <URL value="@../css/login.css"/>
     </stylesheets>
     
-    <GridPane alignment="TOP_CENTER" hgap="15"  >
-        <javafx.scene.shape.Rectangle id="top_rectangle_1" width="30"
-                                      height="10" GridPane.columnIndex="0" />
-        <javafx.scene.shape.Rectangle id="top_rectangle_2" width="30"
-                                      height="10" GridPane.columnIndex="1"/>
-        <javafx.scene.shape.Rectangle id="top_rectangle_3" width="30"
-                                      height="10" GridPane.columnIndex="2"/>
-        <javafx.scene.shape.Rectangle id="top_rectangle_4" width="30"
-                                      height="10" GridPane.columnIndex="3"/>
-        <javafx.scene.shape.Rectangle id="top_rectangle_5" width="30"
-                                      height="10" GridPane.columnIndex="4"/>
-    </GridPane> 
+    <VBox>
+        <GridPane alignment="TOP_CENTER" hgap="15"  >
+            <javafx.scene.shape.Rectangle id="top_rectangle_1" width="30"
+                                          height="10" GridPane.columnIndex="0"/>
+            <javafx.scene.shape.Rectangle id="top_rectangle_2" width="30"
+                                          height="10" GridPane.columnIndex="1"/>
+            <javafx.scene.shape.Rectangle id="top_rectangle_3" width="30"
+                                          height="10" GridPane.columnIndex="2"/>
+            <javafx.scene.shape.Rectangle id="top_rectangle_4" width="30"
+                                          height="10" GridPane.columnIndex="3"/>
+            <javafx.scene.shape.Rectangle id="top_rectangle_5" width="30"
+                                          height="10" GridPane.columnIndex="4"/>
+        </GridPane> 
     
-    <HBox alignment="TOP_CENTER" fx:id="titleContainter">    
-        <VBox.margin>
-            <javafx.geometry.Insets>
-                <top>20</top>
-            </javafx.geometry.Insets>
-        </VBox.margin>
-    </HBox>     
+        <HBox alignment="TOP_CENTER" fx:id="titleContainter">    
+            <VBox.margin>
+                <javafx.geometry.Insets>
+                    <top>20</top>
+                </javafx.geometry.Insets>
+            </VBox.margin>
+        </HBox>     
     
-    <HBox alignment="BOTTOM_CENTER">    
-        <VBox.margin>
-            <javafx.geometry.Insets>
-                <top>70</top>
-            </javafx.geometry.Insets>
-        </VBox.margin>
+        <HBox alignment="BOTTOM_CENTER">    
+            <VBox.margin>
+                <javafx.geometry.Insets>
+                    <top>70</top>
+                </javafx.geometry.Insets>
+            </VBox.margin>
         
-        <javafx.scene.image.ImageView fx:id="logoContainer" />
+            <javafx.scene.image.ImageView fx:id="logoContainer" />
 
-    </HBox> 
+        </HBox> 
     
             
-    <GridPane hgap="20" vgap="15"  alignment="BOTTOM_CENTER" > 
-        <VBox.margin>
-            <javafx.geometry.Insets >
-                <top>70</top>
-            </javafx.geometry.Insets>
-        </VBox.margin>
-        <Label styleClass="labelLogin" text="User Name" GridPane.rowIndex="0"
-               GridPane.columnIndex="0" />
-        <TextField fx:id="userNameField" GridPane.rowIndex="0"
-                   GridPane.columnIndex="1" GridPane.columnSpan="2"
-                   onAction="#handleTextEntered" />
-        <Label styleClass="labelLogin" text="Password" GridPane.rowIndex="1"
-               GridPane.columnIndex="0"/> 
-        <PasswordField fx:id="passwordField" GridPane.rowIndex="1"
+        <GridPane hgap="20" vgap="15"  alignment="BOTTOM_CENTER" > 
+            <VBox.margin>
+                <javafx.geometry.Insets >
+                    <top>70</top>
+                </javafx.geometry.Insets>
+            </VBox.margin>
+            <Label styleClass="labelLogin" text="User Name" GridPane.rowIndex="0"
+                   GridPane.columnIndex="0" />
+            <TextField fx:id="userNameField" GridPane.rowIndex="0"
                        GridPane.columnIndex="1" GridPane.columnSpan="2"
-                       onAction="#handleTextEntered"  />
-        <Button minWidth="75" styleClass="loginButton" text="Sign Up"
-                fx:id="buttonSignUp" GridPane.rowIndex="2"
-                GridPane.columnIndex="0" onAction="#handleLoginButtonAction" />
-        <Button minWidth="75" styleClass="loginButton" text="Sign In"
-                fx:id="buttonSignIn" GridPane.rowIndex="2"
-                GridPane.columnIndex="1" onAction="#handleLoginButtonAction"/>
-        <Button minWidth="75" styleClass="loginButton" text="Import"
-                fx:id="buttonImport" GridPane.rowIndex="2"
-                GridPane.columnIndex="2" onAction="#handleLoginButtonAction"/>
-    </GridPane>
+                       onAction="#handleTextEntered" />
+            <Label styleClass="labelLogin" text="Password" GridPane.rowIndex="1"
+                   GridPane.columnIndex="0"/> 
+            <PasswordField fx:id="passwordField" GridPane.rowIndex="1"
+                           GridPane.columnIndex="1" GridPane.columnSpan="2"
+                           onAction="#handleTextEntered"  />
+            <Button minWidth="75" styleClass="loginButton" text="Sign Up"
+                    fx:id="buttonSignUp" GridPane.rowIndex="2"
+                    GridPane.columnIndex="0" onAction="#handleLoginButtonAction" />
+            <Button minWidth="75" styleClass="loginButton" text="Sign In"
+                    fx:id="buttonSignIn" GridPane.rowIndex="2"
+                    GridPane.columnIndex="1" onAction="#handleLoginButtonAction"/>
+            <Button minWidth="75" styleClass="loginButton" text="Import"
+                    fx:id="buttonImport" GridPane.rowIndex="2"
+                    GridPane.columnIndex="2" onAction="#handleLoginButtonAction"/>
+        </GridPane>
     
-</VBox>
+    </VBox>
+    
+    <Region fx:id="dropOverlay"  StackPane.alignment="CENTER"/>
+    <Label fx:id="dropOverlayLabel" text="Drop To Import" 
+           StackPane.alignment="CENTER"/>
+
+</StackPane>
