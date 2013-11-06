@@ -149,7 +149,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Long findContactByPeerId(Long peerId) {
+    public Long findContactIdByPeerId(Long peerId) {
         // 2 modes : when peer is a contact and when peer isn't a contact
         Long contact = appModel.getProfile().getCategories().
                 findCategoryByName("default").getContacts().findById(peerId);

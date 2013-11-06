@@ -95,5 +95,5 @@ public interface UserService {
      * @param peerId
      * @return
      */
-    public Long findContactByPeerId(Long peerId);
+    public Long findContactIdByPeerId(Long peerId);
 }

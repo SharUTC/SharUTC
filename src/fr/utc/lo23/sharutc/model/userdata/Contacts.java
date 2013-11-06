@@ -28,7 +28,7 @@ public class Contacts implements Serializable {
      *
      * @return
      */
-    public HashSet<Long> getContacts() {
+    public HashSet<Long> getContactIds() {
         return mContactIds;
     }
 
@@ -36,7 +36,7 @@ public class Contacts implements Serializable {
      *
      * @param contacts
      */
-    public void setContacts(HashSet<Long> contacts) {
+    public void setContactIds(HashSet<Long> contacts) {
         this.mContactIds = contacts;
     }
 

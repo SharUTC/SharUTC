@@ -271,9 +271,9 @@ public class MusicServiceImpl implements MusicService {
         Catalog catalogResult = new Catalog();
 
         if (criteria != null && criteria.getSearch() != null && criteria.getSearch().trim().length() > 0 && peer != null) {
-            Long contact = userService.findContactByPeerId(peer.getId());
-            if (contact != null) {
-                Set<Integer> contactCategoryIds = appModel.getProfile().getCategories().getCategoriesIdsByContactId(contact);
+            Long contactId = userService.findContactIdByPeerId(peer.getId());
+            if (contactId != null) {
+                Set<Integer> contactCategoryIds = appModel.getProfile().getCategories().getCategoriesIdsByContactId(contactId);
 
                 // looping on whole catalog, searching for matching music informations
                 for (Music music : appModel.getLocalCatalog().getMusics()) {
@@ -287,7 +287,7 @@ public class MusicServiceImpl implements MusicService {
                         boolean mayReadInfo = false;
                         boolean mayListen = false;
                         boolean mayNoteAndComment = false;
-                        if (matchingCategoryIds.isEmpty()) {
+                        if (!matchingCategoryIds.isEmpty()) {
                             for (Integer categoryId : matchingCategoryIds) {
                                 // avoid useless loop
                                 if (mayReadInfo && mayListen && mayNoteAndComment) {
