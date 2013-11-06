@@ -31,10 +31,10 @@ public class FileServiceMock extends FileServiceImpl implements FileService {
     }
 
     /**
-     * 
+     *
      * @param srcPath
      * @param destPath
-     * @throws IOException 
+     * @throws IOException
      */
     @Override
     public void exportFile(String srcPath, String destPath) throws IOException {
@@ -60,5 +60,10 @@ public class FileServiceMock extends FileServiceImpl implements FileService {
     @Override
     public Byte[] getFileAsByteArray(File file) throws IOException {
         return super.getFileAsByteArray(file);
+    }
+
+    @Override
+    public File buildTmpMusicFile(Byte[] musicBytes) throws Exception {
+        return super.buildTmpMusicFile(musicBytes);
     }
 }

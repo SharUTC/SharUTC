@@ -80,7 +80,7 @@ public class Catalog implements Serializable {
      */
     public Music findMusicByHash(int hash) {
         for (Music m : mMusics) {
-            if (m.getFile() != null && m.getMusicHash() == hash) {
+            if (m.getFileBytes() != null && m.getMusicHash() == hash) {
                 return m;
             }
         }

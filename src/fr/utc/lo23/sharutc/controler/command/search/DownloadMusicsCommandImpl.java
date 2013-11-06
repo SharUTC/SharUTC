@@ -69,7 +69,7 @@ public class DownloadMusicsCommandImpl implements DownloadMusicsCommand {
             }
             // checking temporary catalog to avoid useless transfer
             Music musicWithSameHash = appModel.getTmpCatalog().findMusicByHash(music.getHash());
-            if (musicWithSameHash != null && musicWithSameHash.getFile() != null) {
+            if (musicWithSameHash != null && musicWithSameHash.getFileBytes() != null) {
                 mCatalog.remove(music);
                 //add music to local catalog and put it in local catalog
                 appModel.getLocalCatalog().add(musicWithSameHash);

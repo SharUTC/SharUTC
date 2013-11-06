@@ -20,39 +20,44 @@ public interface PlayerService {
     public void removeFromPlaylist(Music music);
 
     /**
+     * Start playing a music, accepts local music only (with music.FileByte[] !=
+     * null)
      *
      * @param music
      */
     public void play(Music music);
 
     /**
+     * NOT USED
      *
      * @param music
      */
     public void updatePlaylist(Music music);
 
     /**
-     *
+     * Play currently selected music (and for which file is present)
      */
-    public void play();
+    public void playerPlay();
 
     /**
-     *
+     * Pause currently playing music or do nothing
      */
-    public void pause();
+    public void playerPause();
 
     /**
-     *
+     * Stop currently playing music or do nothing
      */
-    public void stop();
+    public void playerStop();
 
     /**
-     *
+     * Play the next music if it exists in playlist, restart at beginning of the
+     * list, do nothing if list is empty
      */
-    public void next();
+    public void playerNext();
 
     /**
-     *
+     * Play the previous music if it exists in playlist, restart at end of the
+     * list, do nothing if list is empty
      */
-    public void previous();
+    public void playerPrevious();
 }

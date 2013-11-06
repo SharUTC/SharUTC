@@ -46,7 +46,7 @@ public class NetworkServiceImpl implements NetworkService {
         InetAddress g = InetAddress.getByName(group);
         mListenThread = new ListenThread(port, this, mAppModel);
         mListenThread.start();
-        mPeerDiscoverySocket = new PeerDiscoverySocket(port, g, this, mAppModel,mMessageParser);
+        mPeerDiscoverySocket = new PeerDiscoverySocket(port, g, this, mAppModel, mMessageParser);
         mPeerDiscoverySocket.start();
     }
 
@@ -218,7 +218,8 @@ public class NetworkServiceImpl implements NetworkService {
      */
     @Override
     public void downloadMusicForPlaying(Peer peer, long musicId) {
-        log.warn("Not supported yet.");
+        Message message = mMessageParser.write(MessageType.MUSIC_GET_TO_PLAY, new Object[][]{{Message.MUSIC_ID, musicId}});
+        sendUnicast(message, peer);
     }
 
     /**
@@ -226,7 +227,8 @@ public class NetworkServiceImpl implements NetworkService {
      */
     @Override
     public void sendMusicToPlay(Peer peer, Music music) {
-        log.warn("Not supported yet.");
+        Message message = mMessageParser.write(MessageType.MUSIC_SEND_TO_PLAY, new Object[][]{{Message.MUSIC, music}});
+        sendUnicast(message, peer);
     }
 
     /**

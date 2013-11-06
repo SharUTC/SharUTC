@@ -29,7 +29,11 @@ public class Message {
     /**
      *
      */
-    public final static String MUSIC_ID = "MUSIC";
+    public final static String MUSIC_ID = "MUSIC_ID";
+    /**
+     *
+     */
+    public final static String MUSIC = "MUSIC";
     /**
      *
      */

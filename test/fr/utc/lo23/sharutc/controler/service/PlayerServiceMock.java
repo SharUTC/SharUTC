@@ -17,8 +17,8 @@ public class PlayerServiceMock extends PlayerServiceImpl implements PlayerServic
             .getLogger(PlayerServiceMock.class);
 
     @Inject
-    public PlayerServiceMock(AppModel appModel) {
-        super(appModel);
+    public PlayerServiceMock(AppModel appModel, FileService fileService) {
+        super(appModel, fileService);
     }
 
     @Override
@@ -42,27 +42,27 @@ public class PlayerServiceMock extends PlayerServiceImpl implements PlayerServic
     }
 
     @Override
-    public void play() {
-        super.play();
+    public void playerPlay() {
+        super.playerPlay();
     }
 
     @Override
-    public void pause() {
-        super.pause();
+    public void playerPause() {
+        super.playerPause();
     }
 
     @Override
-    public void stop() {
-        super.stop();
+    public void playerStop() {
+        super.playerStop();
     }
 
     @Override
-    public void next() {
-        super.next();
+    public void playerNext() {
+        super.playerNext();
     }
 
     @Override
-    public void previous() {
-        super.previous();
+    public void playerPrevious() {
+        super.playerPrevious();
     }
 }

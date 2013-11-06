@@ -9,12 +9,15 @@ import fr.utc.lo23.sharutc.controler.command.music.IntegrateRemoteCatalogCommand
 import fr.utc.lo23.sharutc.controler.command.music.IntegrateRemoteTagMapCommand;
 import fr.utc.lo23.sharutc.controler.command.music.SendCatalogCommand;
 import fr.utc.lo23.sharutc.controler.command.music.SendTagMapCommand;
+import fr.utc.lo23.sharutc.controler.command.player.PlayIncomingMusicCommand;
+import fr.utc.lo23.sharutc.controler.command.player.SendMusicToPlayCommand;
 import fr.utc.lo23.sharutc.controler.command.search.InstallRemoteMusicsCommand;
 import fr.utc.lo23.sharutc.controler.command.search.SendMusicsCommand;
 import fr.utc.lo23.sharutc.controler.service.MusicService;
 import fr.utc.lo23.sharutc.controler.service.UserService;
 import fr.utc.lo23.sharutc.model.AppModel;
 import fr.utc.lo23.sharutc.model.domain.Catalog;
+import fr.utc.lo23.sharutc.model.domain.Music;
 import fr.utc.lo23.sharutc.model.domain.TagMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,6 +56,10 @@ public class MessageHandlerImpl implements MessageHandler {
     private SendCatalogCommand sendCatalogCommand;
     @Inject
     private IntegrateRemoteCatalogCommand integrateRemoteCatalogCommand;
+    @Inject
+    private SendMusicToPlayCommand sendMusicToPlayCommand;
+    @Inject
+    private PlayIncomingMusicCommand playIncomingMusicCommand;
     //@Inject
     //private AddCommentCommand addCommentCommand;
     // more...
@@ -62,6 +69,7 @@ public class MessageHandlerImpl implements MessageHandler {
      */
     @Override
     public void handleMessage(String string) {
+        command = null;
         Message incomingMessage = messageParser.fromJSON(string);
         if (incomingMessage != null) {
             try {
@@ -123,8 +131,13 @@ public class MessageHandlerImpl implements MessageHandler {
                         command = installRemoteMusicsCommand;
                         break;
                     case MUSIC_GET_TO_PLAY:
+                        sendMusicToPlayCommand.setPeer(messageParser.getSource());
+                        sendMusicToPlayCommand.setMusic(appModel.getLocalCatalog().findMusicById((Long) messageParser.getValue(Message.MUSIC_ID)));
+                        command = sendMusicToPlayCommand;
                         break;
                     case MUSIC_SEND_TO_PLAY:
+                        playIncomingMusicCommand.setMusic((Music) messageParser.getValue(Message.MUSIC));
+                        command = playIncomingMusicCommand;
                         break;
                     case DISCONNECT:
                         break;

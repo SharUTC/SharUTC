@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 import org.jaudiotagger.audio.AudioFile;
@@ -37,6 +38,7 @@ public class FileServiceImpl implements FileService {
             .getLogger(FileServiceImpl.class);
     private final AppModel appModel;
     private static final String[] AUTHORIZED_MUSIC_FILES = {"mp3"};
+    private File tmpFile;
 
     @Inject
     public FileServiceImpl(AppModel appModel) {
@@ -165,6 +167,9 @@ public class FileServiceImpl implements FileService {
         return false;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Byte[] getFileAsByteArray(File file) throws IOException {
         ByteArrayOutputStream ous = null;
@@ -193,12 +198,48 @@ public class FileServiceImpl implements FileService {
                 // swallow, since not that important
             }
         }
-        byte[] tmpArray = ous.toByteArray();
-        Byte[] array = new Byte[tmpArray.length];
-        for (int i = 0; i < tmpArray.length; i++) {
-            array[i] = new Byte(tmpArray[i]);
+        Byte[] array;
+        if (ous != null) {
+            byte[] tmpArray = ous.toByteArray();
+            array = new Byte[tmpArray.length];
+            for (int i = 0; i < tmpArray.length; i++) {
+                array[i] = new Byte(tmpArray[i]);
+            }
+            log.debug("Music.Byte[].length = {}", array.length);
+        } else {
+            throw new IOException();
         }
-        log.warn("Music.Byte[].lengt = {}", array.length);
         return array;
+    }
+
+    private void resetTmpFile() {
+        if (tmpFile == null) {
+            tmpFile = new File(mSourceFolder);
+            tmpFile.deleteOnExit();
+        }
+        tmpFile.delete();
+        try {
+            tmpFile.createNewFile();
+        } catch (IOException ex) {
+            java.util.logging.Logger.getLogger(FileServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public File buildTmpMusicFile(Byte[] musicBytes) throws Exception {
+        resetTmpFile();
+
+        // then we copy mp3 bytes into it
+        byte[] bytes = new byte[musicBytes.length];
+        for (int i = 0; i < musicBytes.length; i++) {
+            bytes[i] = musicBytes[i];
+        }
+        FileOutputStream fileOuputStream = new FileOutputStream(tmpFile);
+        fileOuputStream.write(bytes);
+        fileOuputStream.close();
+        return tmpFile;
     }
 }

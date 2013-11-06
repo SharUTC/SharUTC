@@ -109,8 +109,8 @@ public class MusicServiceMock extends MusicServiceImpl implements MusicService {
     }
 
     @Override
-    public Catalog loadMusicFiles(Catalog catalog) {
-        return super.loadMusicFiles(catalog);
+    public void loadMusicFiles(Catalog catalog) {
+        super.loadMusicFiles(catalog);
     }
 
     @Override

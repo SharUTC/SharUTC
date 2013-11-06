@@ -229,17 +229,17 @@ public class MusicServiceImpl implements MusicService {
      */
     @Override
     public void saveUserMusicFiles() {
-        Catalog localCatalog = appModel.getLocalCatalog(); 
-        if(localCatalog != null){
+        Catalog localCatalog = appModel.getLocalCatalog();
+        if (localCatalog != null) {
             ObjectMapper mapper = new ObjectMapper();
             try {
                 mapper.writeValue(new File(dataPath + "\\music.json"), localCatalog);
             } catch (IOException ex) {
                 log.error(ex.toString());
             }
-        }
-        else
+        } else {
             log.warn("Can't save current music Catalog(null)");
+        }
     }
 
     /**
@@ -247,17 +247,17 @@ public class MusicServiceImpl implements MusicService {
      */
     @Override
     public void loadUserMusicFiles(String path) {
-       if(path != null){
-       ObjectMapper mapper = new ObjectMapper();
+        if (path != null) {
+            ObjectMapper mapper = new ObjectMapper();
             try {
                 Catalog tmpCatalog = mapper.readValue(new File(path), Catalog.class);
                 appModel.setTmpCatalog(tmpCatalog);
             } catch (IOException ex) {
                 log.error(ex.toString());
             }
-        }
-        else
+        } else {
             log.warn("Don't have any path(null)");
+        }
 
     }
 
@@ -382,20 +382,28 @@ public class MusicServiceImpl implements MusicService {
      * {@inheritDoc}
      */
     @Override
-    public Catalog loadMusicFiles(Catalog catalog) {
+    public void loadMusicFiles(Catalog catalog) {
         log.trace("loadMusicFiles ...");
-        for (Music music : catalog.getMusics()) {
-            Music modifiableMusicFromRequestCatalog = catalog.get(catalog.indexOf(music));
-            Byte[] byteArray;
-            try {
-                byteArray = fileService.getFileAsByteArray(new File(".\\" + appModel.getProfile().getUserInfo().getLogin() + "\\" + music.getFileName()));
-                modifiableMusicFromRequestCatalog.setFile(byteArray);
-            } catch (IOException ex) {
-                log.error(ex.toString());
-            }
+        for (int i = 0; i < catalog.size(); i++) {
+            loadMusicFile(catalog.get(i));
         }
         log.trace("loadMusicFiles DONE");
-        return catalog;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void loadMusicFile(Music music) {
+        log.trace("loadMusicFile ...");
+        Byte[] byteArray;
+        try {
+            byteArray = fileService.getFileAsByteArray(new File(".\\" + appModel.getProfile().getUserInfo().getLogin() + "\\" + music.getFileName()));
+            music.setFile(byteArray);
+        } catch (IOException ex) {
+            log.error(ex.toString());
+        }
+        log.trace("loadMusicFile DONE");
     }
 
     /**

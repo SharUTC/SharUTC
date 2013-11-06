@@ -71,9 +71,9 @@ public class Music implements Serializable {
         this.mId = new Long(music.mId);
         this.mFileName = music.mFileName;
         this.mRealName = music.mRealName;
-        if (music.getFile() != null) {
-            this.mFile = new Byte[music.getFile().length];
-            System.arraycopy(music.mFile, 0, this.mFile, 0, music.getFile().length);
+        if (music.getFileBytes() != null) {
+            this.mFile = new Byte[music.getFileBytes().length];
+            System.arraycopy(music.mFile, 0, this.mFile, 0, music.getFileBytes().length);
         } else {
             this.mFile = null;
         }
@@ -196,7 +196,7 @@ public class Music implements Serializable {
      *
      * @return
      */
-    public Byte[] getFile() {
+    public Byte[] getFileBytes() {
         return mFile;
     }
 
