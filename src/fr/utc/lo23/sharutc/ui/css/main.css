@@ -64,7 +64,7 @@
 }
 
 .panetitle {
-	-fx-font-size : 28px;
+    -fx-font-size : 28px;
 }
 
 .itemBox{
@@ -86,4 +86,37 @@
 
 .formButton:hover {
     -fx-opacity: 0.7;
+}
+
+
+/* custom scrollbar of myScrollPane */
+.myScrollPane .scroll-bar:horizontal,
+.myScrollPane .scroll-bar:vertical {
+    -fx-background-color:transparent;
+}
+
+.myScrollPane .increment-button,
+.myScrollPane .decrement-button {
+    -fx-background-color:#F0F0F0;
+    -fx-border-color: #F0F0F0;
+}
+
+.myScrollPane .scroll-bar:horizontal .track ,
+.myScrollPane .scroll-bar:vertical .track{
+    -fx-background-color: #F0F0F0;
+    -fx-border-color: #F0F0F0;
+    -fx-background-radius: 0em;
+}
+
+.myScrollPane .scroll-bar:horizontal .thumb,
+.myScrollPane .scroll-bar:vertical .thumb {
+    -fx-background-color: #CDCDCD;
+    -fx-background-insets: 0, 0, 0;
+    -fx-background-radius: 0em;
+
+}
+
+.myScrollPane .scroll-bar .thumb:hover,
+.myScrollPane .scroll-bar .thumb:pressed{
+    -fx-background-color: #A6A6A6;
 }
