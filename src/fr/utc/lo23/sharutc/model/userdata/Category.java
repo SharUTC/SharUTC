@@ -14,11 +14,14 @@ public class Category implements Serializable {
     public static final Integer PUBLIC_CATEGORY_ID = new Integer(0);
     private Integer mId;
     private String mName;
+    private Contacts mContacts;
 
     /**
      *
+     * @param name
      */
-    public Category() {
+    public Category(String name) {
+        mName = name;
     }
 
     /**
@@ -51,5 +54,38 @@ public class Category implements Serializable {
      */
     public void setName(String name) {
         this.mName = name;
+    }
+    
+    /**
+     * 
+     * @return 
+     */
+    public Contacts getContacts() {
+        return mContacts;
+    }
+
+    /**
+     * 
+     * @param mContacts 
+     */
+    public void setContacts(Contacts mContacts) {
+        this.mContacts = mContacts;
+    }
+    
+    /**
+     * add an id to the contacts list
+     * @param id 
+     */
+    public void addContactId(Long id){
+        mContacts.add(id);
+    }
+    
+    /**
+     * 
+     * @param id
+     * @return 
+     */
+    public Long findContactId(Long id) {
+        return mContacts.findById(id);
     }
 }

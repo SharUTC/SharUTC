@@ -7,6 +7,7 @@ import fr.utc.lo23.sharutc.util.CollectionEvent;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Set;
 
 /**
  *
@@ -38,6 +39,35 @@ public class Categories implements Serializable {
      */
     public void setCategories(HashSet<Category> categories) {
         this.mCategories = categories;
+    }
+    
+    /**
+     * 
+     * @param name
+     * @return 
+     */
+    public Category findCategoryByName(String name) {
+        for (Category category : mCategories) {
+            if (category.getName().equals(name)) {
+                return category;
+            }
+        }
+        return null;
+    }
+    
+    /**
+     * 
+     * @param id
+     * @return 
+     */
+    public Set<Integer> getCategoriesIdsByContactId(Long id) {
+        Set<Integer> categoriesIds = new HashSet<Integer>();
+        for (Category category : mCategories) {
+            if (category.findContactId(id) != null) {
+                categoriesIds.add(category.getId());
+            }
+        }
+        return categoriesIds;
     }
 
     /**

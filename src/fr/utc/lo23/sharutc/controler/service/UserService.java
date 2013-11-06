@@ -1,7 +1,6 @@
 package fr.utc.lo23.sharutc.controler.service;
 
 import fr.utc.lo23.sharutc.model.userdata.Category;
-import fr.utc.lo23.sharutc.model.userdata.Contact;
 import fr.utc.lo23.sharutc.model.userdata.Peer;
 import fr.utc.lo23.sharutc.model.userdata.UserInfo;
 
@@ -15,19 +14,19 @@ public interface UserService {
      * a JSON file.
      */
     public void saveProfileFiles();
-
+    
     /**
-     *
+     * Add a new contact represented by one's id in the category
      * @param peer
      */
     public void addContact(Peer peer);
 
     /**
-     *
-     * @param contact
+     * Remove the contact represented by one's id from every category
+     * @param contactId
      */
-    public void deleteContact(Contact contact);
-
+    public void deleteContact(Long contactId);
+    
     /**
      *
      * @param categoryName
@@ -96,5 +95,5 @@ public interface UserService {
      * @param peerId
      * @return
      */
-    public Contact findContactByPeerId(Long peerId);
+    public Long findContactByPeerId(Long peerId);
 }

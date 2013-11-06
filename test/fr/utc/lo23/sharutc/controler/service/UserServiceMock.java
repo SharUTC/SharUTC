@@ -4,7 +4,6 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import fr.utc.lo23.sharutc.model.AppModel;
 import fr.utc.lo23.sharutc.model.userdata.Category;
-import fr.utc.lo23.sharutc.model.userdata.Contact;
 import fr.utc.lo23.sharutc.model.userdata.Peer;
 import fr.utc.lo23.sharutc.model.userdata.UserInfo;
 import org.slf4j.Logger;
@@ -30,7 +29,7 @@ public class UserServiceMock extends UserServiceImpl implements UserService {
     }
 
     @Override
-    public void deleteContact(Contact contact) {
+    public void deleteContact(Long contact) {
         super.deleteContact(contact);
     }
 
