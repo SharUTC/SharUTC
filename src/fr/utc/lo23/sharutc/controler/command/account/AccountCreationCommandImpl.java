@@ -49,7 +49,7 @@ public class AccountCreationCommandImpl implements AccountCreationCommand {
         musicService.createAndSetCatalog();
         musicService.createAndSetRightsList();
         // let userService.createAndSetProfile(mUserInfo) call after
-        // musicService calls, we only inform once the ui that the user has 
+        // musicService calls, we only inform once the ui that the user has
         // changed by setting profile attribute in appModel
         userService.createAndSetProfile(mUserInfo);
 

@@ -25,7 +25,6 @@ public class DownloadMusicsCommandImpl implements DownloadMusicsCommand {
     private final NetworkService networkService;
     private final MusicService musicService;
     private Catalog mCatalog;
-    
 
     @Inject
     public DownloadMusicsCommandImpl(AppModel appModel, NetworkService networkService, MusicService musicService) {

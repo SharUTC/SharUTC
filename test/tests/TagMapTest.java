@@ -65,8 +65,8 @@ public class TagMapTest {
         dummyTagMap1.merge("Rock", 1);
 
         dummyTagMap1.merge(dummyTagMap);
-        // here is the first test, it's advised to always put a short  
-        // description of the test to help other people to understand what is 
+        // here is the first test, it's advised to always put a short
+        // description of the test to help other people to understand what is
         // happening, don't hesitate to write a few comments
         Assert.assertEquals("TagMap merge method failed", dummyTagMap1,
                 musicService.getLocalTagMap());
@@ -89,9 +89,9 @@ public class TagMapTest {
         integrateRemoteTagMapCommand.setTagMap(dummyTagMap);
         //
         // then we continue to simulate the application, here it should modify
-        // the application model but for this it requires to write a few more 
+        // the application model but for this it requires to write a few more
         // code lines to first mock a complete and usable appModel with a mocked
-        // account and catalog, that other developper could also reuse or 
+        // account and catalog, that other developper could also reuse or
         // complete at the beginning
         //
         integrateRemoteTagMapCommand.execute();

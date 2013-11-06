@@ -211,13 +211,12 @@ public class MusicServiceImpl implements MusicService {
     @Override
     public void unsetScore(Peer peer, Music music) {
         log.trace("unsetScore ...");
-        if (peer == null || music == null) {
-            return;
-        }
-        for (Score musicScore : music.getScores()) {
-            if (musicScore.getPeerId() == peer.getId()) {
-                music.removeScore(musicScore);
-                return;
+        if (peer != null && music != null) {
+            for (Score musicScore : music.getScores()) {
+                if (musicScore.getPeerId().equals(peer.getId())) {
+                    music.removeScore(musicScore);
+                    break;
+                }
             }
         }
         log.trace("unsetScore DONE");
@@ -347,15 +346,15 @@ public class MusicServiceImpl implements MusicService {
         boolean match = music.getTitle().toLowerCase().contains(searchString)
                 || music.getArtist().toLowerCase().contains(searchString)
                 || music.getAlbum().toLowerCase().contains(searchString);
-        if (match) {
-            return true;
-        }
-        for (String tag : music.getTags()) {
-            if (tag.toLowerCase().contains(searchString)) {
-                return true;
+        if (!match) {
+            for (String tag : music.getTags()) {
+                if (tag.toLowerCase().contains(searchString)) {
+                    match = true;
+                    break;
+                }
             }
         }
-        return false;
+        return match;
     }
 
     private List<Integer> getAllMatchingCategoryIds(Music music, Set<Integer> contactCategoryIds) {

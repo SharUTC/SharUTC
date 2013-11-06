@@ -49,7 +49,7 @@ public class UserServiceImpl implements UserService {
             log.warn("Can't save current profile(null)");
         }
     }
-    
+
     /**
      * {@inheritDoc}
      */

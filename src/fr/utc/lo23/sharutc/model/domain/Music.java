@@ -92,7 +92,7 @@ public class Music implements Serializable {
         this.mTrackLength = new Integer(music.mTrackLength);
         this.mYear = new Integer(music.mYear);
         this.mComments = new ArrayList<Comment>();
-        // using a clone to not erase 
+        // using a clone also for contained classes, always
         for (Comment comment : music.mComments) {
             this.mComments.add(comment.clone());
         }

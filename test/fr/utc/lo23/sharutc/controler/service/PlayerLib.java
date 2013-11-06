@@ -62,7 +62,7 @@ public class PlayerLib {
                     false);
 
             AudioInputStream din = AudioSystem.getAudioInputStream(decodedFormat, in);
-            // Play now. 
+            // Play now
             rawplay(decodedFormat, din);
             in.close();
         } catch (Exception e) {
@@ -76,11 +76,11 @@ public class PlayerLib {
         if (line != null) {
             // Start
             line.start();
-            int nBytesRead = 0, nBytesWritten = 0;
+            int nBytesRead = 0;
             while (nBytesRead != -1) {
                 nBytesRead = din.read(data, 0, data.length);
                 if (nBytesRead != -1) {
-                    nBytesWritten = line.write(data, 0, nBytesRead);
+                    line.write(data, 0, nBytesRead);
                 }
             }
             // Stop
@@ -92,9 +92,8 @@ public class PlayerLib {
     }
 
     private SourceDataLine getLine(AudioFormat audioFormat) throws LineUnavailableException {
-        SourceDataLine res = null;
         DataLine.Info info = new DataLine.Info(SourceDataLine.class, audioFormat);
-        res = (SourceDataLine) AudioSystem.getLine(info);
+        SourceDataLine res = (SourceDataLine) AudioSystem.getLine(info);
         res.open(audioFormat);
         return res;
     }
