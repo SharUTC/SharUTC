@@ -21,7 +21,6 @@ public class App extends Application {
 
         MainController controller = loader.<MainController>getController();
         //call any public method of your controller
-        controller.setScene(scene);
 
         stage.show();
     }

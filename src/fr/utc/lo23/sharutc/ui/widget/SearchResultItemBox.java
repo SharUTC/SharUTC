@@ -6,7 +6,6 @@
 package fr.utc.lo23.sharutc.ui.widget;
 
 import javafx.fxml.FXMLLoader;
-import javafx.fxml.Initializable;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
 
@@ -16,15 +15,20 @@ import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class ItemBox implements Initializable {
+/**
+ * @author Florian
+ */
+public class SearchResultItemBox extends ItemBox {
 
     static final Logger log = Logger.getLogger(SearchResultItemBox.class.getName());
 
-    protected String title;
+    protected String subTitle;
     public Text boxtitle;
+    public Text boxsubtitle;
 
-    public ItemBox(String title) {
-        this.title = title;
+    public SearchResultItemBox(String title, String subTitle) {
+        super(title);
+        this.subTitle = subTitle;
 
 
     }
@@ -32,7 +36,7 @@ public class ItemBox implements Initializable {
     public Pane buildPane() {
         Pane pane = null;
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("../fxml/item_box.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("../fxml/search_result_item_box.fxml"));
             loader.setController(this);
             pane = (Pane) loader.load();
 
@@ -45,7 +49,8 @@ public class ItemBox implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        boxtitle.setText(title);
+        super.initialize(url, rb);
+        boxsubtitle.setText(subTitle);
     }
 
 }

@@ -1,9 +1,8 @@
 package fr.utc.lo23.sharutc.ui;
 
-import fr.utc.lo23.sharutc.ui.widget.ItemBox;
-import fr.utc.lo23.sharutc.ui.widget.ItemsList;
+import fr.utc.lo23.sharutc.ui.widget.SearchResultItemBox;
+import fr.utc.lo23.sharutc.ui.widget.SearchResultItemsList;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Label;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -22,17 +21,17 @@ public class SearchResultController implements Initializable {
         }
        
         
-        ItemsList list = new ItemsList("album");
+        SearchResultItemsList list = new SearchResultItemsList("album");
          gridpane.getChildren().add(list.buildPane());
         
-        list.addChild(new ItemBox("artiste1", "soustitre 1"));
-        list.addChild(new ItemBox("artiste2", "soustitre 2"));
+        list.addChild(new SearchResultItemBox("artiste1", "soustitre 1"));
+        list.addChild(new SearchResultItemBox("artiste2", "soustitre 2"));
         
-          list = new ItemsList("album");
+          list = new SearchResultItemsList("album");
          gridpane.getChildren().add(list.buildPane());
         
-        list.addChild(new ItemBox("artiste1", "soustitre 1"));
-        list.addChild(new ItemBox("artiste2", "soustitre 2"));
+        list.addChild(new SearchResultItemBox("artiste1", "soustitre 1"));
+        list.addChild(new SearchResultItemBox("artiste2", "soustitre 2"));
         
     }
 }
