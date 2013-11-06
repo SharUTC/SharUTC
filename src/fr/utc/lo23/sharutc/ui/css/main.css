@@ -16,7 +16,7 @@
 }
 
 #bottombar {
-    -fx-background-color: #95A5A6;
+    -fx-background-color: #BDC3C7;
 }
 
 #songsbutton {
@@ -88,6 +88,15 @@
     -fx-opacity: 0.7;
 }
 
+/* imagebutton */
+.imageButton {
+    -fx-background-color: transparent;
+    -fx-background-radius: 0;
+}
+
+.imageButton:hover {
+    -fx-opacity: 0.6;
+}
 
 /* custom scrollbar of myScrollPane */
 .myScrollPane .scroll-bar:horizontal,

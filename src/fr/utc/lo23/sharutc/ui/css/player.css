@@ -1,0 +1,36 @@
+
+#playerContainer {
+}
+
+#playerProgressBar {
+    -fx-opacity: 0.8;
+}
+
+#playerProgressBar:hover {
+    -fx-opacity: 1;
+}
+
+#playerProgressBar .bar {
+    -fx-border-color: transparent;
+    -fx-background-color: #33B5E5;
+    -fx-background-radius: 0em;
+}
+
+
+#playerProgressBar .track {
+    -fx-border-color: transparent;
+    -fx-background-color: #7F8C8D;
+    -fx-background-radius: 0em;
+}
+
+#playerTimeSlider .thumb {
+    -fx-border-color: transparent;
+    -fx-background-color: #33B5E5;
+    -fx-background-radius: 0em;
+}
+
+#playerTimeSlider .track {
+    -fx-border-color: transparent;
+    -fx-background-color: transparent;
+    -fx-background-radius: 0em;
+}

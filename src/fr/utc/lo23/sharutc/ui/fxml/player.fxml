@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.net.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.image.*?>
+
+<VBox prefHeight="80.0" prefWidth="250.0"
+      fx:id="playerContainer" xmlns:fx="http://javafx.com/fxml"
+      fx:controller="fr.utc.lo23.sharutc.ui.PlayerController" alignment="CENTER" >
+    <stylesheets>
+        <URL value="@../css/player.css"/>
+    </stylesheets>
+    
+    <HBox alignment="CENTER">
+        <Button fx:id="prevButton" styleClass="imageButton">
+            <graphic>
+                <ImageView>
+                    <image>
+                        <Image url="@../drawable/prev_button_small.png"/>
+                    </image>                            
+                </ImageView>
+            </graphic>   
+        </Button>
+        
+        <Button fx:id="buttonPlay" styleClass="imageButton">
+            <HBox.margin>
+                <javafx.geometry.Insets left="5" />
+            </HBox.margin>
+            <graphic>
+                <ImageView>
+                    <image>
+                        <Image url="@../drawable/play_button_small.png"/>
+                    </image>                            
+                </ImageView>
+            </graphic>   
+        </Button>
+        
+        <Button fx:id="nextButton" styleClass="imageButton">
+            <graphic>
+                <ImageView>
+                    <image>
+                        <Image url="@../drawable/next_button_small.png"/>
+                    </image>                            
+                </ImageView>
+            </graphic>   
+        </Button>
+    </HBox>
+    
+    <HBox alignment="CENTER" >
+        <VBox.margin>
+            <javafx.geometry.Insets top="10" />
+        </VBox.margin>
+        <Label fx:id="playerCurrentTime" text="00:00" />
+        <StackPane >
+            <HBox.margin>
+                <javafx.geometry.Insets left="10" right="10" />
+            </HBox.margin>
+            <ProgressBar minWidth="150" fx:id="playerProgressBar" progress="0.7" />
+            <Slider minWidth="150" fx:id="playerTimeSlider" min="0" max="1" blockIncrement="0.01"  value="0.7"   />            
+        </StackPane>
+        <Label fx:id="playerMaxTime" text="03:45" />
+    </HBox>
+</VBox>

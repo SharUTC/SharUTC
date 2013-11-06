@@ -13,6 +13,7 @@ import javafx.scene.layout.Pane;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
+import javafx.scene.layout.HBox;
 
 public class MainController implements Initializable {
 
@@ -21,11 +22,15 @@ public class MainController implements Initializable {
     public Button artistsbutton;
     public Button albumsbutton;
     public Pane rightpane;
+    public HBox bottombar;
+    
     private Scene mScene;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-
+        try {
+            bottombar.getChildren().add((Node)FXMLLoader.load(getClass().getResource("fxml/player.fxml")));
+        } catch (IOException exception) {}            
     }
 
     @FXML
