@@ -99,6 +99,15 @@
 }
 
 /* custom scrollbar of myScrollPane */
+.myScrollPane {
+    -fx-background-insets: 0;
+    -fx-padding: 0;
+}
+
+.myScrollPane:focused {
+    -fx-background-insets: 0;
+}
+
 .myScrollPane .scroll-bar:horizontal,
 .myScrollPane .scroll-bar:vertical {
     -fx-background-color:transparent;
