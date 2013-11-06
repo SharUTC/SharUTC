@@ -6,7 +6,9 @@ import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
@@ -60,6 +62,8 @@ public class LoginController implements Initializable {
     private void handleLoginButtonAction(ActionEvent event) throws IOException {
         if (event.getSource() == buttonSignUp) {
             log.info("Sign Up Button Clicked");
+            Parent root = FXMLLoader.load(getClass().getResource("fxml/registration.fxml"));
+            buttonSignUp.getScene().setRoot(root);
         } else if (event.getSource() == buttonSignIn) {
             log.info("Sign In Button Clicked");
         } else if (event.getSource() == buttonImport) {
@@ -67,8 +71,8 @@ public class LoginController implements Initializable {
             final FileChooser fileChooser = new FileChooser();
             fileChooser.setTitle("Import Profile");
             final File file = fileChooser.showOpenDialog(buttonImport.getScene().getWindow());
-            if(file != null) {
-                log.info("import file, filePath: "+file.getAbsolutePath());
+            if (file != null) {
+                log.info("import file, filePath: " + file.getAbsolutePath());
             }
         }
     }
@@ -78,7 +82,7 @@ public class LoginController implements Initializable {
         log.info("username: " + userNameField.getText() + " password: "
                 + passwordField.getText());
     }
-    
+
     @FXML
     public void handleDragEntered(DragEvent dragEvent) throws IOException {
         showDropOverlay();
@@ -90,8 +94,8 @@ public class LoginController implements Initializable {
         final Dragboard db = dragEvent.getDragboard();
         if (db.hasFiles()) {
             dragEvent.acceptTransferModes(TransferMode.ANY);
-        }        
-        dragEvent.consume();        
+        }
+        dragEvent.consume();
     }
 
     @FXML
