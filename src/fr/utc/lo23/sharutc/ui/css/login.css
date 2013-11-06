@@ -26,24 +26,19 @@ root {
     -fx-fill: #CC0000;
 }
 
-#title {
+#loginTitle {
     -fx-font: 35px Tahoma;
-    -fx-fill: #ECF0F1;       
+    -fx-text-fill: #ECF0F1;       
 }
 
-.labelLogin {
-    -fx-font: 15px Tahoma;
+#dropOverlay{
+    -fx-background-color: #669900;
+    -fx-opacity: 0.5;
+}
+
+#dropOverlayLabel{
+    -fx-font-family: Tahoma;
+    -fx-font-size: 65px;
+    -fx-font-weight: bold;
     -fx-text-fill: #ECF0F1;
-}
-
-.loginButton {
-    -fx-text-fill: #95A5A6;
-    -fx-background-color: #ECF0F1;
-    -fx-border-radius: 0;
-    -fx-background-radius: 0;
-    -fx-padding: 8;
-}
-
-.loginButton:hover {
-    -fx-opacity: 0.7;
 }
