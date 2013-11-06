@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.collections.*?>
+
+<?import javafx.scene.control.cell.*?>
+
+<?import fr.utc.lo23.sharutc.ui.*?>
+<?import fr.utc.lo23.sharutc.ui.custom.DynamicGridPane?>
+<VBox fx:id="gridPane" prefWidth="800" prefHeight="600" xmlns:fx="http://javafx.com/fxml"
+      fx:controller="fr.utc.lo23.sharutc.ui.PeopleHomeController">
+    <Label id="test" xmlns:fx="http://javafx.com/fxml" text="This is the people layout" styleClass="panetitle"/>
+</VBox>
