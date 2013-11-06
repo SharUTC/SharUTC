@@ -61,23 +61,23 @@
                     <top>70</top>
                 </javafx.geometry.Insets>
             </VBox.margin>
-            <Label styleClass="labelLogin" text="User Name" GridPane.rowIndex="0"
+            <Label styleClass="formLabel" text="User Name" GridPane.rowIndex="0"
                    GridPane.columnIndex="0" />
             <TextField fx:id="userNameField" GridPane.rowIndex="0"
                        GridPane.columnIndex="1" GridPane.columnSpan="2"
                        onAction="#handleTextEntered" />
-            <Label styleClass="labelLogin" text="Password" GridPane.rowIndex="1"
+            <Label styleClass="formLabel" text="Password" GridPane.rowIndex="1"
                    GridPane.columnIndex="0"/> 
             <PasswordField fx:id="passwordField" GridPane.rowIndex="1"
                            GridPane.columnIndex="1" GridPane.columnSpan="2"
                            onAction="#handleTextEntered"  />
-            <Button minWidth="75" styleClass="loginButton" text="Sign Up"
+            <Button minWidth="75" styleClass="formButton" text="Sign Up"
                     fx:id="buttonSignUp" GridPane.rowIndex="2"
                     GridPane.columnIndex="0" onAction="#handleLoginButtonAction" />
-            <Button minWidth="75" styleClass="loginButton" text="Sign In"
+            <Button minWidth="75" styleClass="formButton" text="Sign In"
                     fx:id="buttonSignIn" GridPane.rowIndex="2"
                     GridPane.columnIndex="1" onAction="#handleLoginButtonAction"/>
-            <Button minWidth="75" styleClass="loginButton" text="Import"
+            <Button minWidth="75" styleClass="formButton" text="Import"
                     fx:id="buttonImport" GridPane.rowIndex="2"
                     GridPane.columnIndex="2" onAction="#handleLoginButtonAction"/>
         </GridPane>
