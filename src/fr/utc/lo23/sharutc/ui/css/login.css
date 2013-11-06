@@ -26,9 +26,9 @@ root {
     -fx-fill: #CC0000;
 }
 
-#title {
+#loginTitle {
     -fx-font: 35px Tahoma;
-    -fx-fill: #ECF0F1;       
+    -fx-text-fill: #ECF0F1;       
 }
 
 .labelLogin {

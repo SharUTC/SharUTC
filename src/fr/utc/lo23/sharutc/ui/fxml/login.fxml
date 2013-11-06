@@ -33,12 +33,14 @@
                                           height="10" GridPane.columnIndex="4"/>
         </GridPane> 
     
-        <HBox alignment="TOP_CENTER" fx:id="titleContainter">    
+        <HBox alignment="TOP_CENTER">    
             <VBox.margin>
                 <javafx.geometry.Insets>
                     <top>20</top>
                 </javafx.geometry.Insets>
             </VBox.margin>
+            <Label fx:id="loginTitle" text="SharUTC">
+            </Label>
         </HBox>     
     
         <HBox alignment="BOTTOM_CENTER">    

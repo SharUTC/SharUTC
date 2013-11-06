@@ -16,9 +16,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
-import javafx.scene.text.*;
 import javafx.stage.FileChooser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,7 +29,6 @@ public class LoginController implements Initializable {
 
     private static final Logger log = LoggerFactory
             .getLogger(LoginController.class);
-    public HBox titleContainter;
     public ImageView logoContainer;
     public Button buttonSignUp;
     public Button buttonSignIn;
@@ -50,11 +47,6 @@ public class LoginController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        final Text text = new Text();
-        text.setText("SharUTC");
-        text.setId("title");
-        titleContainter.getChildren().add(text);
-
         logoContainer.setCache(true);
         logoContainer.setSmooth(true);
         logoContainer.setPreserveRatio(true);
