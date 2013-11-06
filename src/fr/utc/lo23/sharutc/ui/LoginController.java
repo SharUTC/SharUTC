@@ -19,6 +19,7 @@ import javafx.scene.input.TransferMode;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.text.*;
+import javafx.stage.FileChooser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -71,6 +72,12 @@ public class LoginController implements Initializable {
             log.info("Sign In Button Clicked");
         } else if (event.getSource() == buttonImport) {
             log.info("Import Button Clicked");
+            final FileChooser fileChooser = new FileChooser();
+            fileChooser.setTitle("Import Profile");
+            final File file = fileChooser.showOpenDialog(buttonImport.getScene().getWindow());
+            if(file != null) {
+                log.info("import file, filePath: "+file.getAbsolutePath());
+            }
         }
     }
 
