@@ -112,16 +112,23 @@ public class UserServiceImpl implements UserService {
      * {@inheritDoc}
      */
     @Override
-    public void loadUserProfileFiles(String path) {
-        log.warn("Not supported yet.");
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     public void connectionRequest(String login, String password) {
-        log.warn("Not supported yet.");
+        Profile profile;
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            profile = mapper.readValue(new File(dataPath + login + "\\profile.json"), Profile.class);
+            boolean success = profile.getUserInfo().getLogin().equals(login) &&
+                    profile.getUserInfo().getPassword().equals(password);
+            if (success) {
+                appModel.setProfile(profile);
+            } else {
+                // TODO: add a new error message instead of null 
+                appModel.getErrorBus().pushErrorMessage(null);
+            }
+            profile = null;
+        } catch (IOException ex) {
+            log.warn("Exception raised during user login");
+        }
     }
 
     /**
