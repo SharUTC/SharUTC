@@ -2,7 +2,6 @@ package fr.utc.lo23.sharutc.ui;
 
 import fr.utc.lo23.sharutc.model.userdata.UserInfo;
 import fr.utc.lo23.sharutc.ui.custom.PeopleCard;
-import fr.utc.lo23.sharutc.ui.custom.UserCard;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -41,19 +40,34 @@ public class PeopleHomeController implements Initializable, EventHandler<MouseEv
             userInfo.setFirstName("FirstName");
             PeopleCard newCard = new PeopleCard(userInfo);
             newCard.setOnMouseClicked(this);
+            newCard.setOnMouseEntered(this);
+            newCard.setOnMouseExited(this);
             peopleContainer.getChildren().add(newCard);
         }
     }
 
     @Override
     public void handle(MouseEvent mouseEvent) {
-        if (mouseEvent.getSource() instanceof UserCard) {
-            log.info("UserCard clicked");
+        if (mouseEvent.getEventType() == MouseEvent.MOUSE_CLICKED) {
+            if (mouseEvent.getSource() instanceof PeopleCard) {
+                log.info("UserCard clicked");
 
-            final UserCard user = (UserCard) mouseEvent.getSource();
-            user.adaptStyle(mouseEvent);
-            mInterface.onPeopleDetailRequested(user.getModel());
+                final PeopleCard user = (PeopleCard) mouseEvent.getSource();
+                user.adaptStyle(mouseEvent);
+                mInterface.onPeopleDetailRequested(user.getModel());
+            }
+        } else if (mouseEvent.getEventType() == MouseEvent.MOUSE_ENTERED) {
+            if (mouseEvent.getSource() instanceof PeopleCard) {
+                final PeopleCard user = (PeopleCard) mouseEvent.getSource();
+                user.onHover(true);
+            }
+        } else if (mouseEvent.getEventType() == MouseEvent.MOUSE_EXITED) {
+            if (mouseEvent.getSource() instanceof PeopleCard) {
+                final PeopleCard user = (PeopleCard) mouseEvent.getSource();
+                user.onHover(false);
+            }
         }
+
     }
 
     public interface IPeopleHomeController {
