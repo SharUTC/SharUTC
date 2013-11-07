@@ -64,4 +64,32 @@
         </StackPane>
         <Label fx:id="playerMaxTime" text="03:45" />
     </HBox>
+    
+    <HBox alignment="center">
+        <fr.utc.lo23.sharutc.ui.widget.RatingStar
+            fx:id="ratingStar1" 
+            onMouseEntered="#handleMouseEnteredRatingStar"
+            onMouseExited="#handleMouseExitedRatingStar"
+            onMouseClicked="#handleMouseClickedRatingStar" />
+        <fr.utc.lo23.sharutc.ui.widget.RatingStar
+            fx:id="ratingStar2" 
+            onMouseEntered="#handleMouseEnteredRatingStar"
+            onMouseExited="#handleMouseExitedRatingStar"
+            onMouseClicked="#handleMouseClickedRatingStar" />
+        <fr.utc.lo23.sharutc.ui.widget.RatingStar 
+            fx:id="ratingStar3" 
+            onMouseEntered="#handleMouseEnteredRatingStar"
+            onMouseExited="#handleMouseExitedRatingStar"
+            onMouseClicked="#handleMouseClickedRatingStar" />
+        <fr.utc.lo23.sharutc.ui.widget.RatingStar
+            fx:id="ratingStar4" 
+            onMouseEntered="#handleMouseEnteredRatingStar"
+            onMouseExited="#handleMouseExitedRatingStar"
+            onMouseClicked="#handleMouseClickedRatingStar" />
+        <fr.utc.lo23.sharutc.ui.widget.RatingStar
+            fx:id="ratingStar5" 
+            onMouseEntered="#handleMouseEnteredRatingStar"
+            onMouseExited="#handleMouseExitedRatingStar"
+            onMouseClicked="#handleMouseClickedRatingStar" />
+    </HBox>
 </VBox>

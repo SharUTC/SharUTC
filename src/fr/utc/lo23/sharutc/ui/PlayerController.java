@@ -1,5 +1,6 @@
 package fr.utc.lo23.sharutc.ui;
 
+import fr.utc.lo23.sharutc.ui.widget.RatingStar;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.beans.value.ChangeListener;
@@ -8,6 +9,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.Slider;
+import javafx.scene.input.MouseEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,7 +27,15 @@ public class PlayerController implements Initializable {
     public ProgressBar playerProgressBar;
     public Label playerCurrentTime;
     public Label playerMaxTime;
+    public RatingStar ratingStar1;
+    public RatingStar ratingStar2;
+    public RatingStar ratingStar3;
+    public RatingStar ratingStar4;
+    public RatingStar ratingStar5;
     private int mCurrentTimeInSeconds;
+    private RatingStar[] mRatingStars;
+    //TODO Remove once we get a real rating
+    private int mSongRating = 3;
 
     /**
      * Initializes the controller class.
@@ -44,10 +54,21 @@ public class PlayerController implements Initializable {
                 updateCurrentSongTime((Double) t1);
             }
         });
+
+        mRatingStars = new RatingStar[]{
+            ratingStar1,
+            ratingStar2,
+            ratingStar3,
+            ratingStar4,
+            ratingStar5
+        };
+
+        displayCurrentRating();
+
     }
 
     private void updateCurrentSongTime(double percent) {
-        mCurrentTimeInSeconds = (int)(SONG_TIME_IN_SECONDS  * percent);
+        mCurrentTimeInSeconds = (int) (SONG_TIME_IN_SECONDS * percent);
         playerCurrentTime.setText(timeInSecondsToString(mCurrentTimeInSeconds));
         playerProgressBar.setProgress(percent);
     }
@@ -55,5 +76,63 @@ public class PlayerController implements Initializable {
     private String timeInSecondsToString(int timeInSeconds) {
         final int minutes = timeInSeconds / 60;
         return String.format("%02d:%02d", minutes, timeInSeconds - minutes * 60);
+    }
+
+    //******************
+    //*  Rating system
+    //******************
+    
+    private void displayCurrentRating() {
+        fillRatingStar(mSongRating);
+    }
+
+    private void fillRatingStar(int rate) {
+        for (int i = 0; i < 5; i++) {
+            if (i < rate) {
+                mRatingStars[i].fill(true);
+            } else {
+                mRatingStars[i].fill(false);
+            }
+        }
+    }
+
+    public void handleMouseEnteredRatingStar(MouseEvent mouseEvent) {
+        final Object source = mouseEvent.getSource();
+        int previewRate = 1;
+        if (source == ratingStar2) {
+            previewRate = 2;
+        } else if (source == ratingStar3) {
+            previewRate = 3;
+        } else if (source == ratingStar4) {
+            previewRate = 4;
+        } else if (source == ratingStar5) {
+            previewRate = 5;
+        }
+
+        fillRatingStar(previewRate);
+    }
+
+    public void handleMouseExitedRatingStar(MouseEvent mouseEvent) {
+        displayCurrentRating();
+    }
+
+    public void handleMouseClickedRatingStar(MouseEvent mouseEvent) {
+        final Object source = mouseEvent.getSource();
+        if (source == ratingStar5) {
+            mSongRating = 5;
+        } else if (source == ratingStar4) {
+            mSongRating = 4;
+        } else if (source == ratingStar3) {
+            mSongRating = 3;
+        } else if (source == ratingStar2) {
+            mSongRating = 2;
+        } else if (source == ratingStar1) {
+            if (mSongRating == 1) {
+                mSongRating = 0;
+            } else {
+                mSongRating = 1;
+            }
+
+        }
     }
 }
