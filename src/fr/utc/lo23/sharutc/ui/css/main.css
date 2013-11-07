@@ -97,13 +97,18 @@
     -fx-border-width: 0px 0px 2px 0px;
 }
 
-.simpleCard:hover {
+.simpleCard:hover{
     -fx-border-width: 4px 4px 4px 4px;
 }
 
 .simpleCardClicked {
     -fx-border-width: 4px 4px 4px 4px;
 }
+
+.peopleCard {
+    -fx-padding: 5px 0px 5px 10px;
+}
+
 
 /* imagebutton */
 .imageButton {

@@ -1,6 +1,7 @@
 package fr.utc.lo23.sharutc.ui;
 
 import fr.utc.lo23.sharutc.model.userdata.UserInfo;
+import fr.utc.lo23.sharutc.ui.custom.PeopleCard;
 import fr.utc.lo23.sharutc.ui.custom.UserCard;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -38,7 +39,7 @@ public class PeopleHomeController implements Initializable, EventHandler<MouseEv
             userInfo.setLogin("Login " + String.valueOf(i));
             userInfo.setLastName("LastName");
             userInfo.setFirstName("FirstName");
-            UserCard newCard = new UserCard(userInfo);
+            PeopleCard newCard = new PeopleCard(userInfo);
             newCard.setOnMouseClicked(this);
             peopleContainer.getChildren().add(newCard);
         }
