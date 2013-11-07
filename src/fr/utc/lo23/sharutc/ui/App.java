@@ -1,12 +1,10 @@
-
 package fr.utc.lo23.sharutc.ui;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
-
 
 public class App extends Application {
 
@@ -15,12 +13,13 @@ public class App extends Application {
 
         FXMLLoader loader = new FXMLLoader(getClass().getResource("fxml/main.fxml"));
 
-        Scene scene = new Scene((Pane) loader.load());
+        Scene scene = new Scene((Parent) loader.load());
         scene.getStylesheets().add(this.getClass().getResource("css/main.css").toExternalForm());
         stage.setScene(scene);
 
-        MainController controller = loader.<MainController>getController();
-        //call any public method of your controller
+        //If needed, cast your controller
+        //and call any public method here
+        //MainController controller = loader.<MainController>getController();
 
         stage.show();
     }
