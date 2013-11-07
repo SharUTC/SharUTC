@@ -109,6 +109,10 @@
     -fx-background-insets: 0;
 }
 
+.myScrollPane .corner {
+    -fx-background-color:transparent;
+}
+
 .myScrollPane .scroll-bar:horizontal,
 .myScrollPane .scroll-bar:vertical {
     -fx-background-color:transparent;
