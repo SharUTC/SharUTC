@@ -1,0 +1,10 @@
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<fx:root type="fr.utc.lo23.sharutc.ui.custom.SimpleCard"
+         xmlns:fx="http://javafx.com/fxml">
+    <Label fx:id="userLogin" text="login"  />
+    <Label fx:id="userName" text="firstName lastName" />
+</fx:root>
+

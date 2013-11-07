@@ -88,6 +88,23 @@
     -fx-opacity: 0.7;
 }
 
+
+/* card */
+.simpleCard {
+    -fx-padding: 10px;
+    -fx-background-color: #FFFFFF;
+    -fx-border-color: #BDC3C7;
+    -fx-border-width: 0px 0px 2px 0px;
+}
+
+.simpleCard:hover {
+    -fx-border-width: 4px 4px 4px 4px;
+}
+
+.simpleCardClicked {
+    -fx-border-width: 4px 4px 4px 4px;
+}
+
 /* imagebutton */
 .imageButton {
     -fx-background-color: transparent;
