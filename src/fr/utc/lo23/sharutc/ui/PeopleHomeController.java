@@ -1,30 +1,33 @@
 package fr.utc.lo23.sharutc.ui;
 
-import fr.utc.lo23.sharutc.ui.widget.ItemBox;
-import fr.utc.lo23.sharutc.ui.widget.ItemsList;
-import fr.utc.lo23.sharutc.ui.widget.SearchResultItemBox;
-import fr.utc.lo23.sharutc.ui.widget.SearchResultItemsList;
+import fr.utc.lo23.sharutc.model.userdata.UserInfo;
+import fr.utc.lo23.sharutc.ui.custom.UserCard;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.layout.VBox;
 
 import java.net.URL;
 import java.util.ResourceBundle;
+import javafx.scene.layout.FlowPane;
 
 public class PeopleHomeController implements Initializable {
-
+    
     @FXML
-    public VBox people;
-
+    public FlowPane peopleContainer;
+    
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        ItemsList list = new ItemsList();
-        people.getChildren().add(list.buildPane());
-
-        //TODO make specific fxml and widget
-        for (int i = 0; i < 50; i++) {
-            list.addChild(new ItemBox("Paul Kalkbrenner " + i));
-        }
+        populate();
     }
 
+    //TODO Remove once we get a real list of user
+    private void populate() {
+        for (int i = 0; i < 50; i++) {
+            final UserInfo userInfo = new UserInfo();
+            userInfo.setLogin("Login " + String.valueOf(i));
+            userInfo.setLastName("LastName");
+            userInfo.setFirstName("FirstName");
+            
+            peopleContainer.getChildren().add(new UserCard(userInfo));
+        }
+    }
 }
