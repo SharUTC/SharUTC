@@ -1,13 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.collections.*?>
-
-<?import javafx.scene.control.cell.*?>
-
-<?import fr.utc.lo23.sharutc.ui.*?>
-<Label xmlns:fx="http://javafx.com/fxml" fx:controller="fr.utc.lo23.sharutc.ui.PeopleDetailController" text="This is the people layout" styleClass="panetitle"/>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.VBox?>
+<VBox>
+    <Label xmlns:fx="http://javafx.com/fxml" text="This is the people layout" styleClass="panetitle"/>
+    <Label xmlns:fx="http://javafx.com/fxml" fx:id="login" styleClass="panetitle"/>
+</VBox>

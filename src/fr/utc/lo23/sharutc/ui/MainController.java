@@ -65,7 +65,16 @@ public class MainController implements Initializable, PeopleHomeController.IPeop
 
     @Override
     public void onPeopleDetailRequested(UserInfo user) {
+        ObservableList<Node> children = rightpane.getChildren();
+        children.clear();
         log.info("people detail requested : " + user.getLogin());
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("fxml/people_detail.fxml"));
+        loader.setController(new PeopleDetailController(user));
+        try {
+            children.add((Node) loader.load());
+        } catch (IOException e) {
+            log.error(e.getMessage());
+        }
     }
 
     @Override

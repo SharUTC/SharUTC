@@ -77,6 +77,7 @@ public class PeopleHomeController implements Initializable, EventHandler<MouseEv
     @Override
     public void onDetailsRequested(UserInfo userInfo) {
         log.info("onDetailsRequested " + userInfo.getLogin());
+        mInterface.onPeopleDetailRequested(userInfo);
     }
 
     public interface IPeopleHomeController {
