@@ -1,6 +1,7 @@
 package fr.utc.lo23.sharutc.ui.custom;
 
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Pos;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 
@@ -12,9 +13,9 @@ abstract public class SimpleCard extends VBox {
 
     protected int mState;
 
-    public SimpleCard() {
+    public SimpleCard(String resourceFXML) {
         FXMLLoader fxmlLoader = new FXMLLoader(
-                getClass().getResource("../fxml/simple_card.fxml"));
+                getClass().getResource(resourceFXML));
         fxmlLoader.setRoot(this);
         fxmlLoader.setController(this);
 
@@ -24,6 +25,12 @@ abstract public class SimpleCard extends VBox {
         } catch (IOException exception) {
             throw new RuntimeException(exception);
         }
+
+        //set style
+        this.setAlignment(Pos.CENTER_LEFT);
+        this.setPrefWidth(180);
+        this.setPrefHeight(70);
+        this.getStyleClass().addAll("simpleCard");
 
     }
 
