@@ -52,7 +52,7 @@
     
     <HBox alignment="CENTER" >
         <VBox.margin>
-            <javafx.geometry.Insets top="10" />
+            <javafx.geometry.Insets top="5" />
         </VBox.margin>
         <Label fx:id="playerCurrentTime" text="00:00" />
         <StackPane >

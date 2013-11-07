@@ -92,6 +92,7 @@
 .imageButton {
     -fx-background-color: transparent;
     -fx-background-radius: 0;
+    -fx-padding: 2;
 }
 
 .imageButton:hover {

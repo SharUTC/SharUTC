@@ -4,6 +4,7 @@
 
 #playerProgressBar {
     -fx-opacity: 0.8;
+    -fx-padding: 0;
 }
 
 #playerProgressBar:hover {
@@ -14,6 +15,7 @@
     -fx-border-color: transparent;
     -fx-background-color: #33B5E5;
     -fx-background-radius: 0em;
+    -fx-padding: 2;
 }
 
 
@@ -27,6 +29,7 @@
     -fx-border-color: transparent;
     -fx-background-color: #33B5E5;
     -fx-background-radius: 0em;
+    -fx-padding: 5;
 }
 
 #playerTimeSlider .track {
