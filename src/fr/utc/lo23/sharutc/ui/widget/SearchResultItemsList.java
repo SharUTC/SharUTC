@@ -6,19 +6,19 @@
 
 package fr.utc.lo23.sharutc.ui.widget;
 
-import java.io.IOException;
-import java.net.URL;
-import java.util.ResourceBundle;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
 
+import java.io.IOException;
+import java.net.URL;
+import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
- *
  * @author Florian
  */
 public class SearchResultItemsList implements Initializable {
@@ -35,9 +35,10 @@ public class SearchResultItemsList implements Initializable {
 
 
     }
-    public Pane buildPane(){
+
+    public Pane buildPane() {
         Pane pane = null;
-         try {
+        try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("../fxml/search_result_items_list.fxml"));
             loader.setController(this);
             pane = (Pane) loader.load();
@@ -45,9 +46,8 @@ public class SearchResultItemsList implements Initializable {
         } catch (IOException ex) {
             log.log(Level.SEVERE, null, ex);
         }
-         return pane;
+        return pane;
     }
-
 
 
     @Override
@@ -55,8 +55,8 @@ public class SearchResultItemsList implements Initializable {
         boxtitle.setText(title);
     }
 
-    public void addChild(SearchResultItemBox item){
-        content.getChildren().add(item.buildPane());
+    public void addChild(SearchResultItemBox item) {
+        content.getChildren().add(item.buildPane("../fxml/search_result_item_box.fxml"));
 
     }
 

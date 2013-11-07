@@ -47,7 +47,7 @@ public class ItemsList implements Initializable {
     }
 
     public void addChild(ItemBox item) {
-        content.getChildren().add(item.buildPane());
+        content.getChildren().add(item.buildPane("../fxml/item_box.fxml"));
 
     }
 
