@@ -1,5 +1,6 @@
 package fr.utc.lo23.sharutc.ui;
 
+import fr.utc.lo23.sharutc.model.userdata.UserInfo;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -9,12 +10,16 @@ import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class MainController implements Initializable {
+public class MainController implements Initializable, PeopleHomeController.IPeopleHomeController {
+
+    private static final Logger log = LoggerFactory.getLogger(MainController.class);
 
     public Button songsbutton;
     public Button peoplebutton;
@@ -40,7 +45,9 @@ public class MainController implements Initializable {
         if (event.getSource() == songsbutton) {
             children.add((Node) FXMLLoader.load(getClass().getResource("fxml/songs_detail.fxml")));
         } else if (event.getSource() == peoplebutton) {
-            children.add((Node) FXMLLoader.load(getClass().getResource("fxml/people_home.fxml")));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("fxml/people_home.fxml"));
+            loader.setController(new PeopleHomeController(this));
+            children.add((Node) loader.load());
         } else if (event.getSource() == artistsbutton) {
             children.add((Node) FXMLLoader.load(getClass().getResource("fxml/artists_detail.fxml")));
         } else if (event.getSource() == albumsbutton) {
@@ -53,5 +60,15 @@ public class MainController implements Initializable {
         ObservableList<Node> children = rightpane.getChildren();
         children.clear();
         children.add((Node) FXMLLoader.load(getClass().getResource("fxml/searchresult_detail.fxml")));
+    }
+
+
+    @Override
+    public void onPeopleDetailRequested(UserInfo user) {
+        log.info("people detail requested : " + user.getLogin());
+    }
+
+    @Override
+    public void onGroupDetailRequested() {
     }
 }

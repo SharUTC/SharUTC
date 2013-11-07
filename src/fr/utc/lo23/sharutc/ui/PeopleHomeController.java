@@ -2,18 +2,30 @@ package fr.utc.lo23.sharutc.ui;
 
 import fr.utc.lo23.sharutc.model.userdata.UserInfo;
 import fr.utc.lo23.sharutc.ui.custom.UserCard;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.FlowPane;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.net.URL;
 import java.util.ResourceBundle;
-import javafx.scene.layout.FlowPane;
 
-public class PeopleHomeController implements Initializable {
-    
+public class PeopleHomeController implements Initializable, EventHandler<MouseEvent> {
+
+    private static final Logger log = LoggerFactory.getLogger(PeopleHomeController.class);
+
+    private IPeopleHomeController mInterface;
+
+    public PeopleHomeController(IPeopleHomeController i) {
+        mInterface = i;
+    }
+
     @FXML
     public FlowPane peopleContainer;
-    
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         populate();
@@ -26,8 +38,26 @@ public class PeopleHomeController implements Initializable {
             userInfo.setLogin("Login " + String.valueOf(i));
             userInfo.setLastName("LastName");
             userInfo.setFirstName("FirstName");
-            
-            peopleContainer.getChildren().add(new UserCard(userInfo));
+            UserCard newCard = new UserCard(userInfo);
+            newCard.setOnMouseClicked(this);
+            peopleContainer.getChildren().add(newCard);
         }
+    }
+
+    @Override
+    public void handle(MouseEvent mouseEvent) {
+        if (mouseEvent.getSource() instanceof UserCard) {
+            log.info("UserCard clicked");
+
+            final UserCard user = (UserCard) mouseEvent.getSource();
+            user.adaptStyle(mouseEvent);
+            mInterface.onPeopleDetailRequested(user.getModel());
+        }
+    }
+
+    public interface IPeopleHomeController {
+        void onPeopleDetailRequested(UserInfo user);
+
+        void onGroupDetailRequested();
     }
 }
