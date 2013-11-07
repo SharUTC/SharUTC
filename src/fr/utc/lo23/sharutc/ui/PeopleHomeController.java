@@ -13,7 +13,7 @@ import org.slf4j.LoggerFactory;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class PeopleHomeController implements Initializable, EventHandler<MouseEvent> {
+public class PeopleHomeController implements Initializable, EventHandler<MouseEvent>, PeopleCard.IPeopleCard {
 
     private static final Logger log = LoggerFactory.getLogger(PeopleHomeController.class);
 
@@ -38,7 +38,7 @@ public class PeopleHomeController implements Initializable, EventHandler<MouseEv
             userInfo.setLogin("Login " + String.valueOf(i));
             userInfo.setLastName("LastName");
             userInfo.setFirstName("FirstName");
-            PeopleCard newCard = new PeopleCard(userInfo);
+            PeopleCard newCard = new PeopleCard(userInfo, this);
             newCard.setOnMouseClicked(this);
             newCard.setOnMouseEntered(this);
             newCard.setOnMouseExited(this);
@@ -51,10 +51,8 @@ public class PeopleHomeController implements Initializable, EventHandler<MouseEv
         if (mouseEvent.getEventType() == MouseEvent.MOUSE_CLICKED) {
             if (mouseEvent.getSource() instanceof PeopleCard) {
                 log.info("UserCard clicked");
-
                 final PeopleCard user = (PeopleCard) mouseEvent.getSource();
                 user.adaptStyle(mouseEvent);
-                mInterface.onPeopleDetailRequested(user.getModel());
             }
         } else if (mouseEvent.getEventType() == MouseEvent.MOUSE_ENTERED) {
             if (mouseEvent.getSource() instanceof PeopleCard) {
@@ -68,6 +66,17 @@ public class PeopleHomeController implements Initializable, EventHandler<MouseEv
             }
         }
 
+    }
+
+    @Override
+    public void onDeletetionRequested(PeopleCard peopleCard) {
+        log.info("onDeletetionRequested " + peopleCard.getModel().getLogin());
+        peopleContainer.getChildren().remove(peopleCard);
+    }
+
+    @Override
+    public void onDetailsRequested(UserInfo userInfo) {
+        log.info("onDetailsRequested " + userInfo.getLogin());
     }
 
     public interface IPeopleHomeController {
