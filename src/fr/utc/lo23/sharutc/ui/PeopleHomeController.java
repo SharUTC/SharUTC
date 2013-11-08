@@ -1,8 +1,8 @@
 package fr.utc.lo23.sharutc.ui;
 
 import fr.utc.lo23.sharutc.model.userdata.UserInfo;
+import fr.utc.lo23.sharutc.ui.custom.GroupCard;
 import fr.utc.lo23.sharutc.ui.custom.PeopleCard;
-import fr.utc.lo23.sharutc.ui.custom.UserCard;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -21,10 +21,6 @@ public class PeopleHomeController implements Initializable, EventHandler<MouseEv
 
     private IPeopleHomeController mInterface;
 
-    public PeopleHomeController(IPeopleHomeController i) {
-        mInterface = i;
-    }
-
     @FXML
     public FlowPane peopleContainer;
 
@@ -33,6 +29,10 @@ public class PeopleHomeController implements Initializable, EventHandler<MouseEv
 
     @FXML
     public ScrollPane groupScrollPane;
+
+    public PeopleHomeController(IPeopleHomeController i) {
+        mInterface = i;
+    }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -56,13 +56,11 @@ public class PeopleHomeController implements Initializable, EventHandler<MouseEv
         }
 
         for (int i = 0; i < 10; i++) {
-            final UserInfo userInfo = new UserInfo();
-            userInfo.setLogin("Groupe " + String.valueOf(i));
-            userInfo.setLastName(String.valueOf(20 + i));
-            userInfo.setFirstName(String.valueOf(10 + i) + " /");
             //TODO add GroupCard with color attribute
-            UserCard newCard = new UserCard(userInfo);
+            GroupCard newCard = new GroupCard();
             groupContainer.getChildren().add(newCard);
+            newCard.setOnMouseEntered(this);
+            newCard.setOnMouseExited(this);
         }
     }
 
@@ -79,10 +77,18 @@ public class PeopleHomeController implements Initializable, EventHandler<MouseEv
                 final PeopleCard user = (PeopleCard) mouseEvent.getSource();
                 user.onHover(true);
             }
+            if (mouseEvent.getSource() instanceof GroupCard) {
+                final GroupCard group = (GroupCard) mouseEvent.getSource();
+                group.onHover(true);
+            }
         } else if (mouseEvent.getEventType() == MouseEvent.MOUSE_EXITED) {
             if (mouseEvent.getSource() instanceof PeopleCard) {
                 final PeopleCard user = (PeopleCard) mouseEvent.getSource();
                 user.onHover(false);
+            }
+            if (mouseEvent.getSource() instanceof GroupCard) {
+                final GroupCard group = (GroupCard) mouseEvent.getSource();
+                group.onHover(false);
             }
         }
 

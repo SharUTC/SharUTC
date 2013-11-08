@@ -25,7 +25,7 @@
 
     </ScrollPane>
     <ScrollPane xmlns:fx="http://javafx.com/fxml" styleClass="myScrollPane" fx:id="groupScrollPane"
-                VBox.vgrow="NEVER" prefHeight="110" fitToWidth="true" fitToHeight="true" vbarPolicy="NEVER"
+                VBox.vgrow="NEVER" prefHeight="150" fitToWidth="true" fitToHeight="true" vbarPolicy="NEVER"
                 hbarPolicy="ALWAYS">
 
         <FlowPane GridPane.hgrow="ALWAYS"

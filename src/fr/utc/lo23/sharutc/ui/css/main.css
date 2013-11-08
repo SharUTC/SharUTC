@@ -63,10 +63,6 @@
     fx-padding : 16px;
 }
 
-.panetitle {
-    -fx-font-size : 28px;
-}
-
 .itemBox{
     -fx-background-color: #FFFFFF;
 }
@@ -107,6 +103,10 @@
 
 .peopleCard {
     -fx-padding: 5px 0px 5px 10px;
+}
+
+.groupCard {
+    -fx-padding: 5px 0px 5px 0px;
 }
 
 
@@ -170,3 +170,19 @@
     -fx-border-color: #BDC3C7;
     -fx-border-width: 2px 0px 0px 0px;
 }
+
+/* text */
+
+.panetitle {
+    -fx-font-size : 28px;
+}
+
+.largeTextGrey ,
+.largeTextGreyBold{
+	-fx-font-size : 18px;
+  	-fx-text-fill: #BDC3C7;
+}
+
+.largeTextGreyBold{
+      -fx-font-weight: bold;
+ }

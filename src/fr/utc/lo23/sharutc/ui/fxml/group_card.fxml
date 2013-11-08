@@ -1,0 +1,44 @@
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<fx:root type="fr.utc.lo23.sharutc.ui.custom.GroupCard"
+         xmlns:fx="http://javafx.com/fxml">
+    <StackPane>
+        <VBox alignment="CENTER" StackPane.alignment="CENTER">
+            <Label fx:id="groupName" text="My Friends" styleClass="largeTextGreyBold"/>
+            <Label fx:id="groupMembers" text="34" styleClass="largeTextGrey"/>
+        </VBox>
+        <VBox alignment="CENTER_RIGHT">
+            <Button fx:id="deleteButton" styleClass="imageButton" visible="false">
+                <graphic>
+                    <ImageView fitWidth="30" fitHeight="30">
+                        <image>
+                            <Image url="@../drawable/ic_delete.png"/>
+                        </image>
+                    </ImageView>
+                </graphic>
+            </Button>
+            <Button fx:id="editButton" styleClass="imageButton" visible="false">
+                <graphic>
+                    <ImageView fitWidth="30" fitHeight="30">
+                        <image>
+                            <Image url="@../drawable/ic_edit.png"/>
+                        </image>
+                    </ImageView>
+                </graphic>
+            </Button>
+            <Button fx:id="rightsButton" styleClass="imageButton" visible="false">
+                <graphic>
+                    <ImageView fitWidth="30" fitHeight="30">
+                        <image>
+                            <Image url="@../drawable/ic_rights.png"/>
+                        </image>
+                    </ImageView>
+                </graphic>
+            </Button>
+        </VBox>
+    </StackPane>
+
+</fx:root>
+
