@@ -1,12 +1,13 @@
 package fr.utc.lo23.sharutc.ui;
 
+import com.cathive.fx.guice.GuiceFXMLLoader;
+import com.google.inject.Inject;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
@@ -40,6 +41,8 @@ public class LoginController implements Initializable {
     //drop Overlay
     public Region dropOverlay;
     public Label dropOverlayLabel;
+    @Inject
+    private GuiceFXMLLoader mFxmlLoader;
 
     /**
      * Initializes the controller class.
@@ -62,7 +65,7 @@ public class LoginController implements Initializable {
     private void handleLoginButtonAction(ActionEvent event) throws IOException {
         if (event.getSource() == buttonSignUp) {
             log.info("Sign Up Button Clicked");
-            Parent root = FXMLLoader.load(getClass().getResource("fxml/registration.fxml"));
+            Parent root = mFxmlLoader.load(getClass().getResource("fxml/registration.fxml")).getRoot();
             buttonSignUp.getScene().setRoot(root);
         } else if (event.getSource() == buttonSignIn) {
             log.info("Sign In Button Clicked");

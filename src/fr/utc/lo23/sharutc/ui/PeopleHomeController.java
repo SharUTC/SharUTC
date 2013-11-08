@@ -18,19 +18,11 @@ import java.util.ResourceBundle;
 public class PeopleHomeController implements Initializable, EventHandler<MouseEvent>, PeopleCard.IPeopleCard {
 
     private static final Logger log = LoggerFactory.getLogger(PeopleHomeController.class);
-
     private IPeopleHomeController mInterface;
-
-    public PeopleHomeController(IPeopleHomeController i) {
-        mInterface = i;
-    }
-
     @FXML
     public FlowPane peopleContainer;
-
     @FXML
     public FlowPane groupContainer;
-
     @FXML
     public ScrollPane groupScrollPane;
 
@@ -40,6 +32,9 @@ public class PeopleHomeController implements Initializable, EventHandler<MouseEv
         populate();
     }
 
+    public void setInterface(IPeopleHomeController i) {
+        mInterface = i;
+    }
 
     //TODO Remove once we get a real list of user
     private void populate() {
@@ -101,6 +96,7 @@ public class PeopleHomeController implements Initializable, EventHandler<MouseEv
     }
 
     public interface IPeopleHomeController {
+
         void onPeopleDetailRequested(UserInfo user);
 
         void onGroupDetailRequested();
