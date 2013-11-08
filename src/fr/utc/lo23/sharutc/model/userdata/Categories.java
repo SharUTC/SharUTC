@@ -23,6 +23,7 @@ public class Categories implements Serializable {
      *
      */
     public Categories() {
+        this.mCategories = new HashSet<Category>();
     }
 
     /**
@@ -40,11 +41,11 @@ public class Categories implements Serializable {
     public void setCategories(HashSet<Category> categories) {
         this.mCategories = categories;
     }
-    
+
     /**
-     * 
+     *
      * @param name
-     * @return 
+     * @return
      */
     public Category findCategoryByName(String name) {
         for (Category category : mCategories) {
@@ -54,11 +55,11 @@ public class Categories implements Serializable {
         }
         return null;
     }
-    
+
     /**
-     * 
+     *
      * @param id
-     * @return 
+     * @return
      */
     public Set<Integer> getCategoriesIdsByContactId(Long id) {
         Set<Integer> categoriesIds = new HashSet<Integer>();

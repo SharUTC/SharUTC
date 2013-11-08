@@ -22,6 +22,8 @@ public class UserServiceImpl implements UserService {
     private static final Logger log = LoggerFactory
             .getLogger(UserServiceImpl.class);
     private final AppModel appModel;
+    //FIXME: un service n'est pas un conteneur d'objet, l'instance de profile
+    // est à supprimer, j'imagine qu'elle devrait se trouver dans une commande
     private Profile profile;
     private static final String dataPath = "";
 

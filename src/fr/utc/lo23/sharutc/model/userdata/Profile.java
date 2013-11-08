@@ -29,7 +29,7 @@ public class Profile implements Serializable {
         this.musicCounter = 0L;
         this.mKnownPeerList = new KnownPeerList();
         this.mCategories = new Categories();
-        mCategories.add(new Category("Default"));
+        mCategories.add(new Category(Category.PUBLIC_CATEGORY_ID, Category.PUBLIC_CATEGORY_NAME));
         this.mUserInfo = userInfo;
     }
 

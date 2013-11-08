@@ -3,7 +3,8 @@ package fr.utc.lo23.sharutc.controler.service;
 import fr.utc.lo23.sharutc.model.domain.Music;
 
 /**
- *
+ * Contains the playlist, the currently selected music reference (might be null)
+ * and methods to play music from the playlist
  */
 public interface PlayerService {
 

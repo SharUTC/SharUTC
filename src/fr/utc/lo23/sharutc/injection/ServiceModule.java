@@ -1,5 +1,7 @@
 package fr.utc.lo23.sharutc.injection;
 
+import fr.utc.lo23.sharutc.controler.service.PlayerService;
+import fr.utc.lo23.sharutc.controler.service.PlayerServiceImpl;
 import com.google.inject.AbstractModule;
 import fr.utc.lo23.sharutc.controler.network.MessageHandler;
 import fr.utc.lo23.sharutc.controler.network.MessageHandlerImpl;

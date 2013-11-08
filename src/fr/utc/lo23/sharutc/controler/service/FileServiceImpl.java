@@ -14,12 +14,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 import org.jaudiotagger.audio.AudioFile;
 import org.jaudiotagger.audio.AudioFileIO;
 import org.jaudiotagger.audio.AudioHeader;
+import org.jaudiotagger.audio.mp3.MP3AudioHeader;
 import org.jaudiotagger.tag.FieldKey;
 import org.jaudiotagger.tag.Tag;
 import org.slf4j.Logger;
@@ -31,18 +31,23 @@ import org.slf4j.LoggerFactory;
 @Singleton
 public class FileServiceImpl implements FileService {
 
+    private static String appFolder;
     private static final int BUFFER_SIZE = 2048;
     private static final int COMPRESSION_LEVEL = 9;
-    private String mSourceFolder;
     private static final Logger log = LoggerFactory
             .getLogger(FileServiceImpl.class);
     private final AppModel appModel;
-    private static final String[] AUTHORIZED_MUSIC_FILES = {"mp3"};
+    private static final String[] AUTHORIZED_MUSIC_FILE_TYPE = {"mp3"};
     private File tmpFile;
 
     @Inject
     public FileServiceImpl(AppModel appModel) {
         this.appModel = appModel;
+        try {
+            appFolder = new File(".").getCanonicalPath();
+        } catch (IOException ex) {
+            log.error("Can't write in AppFolder");
+        }
     }
 
     /**
@@ -60,9 +65,8 @@ public class FileServiceImpl implements FileService {
     public void exportFile(String srcPath, String destPath) throws IOException {
         List<String> fileList = new ArrayList<String>();
         byte data[] = new byte[BUFFER_SIZE];
-        mSourceFolder = srcPath;
 
-        getFilesRec(fileList, new File(srcPath));
+        getFilesRec(fileList, new File(srcPath), srcPath);
 
         //Traitement de la sortie
         FileOutputStream dest = new FileOutputStream(destPath);
@@ -95,18 +99,18 @@ public class FileServiceImpl implements FileService {
      * @param fileList list of file names
      * @param node file or directory
      */
-    private void getFilesRec(List<String> fileList, File node) {
+    private void getFilesRec(List<String> fileList, File node, String sourceFolder) {
         if (node.isFile()) {
             String filePath = node.getAbsoluteFile().toString();
             //Format the file path for zip
-            filePath = filePath.substring(mSourceFolder.length() + 1, filePath.length());
+            filePath = filePath.substring(sourceFolder.length() + 1, filePath.length());
             fileList.add(filePath);
         }
 
         if (node.isDirectory()) {
             String[] subNote = node.list();
             for (String filename : subNote) {
-                getFilesRec(fileList, new File(node, filename));
+                getFilesRec(fileList, new File(node, filename), sourceFolder);
             }
         }
     }
@@ -131,14 +135,18 @@ public class FileServiceImpl implements FileService {
         String album;
         String track;
         Integer trackLength;
+        Long frames;
         try {
             AudioFile audioFile = AudioFileIO.read(file);
+            AudioHeader ah = audioFile.getAudioHeader();
+            MP3AudioHeader mp3AudioHeader = (MP3AudioHeader) ah;
             Tag tag = audioFile.getTag();
             title = tag.getFirst(FieldKey.TITLE);
             artist = tag.getFirst(FieldKey.ARTIST);
             album = tag.getFirst(FieldKey.ALBUM);
             track = tag.getFirst(FieldKey.TRACK);
-            trackLength = audioFile.getAudioHeader().getTrackLength();
+            trackLength = ah.getTrackLength();
+            frames = mp3AudioHeader.getNumberOfFrames();
         } catch (Exception ex) {
             log.error("Unable to read music file informations : {}", ex.toString());
             title = null;
@@ -146,13 +154,13 @@ public class FileServiceImpl implements FileService {
             album = null;
             track = null;
             trackLength = null;
+            frames = 0L;
         }
         return new Music(appModel.getProfile().getNewMusicId(),
                 appModel.getProfile().getUserInfo().getPeerId(),
                 getFileAsByteArray(file),
                 file.getName(), file.getName(), file.hashCode(), title, artist, album, track,
-                trackLength);
-
+                trackLength, frames);
     }
 
     /**
@@ -165,7 +173,7 @@ public class FileServiceImpl implements FileService {
      */
     private boolean isMusicFile(File file) {
         boolean fileIsAMusic = false;
-        for (String extension : AUTHORIZED_MUSIC_FILES) {
+        for (String extension : AUTHORIZED_MUSIC_FILE_TYPE) {
             if (file.getName().endsWith("." + extension)) {
                 fileIsAMusic = true;
             }
@@ -224,14 +232,15 @@ public class FileServiceImpl implements FileService {
 
     private void resetTmpFile() {
         if (tmpFile == null) {
-            tmpFile = new File(mSourceFolder);
+            // .mp3 extendsion required by other libs
+            tmpFile = new File(appFolder + "\\tmp.mp3");
             tmpFile.deleteOnExit();
         }
         tmpFile.delete();
         try {
             tmpFile.createNewFile();
         } catch (IOException ex) {
-            java.util.logging.Logger.getLogger(FileServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+            log.error(ex.toString());
         }
     }
 

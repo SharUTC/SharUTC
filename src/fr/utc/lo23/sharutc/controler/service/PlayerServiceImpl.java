@@ -2,15 +2,15 @@ package fr.utc.lo23.sharutc.controler.service;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import fr.utc.lo23.sharutc.controler.player.PlayerEvent;
+import fr.utc.lo23.sharutc.controler.player.PlaybackListenerImpl;
 import fr.utc.lo23.sharutc.model.AppModel;
 import fr.utc.lo23.sharutc.model.domain.Catalog;
 import fr.utc.lo23.sharutc.model.domain.Music;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.io.File;
-import java.io.FileInputStream;
-import javazoom.jl.decoder.JavaLayerException;
-import javazoom.jl.player.advanced.AdvancedPlayer;
-import javazoom.jl.player.advanced.PlaybackEvent;
-import javazoom.jl.player.advanced.PlaybackListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,35 +18,40 @@ import org.slf4j.LoggerFactory;
  * {@inheritDoc}
  */
 @Singleton
-public class PlayerServiceImpl implements PlayerService {
+public class PlayerServiceImpl implements PlayerService, PropertyChangeListener {
 
     private static final Logger log = LoggerFactory
             .getLogger(PlayerServiceImpl.class);
-    private final AppModel appModel;
     private final FileService fileService;
-    private int pausedOnFrame = 0;
-    private final PlaybackListener playbackListener;
+    private PlaybackListenerImpl player;
     private Catalog mPlaylist = new Catalog();
     private Music mCurrentMusic;
-    private AdvancedPlayer mPlayer;
-    private boolean playing = false;
+    private Long mCurrentTimeMs = 0L;
+    private PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
+
+    private void onMusicEnd() {
+        player = null;
+        if (mPlaylist.indexOf(mCurrentMusic) < (mPlaylist.size() - 1)) {
+            playerNext();
+        } else {
+            playerStop();
+        }
+    }
+
+    private void onCurrentTimeUpdate(Long currentTimeMs) {
+        Long oldTimeMs = mCurrentTimeMs;
+        this.mCurrentTimeMs = currentTimeMs;
+        propertyChangeSupport.firePropertyChange(Property.CURRENT_TIME.name(), oldTimeMs, mCurrentTimeMs);
+    }
+
+    public enum Property {
+
+        CURRENT_TIME, SELECTED_MUSIC
+    }
 
     @Inject
-    public PlayerServiceImpl(AppModel appModel, FileService fileService) {
-        this.appModel = appModel;
+    public PlayerServiceImpl(FileService fileService) {
         this.fileService = fileService;
-        this.playbackListener = new PlaybackListener() {
-            @Override
-            public void playbackStarted(PlaybackEvent event) {
-                super.playbackStarted(event);
-            }
-
-            @Override
-            public void playbackFinished(PlaybackEvent event) {
-                super.playbackFinished(event);
-                pausedOnFrame = event.getFrame();
-            }
-        };
     }
 
     public Catalog getPlaylist() {
@@ -58,7 +63,7 @@ public class PlayerServiceImpl implements PlayerService {
      */
     @Override
     public void addToPlaylist(Music music) {
-        log.warn("Not supported yet.");
+        mPlaylist.add(music);
     }
 
     /**
@@ -66,7 +71,7 @@ public class PlayerServiceImpl implements PlayerService {
      */
     @Override
     public void removeFromPlaylist(Music music) {
-        log.warn("Not supported yet.");
+        mPlaylist.remove(music);
     }
 
     /**
@@ -78,7 +83,7 @@ public class PlayerServiceImpl implements PlayerService {
         if (music != null) {
             mPlaylist.clear();
             mPlaylist.add(music);
-            mCurrentMusic = music;
+            setCurrentMusic(music);
             playerPlay();
         }
     }
@@ -97,20 +102,33 @@ public class PlayerServiceImpl implements PlayerService {
     @Override
     public void playerPlay() {
         log.info("playerPlay");
-        if (mPlayer == null) {
-            try {
-                File tmpFile = fileService.buildTmpMusicFile(mCurrentMusic.getFileBytes());
-                mPlayer = new AdvancedPlayer(new FileInputStream(tmpFile));
-                mPlayer.setPlayBackListener(playbackListener);
-                pausedOnFrame = 0;
-            } catch (Exception ex) {
-                log.error(ex.toString());
+        if (player == null) {
+            if (mCurrentMusic == null) {
+                setCurrentMusic(mPlaylist.get(0));
             }
-        }
-        if (pausedOnFrame != 0) {
-            playAt(pausedOnFrame);
+            if (mCurrentMusic != null) {
+                try {
+                    File tmpFile = fileService.buildTmpMusicFile(mCurrentMusic.getFileBytes());
+                    player = new PlaybackListenerImpl(this, fileService, tmpFile.getCanonicalPath()) {
+                        @Override
+                        public void playbackStarted(PlayerEvent playerEvent) {
+                            log.debug("playbackStarted");
+                        }
+
+                        @Override
+                        public void playbackFinished(PlayerEvent playerEvent) {
+                            log.debug("playbackFinished");
+                            onMusicEnd();
+                        }
+                    };
+                    player.play();
+                } catch (Exception ex) {
+                    log.error(ex.toString());
+                }
+            }
+
         } else {
-            playAt(null);
+            player.pauseToggle();
         }
     }
 
@@ -120,8 +138,8 @@ public class PlayerServiceImpl implements PlayerService {
     @Override
     public void playerPause() {
         log.info("playerPause");
-        if (mPlayer != null && playing) {
-            mPlayer.stop();
+        if (player != null) {
+            player.pauseToggle();
         }
     }
 
@@ -131,10 +149,9 @@ public class PlayerServiceImpl implements PlayerService {
     @Override
     public void playerStop() {
         log.info("playerStop");
-        if (mPlayer != null && playing) {
-            mPlayer.stop();
-            pausedOnFrame = 0;
-            playing = false;
+        if (player != null) {
+            player.pause();
+            player = null;
         }
     }
 
@@ -145,7 +162,7 @@ public class PlayerServiceImpl implements PlayerService {
     public void playerNext() {
         log.info("playerNext");
         // if playing then stop
-        if (playing) {
+        if (player != null) {
             playerStop();
         }
         // set current to next or first
@@ -155,7 +172,7 @@ public class PlayerServiceImpl implements PlayerService {
                 nextIndex = mPlaylist.indexOf(mCurrentMusic) + 1;
                 nextIndex %= mPlaylist.size();
             }
-            mCurrentMusic = mPlaylist.get(nextIndex);
+            setCurrentMusic(mPlaylist.get(nextIndex));
         } else {
             // no effect
             log.debug("playerNext on empty list");
@@ -171,7 +188,7 @@ public class PlayerServiceImpl implements PlayerService {
     public void playerPrevious() {
         log.info("playerPrevious");
         // if playing then stop
-        if (playing) {
+        if (player != null) {
             playerStop();
         }
         // set current to previous or last
@@ -180,7 +197,7 @@ public class PlayerServiceImpl implements PlayerService {
             if (mCurrentMusic != null && mPlaylist.indexOf(mCurrentMusic) > 0) {
                 previousIndex = mPlaylist.indexOf(mCurrentMusic) - 1;
             }
-            mCurrentMusic = mPlaylist.get(previousIndex);
+            setCurrentMusic(mPlaylist.get(previousIndex));
         } else {
             // no effect
             log.debug("playerPrevious on empty list");
@@ -189,16 +206,88 @@ public class PlayerServiceImpl implements PlayerService {
         playerPlay();
     }
 
-    private void playAt(Integer pausedOnFrame1) {
-        try {
-            if (pausedOnFrame1 != null) {
-                mPlayer.play(pausedOnFrame1.intValue());
-            } else {
-                mPlayer.play();
-            }
-            playing = true;
-        } catch (JavaLayerException ex) {
-            log.error(ex.toString());
+    /**
+     * Return the current position in music if available
+     *
+     * @return the current position in music if available
+     */
+    public Long getCurrentTimeMs() {
+        Long currentTime = null;
+        if (player != null && mCurrentMusic != null) {
+            currentTime = mCurrentTimeMs;
         }
+        return currentTime;
+    }
+
+    /**
+     * Change the current position in the music. Used to set position by the
+     * user only
+     *
+     * @param timeInMs the time in the music, must be positive and lower than
+     * music total duration
+     * @return true if time is effectively set, false if nothing happened
+     */
+    public boolean setCurrentTimeMs(Long timeInMs) {
+        boolean timeSet = false;
+        if (timeInMs != null && player != null && mCurrentMusic != null) {
+            //TODO: set time in player
+            this.mCurrentTimeMs = timeInMs;
+            propertyChangeSupport.firePropertyChange(Property.CURRENT_TIME.name(), null, timeInMs);
+            timeSet = true;
+        }
+        return timeSet;
+    }
+
+    /**
+     * Return the current music duration in milliseconds
+     *
+     * @return the current music duration in milliseconds, null if no music is
+     * currently selected
+     */
+    public Long getTotalTimeMs() {
+        Long totalTime = null;
+        if (player != null && mCurrentMusic != null) {
+            totalTime = new Long(mCurrentMusic.getTrackLength());
+        }
+        return totalTime;
+    }
+
+    /**
+     * only used to auto update ui when playing music (by
+     * SharUTCPlayBackListener), auto continue playing playlist when end of
+     * music happens, auto stop at the end of the playlist
+     *
+     * @param evt CURRENT_TIME or MUSIC_END information
+     */
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) {
+        if (evt.getPropertyName().equals(PlaybackListenerImpl.Property.CURRENT_TIME.name()) && !mCurrentTimeMs.equals((Long) evt.getNewValue())) {
+            onCurrentTimeUpdate((Long) evt.getNewValue());
+        } else if (evt.getPropertyName().equals(PlaybackListenerImpl.Property.MUSIC_END.name())) {
+            log.debug("PropertyChangeEvent : onMusicEnd");
+            onMusicEnd();
+        }
+    }
+
+    private void setCurrentMusic(Music music) {
+        Music oldMusic = this.mCurrentMusic;
+        this.mCurrentMusic = music;
+        propertyChangeSupport.firePropertyChange(Property.SELECTED_MUSIC.name(), oldMusic, mCurrentMusic);
+    }
+
+    /**
+     *
+     * @param listener
+     */
+    public void addPropertyChangeListener(PropertyChangeListener listener) {
+        propertyChangeSupport.addPropertyChangeListener(listener);
+    }
+
+    /**
+     *
+     * @param listener
+     */
+    public void removePropertyChangeListener(PropertyChangeListener listener) {
+        propertyChangeSupport.removePropertyChangeListener(listener);
     }
 }
