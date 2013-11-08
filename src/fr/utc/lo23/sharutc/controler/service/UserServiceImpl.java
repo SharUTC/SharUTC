@@ -22,8 +22,6 @@ public class UserServiceImpl implements UserService {
     private static final Logger log = LoggerFactory
             .getLogger(UserServiceImpl.class);
     private final AppModel appModel;
-    //FIXME: un service n'est pas un conteneur d'objet, l'instance de profile
-    // est à supprimer, j'imagine qu'elle devrait se trouver dans une commande
     private Profile profile;
     private static final String dataPath = "";
 
@@ -114,16 +112,23 @@ public class UserServiceImpl implements UserService {
      * {@inheritDoc}
      */
     @Override
-    public void loadUserProfileFiles(String path) {
-        log.warn("Not supported yet.");
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     public void connectionRequest(String login, String password) {
-        log.warn("Not supported yet.");
+        Profile profile;
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            profile = mapper.readValue(new File(dataPath + login + "\\profile.json"), Profile.class);
+            boolean success = profile.getUserInfo().getLogin().equals(login) &&
+                    profile.getUserInfo().getPassword().equals(password);
+            if (success) {
+                appModel.setProfile(profile);
+            } else {
+                // TODO: add a new error message instead of null 
+                appModel.getErrorBus().pushErrorMessage(null);
+            }
+            profile = null;
+        } catch (IOException ex) {
+            log.warn("Exception raised during user login");
+        }
     }
 
     /**

@@ -61,12 +61,6 @@ public interface UserService {
 
     /**
      *
-     * @param path
-     */
-    public void loadUserProfileFiles(String path);
-
-    /**
-     *
      * @param login
      * @param password
      */

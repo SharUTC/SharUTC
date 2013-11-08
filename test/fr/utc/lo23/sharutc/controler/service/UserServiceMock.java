@@ -59,11 +59,6 @@ public class UserServiceMock extends UserServiceImpl implements UserService {
     }
 
     @Override
-    public void loadUserProfileFiles(String path) {
-        super.loadUserProfileFiles(path);
-    }
-
-    @Override
     public void connectionRequest(String login, String password) {
         super.connectionRequest(login, password);
     }
