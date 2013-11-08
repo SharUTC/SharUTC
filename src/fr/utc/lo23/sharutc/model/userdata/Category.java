@@ -88,8 +88,8 @@ public class Category implements Serializable {
      *
      * @param id
      */
-    public void addContactId(Long id) {
-        mContacts.add(id);
+    public void addContact(Peer peer) {
+        mContacts.add(peer);
     }
 
     /**
@@ -97,7 +97,7 @@ public class Category implements Serializable {
      * @param id
      * @return
      */
-    public Long findContactId(Long id) {
+    public Peer findContactById(Long id) {
         return mContacts.findById(id);
     }
 }

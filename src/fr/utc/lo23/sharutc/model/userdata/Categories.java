@@ -64,7 +64,7 @@ public class Categories implements Serializable {
     public Set<Integer> getCategoriesIdsByContactId(Long id) {
         Set<Integer> categoriesIds = new HashSet<Integer>();
         for (Category category : mCategories) {
-            if (category.findContactId(id) != null) {
+            if (category.findContactById(id) != null) {
                 categoriesIds.add(category.getId());
             }
         }
