@@ -45,7 +45,7 @@ public class NetworkServiceMock implements NetworkService {
     }
 
     @Override
-    public void sendUnicastCatalog(Peer peer, Catalog catalog) {
+    public void sendUnicastCatalog(Peer peer, Long conversationID, Catalog catalog) {
         log.warn("Not supported yet.");
     }
 

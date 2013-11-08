@@ -16,7 +16,7 @@ public class SendCatalogCommandImpl implements SendCatalogCommand {
             .getLogger(SendCatalogCommandImpl.class);
     private final NetworkService networkService;
     private Peer mPeer;
-    private Catalog mCatalog;
+    private Long mConversationId;
 
     /**
      * {@inheritDoc}
@@ -46,25 +46,29 @@ public class SendCatalogCommandImpl implements SendCatalogCommand {
      * {@inheritDoc}
      */
     @Override
-    public Catalog getCatalog() {
-        return mCatalog;
+    public Long getConversationId() {
+        return mConversationId;
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void setCatalog(Catalog catalog) {
-        this.mCatalog = catalog;
+    public void setConversationId(Long conversationId) {
+        this.mConversationId = conversationId;
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void execute() { 
+    public void execute() {
         log.info("SendCatalogCommand ...");
-        networkService.sendUnicastCatalog(mPeer, mCatalog);
+        Catalog mCatalog = null;
+
+        // FIXME : get local catalog and filter results like perform search command
+        // a support class to factorize filter might be nice
+        networkService.sendUnicastCatalog(mPeer, mConversationId, mCatalog);
         log.info("SendCatalogCommand DONE");
     }
 }

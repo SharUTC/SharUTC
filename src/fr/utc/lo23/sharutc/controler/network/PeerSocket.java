@@ -61,22 +61,25 @@ public class PeerSocket implements Runnable {
         }
         // add this new PeerSocket to the PeerSocket list 
         addMe(peerId);
-        // start thread
-        thread = new Thread(this);
-        startThread();
     }
 
     /**
      * Start the thread
      */
-    public void startThread() {
-        thread.start();
+    public void start() {
+        // start thread
+        if (thread == null) {
+            thread = new Thread(this);
+            thread.start();
+        } else {
+            log.warn("Can't start PeerSocket: already running.");
+        }
     }
 
     /**
      * Stop the thread
      */
-    public void stopThread() {
+    public void stop() {
         threadShouldStop = true;
     }
 
@@ -114,6 +117,9 @@ public class PeerSocket implements Runnable {
      */
     @Override
     public void run() {
+        // TODO en gros là le run log juste les messages qu'il reçoit, 
+        // il faudrait qu'il lise les objets messages, instancie la bonne Commande pour le traiter, 
+        // set tous les paramètres de cette commandes avec les valeurs contenues dans le message et lance a commande dans un nouveau thread
         while (!threadShouldStop) {
             try {
                 mBr = new BufferedReader(new InputStreamReader(mSocket.getInputStream()));

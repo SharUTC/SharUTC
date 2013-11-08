@@ -48,6 +48,6 @@ public class IntegrateMusicSearchCommandImpl implements IntegrateMusicSearchComm
 
         musicService.integrateMusicSearch(mCatalog);
 
-        log.info("IntegrateMusicSearchCommandDONE");
+        log.info("IntegrateMusicSearchCommand DONE");
     }
 }

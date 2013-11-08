@@ -1,11 +1,10 @@
 package fr.utc.lo23.sharutc.controler.command.account;
 
 /**
- * implementation of export profile command
- * {@inheritDoc}
+ * implementation of export profile command {@inheritDoc}
  */
-public class ExportProfileCommandImpl implements ExportProfileCommand{
-    
+public class ExportProfileCommandImpl implements ExportProfileCommand {
+
     private String mSrcFile = "";
     private String mDestFolder = "";
 
@@ -13,7 +12,6 @@ public class ExportProfileCommandImpl implements ExportProfileCommand{
      * Constructor
      */
     public ExportProfileCommandImpl() {
-
     }
 
     /**
@@ -47,7 +45,7 @@ public class ExportProfileCommandImpl implements ExportProfileCommand{
     public void setDestFolder(String destFolder) {
         mDestFolder = destFolder;
     }
-    
+
     /**
      * {@inheritDoc}
      */

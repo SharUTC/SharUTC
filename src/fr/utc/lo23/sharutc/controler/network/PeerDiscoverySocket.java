@@ -1,14 +1,6 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package fr.utc.lo23.sharutc.controler.network;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import fr.utc.lo23.sharutc.model.AppModel;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
@@ -24,6 +16,10 @@ import org.slf4j.LoggerFactory;
  */
 public class PeerDiscoverySocket implements Runnable {
 
+    /**
+     *
+     */
+    private final MessageParser messageParser;
     /**
      *
      */
@@ -51,27 +47,34 @@ public class PeerDiscoverySocket implements Runnable {
     /**
      *
      */
-    private NetworkService mNs;
+    private final NetworkService mNs;
+    /**
+     *
+     */
+    private final AppModel mAppModel;
 
     /**
      *
      * @param port
      * @param group
      * @param ns
+     * @param appModel
      */
-    public PeerDiscoverySocket(int port, InetAddress group, NetworkService ns) {
+    public PeerDiscoverySocket(int port, InetAddress group, NetworkService ns, AppModel appModel, MessageParser messageParser) {
         // preparation
         this.mPort = port;
         this.mGroup = group;
         this.mNs = ns;
         this.threadShouldStop = false;
         this.thread = null;
+        this.mAppModel = appModel;
         try {
             mSocket = new MulticastSocket(mPort);
             mSocket.joinGroup(mGroup);
         } catch (IOException e) {
             log.error(e.toString());
         }
+        this.messageParser = messageParser;
     }
 
     /**
@@ -112,23 +115,13 @@ public class PeerDiscoverySocket implements Runnable {
      *
      * @param msg
      */
-    public void sendConnectionBroadcast(String msg) {
+    public void send(Message msg) {
+        byte[] bytes = messageParser.toJSON(msg).getBytes();
+        DatagramPacket p = new DatagramPacket(bytes, bytes.length, mGroup, mPort);
         try {
-            // TODO - recuperer peerId
-            Message msgToSend = new Message(11, MessageType.CONNECTION, msg);
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            ObjectOutputStream oos = new ObjectOutputStream(baos);
-            oos.writeObject(msgToSend);
-            oos.flush();
-            byte[] buf = baos.toByteArray();
-            DatagramPacket p = new DatagramPacket(buf, buf.length, mGroup, mPort);
-            try {
-                mSocket.send(p);
-            } catch (IOException e) {
-                log.error(e.toString());
-            }
-        } catch (IOException ex) {
-            log.error(ex.toString());
+            mSocket.send(p);
+        } catch (IOException e) {
+            log.error(e.toString());
         }
     }
 
@@ -147,6 +140,7 @@ public class PeerDiscoverySocket implements Runnable {
             Long peerId = msg.getFromPeerId();
             // add new peer
             peerSocket = new PeerSocket(socket, mNs, peerId);
+            peerSocket.start();
         } catch (IOException ex) {
             log.error(ex.toString());
         }
@@ -160,9 +154,8 @@ public class PeerDiscoverySocket implements Runnable {
      * @param pSocket
      */
     public void sendPersonalInformationToPeer(PeerSocket pSocket) {
-        // TODO - get my peerId
-        Message msgInfo;
-        Long myPeerId = new Long(11111);
+        Message msgInfo = null;
+        Long myPeerId = mAppModel.getProfile().getUserInfo().getPeerId();
         msgInfo = new Message(myPeerId, MessageType.CONNECTION_RESPONSE, "I send you my personal information (peerId = " + myPeerId + ")");
         pSocket.send(msgInfo);
     }
@@ -174,10 +167,9 @@ public class PeerDiscoverySocket implements Runnable {
     @Override
     public void run() {
         while (!threadShouldStop) {
-            byte[] buf = new byte[1000];
+            final int SIZE = 1000;
+            byte[] buf = new byte[SIZE];
             DatagramPacket p = new DatagramPacket(buf, buf.length);
-            ByteArrayInputStream baos = null;
-            ObjectInputStream oos = null;
             Message msgReceived = null;
             try {
                 // receiving UDP packet
@@ -185,24 +177,25 @@ public class PeerDiscoverySocket implements Runnable {
                 // print information about the sender
                 log.info("<broadcast from " + p.getAddress().toString() + " : " + p.getPort() + " >");
                 log.info("Got packet " + Arrays.toString(p.getData()));
-                baos = new ByteArrayInputStream(p.getData());
                 // get message object
-                oos = new ObjectInputStream(baos);
-                try {
-                    msgReceived = (Message) oos.readObject();
-                } catch (ClassNotFoundException ex) {
-                    log.error(ex.toString());
-                }
-                // print more info
-                if (msgReceived.getFromPeerId() != null) {
-                    log.info("Message received from peerId " + msgReceived.getFromPeerId() + ", message type = " + msgReceived.getType());
+                String json = new String(p.getData());
+                msgReceived = messageParser.fromJSON(json);
+                if (msgReceived.getType() == MessageType.CONNECTION) {
+                    // print more info
+                    if (msgReceived.getFromPeerId() != null) {
+                        log.info("Message received from peerId " + msgReceived.getFromPeerId() + ", message type = " + msgReceived.getType());
+                    } else {
+                        log.error("Received message with peerId = null !");
+                    }
+                    // add a new peer 
+                    PeerSocket newPeer = addPeer(p, msgReceived);
+                    // call model
+                    // TODO recuperer mesage handler to execute command : AddUserCommand
+                    // send personal information to the new peer
+                    sendPersonalInformationToPeer(newPeer);
                 } else {
-                    log.error("Received message with peerId = null !");
+                    log.warn("Message type must be CONNECTION !");
                 }
-                // add a new peer 
-                PeerSocket newPeer = addPeer(p, msgReceived);
-                // send personal information to the new peer
-                sendPersonalInformationToPeer(newPeer);
             } catch (IOException e) {
                 log.error(e.toString());
             }

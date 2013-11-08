@@ -12,13 +12,27 @@ public class Category implements Serializable {
      * Undeletable category ID
      */
     public static final Integer PUBLIC_CATEGORY_ID = new Integer(0);
+    public static final String PUBLIC_CATEGORY_NAME = "Public";
     private Integer mId;
     private String mName;
+    private Contacts mContacts;
+
+    //keep no args constructor for parsing purpose
+    public Category() {
+    }
 
     /**
      *
+     * @param name
      */
-    public Category() {
+    public Category(String name) {
+        mName = name;
+    }
+
+    public Category(Integer id, String name) {
+        this.mId = id;
+        this.mName = name;
+        this.mContacts = new Contacts();
     }
 
     /**
@@ -51,5 +65,39 @@ public class Category implements Serializable {
      */
     public void setName(String name) {
         this.mName = name;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public Contacts getContacts() {
+        return mContacts;
+    }
+
+    /**
+     *
+     * @param mContacts
+     */
+    public void setContacts(Contacts mContacts) {
+        this.mContacts = mContacts;
+    }
+
+    /**
+     * add an id to the contacts list
+     *
+     * @param id
+     */
+    public void addContactId(Long id) {
+        mContacts.add(id);
+    }
+
+    /**
+     *
+     * @param id
+     * @return
+     */
+    public Long findContactId(Long id) {
+        return mContacts.findById(id);
     }
 }

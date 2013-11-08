@@ -8,7 +8,7 @@ public enum MessageType {
     /**
      *
      */
-    MUSIC_GET_ALL,
+    MUSIC_GET_CATALOG,
     /**
      *
      */
@@ -72,9 +72,9 @@ public enum MessageType {
     /**
      *
      */
-    CONNECTION, 
+    CONNECTION,
     /**
-     * 
+     *
      */
     CONNECTION_RESPONSE
 }

@@ -1,17 +1,11 @@
 package fr.utc.lo23.sharutc.controler.network;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 /**
- *
+ * List of constants used in all the messages, describes each value that is to
+ * be set in a message to find it at reading
  */
 public class Message {
 
-    private static final Logger log = LoggerFactory
-            .getLogger(Message.class);
-    // list of constants used in all the messages, describes each value that is 
-    // to be set in a message to find it at reading
     /**
      *
      */
@@ -31,7 +25,11 @@ public class Message {
     /**
      *
      */
-    public final static String MUSIC_ID = "MUSIC";
+    public final static String MUSIC_ID = "MUSIC_ID";
+    /**
+     *
+     */
+    public final static String MUSIC = "MUSIC";
     /**
      *
      */

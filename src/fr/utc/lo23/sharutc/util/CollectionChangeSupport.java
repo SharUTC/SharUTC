@@ -72,7 +72,7 @@ public class CollectionChangeSupport<T> {
         if (!this.collectionListeners.isEmpty()) {
             CollectionEvent<T> collectionEvent =
                     new CollectionEvent<T>(this.source, item, index, eventType);
-            // Work on a copy of collectionListeners to ensure a listener 
+            // Work on a copy of collectionListeners to ensure a listener
             // can modify safely listeners list
             CollectionChangeListener<T>[] listeners = this.collectionListeners.
                     toArray(new CollectionChangeListener[this.collectionListeners.size()]);

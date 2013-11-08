@@ -18,7 +18,7 @@ public interface IntegrateRemoteTagMapCommand extends Command {
     /**
      * Set the TagMap received from a peer
      *
-     * @param the TagMap received from a peer
+     * @param tagMap the TagMap received from a peer
      */
     public void setTagMap(TagMap tagMap);
 }

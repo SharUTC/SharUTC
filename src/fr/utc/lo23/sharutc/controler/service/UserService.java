@@ -1,8 +1,6 @@
 package fr.utc.lo23.sharutc.controler.service;
 
-import fr.utc.lo23.sharutc.model.domain.Music;
 import fr.utc.lo23.sharutc.model.userdata.Category;
-import fr.utc.lo23.sharutc.model.userdata.Contact;
 import fr.utc.lo23.sharutc.model.userdata.Peer;
 import fr.utc.lo23.sharutc.model.userdata.UserInfo;
 
@@ -15,20 +13,20 @@ public interface UserService {
      * Save the currently connected user profile, by writing the java data into
      * a JSON file.
      */
-    public void saveProfile();
+    public void saveProfileFiles();
     
     /**
-     *
+     * Add a new contact represented by one's id in the category
      * @param peer
      */
     public void addContact(Peer peer);
 
     /**
-     *
-     * @param contact
+     * Remove the contact represented by one's id from every category
+     * @param contactId
      */
-    public void deleteContact(Contact contact);
-
+    public void deleteContact(Long contactId);
+    
     /**
      *
      * @param categoryName
@@ -57,25 +55,9 @@ public interface UserService {
 
     /**
      *
-     * @param category
-     * @param music
-     * @param readInfo
-     * @param listen
-     * @param noteAndComment
-     */
-    public void manageGroupRights(Category category, Music music, boolean readInfo, boolean listen, boolean noteAndComment);
-
-    /**
-     *
      * @param userInfo
      */
-    public void createProfile(UserInfo userInfo);
-
-    /**
-     *
-     * @param path
-     */
-    public void loadUserProfileFiles(String path);
+    public void createAndSetProfile(UserInfo userInfo);
 
     /**
      *
@@ -98,12 +80,14 @@ public interface UserService {
 
     /**
      *
+     * @param userinfo
      */
-    public void saveUserProfileFiles();
+    public void integrateConnection(UserInfo userinfo);
 
     /**
      *
-     * @param userinfo
+     * @param peerId
+     * @return
      */
-    public void integrateHeartbeat(UserInfo userinfo);
+    public Long findContactIdByPeerId(Long peerId);
 }

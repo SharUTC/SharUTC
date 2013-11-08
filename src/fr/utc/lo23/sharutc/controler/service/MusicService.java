@@ -7,7 +7,6 @@ import fr.utc.lo23.sharutc.model.domain.TagMap;
 import fr.utc.lo23.sharutc.model.userdata.Peer;
 import java.io.File;
 import java.util.Collection;
-import java.util.List;
 
 /**
  *
@@ -85,22 +84,24 @@ public interface MusicService {
     public void removeComment(Peer peer, Music music, Integer commentIndex);
 
     /**
+     * Define the score on a music given by a peer
      *
-     * @param peer
-     * @param music
-     * @param score
+     * @param peer The peer who gives the score
+     * @param music The music which has to be scored
+     * @param score The value of the score
      */
     public void setScore(Peer peer, Music music, Integer score);
 
     /**
+     * Unset the score on a music given by a peer
      *
-     * @param peer
-     * @param music
+     * @param peer The peer who gives the score
+     * @param music The music which has to be scored
      */
     public void unsetScore(Peer peer, Music music);
 
     /**
-     *
+     * Write to disk Catalog and RightsList in a JSON file
      */
     public void saveUserMusicFiles();
 
@@ -130,11 +131,23 @@ public interface MusicService {
     public void installMusics(Catalog catalog);
 
     /**
+     * Load file into passed music, work with the instance in parameter
+     *
+     * @param music the music to load
+     * @return the instance of music with file inside
+     */
+    public void loadMusicFile(Music music);
+
+    /**
      * Load file into passed catalog of musics, work with the instance in
      * parameter
      *
      * @param catalog the catalog containing the music files to load
      * @return the instance of catalog with modified musics inside
      */
-    public Catalog loadMusicFiles(Catalog catalog);
+    public void loadMusicFiles(Catalog catalog);
+
+    public void createAndSetCatalog();
+
+    public void createAndSetRightsList();
 }

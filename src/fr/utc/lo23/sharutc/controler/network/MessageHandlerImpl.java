@@ -1,20 +1,22 @@
 package fr.utc.lo23.sharutc.controler.network;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import fr.utc.lo23.sharutc.controler.command.Command;
-import fr.utc.lo23.sharutc.controler.command.music.AddCommentCommand;
+import fr.utc.lo23.sharutc.controler.command.music.IntegrateRemoteCatalogCommand;
 import fr.utc.lo23.sharutc.controler.command.music.IntegrateRemoteTagMapCommand;
+import fr.utc.lo23.sharutc.controler.command.music.SendCatalogCommand;
 import fr.utc.lo23.sharutc.controler.command.music.SendTagMapCommand;
+import fr.utc.lo23.sharutc.controler.command.player.PlayIncomingMusicCommand;
+import fr.utc.lo23.sharutc.controler.command.player.SendMusicToPlayCommand;
 import fr.utc.lo23.sharutc.controler.command.search.InstallRemoteMusicsCommand;
 import fr.utc.lo23.sharutc.controler.command.search.SendMusicsCommand;
 import fr.utc.lo23.sharutc.controler.service.MusicService;
 import fr.utc.lo23.sharutc.controler.service.UserService;
 import fr.utc.lo23.sharutc.model.AppModel;
 import fr.utc.lo23.sharutc.model.domain.Catalog;
+import fr.utc.lo23.sharutc.model.domain.Music;
 import fr.utc.lo23.sharutc.model.domain.TagMap;
-import fr.utc.lo23.sharutc.model.userdata.Peer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,11 +28,11 @@ public class MessageHandlerImpl implements MessageHandler {
 
     private static final Logger log = LoggerFactory
             .getLogger(MessageHandlerImpl.class);
-    private static final ObjectMapper mapper = new ObjectMapper();
     private final AppModel appModel;
     private final MessageParser messageParser;
     private final MusicService musicService;
     private final UserService userService;
+    private Command command = null;
 
     @Inject
     public MessageHandlerImpl(AppModel appModel, MusicService musicService, UserService userService, MessageParser messageParser) {
@@ -48,6 +50,14 @@ public class MessageHandlerImpl implements MessageHandler {
     private SendMusicsCommand sendMusicsCommand;
     @Inject
     private InstallRemoteMusicsCommand installRemoteMusicsCommand;
+    @Inject
+    private SendCatalogCommand sendCatalogCommand;
+    @Inject
+    private IntegrateRemoteCatalogCommand integrateRemoteCatalogCommand;
+    @Inject
+    private SendMusicToPlayCommand sendMusicToPlayCommand;
+    @Inject
+    private PlayIncomingMusicCommand playIncomingMusicCommand;
     //@Inject
     //private AddCommentCommand addCommentCommand;
     // more...
@@ -57,23 +67,25 @@ public class MessageHandlerImpl implements MessageHandler {
      */
     @Override
     public void handleMessage(String string) {
-        Message incomingMessage = null;
-        try {
-            incomingMessage = mapper.readValue(string, Message.class);
-        } catch (Exception ex) {
-            log.error(ex.toString());
-        }
-
+        command = null;
+        Message incomingMessage = messageParser.fromJSON(string);
         if (incomingMessage != null) {
             try {
                 messageParser.read(incomingMessage);
-                messageParser.setFromPeerId(getLocalPeerId());
-                Command command = null;
                 // searching which command to execute following message type
+                log.info("Handling message '{}' from '{}'", incomingMessage.getType().name(), messageParser.getSource());
                 switch (incomingMessage.getType()) {
-                    case MUSIC_GET_ALL:
+                    case MUSIC_GET_CATALOG:
+                        sendCatalogCommand.setPeer(messageParser.getSource());
+                        sendCatalogCommand.setConversationId(incomingMessage.getConversationId());
+                        command = sendCatalogCommand;
                         break;
                     case MUSIC_CATALOG:
+                        if (isMessageForCurrentConversation(incomingMessage)) {
+                            integrateRemoteCatalogCommand.setPeer(messageParser.getSource());
+                            integrateRemoteCatalogCommand.setCatalog((Catalog) messageParser.getValue(Message.CATALOG));
+                            command = integrateRemoteCatalogCommand;
+                        }
                         break;
                     case TAG_GET_MAP:
                         // nothing relative to local UI, no need to check conversation ID, but we have to forward it
@@ -117,19 +129,30 @@ public class MessageHandlerImpl implements MessageHandler {
                         command = installRemoteMusicsCommand;
                         break;
                     case MUSIC_GET_TO_PLAY:
+                        sendMusicToPlayCommand.setPeer(messageParser.getSource());
+                        sendMusicToPlayCommand.setMusic(appModel.getLocalCatalog().findMusicById((Long) messageParser.getValue(Message.MUSIC_ID)));
+                        command = sendMusicToPlayCommand;
                         break;
                     case MUSIC_SEND_TO_PLAY:
+                        playIncomingMusicCommand.setMusic((Music) messageParser.getValue(Message.MUSIC));
+                        command = playIncomingMusicCommand;
                         break;
                     case DISCONNECT:
                         break;
                     default:
-                        log.warn("MISSING COMMAND {}", incomingMessage.getType().name());
+                        command = null;
+                        log.warn("Missing command : {}", incomingMessage.getType().name());
                         break;
                 }
                 if (command != null) {
-                    //WARNING: some commands have to check if they have to be executed with a conversationId
-                    //FIXME: open a new thread and let it run the execute() method
-                    command.execute();
+                    Thread thread = new Thread() {
+                        @Override
+                        public void run() {
+                            log.info("Running new command : {}", command.getClass().getName());
+                            command.execute();
+                        }
+                    };
+                    thread.start();
                 }
             } catch (Exception ex) {
                 log.error(ex.toString());
@@ -139,9 +162,5 @@ public class MessageHandlerImpl implements MessageHandler {
 
     private boolean isMessageForCurrentConversation(Message message) {
         return appModel.getCurrentConversationId().equals(message.getConversationId());
-    }
-
-    private long getLocalPeerId() {
-        return appModel.getProfile().getUserInfo().getPeerId();
     }
 }

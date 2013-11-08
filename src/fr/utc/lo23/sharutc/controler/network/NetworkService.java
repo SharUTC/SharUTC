@@ -60,9 +60,10 @@ public interface NetworkService {
      * Send the local catalog to a peer.
      *
      * @param peer    the target peer
+     * @param conversationID
      * @param catalog the local catalog to send
      */
-    public void sendUnicastCatalog(Peer peer, Catalog catalog);
+    public void sendUnicastCatalog(Peer peer,  Long conversationID, Catalog catalog);
 
     /**
      * Request the tag map of all connected peers.

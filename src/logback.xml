@@ -33,7 +33,7 @@
     <logger name="fr.utc.lo23.sharutc.controler.service.MusicServiceImpl" level="INFO" />
     <logger name="fr.utc.lo23.sharutc.controler.service.UserServiceImpl" level="INFO" />
     <logger name="fr.utc.lo23.sharutc.controler.service.FileServiceImpl" level="INFO" />
-    <logger name="fr.utc.lo23.sharutc.controler.service.PlayerServiceImpl" level="INFO" />
+    <logger name="fr.utc.lo23.sharutc.controler.service.PlayerServiceImpl" level="TRACE" />
     <!-- NETWORK -->
     <logger name="fr.utc.lo23.sharutc.controler.network.NetworkServiceImpl" level="INFO" />
     <logger name="fr.utc.lo23.sharutc.controler.network.MessageParserImpl" level="DEBUG" />
