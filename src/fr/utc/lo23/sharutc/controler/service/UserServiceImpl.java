@@ -22,7 +22,10 @@ public class UserServiceImpl implements UserService {
     private static final Logger log = LoggerFactory
             .getLogger(UserServiceImpl.class);
     private final AppModel appModel;
+    //FIXME: un service n'est pas un conteneur d'objet, l'instance de profile
+    // est à supprimer, j'imagine qu'elle devrait se trouver dans une commande
     private Profile profile;
+    //TODO: externalize datapath, see or use FileService constants
     private static final String dataPath = "";
 
     @Inject
@@ -117,8 +120,8 @@ public class UserServiceImpl implements UserService {
         ObjectMapper mapper = new ObjectMapper();
         try {
             profile = mapper.readValue(new File(dataPath + login + "\\profile.json"), Profile.class);
-            boolean success = profile.getUserInfo().getLogin().equals(login) &&
-                    profile.getUserInfo().getPassword().equals(password);
+            boolean success = profile.getUserInfo().getLogin().equals(login)
+                    && profile.getUserInfo().getPassword().equals(password);
             if (success) {
                 appModel.setProfile(profile);
             } else {
