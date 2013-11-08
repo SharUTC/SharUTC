@@ -165,3 +165,8 @@
 .myScrollPane .scroll-bar .thumb:pressed{
     -fx-background-color: #A6A6A6;
 }
+
+.myScrollPaneWithTopBorder {
+    -fx-border-color: #BDC3C7;
+    -fx-border-width: 2px 0px 0px 0px;
+}

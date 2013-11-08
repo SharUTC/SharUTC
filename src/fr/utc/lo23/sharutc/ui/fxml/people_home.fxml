@@ -24,4 +24,20 @@
         </FlowPane>
 
     </ScrollPane>
+    <ScrollPane xmlns:fx="http://javafx.com/fxml" styleClass="myScrollPane" fx:id="groupScrollPane"
+                VBox.vgrow="NEVER" prefHeight="110" fitToWidth="true" fitToHeight="true" vbarPolicy="NEVER"
+                hbarPolicy="ALWAYS">
+
+        <FlowPane GridPane.hgrow="ALWAYS"
+                  GridPane.vgrow="ALWAYS" fx:id="groupContainer"
+                  prefHeight="-1.0" prefWidth="-1.0"
+                  orientation="VERTICAL"
+                  prefWrapLength="230.0" vgap="10.0"
+                  hgap="10.0">
+            <padding>
+                <javafx.geometry.Insets bottom="5" left="5" right="5" top="10"/>
+            </padding>
+        </FlowPane>
+
+    </ScrollPane>
 </VBox>

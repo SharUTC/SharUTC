@@ -2,9 +2,11 @@ package fr.utc.lo23.sharutc.ui;
 
 import fr.utc.lo23.sharutc.model.userdata.UserInfo;
 import fr.utc.lo23.sharutc.ui.custom.PeopleCard;
+import fr.utc.lo23.sharutc.ui.custom.UserCard;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.FlowPane;
 import org.slf4j.Logger;
@@ -26,10 +28,18 @@ public class PeopleHomeController implements Initializable, EventHandler<MouseEv
     @FXML
     public FlowPane peopleContainer;
 
+    @FXML
+    public FlowPane groupContainer;
+
+    @FXML
+    public ScrollPane groupScrollPane;
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        groupScrollPane.getStyleClass().add("myScrollPaneWithTopBorder");
         populate();
     }
+
 
     //TODO Remove once we get a real list of user
     private void populate() {
@@ -43,6 +53,16 @@ public class PeopleHomeController implements Initializable, EventHandler<MouseEv
             newCard.setOnMouseEntered(this);
             newCard.setOnMouseExited(this);
             peopleContainer.getChildren().add(newCard);
+        }
+
+        for (int i = 0; i < 10; i++) {
+            final UserInfo userInfo = new UserInfo();
+            userInfo.setLogin("Groupe " + String.valueOf(i));
+            userInfo.setLastName(String.valueOf(20 + i));
+            userInfo.setFirstName(String.valueOf(10 + i) + " /");
+            //TODO add GroupCard with color attribute
+            UserCard newCard = new UserCard(userInfo);
+            groupContainer.getChildren().add(newCard);
         }
     }
 
