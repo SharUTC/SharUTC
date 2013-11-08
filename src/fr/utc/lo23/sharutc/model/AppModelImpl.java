@@ -125,6 +125,7 @@ public class AppModelImpl implements AppModel, Serializable {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void addPropertyChangeListener(PropertyChangeListener listener) {
         propertyChangeSupport.addPropertyChangeListener(listener);
     }
@@ -132,6 +133,7 @@ public class AppModelImpl implements AppModel, Serializable {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void removePropertyChangeListener(PropertyChangeListener listener) {
         propertyChangeSupport.removePropertyChangeListener(listener);
     }
