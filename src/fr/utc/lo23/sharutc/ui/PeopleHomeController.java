@@ -27,10 +27,6 @@ public class PeopleHomeController implements Initializable, EventHandler<MouseEv
     @FXML
     public ScrollPane groupScrollPane;
 
-    public PeopleHomeController(IPeopleHomeController i) {
-        mInterface = i;
-    }
-
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         groupScrollPane.getStyleClass().add("myScrollPaneWithTopBorder");
