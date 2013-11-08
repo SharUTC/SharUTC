@@ -28,7 +28,7 @@ public interface UserService {
     public void deleteContact(Peer peer);
     
     /**
-     *
+     * Create the category cartegoryName
      * @param categoryName
      */
     public void createCategory(String categoryName);
