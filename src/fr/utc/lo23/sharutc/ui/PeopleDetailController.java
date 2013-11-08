@@ -12,12 +12,13 @@ public class PeopleDetailController implements Initializable {
     public Label login;
     private UserInfo mUserInfo;
 
-    public PeopleDetailController(UserInfo u) {
-        mUserInfo = u;
-    }
-
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        
+    }
+    
+    public void setUserInfo(UserInfo userInfo) {
+        mUserInfo = userInfo;
         login.setText(mUserInfo.getLogin());
     }
 }

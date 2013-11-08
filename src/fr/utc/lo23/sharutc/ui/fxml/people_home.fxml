@@ -5,7 +5,8 @@
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.layout.*?>
 <VBox id="gridPane" prefWidth="-1.0" GridPane.hgrow="ALWAYS"
-      GridPane.vgrow="ALWAYS" xmlns:fx="http://javafx.com/fxml">
+      GridPane.vgrow="ALWAYS" xmlns:fx="http://javafx.com/fxml"
+      fx:controller="fr.utc.lo23.sharutc.ui.PeopleHomeController" >
 
     <Label xmlns:fx="http://javafx.com/fxml"
            text="Manage your contact" styleClass="panetitle"/>

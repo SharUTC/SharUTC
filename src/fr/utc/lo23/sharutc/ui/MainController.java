@@ -1,5 +1,8 @@
 package fr.utc.lo23.sharutc.ui;
 
+import com.cathive.fx.guice.GuiceFXMLLoader;
+import com.cathive.fx.guice.GuiceFXMLLoader.Result;
+import com.google.inject.Inject;
 import fr.utc.lo23.sharutc.model.userdata.UserInfo;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -20,7 +23,8 @@ import java.util.ResourceBundle;
 public class MainController implements Initializable, PeopleHomeController.IPeopleHomeController {
 
     private static final Logger log = LoggerFactory.getLogger(MainController.class);
-
+    @Inject
+    private GuiceFXMLLoader mFxmlLoader;
     public Button songsbutton;
     public Button peoplebutton;
     public Button artistsbutton;
@@ -43,15 +47,15 @@ public class MainController implements Initializable, PeopleHomeController.IPeop
         children.clear();
 
         if (event.getSource() == songsbutton) {
-            children.add((Node) FXMLLoader.load(getClass().getResource("fxml/songs_detail.fxml")));
+            children.add((Node) mFxmlLoader.load(getClass().getResource("fxml/songs_detail.fxml")).getRoot());
         } else if (event.getSource() == peoplebutton) {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("fxml/people_home.fxml"));
-            loader.setController(new PeopleHomeController(this));
-            children.add((Node) loader.load());
+            final Result loadingResult = mFxmlLoader.load(getClass().getResource("fxml/people_home.fxml"));
+            ((PeopleHomeController) loadingResult.getController()).setInterface(this);
+            children.add((Node) loadingResult.getRoot());
         } else if (event.getSource() == artistsbutton) {
-            children.add((Node) FXMLLoader.load(getClass().getResource("fxml/artists_detail.fxml")));
+            children.add((Node) mFxmlLoader.load(getClass().getResource("fxml/artists_detail.fxml")).getRoot());
         } else if (event.getSource() == albumsbutton) {
-            children.add((Node) FXMLLoader.load(getClass().getResource("fxml/albums_detail.fxml")));
+            children.add((Node) mFxmlLoader.load(getClass().getResource("fxml/albums_detail.fxml")).getRoot());
         }
     }
 
@@ -59,19 +63,18 @@ public class MainController implements Initializable, PeopleHomeController.IPeop
     public void handleTextEntered(ActionEvent actionEvent) throws IOException {
         ObservableList<Node> children = rightpane.getChildren();
         children.clear();
-        children.add((Node) FXMLLoader.load(getClass().getResource("fxml/searchresult_detail.fxml")));
+        children.add((Node) mFxmlLoader.load(getClass().getResource("fxml/searchresult_detail.fxml")).getRoot());
     }
-
 
     @Override
     public void onPeopleDetailRequested(UserInfo user) {
         ObservableList<Node> children = rightpane.getChildren();
         children.clear();
         log.info("people detail requested : " + user.getLogin());
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("fxml/people_detail.fxml"));
-        loader.setController(new PeopleDetailController(user));
         try {
-            children.add((Node) loader.load());
+            final Result loadingResult = mFxmlLoader.load(getClass().getResource("fxml/people_detail.fxml"));
+            ((PeopleDetailController) loadingResult.getController()).setUserInfo(user);
+            children.add((Node) loadingResult.getRoot());
         } catch (IOException e) {
             log.error(e.getMessage());
         }
