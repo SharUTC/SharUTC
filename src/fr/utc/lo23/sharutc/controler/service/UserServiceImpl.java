@@ -65,8 +65,10 @@ public class UserServiceImpl implements UserService {
      * {@inheritDoc}
      */
     @Override
-    public void deleteContact(Long contactId) {
-        log.warn("Not supported yet.");
+    public void deleteContact(Peer peer) {
+        for(Category cat : profile.getCategories().getCategories()) {
+            cat.getContacts().remove(peer);
+        }
     }
 
     /**

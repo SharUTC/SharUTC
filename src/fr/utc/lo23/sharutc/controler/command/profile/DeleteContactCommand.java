@@ -1,6 +1,7 @@
 package fr.utc.lo23.sharutc.controler.command.profile;
 
 import fr.utc.lo23.sharutc.controler.command.Command;
+import fr.utc.lo23.sharutc.model.userdata.Peer;
 
 /**
  *
@@ -8,14 +9,16 @@ import fr.utc.lo23.sharutc.controler.command.Command;
 public interface DeleteContactCommand extends Command {
 
     /**
+     * Return the destination Peer
      *
-     * @return
+     * @return the destination Peer
      */
-    public Long getContact();
+    public Peer getPeer();
 
     /**
+     * Set the destination Peer
      *
-     * @param contact
+     * @param peer the destination Peer
      */
-    public void setContact(Long contact);
+    public void setPeer(Peer peer);
 }

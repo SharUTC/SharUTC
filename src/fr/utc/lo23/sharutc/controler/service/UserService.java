@@ -22,10 +22,10 @@ public interface UserService {
     public void addContact(Peer peer);
 
     /**
-     * Remove the contact represented by one's id from every category
-     * @param contactId
+     * Remove the contact represented by one's peer from every category
+     * @param peer
      */
-    public void deleteContact(Long contactId);
+    public void deleteContact(Peer peer);
     
     /**
      *
