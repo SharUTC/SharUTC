@@ -29,14 +29,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * FXML Controller class
- *
+ * A FXML Controller that displays a login page.
  */
 public class LoginController implements Initializable {
 
     private static final Logger log = LoggerFactory
             .getLogger(LoginController.class);
-    
+    /*
+     * The UI attributs
+     */
     public StackPane loginRoot;
     public SharutcLogo sharutcLogo;
     public Button buttonSignUp;
@@ -48,11 +49,13 @@ public class LoginController implements Initializable {
     public Region dropOverlay;
     public Label dropOverlayLabel;
     public VBox errorContainer;
+    /*
+     * The private attributs
+     */
     @Inject
     private GuiceFXMLLoader mFxmlLoader;
     private ArrayList<String> mErrorMessages;
 
-    
     /**
      * Initializes the controller class.
      *
@@ -62,18 +65,26 @@ public class LoginController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         mErrorMessages = new ArrayList();
-        
+
+        //Listen to the mouseMove event to animate the logo
         loginRoot.setOnMouseMoved(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent mouseEvent) {
                 sharutcLogo.animate(mouseEvent);
-            }      
+            }
         });
-        
+
         //hide drop overlay
         hideDropOverlay();
     }
 
+    /**
+     * Handles the ActionEvents of the three buttons "sign up" "sign in" and
+     * "import"
+     *
+     * @param event
+     * @throws IOException
+     */
     @FXML
     private void handleLoginButtonAction(ActionEvent event) throws IOException {
         if (event.getSource() == buttonSignUp) {
@@ -82,7 +93,7 @@ public class LoginController implements Initializable {
             buttonSignUp.getScene().setRoot(root);
         } else if (event.getSource() == buttonSignIn) {
             log.info("Sign In Button Clicked");
-            signInButtonClicked();
+            signInRequest();
         } else if (event.getSource() == buttonImport) {
             log.info("Import Button Clicked");
             final FileChooser fileChooser = new FileChooser();
@@ -94,18 +105,36 @@ public class LoginController implements Initializable {
         }
     }
 
+    /**
+     * Handles the ActionEvent of the two TextFields "userName" and "password"
+     *
+     * @param actionEvent
+     * @throws IOException
+     */
     @FXML
     public void handleTextEntered(ActionEvent actionEvent) throws IOException {
-        log.info("username: " + userNameField.getText() + " password: "
-                + passwordField.getText());
+        signInRequest();
     }
 
+    /**
+     * Handles dragEntered Events. Shows the drop overlay.
+     *
+     * @param dragEvent
+     * @throws IOException
+     */
     @FXML
     public void handleDragEntered(DragEvent dragEvent) throws IOException {
         showDropOverlay();
         dragEvent.consume();
     }
 
+    /**
+     * Handles dragOver Events. Accepts the transfer is there is a file in the
+     * Dragboard.
+     *
+     * @param dragEvent
+     * @throws IOException
+     */
     @FXML
     public void handleDragOver(DragEvent dragEvent) throws IOException {
         final Dragboard db = dragEvent.getDragboard();
@@ -115,12 +144,25 @@ public class LoginController implements Initializable {
         dragEvent.consume();
     }
 
+    /**
+     * Handles dragExited Events. Hides the drop overlay.
+     *
+     * @param dragEvent
+     * @throws IOException
+     */
     @FXML
     public void handleDragExited(DragEvent dragEvent) throws IOException {
         hideDropOverlay();
         dragEvent.consume();
     }
 
+    /**
+     * Handles dragDrop Events. Tries to import the dropped file and then hides
+     * the drop overlay.
+     *
+     * @param dragEvent
+     * @throws IOException
+     */
     @FXML
     public void handleDragDropped(DragEvent dragEvent) throws IOException {
         final Dragboard db = dragEvent.getDragboard();
@@ -136,29 +178,48 @@ public class LoginController implements Initializable {
         dragEvent.consume();
     }
 
+    /**
+     * Hides the drop overlay.
+     */
     private void hideDropOverlay() {
         dropOverlay.setVisible(false);
         dropOverlayLabel.setVisible(false);
     }
 
+    /**
+     * Show the drop overlay.
+     */
     private void showDropOverlay() {
         dropOverlay.setVisible(true);
         dropOverlayLabel.setVisible(true);
     }
 
-    private void signInButtonClicked() {
+    /**
+     * Validates the login form. If the form is not valid, the error messages
+     * are shown.
+     */
+    private void signInRequest() {
         errorContainer.getChildren().clear();
         if (!validateForm()) {
             displayErrorMessages();
         }
     }
 
+    /**
+     * Shows the error messages.
+     */
     private void displayErrorMessages() {
         for (String errorMessage : mErrorMessages) {
             errorContainer.getChildren().add(new Label(errorMessage));
         }
     }
 
+    /**
+     * Validates the login form. The errors are added to mErrorMessages for
+     * future use.
+     *
+     * @return true if the form is valid, false otherwise.
+     */
     private boolean validateForm() {
         boolean isFormValid = false;
         int emptyField = 0;
