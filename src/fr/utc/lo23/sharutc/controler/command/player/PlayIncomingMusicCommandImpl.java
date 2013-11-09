@@ -42,7 +42,7 @@ public class PlayIncomingMusicCommandImpl implements PlayIncomingMusicCommand {
     @Override
     public void execute() {
         log.info("PlayIncomingMusicCommand ...");
-        playerService.play(mMusic);
+        playerService.playOneMusic(mMusic);
         log.info("PlayIncomingMusicCommand DONE");
     }
 }

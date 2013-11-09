@@ -2,6 +2,7 @@ package fr.utc.lo23.sharutc.controler.player;
 
 import java.io.IOException;
 import java.net.URL;
+import javax.sound.sampled.FloatControl;
 import javazoom.jl.decoder.Bitstream;
 import javazoom.jl.decoder.Decoder;
 import javazoom.jl.decoder.Header;
@@ -9,6 +10,7 @@ import javazoom.jl.decoder.JavaLayerException;
 import javazoom.jl.decoder.SampleBuffer;
 import javazoom.jl.player.AudioDevice;
 import javazoom.jl.player.FactoryRegistry;
+import javazoom.jl.player.JavaSoundAudioDevice;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,6 +29,7 @@ public class Mp3Player {
     private PlaybackListener listener;
     private int frameIndexCurrent;
     public boolean isPaused;
+    private Float gain = null;
 
     public Mp3Player(URL urlToStreamFrom, PlaybackListener listener) throws JavaLayerException {
         this.urlToStreamFrom = urlToStreamFrom;
@@ -92,7 +95,12 @@ public class Mp3Player {
                     log.error(ex.toString());
                 }
             } else {
+
                 shouldContinueReadingFrames = decodeFrame();
+                if (gain != null) {
+                    getMasterGainControl().setValue(gain);
+                    gain = null;
+                }
                 updateCurrentFrameIndex();
             }
         }
@@ -132,9 +140,7 @@ public class Mp3Player {
             isClosed = true;
 
             audioDevice.close();
-
             audioDevice = null;
-
             try {
                 bitstream.close();
             } catch (Exception ex) {
@@ -186,5 +192,23 @@ public class Mp3Player {
     private void updateCurrentFrameIndex() {
         frameIndexCurrent++;
         listener.newFrameIndex(frameIndexCurrent);
+    }
+
+    public FloatControl getMasterGainControl() {
+        log.debug("getMasterGainControl");
+        FloatControl floatControl = null;
+        if (audioDevice != null && audioDevice instanceof JavaSoundAudioDevice) {
+            JavaSoundAudioDevice javaSoundAudioDevice = (JavaSoundAudioDevice) audioDevice;
+            floatControl = javaSoundAudioDevice.getMasterGainControl();
+        }
+        return floatControl;
+    }
+
+    public void setCurrentFrame(int indexCurrentFrame) {
+        this.frameIndexCurrent = indexCurrentFrame;
+    }
+
+    void setGain(float gain) {
+        this.gain = gain;
     }
 }

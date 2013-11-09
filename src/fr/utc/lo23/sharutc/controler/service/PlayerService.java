@@ -1,22 +1,33 @@
 package fr.utc.lo23.sharutc.controler.service;
 
+import fr.utc.lo23.sharutc.model.domain.Catalog;
 import fr.utc.lo23.sharutc.model.domain.Music;
 
 /**
  * Contains the playlist, the currently selected music reference (might be null)
- * and methods to play music from the playlist
+ * and methods to playOneMusic music from the playlist
  */
 public interface PlayerService {
 
     /**
      *
-     * @param music
+     * @return
+     */
+    public Catalog getPlaylist();
+
+    /**
+     * Add a music to playlist, auto-select the added music for player if it is
+     * the only music in playlist, updates ui via listener on playlist
+     *
+     * @param music the music to add to playlist
      */
     public void addToPlaylist(Music music);
 
     /**
+     * Removes the given music from playlist if exist, else do nothing, update
+     * ui via listener on playlist
      *
-     * @param music
+     * @param music the music to remove from playlist
      */
     public void removeFromPlaylist(Music music);
 
@@ -26,7 +37,7 @@ public interface PlayerService {
      *
      * @param music
      */
-    public void play(Music music);
+    public void playOneMusic(Music music);
 
     /**
      * NOT USED
@@ -61,4 +72,53 @@ public interface PlayerService {
      * list, do nothing if list is empty
      */
     public void playerPrevious();
+
+    /**
+     *
+     * @return
+     */
+    public Integer getVolume();
+
+    /**
+     *
+     * @param volume
+     */
+    public void setVolume(int volume);
+
+    /**
+     *
+     * @return
+     */
+    public boolean isMute();
+
+    /**
+     *
+     * @param mute
+     */
+    public void setMute(boolean mute);
+
+    /**
+     * Return the current position in music if available
+     *
+     * @return the current position in music if available
+     */
+    public Long getCurrentTimeSec();
+
+    /**
+     * Change the current position in the music. Used to set position by the
+     * user only
+     *
+     * @param timeInSec the time in the music, must be positive and lower than
+     * music total duration
+     * @return true if time is effectively set, false if nothing happened
+     */
+    public void setCurrentTimeSec(Long currentTimeSec);
+
+    /**
+     * Return the current music duration in milliseconds
+     *
+     * @return the current music duration in milliseconds, null if no music
+     * is/was currently selected in player
+     */
+    public Long getTotalTimeSec();
 }

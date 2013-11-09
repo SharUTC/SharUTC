@@ -2,11 +2,13 @@ package fr.utc.lo23.sharutc.controler.service;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import fr.utc.lo23.sharutc.controler.player.PlaybackListener;
 import fr.utc.lo23.sharutc.controler.player.PlayerEvent;
 import fr.utc.lo23.sharutc.controler.player.PlaybackListenerImpl;
-import fr.utc.lo23.sharutc.model.AppModel;
 import fr.utc.lo23.sharutc.model.domain.Catalog;
 import fr.utc.lo23.sharutc.model.domain.Music;
+import fr.utc.lo23.sharutc.util.CollectionChangeListener;
+import fr.utc.lo23.sharutc.util.CollectionEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
@@ -18,44 +20,25 @@ import org.slf4j.LoggerFactory;
  * {@inheritDoc}
  */
 @Singleton
-public class PlayerServiceImpl implements PlayerService, PropertyChangeListener {
+public class PlayerServiceImpl implements PlayerService, PropertyChangeListener, CollectionChangeListener<Music> {
 
     private static final Logger log = LoggerFactory
             .getLogger(PlayerServiceImpl.class);
+    public static final int VOLUME_MAX = 100;
+    public static final int VOLUME_MIN = 0;
     private final FileService fileService;
-    private PlaybackListenerImpl player;
+    private PlaybackListener player;
     private Catalog mPlaylist = new Catalog();
     private Music mCurrentMusic;
-    private Long mCurrentTimeMs = 0L;
+    private Long mCurrentTimeSec = 0L;
+    private Integer volume = 100;
+    private boolean mute = false;
     private PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
-
-    private void onMusicEnd() {
-        player = null;
-        if (mPlaylist.indexOf(mCurrentMusic) < (mPlaylist.size() - 1)) {
-            playerNext();
-        } else {
-            playerStop();
-        }
-    }
-
-    private void onCurrentTimeUpdate(Long currentTimeMs) {
-        Long oldTimeMs = mCurrentTimeMs;
-        this.mCurrentTimeMs = currentTimeMs;
-        propertyChangeSupport.firePropertyChange(Property.CURRENT_TIME.name(), oldTimeMs, mCurrentTimeMs);
-    }
-
-    public enum Property {
-
-        CURRENT_TIME, SELECTED_MUSIC
-    }
 
     @Inject
     public PlayerServiceImpl(FileService fileService) {
         this.fileService = fileService;
-    }
-
-    public Catalog getPlaylist() {
-        return mPlaylist;
+        this.mPlaylist.addPropertyChangeListener(this);
     }
 
     /**
@@ -78,12 +61,11 @@ public class PlayerServiceImpl implements PlayerService, PropertyChangeListener 
      * {@inheritDoc}
      */
     @Override
-    public void play(Music music) {
+    public void playOneMusic(Music music) {
         log.info("play music");
         if (music != null) {
             mPlaylist.clear();
             mPlaylist.add(music);
-            setCurrentMusic(music);
             playerPlay();
         }
     }
@@ -100,7 +82,7 @@ public class PlayerServiceImpl implements PlayerService, PropertyChangeListener 
      * {@inheritDoc}
      */
     @Override
-    public void playerPlay() {
+    public synchronized void playerPlay() {
         log.info("playerPlay");
         if (player == null) {
             if (mCurrentMusic == null) {
@@ -109,7 +91,7 @@ public class PlayerServiceImpl implements PlayerService, PropertyChangeListener 
             if (mCurrentMusic != null) {
                 try {
                     File tmpFile = fileService.buildTmpMusicFile(mCurrentMusic.getFileBytes());
-                    player = new PlaybackListenerImpl(this, fileService, tmpFile.getCanonicalPath()) {
+                    player = new PlaybackListenerImpl(this, this, fileService, tmpFile.getCanonicalPath()) {
                         @Override
                         public void playbackStarted(PlayerEvent playerEvent) {
                             log.debug("playbackStarted");
@@ -126,7 +108,6 @@ public class PlayerServiceImpl implements PlayerService, PropertyChangeListener 
                     log.error(ex.toString());
                 }
             }
-
         } else {
             player.pauseToggle();
         }
@@ -153,6 +134,7 @@ public class PlayerServiceImpl implements PlayerService, PropertyChangeListener 
             player.pause();
             player = null;
         }
+        setCurrentTimeSec(0L);
     }
 
     /**
@@ -207,53 +189,73 @@ public class PlayerServiceImpl implements PlayerService, PropertyChangeListener 
     }
 
     /**
-     * Return the current position in music if available
-     *
-     * @return the current position in music if available
+     * {@inheritDoc}
      */
-    public Long getCurrentTimeMs() {
+    @Override
+    public Long getCurrentTimeSec() {
         Long currentTime = null;
         if (player != null && mCurrentMusic != null) {
-            currentTime = mCurrentTimeMs;
+            currentTime = mCurrentTimeSec;
         }
         return currentTime;
     }
 
     /**
-     * Change the current position in the music. Used to set position by the
-     * user only
-     *
-     * @param timeInMs the time in the music, must be positive and lower than
-     * music total duration
-     * @return true if time is effectively set, false if nothing happened
+     * {@inheritDoc}
      */
-    public boolean setCurrentTimeMs(Long timeInMs) {
-        boolean timeSet = false;
-        if (timeInMs != null && player != null && mCurrentMusic != null) {
-            //TODO: set time in player
-            this.mCurrentTimeMs = timeInMs;
-            propertyChangeSupport.firePropertyChange(Property.CURRENT_TIME.name(), null, timeInMs);
-            timeSet = true;
+    @Override
+    public void setCurrentTimeSec(Long timeInSec) {
+        if (mCurrentMusic != null && timeInSec != null) {
+            if (timeInSec <= 0L) {
+                timeInSec = 0L;
+            } else if (timeInSec >= mCurrentMusic.getTrackLength()) {
+                timeInSec = (long) mCurrentMusic.getTrackLength();
+            }
+            this.mCurrentTimeSec = timeInSec;
+            if (player != null) {
+                player.setCurrentTime(mCurrentTimeSec);
+            }
+            propertyChangeSupport.firePropertyChange(Property.CURRENT_TIME.name(), null, timeInSec);
         }
-        return timeSet;
     }
 
     /**
-     * Return the current music duration in milliseconds
-     *
-     * @return the current music duration in milliseconds, null if no music is
-     * currently selected
+     * {@inheritDoc}
      */
-    public Long getTotalTimeMs() {
+    @Override
+    public Long getTotalTimeSec() {
         Long totalTime = null;
-        if (player != null && mCurrentMusic != null) {
+        if (mCurrentMusic != null) {
             totalTime = new Long(mCurrentMusic.getTrackLength());
         }
         return totalTime;
     }
 
     /**
-     * only used to auto update ui when playing music (by
+     * {@inheritDoc}
+     */
+    private void setCurrentMusic(Music music) {
+        Music oldMusic = this.mCurrentMusic;
+        this.mCurrentMusic = music;
+        propertyChangeSupport.firePropertyChange(Property.SELECTED_MUSIC.name(), oldMusic, mCurrentMusic);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void collectionChanged(CollectionEvent<Music> ev) {
+        if (ev.getType().name().equals(CollectionEvent.Type.ADD.name())) {
+            onPlaylistAdd();
+        } else if (ev.getType().name().equals(CollectionEvent.Type.CLEAR.name())) {
+            onPlaylistClear();
+        } else if (ev.getType().name().equals(CollectionEvent.Type.REMOVE.name())) {
+            onPlaylistRemove(ev);
+        }
+    }
+
+    /**
+     * Only used to auto update ui when playing music (by
      * SharUTCPlayBackListener), auto continue playing playlist when end of
      * music happens, auto stop at the end of the playlist
      *
@@ -261,7 +263,7 @@ public class PlayerServiceImpl implements PlayerService, PropertyChangeListener 
      */
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
-        if (evt.getPropertyName().equals(PlaybackListenerImpl.Property.CURRENT_TIME.name()) && !mCurrentTimeMs.equals((Long) evt.getNewValue())) {
+        if (evt.getPropertyName().equals(PlaybackListenerImpl.Property.CURRENT_TIME.name()) && !mCurrentTimeSec.equals((Long) evt.getNewValue())) {
             onCurrentTimeUpdate((Long) evt.getNewValue());
         } else if (evt.getPropertyName().equals(PlaybackListenerImpl.Property.MUSIC_END.name())) {
             log.debug("PropertyChangeEvent : onMusicEnd");
@@ -269,10 +271,79 @@ public class PlayerServiceImpl implements PlayerService, PropertyChangeListener 
         }
     }
 
-    private void setCurrentMusic(Music music) {
-        Music oldMusic = this.mCurrentMusic;
-        this.mCurrentMusic = music;
-        propertyChangeSupport.firePropertyChange(Property.SELECTED_MUSIC.name(), oldMusic, mCurrentMusic);
+    private void onMusicEnd() {
+        player = null;
+        if (mPlaylist.indexOf(mCurrentMusic) < (mPlaylist.size() - 1)) {
+            playerNext();
+            setCurrentTimeSec(0L);
+        } else {
+            playerStop();
+        }
+    }
+
+    private void onCurrentTimeUpdate(Long currentTimeSec) {
+        Long oldTimeSec = mCurrentTimeSec;
+        this.mCurrentTimeSec = currentTimeSec;
+        propertyChangeSupport.firePropertyChange(Property.CURRENT_TIME.name(), oldTimeSec, mCurrentTimeSec);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Catalog getPlaylist() {
+        return mPlaylist;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Integer getVolume() {
+        return volume;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void setVolume(int volume) {
+        if (volume < VOLUME_MIN) {
+            volume = VOLUME_MIN;
+        }
+        if (volume > VOLUME_MAX) {
+            volume = VOLUME_MAX;
+        }
+        if (this.volume == null || this.volume != volume) {
+            Integer oldVolume = this.volume;
+            this.volume = volume;
+            if (player != null) {
+                player.setVolume(this.volume);
+            }
+            propertyChangeSupport.firePropertyChange(Property.VOLUME.name(), oldVolume, this.volume);
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean isMute() {
+        return mute;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void setMute(boolean mute) {
+        if (this.mute != mute) {
+            this.mute = mute;
+            if (player != null) {
+                player.setMute(this.mute);
+            }
+            propertyChangeSupport.firePropertyChange(Property.MUTE.name(), !this.mute, this.mute);
+        }
     }
 
     /**
@@ -289,5 +360,46 @@ public class PlayerServiceImpl implements PlayerService, PropertyChangeListener 
      */
     public void removePropertyChangeListener(PropertyChangeListener listener) {
         propertyChangeSupport.removePropertyChangeListener(listener);
+    }
+
+    private void onPlaylistClear() {
+        mCurrentTimeSec = 0L;
+        mCurrentMusic = null;
+    }
+
+    private void onPlaylistRemove(CollectionEvent<Music> ev) {
+        mCurrentTimeSec = 0L;
+        if (mPlaylist.isEmpty()) {
+            mCurrentMusic = null;
+        } else {
+            if (ev.getIndex() == mPlaylist.size()) {
+                mCurrentMusic = mPlaylist.get(ev.getIndex() - 1);
+            } else {
+                mCurrentMusic = mPlaylist.get(ev.getIndex());
+            }
+        }
+    }
+
+    private void onPlaylistAdd() {
+        if (mPlaylist.size() == 1) {
+            mCurrentMusic = mPlaylist.get(0);
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public enum Property {
+
+        /**
+         * {@inheritDoc}
+         */
+        CURRENT_TIME, /**
+         * {@inheritDoc}
+         */
+        SELECTED_MUSIC, /**
+         * {@inheritDoc}
+         */
+        VOLUME, MUTE
     }
 }

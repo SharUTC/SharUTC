@@ -23,6 +23,7 @@ public class PlayerServiceManualTest implements PropertyChangeListener {
     private final static FileServiceImpl fileService = new FileServiceImpl(appModel);
     private final static PlayerServiceImpl playerService = new PlayerServiceImpl(fileService);
     private final static Scanner scanIn = new Scanner(System.in);
+    private static long currentTimeSec;
 
     public static void main(String[] args) {
         PlayerServiceManualTest p = new PlayerServiceManualTest();
@@ -44,7 +45,7 @@ public class PlayerServiceManualTest implements PropertyChangeListener {
         } catch (Exception ex) {
             System.err.println(ex.toString());
         }
-        String[] filenames = {"14 - End Credit Score.mp3","Air - Moon Safari - Sexy Boy.mp3", "Sting & The Police - The Very Best Of Sting & The Police - 17 - Roxanne.mp3"};
+        String[] filenames = {"14 - End Credit Score.mp3", "Air - Moon Safari - Sexy Boy.mp3", "Sting & The Police - The Very Best Of Sting & The Police - 17 - Roxanne.mp3"};
         try {
             for (String mp3File : filenames) {
                 Music music = fileService.readFile(new File(TEST_MP3_FOLDER + mp3File));
@@ -66,6 +67,10 @@ public class PlayerServiceManualTest implements PropertyChangeListener {
             System.out.println("3=STOP");
             System.out.println("4=NEXT");
             System.out.println("5=PREV");
+            System.out.println("6= currentTime -= 15s");
+            System.out.println("7= currentTime += 15s");
+            System.out.println("8= volume -= 10)");
+            System.out.println("9= volume += 10)");
             System.out.println("Input : ");
             String actionTxt = scanIn.nextLine();
             System.out.println("");
@@ -102,6 +107,26 @@ public class PlayerServiceManualTest implements PropertyChangeListener {
                     System.out.println("PREV");
                     playerService.playerPrevious();
                     break;
+                case 6:
+                    System.out.println("setCurrentTime(-15L)");
+                    playerService.setCurrentTimeSec(Math.max(0, currentTimeSec - 15L));
+                    break;
+                case 7:
+                    System.out.println("setCurrentTime(+15L)");
+                    playerService.setCurrentTimeSec(Math.min((playerService != null && playerService.getTotalTimeSec() != null) ? playerService.getTotalTimeSec() : Long.MAX_VALUE, currentTimeSec + 15L));
+                    break;
+                case 8:
+                    System.out.println("volume (50)");
+                    playerService.setVolume(50);
+                    break;
+                case 9:
+                    System.out.println("volume (100)");
+                    playerService.setVolume(100);
+                    break;
+                case 10:
+                    System.out.println("mute");
+                    playerService.setMute(playerService.isMute());
+                    break;
                 default:
                     break;
             }
@@ -111,7 +136,8 @@ public class PlayerServiceManualTest implements PropertyChangeListener {
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         if (evt.getPropertyName().equals(PlayerServiceImpl.Property.CURRENT_TIME.name())) {
-            System.out.println("time : " + evt.getNewValue() + " / " + playerService.getTotalTimeMs());
+            currentTimeSec = (Long) evt.getNewValue();
+            System.out.println("time : " + currentTimeSec + " / " + playerService.getTotalTimeSec());
         } else if (evt.getPropertyName().equals(PlayerServiceImpl.Property.SELECTED_MUSIC.name())) {
             System.out.println("Music : " + evt.getNewValue());
         }
