@@ -14,7 +14,7 @@
             fx:controller="fr.utc.lo23.sharutc.ui.LoginController"
             styleClass="myScrollPane" >
 
-    <StackPane id="loginRoot" onDragEntered="#handleDragEntered"
+    <StackPane fx:id="loginRoot" onDragEntered="#handleDragEntered"
                onDragOver="#handleDragOver" onDragDropped="#handleDragDropped"
                onDragExited="#handleDragExited">
 
@@ -64,8 +64,9 @@
                                 <top>40</top>
                             </javafx.geometry.Insets>
                         </VBox.margin>
-        
-                        <javafx.scene.image.ImageView fx:id="logoContainer" />
+                        
+                        <fr.utc.lo23.sharutc.ui.custom.SharutcLogo 
+                            fx:id="sharutcLogo" />
 
                     </HBox> 
                 

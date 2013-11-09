@@ -2,14 +2,17 @@ package fr.utc.lo23.sharutc.ui;
 
 import com.cathive.fx.guice.GuiceFXMLLoader;
 import com.google.inject.Inject;
+import fr.utc.lo23.sharutc.ui.custom.SharutcLogo;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -19,8 +22,10 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.Region;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import org.slf4j.Logger;
@@ -34,7 +39,9 @@ public class LoginController implements Initializable {
 
     private static final Logger log = LoggerFactory
             .getLogger(LoginController.class);
-    public ImageView logoContainer;
+    
+    public StackPane loginRoot;
+    public SharutcLogo sharutcLogo;
     public Button buttonSignUp;
     public Button buttonSignIn;
     public Button buttonImport;
@@ -48,6 +55,7 @@ public class LoginController implements Initializable {
     private GuiceFXMLLoader mFxmlLoader;
     private ArrayList<String> mErrorMessages;
 
+    
     /**
      * Initializes the controller class.
      *
@@ -56,13 +64,15 @@ public class LoginController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        logoContainer.setCache(true);
-        logoContainer.setSmooth(true);
-        logoContainer.setPreserveRatio(true);
-        logoContainer.setImage(new Image("fr/utc/lo23/sharutc/ui/drawable/logo.png"));
-
         mErrorMessages = new ArrayList<>();
-
+        
+        loginRoot.setOnMouseMoved(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                sharutcLogo.animate(mouseEvent);
+            }      
+        });
+        
         //hide drop overlay
         hideDropOverlay();
     }
