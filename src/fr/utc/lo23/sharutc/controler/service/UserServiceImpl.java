@@ -58,15 +58,17 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public void addContact(Peer peer) {
-        profile.getCategories().findCategoryByName("default").addContactId(peer.getId());
+        profile.getCategories().findCategoryByName(Category.PUBLIC_CATEGORY_NAME).addContact(peer);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void deleteContact(Long contactId) {
-        log.warn("Not supported yet.");
+    public void deleteContact(Peer peer) {
+        for(Category cat : profile.getCategories().getCategories()) {
+            cat.getContacts().remove(peer);
+        }
     }
 
     /**
@@ -161,8 +163,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public Long findContactIdByPeerId(Long peerId) {
         // 2 modes : when peer is a contact and when peer isn't a contact
-        Long contact = appModel.getProfile().getCategories().
-                findCategoryByName("default").getContacts().findById(peerId);
-        return contact;
+        Peer contact = appModel.getProfile().getCategories().
+                findCategoryByName(Category.PUBLIC_CATEGORY_NAME).getContacts().findById(peerId);
+        return contact.getId();
     }
 }

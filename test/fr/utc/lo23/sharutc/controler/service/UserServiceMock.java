@@ -29,8 +29,8 @@ public class UserServiceMock extends UserServiceImpl implements UserService {
     }
 
     @Override
-    public void deleteContact(Long contact) {
-        super.deleteContact(contact);
+    public void deleteContact(Peer peer) {
+        super.deleteContact(peer);
     }
 
     @Override
