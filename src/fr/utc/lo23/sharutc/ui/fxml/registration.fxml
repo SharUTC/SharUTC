@@ -14,7 +14,7 @@
             styleClass="myScrollPane">
     
     <stylesheets>
-        <URL value="@../css/registration.css"/>
+        <URL value="@../css/login.css"/>
     </stylesheets>
     
     <BorderPane fx:id="registrationRoot" BorderPane.alignment="TOP_CENTER">
