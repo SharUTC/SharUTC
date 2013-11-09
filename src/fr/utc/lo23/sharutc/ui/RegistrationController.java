@@ -3,10 +3,6 @@ package fr.utc.lo23.sharutc.ui;
 import com.cathive.fx.guice.GuiceFXMLLoader;
 import com.google.inject.Inject;
 import fr.utc.lo23.sharutc.ui.custom.SharutcLogo;
-import java.io.IOException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -21,15 +17,18 @@ import javafx.scene.layout.VBox;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.ResourceBundle;
+
 /**
  * FXML Controller class
- *
  */
 public class RegistrationController implements Initializable {
 
     private static final Logger log = LoggerFactory
             .getLogger(RegistrationController.class);
-    
     public BorderPane registrationRoot;
     public Button buttonCancel;
     public SharutcLogo sharutcLogo;
@@ -46,18 +45,18 @@ public class RegistrationController implements Initializable {
 
     /**
      * Initializes the controller class.
-     *
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         mErrorMessages = new ArrayList<>();
-        
+
         registrationRoot.setOnMouseMoved(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent mouseEvent) {
                 sharutcLogo.animate(mouseEvent);
-            }      
+            }
         });
+
     }
 
     @FXML
@@ -85,7 +84,7 @@ public class RegistrationController implements Initializable {
     private boolean validateForm() {
         mErrorMessages.clear();
         boolean isFormValid = false;
-        ArrayList<String> emptyFields = new ArrayList<>();
+        ArrayList<String> emptyFields = new ArrayList();
 
         //Check username, firstname and lastname
         checkEmptyField(emptyFields, userNameField, "User name");
