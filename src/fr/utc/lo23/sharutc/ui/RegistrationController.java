@@ -23,12 +23,16 @@ import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 /**
- * FXML Controller class
+ * A FXML Controller that displays a registration page.
+ *
  */
 public class RegistrationController implements Initializable {
 
     private static final Logger log = LoggerFactory
             .getLogger(RegistrationController.class);
+    /*
+     * The UI attributs
+     */
     public BorderPane registrationRoot;
     public Button buttonCancel;
     public SharutcLogo sharutcLogo;
@@ -39,6 +43,9 @@ public class RegistrationController implements Initializable {
     public TextField firstNameField;
     public TextField lastNameField;
     public TextField ageField;
+    /*
+     * The private attributs
+     */
     @Inject
     private GuiceFXMLLoader mFxmlLoader;
     private ArrayList<String> mErrorMessages;
@@ -50,6 +57,7 @@ public class RegistrationController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         mErrorMessages = new ArrayList();
 
+        //Listen to the mouseMove event to animate the logo
         registrationRoot.setOnMouseMoved(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent mouseEvent) {
@@ -59,6 +67,12 @@ public class RegistrationController implements Initializable {
 
     }
 
+    /**
+     * Handles the ActionEvents of the Sign Up Button.
+     *
+     * @param actionEvent
+     * @throws IOException
+     */
     @FXML
     public void handleSignUp(ActionEvent actionEvent) throws IOException {
         log.info("Sign Up Button Clicked");
@@ -68,6 +82,13 @@ public class RegistrationController implements Initializable {
         }
     }
 
+    /**
+     * Handles the ActionEvents of the Cancel Button. Goes back to the login
+     * page.
+     *
+     * @param actionEvent
+     * @throws IOException
+     */
     @FXML
     public void handleCancelRegistration(ActionEvent actionEvent) throws IOException {
         log.info("Cancel Button Clicked");
@@ -75,12 +96,20 @@ public class RegistrationController implements Initializable {
         buttonCancel.getScene().setRoot(root);
     }
 
+    /**
+     * Shows the error messages stored in mErrorMessages.
+     */
     private void displayErrorMessages() {
         for (String errorMessage : mErrorMessages) {
             errorContainer.getChildren().add(new Label(errorMessage));
         }
     }
 
+    /**
+     * Validates the registration form.
+     *
+     * @return true if the form is valid, false otherwise.
+     */
     private boolean validateForm() {
         mErrorMessages.clear();
         boolean isFormValid = false;
@@ -115,6 +144,16 @@ public class RegistrationController implements Initializable {
         return mErrorMessages.isEmpty();
     }
 
+    /**
+     * Checks if a {@link TextField} is empty and stores his name for future
+     * use.
+     *
+     * @param emptyFields the {@link ArrayList<String>} that stores the name of
+     * the empty fields
+     * @param field the {@link TextField} to check
+     * @param fieldName the name of the field
+     * @return true if field is empty
+     */
     private boolean checkEmptyField(ArrayList<String> emptyFields,
             TextField field, String fieldName) {
         boolean isEmpty = false;
@@ -125,6 +164,14 @@ public class RegistrationController implements Initializable {
         return isEmpty;
     }
 
+    /**
+     * Create a human understandable message telling which fields of the
+     * registration form are empty.
+     *
+     * @param emptyFields the {@link ArrayList<String>} that contains the name
+     * of the empty fields.
+     * @return
+     */
     private String makeEmptyFieldErrorMessage(ArrayList<String> emptyFields) {
         String errorMessage = new String();
         final int size = emptyFields.size();
@@ -140,6 +187,12 @@ public class RegistrationController implements Initializable {
         return errorMessage + " can't be empty.";
     }
 
+    /**
+     * Returns true is the {@code ageField} contains a integer between 0 and
+     * 120, false otherwise.
+     *
+     * @return
+     */
     public boolean isAgeValid() {
         final String ageStr = ageField.getText();
         boolean isAgeValid = false;
