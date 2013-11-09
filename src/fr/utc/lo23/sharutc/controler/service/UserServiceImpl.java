@@ -101,7 +101,7 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public void removeContactFromCategory(Peer peer, Category category) {
-        log.warn("Not supported yet.");
+        profile.getCategories().findCategoryById(category.getId()).removeContact(peer);
     }
 
     /**

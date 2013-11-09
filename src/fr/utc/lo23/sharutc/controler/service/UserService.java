@@ -47,7 +47,7 @@ public interface UserService {
     public void addContactToCategory(Peer peer, Category category);
 
     /**
-     *
+     * Remove a contact represented by one's peer from a specified category
      * @param peer
      * @param category
      */

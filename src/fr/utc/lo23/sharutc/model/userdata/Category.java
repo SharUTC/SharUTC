@@ -97,6 +97,16 @@ public class Category implements Serializable {
     public void addContact(Peer peer) {
         mContacts.add(peer);
     }
+    
+     /**
+     * remove a peer from the contacts list
+     *
+     * @param peer
+     */
+    public void removeContact(Peer peer) {
+        mContacts.remove(peer);
+    }
+
 
     /**
      *
