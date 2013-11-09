@@ -76,7 +76,8 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public void createCategory(String categoryName) {
-        log.warn("Not supported yet.");
+        Category c = new Category(categoryName);
+        profile.getCategories().getCategories().add(c);
     }
 
     /**
