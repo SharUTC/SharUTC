@@ -102,6 +102,13 @@
                                     GridPane.columnIndex="2" onAction="#handleLoginButtonAction"/>
                         </GridPane>
                     </HBox>
+                    
+                    <VBox fx:id="errorContainer" alignment="CENTER" styleClass="errorMessageContainer"  >
+                        <VBox.margin>
+                            <javafx.geometry.Insets top="20"/>
+                        </VBox.margin>
+                    </VBox>
+                    
                 </VBox>
             </center>
         

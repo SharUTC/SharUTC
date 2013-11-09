@@ -42,3 +42,7 @@ root {
     -fx-font-weight: bold;
     -fx-text-fill: #ECF0F1;
 }
+
+.errorMessageContainer > .label {
+    -fx-text-fill: #CC0000;
+}

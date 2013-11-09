@@ -5,6 +5,7 @@ import com.google.inject.Inject;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -20,6 +21,7 @@ import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.Region;
+import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,8 +43,10 @@ public class LoginController implements Initializable {
     //drop Overlay
     public Region dropOverlay;
     public Label dropOverlayLabel;
+    public VBox errorContainer;
     @Inject
     private GuiceFXMLLoader mFxmlLoader;
+    private ArrayList<String> mErrorMessages;
 
     /**
      * Initializes the controller class.
@@ -57,6 +61,8 @@ public class LoginController implements Initializable {
         logoContainer.setPreserveRatio(true);
         logoContainer.setImage(new Image("fr/utc/lo23/sharutc/ui/drawable/logo.png"));
 
+        mErrorMessages = new ArrayList<>();
+
         //hide drop overlay
         hideDropOverlay();
     }
@@ -69,6 +75,7 @@ public class LoginController implements Initializable {
             buttonSignUp.getScene().setRoot(root);
         } else if (event.getSource() == buttonSignIn) {
             log.info("Sign In Button Clicked");
+            signInButtonClicked();
         } else if (event.getSource() == buttonImport) {
             log.info("Import Button Clicked");
             final FileChooser fileChooser = new FileChooser();
@@ -130,5 +137,54 @@ public class LoginController implements Initializable {
     private void showDropOverlay() {
         dropOverlay.setVisible(true);
         dropOverlayLabel.setVisible(true);
+    }
+
+    private void signInButtonClicked() {
+        errorContainer.getChildren().clear();
+        if (!validateForm()) {
+            displayErrorMessages();
+        }
+    }
+
+    private void displayErrorMessages() {
+        for (String errorMessage : mErrorMessages) {
+            errorContainer.getChildren().add(new Label(errorMessage));
+        }
+    }
+
+    private boolean validateForm() {
+        boolean isFormValid = false;
+        int emptyField = 0;
+        mErrorMessages.clear();
+
+        if (userNameField.getText().isEmpty()) {
+            emptyField += 1;
+        }
+
+        if (passwordField.getText().isEmpty()) {
+            emptyField += 2;
+        }
+
+        if (emptyField != 0) {
+            //at least one empty field
+            switch (emptyField) {
+                case 1:
+                    mErrorMessages.add(
+                            "User name can't be empty.");
+                    break;
+                case 2:
+                    mErrorMessages.add(
+                            "Password can't be empty.");
+                    break;
+                case 3:
+                    mErrorMessages.add(
+                            "User name & Password can't be empty.");
+                    break;
+            }
+        } else {
+            isFormValid = true;
+        }
+
+        return isFormValid;
     }
 }
