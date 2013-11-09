@@ -1,5 +1,6 @@
 package fr.utc.lo23.sharutc.ui;
 
+import fr.utc.lo23.sharutc.model.userdata.Category;
 import fr.utc.lo23.sharutc.model.userdata.UserInfo;
 import fr.utc.lo23.sharutc.ui.custom.GroupCard;
 import fr.utc.lo23.sharutc.ui.custom.PeopleCard;
@@ -48,27 +49,37 @@ public class PeopleHomeController implements Initializable, PeopleCard.IPeopleCa
 
         for (int i = 0; i < 10; i++) {
             //TODO add GroupCard with color attribute
-            GroupCard newCard = new GroupCard();
+            final Category category = new Category();
+            category.setName("Category " + i);
+            GroupCard newCard = new GroupCard(category);
             groupContainer.getChildren().add(newCard);
         }
     }
 
     @Override
-    public void onDeletetionRequested(PeopleCard peopleCard) {
-        log.info("onDeletetionRequested " + peopleCard.getModel().getLogin());
+    public void onPeopleDeletetionRequested(PeopleCard peopleCard) {
+        log.info("onPeopleDeletetionRequested " + peopleCard.getModel().getLogin());
         peopleContainer.getChildren().remove(peopleCard);
     }
 
     @Override
-    public void onDetailsRequested(UserInfo userInfo) {
-        log.info("onDetailsRequested " + userInfo.getLogin());
+    public void onPeopleDetailsRequested(UserInfo userInfo) {
+        log.info("onPeopleDetailsRequested " + userInfo.getLogin());
         mInterface.onPeopleDetailRequested(userInfo);
     }
 
     public interface IPeopleHomeController {
 
+        /**
+         * display user details
+         *
+         * @param user
+         */
         void onPeopleDetailRequested(UserInfo user);
 
+        /**
+         * display group details
+         */
         void onGroupDetailRequested();
     }
 }

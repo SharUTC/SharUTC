@@ -47,9 +47,9 @@ public class PeopleCard extends UserCard implements EventHandler<Event> {
         final Object source = event.getSource();
         if (event.getEventType() == MouseEvent.MOUSE_CLICKED) {
             if (source.equals(deleteButton)) {
-                mInterface.onDeletetionRequested(PeopleCard.this);
+                mInterface.onPeopleDeletetionRequested(PeopleCard.this);
             } else if (source.equals(detailButton)) {
-                mInterface.onDetailsRequested(PeopleCard.this.getModel());
+                mInterface.onPeopleDetailsRequested(PeopleCard.this.getModel());
             } else if (source.equals(this)) {
                 this.adaptStyle((MouseEvent) event);
             }
@@ -97,9 +97,22 @@ public class PeopleCard extends UserCard implements EventHandler<Event> {
         dragEvent.consume();
     }
 
+    /**
+     * interface for PeopleCard's callback
+     */
     public interface IPeopleCard {
-        public void onDeletetionRequested(PeopleCard peopleCard);
+        /**
+         * user requested the deletion
+         *
+         * @param peopleCard
+         */
+        public void onPeopleDeletetionRequested(PeopleCard peopleCard);
 
-        public void onDetailsRequested(UserInfo userInfo);
+        /**
+         * user requested more details
+         *
+         * @param userInfo
+         */
+        public void onPeopleDetailsRequested(UserInfo userInfo);
     }
 }
