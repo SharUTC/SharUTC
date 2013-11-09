@@ -15,7 +15,7 @@ import org.slf4j.LoggerFactory;
  */
 public class CreateCategoryCommandImpl implements CreateCategoryCommand {
     
-            private static final Logger log = LoggerFactory
+    private static final Logger log = LoggerFactory
             .getLogger(AddContactCommandImpl.class);
     private String mCategoryName;
     final private UserService mUserService;

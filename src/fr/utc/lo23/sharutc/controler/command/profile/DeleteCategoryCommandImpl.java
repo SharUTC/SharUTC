@@ -6,7 +6,7 @@ package fr.utc.lo23.sharutc.controler.command.profile;
 
 import com.google.inject.Inject;
 import fr.utc.lo23.sharutc.controler.service.UserService;
-import fr.utc.lo23.sharutc.model.userdata.Peer;
+import fr.utc.lo23.sharutc.model.userdata.Category;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,46 +14,45 @@ import org.slf4j.LoggerFactory;
  *
  * @author Mathilde
  */
-public class DeleteContactCommandImpl implements DeleteContactCommand {
+public class DeleteCategoryCommandImpl implements DeleteCategoryCommand {
 
     private static final Logger log = LoggerFactory
             .getLogger(AddContactCommandImpl.class);
-    private Peer mPeer;
+    private Category mCategory;
     final private UserService mUserService;
 
      /**
      * {@inheritDoc}
      */
     @Inject
-    public DeleteContactCommandImpl(UserService userService) {
-        this.mUserService = userService;
-    }
-        
-     /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Peer getPeer() {
-       return mPeer;
+    public DeleteCategoryCommandImpl(UserService mUserService) {
+        this.mUserService = mUserService;
     }
     
      /**
      * {@inheritDoc}
      */
     @Override
-    public void setPeer(Peer peer) {
-        this.mPeer = peer;
+    public Category getCategory() {
+        return mCategory;
     }
 
-   
+     /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void setCategory(Category category) {
+        this.mCategory = category;
+    }
+
      /**
      * {@inheritDoc}
      */
     @Override
     public void execute() {
-        log.info("DeleteContactCommand ...");
-        mUserService.deleteContact(mPeer);
-        log.info("DeleteContactCommand DONE");
+        log.info("DeleteCategoryCommand ...");
+        mUserService.deleteCategory(mCategory);
+        log.info("DeleteCategoryCommand DONE");
     }
     
 }

@@ -85,7 +85,7 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public void deleteCategory(Category category) {
-        log.warn("Not supported yet.");
+        profile.getCategories().remove(category);
     }
 
     /**

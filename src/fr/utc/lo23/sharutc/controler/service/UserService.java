@@ -28,13 +28,13 @@ public interface UserService {
     public void deleteContact(Peer peer);
     
     /**
-     * Create the category cartegoryName
+     * Create the category categoryName
      * @param categoryName
      */
     public void createCategory(String categoryName);
 
     /**
-     *
+     * Delete the category category
      * @param category
      */
     public void deleteCategory(Category category);
