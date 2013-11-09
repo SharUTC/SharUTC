@@ -61,7 +61,7 @@ public class LoginController implements Initializable {
         logoContainer.setPreserveRatio(true);
         logoContainer.setImage(new Image("fr/utc/lo23/sharutc/ui/drawable/logo.png"));
 
-        mErrorMessages = new ArrayList<>();
+        mErrorMessages = new ArrayList();
 
         //hide drop overlay
         hideDropOverlay();

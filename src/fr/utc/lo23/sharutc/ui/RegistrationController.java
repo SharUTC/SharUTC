@@ -2,10 +2,6 @@ package fr.utc.lo23.sharutc.ui;
 
 import com.cathive.fx.guice.GuiceFXMLLoader;
 import com.google.inject.Inject;
-import java.io.IOException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -19,9 +15,13 @@ import javafx.scene.layout.VBox;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.ResourceBundle;
+
 /**
  * FXML Controller class
- *
  */
 public class RegistrationController implements Initializable {
 
@@ -42,7 +42,6 @@ public class RegistrationController implements Initializable {
 
     /**
      * Initializes the controller class.
-     *
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -51,7 +50,7 @@ public class RegistrationController implements Initializable {
         logoContainer.setPreserveRatio(true);
         logoContainer.setImage(new Image("fr/utc/lo23/sharutc/ui/drawable/logo.png"));
 
-        mErrorMessages = new ArrayList<>();
+        mErrorMessages = new ArrayList();
     }
 
     @FXML
@@ -79,7 +78,7 @@ public class RegistrationController implements Initializable {
     private boolean validateForm() {
         mErrorMessages.clear();
         boolean isFormValid = false;
-        ArrayList<String> emptyFields = new ArrayList<>();
+        ArrayList<String> emptyFields = new ArrayList();
 
         //Check username, firstname and lastname
         checkEmptyField(emptyFields, userNameField, "User name");
@@ -111,7 +110,7 @@ public class RegistrationController implements Initializable {
     }
 
     private boolean checkEmptyField(ArrayList<String> emptyFields,
-            TextField field, String fieldName) {
+                                    TextField field, String fieldName) {
         boolean isEmpty = false;
         if (field.getText().isEmpty()) {
             emptyFields.add(fieldName);
