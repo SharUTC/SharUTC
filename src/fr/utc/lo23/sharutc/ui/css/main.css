@@ -103,6 +103,7 @@
 
 .peopleCard {
     -fx-padding: 5px 0px 5px 10px;
+    -fx-opacity: 1.0;
 }
 
 .peopleCardDrag {
@@ -112,9 +113,11 @@
 }
 
 .groupCard {
-    -fx-padding: 5px 0px 5px 0px;
+    -fx-padding: 4px 4px 0px 4px;
 }
-
+.groupCard:hover {
+    -fx-padding: 0px;
+}
 
 /* imagebutton */
 .imageButton {

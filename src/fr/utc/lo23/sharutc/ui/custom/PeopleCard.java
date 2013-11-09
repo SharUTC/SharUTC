@@ -4,9 +4,14 @@ import fr.utc.lo23.sharutc.model.userdata.UserInfo;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.scene.control.Button;
-import javafx.scene.input.MouseEvent;
+import javafx.scene.input.*;
 
 public class PeopleCard extends UserCard implements EventHandler<Event> {
+
+    /**
+     * key used for the drag event to identify the content
+     */
+    public static final String DROP_KEY = "PeopleCardContent";
 
     private IPeopleCard mInterface;
 
@@ -28,6 +33,8 @@ public class PeopleCard extends UserCard implements EventHandler<Event> {
         setOnMouseClicked(this);
         setOnMouseEntered(this);
         setOnMouseExited(this);
+        setOnDragDetected(this);
+        setOnDragDone(this);
     }
 
     public void onHover(boolean isHover) {
@@ -54,7 +61,40 @@ public class PeopleCard extends UserCard implements EventHandler<Event> {
             if (source.equals(this)) {
                 this.onHover(false);
             }
+        } else if (event.getEventType() == MouseEvent.DRAG_DETECTED) {
+            if (source.equals(this)) {
+                onDragStart((MouseEvent) event);
+            }
+        } else if (event.getEventType() == DragEvent.DRAG_DONE) {
+            if (source.equals(this)) {
+                onDragDone((DragEvent) event);
+            }
         }
+    }
+
+    /**
+     * Change style and add the model to the Dragboard
+     *
+     * @param mouseEvent
+     */
+    private void onDragStart(MouseEvent mouseEvent) {
+        this.getStyleClass().add("peopleCardDrag");
+        Dragboard db = this.startDragAndDrop(TransferMode.ANY);
+        ClipboardContent content = new ClipboardContent();
+        content.putString(DROP_KEY);
+        db.setContent(content);
+        mouseEvent.consume();
+    }
+
+    /**
+     * Retrieve original style whe drag gesture is done
+     *
+     * @param dragEvent
+     */
+    private void onDragDone(DragEvent dragEvent) {
+
+        this.getStyleClass().remove("peopleCardDrag");
+        dragEvent.consume();
     }
 
     public interface IPeopleCard {
