@@ -48,7 +48,7 @@ public class RegistrationController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        mErrorMessages = new ArrayList<>();
+        mErrorMessages = new ArrayList();
 
         registrationRoot.setOnMouseMoved(new EventHandler<MouseEvent>() {
             @Override
