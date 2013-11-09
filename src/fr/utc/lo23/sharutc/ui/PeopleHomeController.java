@@ -12,12 +12,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 
-public class PeopleHomeController implements Initializable, PeopleCard.IPeopleCard {
+public class PeopleHomeController implements Initializable, PeopleCard.IPeopleCard, GroupCard.IGroupCard {
 
     private static final Logger log = LoggerFactory.getLogger(PeopleHomeController.class);
     private IPeopleHomeController mInterface;
+    /**
+     * Card selected by the user
+     */
+    private ArrayList<PeopleCard> mPeopleCardSelected;
 
     @FXML
     public FlowPane peopleContainer;
@@ -30,6 +35,7 @@ public class PeopleHomeController implements Initializable, PeopleCard.IPeopleCa
     public void initialize(URL url, ResourceBundle resourceBundle) {
         groupScrollPane.getStyleClass().add("myScrollPaneWithTopBorder");
         populate();
+        mPeopleCardSelected = new ArrayList<PeopleCard>();
     }
 
     public void setInterface(IPeopleHomeController i) {
@@ -51,7 +57,7 @@ public class PeopleHomeController implements Initializable, PeopleCard.IPeopleCa
             //TODO add GroupCard with color attribute
             final Category category = new Category();
             category.setName("Category " + i);
-            GroupCard newCard = new GroupCard(category);
+            GroupCard newCard = new GroupCard(category, this);
             groupContainer.getChildren().add(newCard);
         }
     }
@@ -66,6 +72,65 @@ public class PeopleHomeController implements Initializable, PeopleCard.IPeopleCa
     public void onPeopleDetailsRequested(UserInfo userInfo) {
         log.info("onPeopleDetailsRequested " + userInfo.getLogin());
         mInterface.onPeopleDetailRequested(userInfo);
+    }
+
+    @Override
+    public void onPeopleCardSelected(PeopleCard peopleCard) {
+        if (mPeopleCardSelected.contains(peopleCard)) {
+            mPeopleCardSelected.remove(peopleCard);
+        } else {
+            mPeopleCardSelected.add(peopleCard);
+        }
+    }
+
+    @Override
+    public void onCardBeingDragged(boolean isDragged) {
+        if (isDragged) {
+            //drag event start, inform all selected card
+            for (PeopleCard peopleCard : mPeopleCardSelected) {
+                peopleCard.dragged();
+            }
+        } else {
+            //drag event failed, inform all selected card
+            for (PeopleCard peopleCard : mPeopleCardSelected) {
+                peopleCard.dropped();
+            }
+            //clean the selection
+            mPeopleCardSelected.clear();
+        }
+
+    }
+
+    @Override
+    public void onGroupDeletionRequested(GroupCard g) {
+        log.info("onPeopleDeletetionRequested " + g.getModel().getName());
+        groupContainer.getChildren().remove(g);
+    }
+
+    @Override
+    public void onGroupEditionRequested(Category category) {
+        //TODO create Group Edition View
+    }
+
+    @Override
+    public void onGroupRightsRequested(Category category) {
+        //TODO create Rights Edition View
+    }
+
+    @Override
+    public void onUsersAdded(Category category, PeopleCard droppedCard) {
+        //had to checked if this card is already selected because user
+        //can drag a selected one or a new one
+        if (!mPeopleCardSelected.contains(droppedCard))
+            mPeopleCardSelected.add(droppedCard);
+        for (PeopleCard people : mPeopleCardSelected) {
+            //add all selected card to the new category
+            final UserInfo user = people.getModel();
+            log.info(user.getLogin() + " added to " + category.getName());
+            people.dropped();
+        }
+        //clean the selection
+        mPeopleCardSelected.clear();
     }
 
     public interface IPeopleHomeController {

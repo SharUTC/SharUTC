@@ -1,6 +1,7 @@
 package fr.utc.lo23.sharutc.ui.custom;
 
 import fr.utc.lo23.sharutc.model.userdata.UserInfo;
+import javafx.collections.ObservableList;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.scene.control.Button;
@@ -42,6 +43,26 @@ public class PeopleCard extends UserCard implements EventHandler<Event> {
         detailButton.setVisible(isHover);
     }
 
+    /**
+     * inform that this card as been dropped due to multi selection Drag&Drop
+     */
+    public void dropped() {
+        final ObservableList<String> style = getStyleClass();
+        style.remove("peopleCardDrag");
+        style.remove("simpleCardClicked");
+        mState = STATE_NORMAL;
+
+    }
+
+    /**
+     * inform is being dragged due to multi selection Drag&Drop
+     */
+    public void dragged() {
+        final ObservableList<String> style = getStyleClass();
+        style.add("peopleCardDrag");
+
+    }
+
     @Override
     public void handle(Event event) {
         final Object source = event.getSource();
@@ -52,6 +73,7 @@ public class PeopleCard extends UserCard implements EventHandler<Event> {
                 mInterface.onPeopleDetailsRequested(PeopleCard.this.getModel());
             } else if (source.equals(this)) {
                 this.adaptStyle((MouseEvent) event);
+                mInterface.onPeopleCardSelected(this);
             }
         } else if (event.getEventType() == MouseEvent.MOUSE_ENTERED) {
             if (source.equals(this)) {
@@ -64,10 +86,12 @@ public class PeopleCard extends UserCard implements EventHandler<Event> {
         } else if (event.getEventType() == MouseEvent.DRAG_DETECTED) {
             if (source.equals(this)) {
                 onDragStart((MouseEvent) event);
+                mInterface.onCardBeingDragged(true);
             }
         } else if (event.getEventType() == DragEvent.DRAG_DONE) {
             if (source.equals(this)) {
                 onDragDone((DragEvent) event);
+                mInterface.onCardBeingDragged(false);
             }
         }
     }
@@ -114,5 +138,19 @@ public class PeopleCard extends UserCard implements EventHandler<Event> {
          * @param userInfo
          */
         public void onPeopleDetailsRequested(UserInfo userInfo);
+
+        /**
+         * card has been selected
+         *
+         * @param peopleCard
+         */
+        public void onPeopleCardSelected(PeopleCard peopleCard);
+
+        /**
+         * inform that a PeopleCard is being dragged
+         *
+         * @param isDragged true if drag start, false if drag failed
+         */
+        public void onCardBeingDragged(boolean isDragged);
     }
 }

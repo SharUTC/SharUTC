@@ -2,7 +2,6 @@ package fr.utc.lo23.sharutc.ui.custom;
 
 
 import fr.utc.lo23.sharutc.model.userdata.Category;
-import fr.utc.lo23.sharutc.model.userdata.UserInfo;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -36,19 +35,27 @@ public class GroupCard extends SimpleCard implements EventHandler<Event> {
     public Label groupMembers;
 
     private Category mModel;
+    private IGroupCard mInterface;
 
 
-    public GroupCard(Category category) {
+    public GroupCard(Category category, IGroupCard i) {
         super("../fxml/group_card.fxml");
         getStyleClass().add("groupCard");
+
+        mInterface = i;
+        mModel = category;
+        groupName.setText(mModel.getName());
+
         setOnMouseEntered(this);
         setOnMouseExited(this);
         setOnDragEntered(this);
         setOnDragOver(this);
         setOnDragExited(this);
         setOnDragDropped(this);
-        mModel = category;
-        groupName.setText(mModel.getName());
+
+        deleteButton.setOnMouseClicked(this);
+        editButton.setOnMouseClicked(this);
+        rightsButton.setOnMouseClicked(this);
     }
 
     public void onHover(boolean isHover) {
@@ -76,6 +83,14 @@ public class GroupCard extends SimpleCard implements EventHandler<Event> {
             onDragExited((DragEvent) event);
         } else if (event.getEventType() == DragEvent.DRAG_DROPPED) {
             onDragDropped((DragEvent) event);
+        } else if (event.getEventType() == MouseEvent.MOUSE_CLICKED) {
+            if (source.equals(deleteButton)) {
+                mInterface.onGroupDeletionRequested(this);
+            } else if (source.equals(editButton)) {
+                mInterface.onGroupEditionRequested(mModel);
+            } else if (source.equals(rightsButton)) {
+                mInterface.onGroupRightsRequested(mModel);
+            }
         }
     }
 
@@ -134,9 +149,8 @@ public class GroupCard extends SimpleCard implements EventHandler<Event> {
         final Dragboard db = dragEvent.getDragboard();
         boolean success = false;
         if (db.hasString() && db.getString().equals(PeopleCard.DROP_KEY)) {
-            final UserInfo userDropped = ((PeopleCard) dragEvent.getGestureSource()).getModel();
-            success = true;
-            log.info(userDropped.getLogin() + " added to " + mModel.getName());
+            final PeopleCard droppedCard = (PeopleCard) dragEvent.getGestureSource();
+            mInterface.onUsersAdded(mModel, droppedCard);
         }
         dragEvent.setDropCompleted(success);
         dragEvent.consume();
@@ -158,7 +172,7 @@ public class GroupCard extends SimpleCard implements EventHandler<Event> {
          *
          * @param category
          */
-        public void onGroupDetailsRequested(Category category);
+        public void onGroupEditionRequested(Category category);
 
         /**
          * user requested rights manager
@@ -170,6 +184,6 @@ public class GroupCard extends SimpleCard implements EventHandler<Event> {
         /**
          * user added people
          */
-        public void onUsersAdded();
+        public void onUsersAdded(Category category, PeopleCard droppedCard);
     }
 }
