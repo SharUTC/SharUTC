@@ -29,7 +29,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * FXML Controller class A Controller that displays a login page.
+ * A FXML Controller that displays a login page.
  */
 public class LoginController implements Initializable {
 
