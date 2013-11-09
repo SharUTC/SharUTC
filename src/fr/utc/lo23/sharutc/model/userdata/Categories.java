@@ -47,9 +47,9 @@ public class Categories implements Serializable {
      * @param name
      * @return
      */
-    public Category findCategoryByName(String name) {
+    public Category findCategoryById(Integer id) {
         for (Category category : mCategories) {
-            if (category.getName().equals(name)) {
+            if (category.getId() == id) {
                 return category;
             }
         }

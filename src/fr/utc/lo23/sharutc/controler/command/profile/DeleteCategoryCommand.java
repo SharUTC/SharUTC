@@ -11,7 +11,7 @@ public interface DeleteCategoryCommand extends Command {
     /**
      * Return the category
      * 
-     * @return
+     * @return the category
      */
     public Category getCategory();
 

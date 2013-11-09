@@ -58,7 +58,7 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public void addContact(Peer peer) {
-        profile.getCategories().findCategoryByName(Category.PUBLIC_CATEGORY_NAME).addContact(peer);
+        profile.getCategories().findCategoryById(Category.PUBLIC_CATEGORY_ID).addContact(peer);
     }
 
     /**
@@ -93,7 +93,7 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public void addContactToCategory(Peer peer, Category category) {
-        log.warn("Not supported yet.");
+        profile.getCategories().findCategoryById(category.getId()).addContact(peer);
     }
 
     /**
@@ -165,7 +165,7 @@ public class UserServiceImpl implements UserService {
     public Long findContactIdByPeerId(Long peerId) {
         // 2 modes : when peer is a contact and when peer isn't a contact
         Peer contact = appModel.getProfile().getCategories().
-                findCategoryByName(Category.PUBLIC_CATEGORY_NAME).getContacts().findById(peerId);
+                findCategoryById(Category.PUBLIC_CATEGORY_ID).getContacts().findById(peerId);
         return contact.getId();
     }
 }

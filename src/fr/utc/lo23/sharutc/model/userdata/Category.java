@@ -90,9 +90,9 @@ public class Category implements Serializable {
     }
 
     /**
-     * add an id to the contacts list
+     * add a peer to the contacts list
      *
-     * @param id
+     * @param peer
      */
     public void addContact(Peer peer) {
         mContacts.add(peer);

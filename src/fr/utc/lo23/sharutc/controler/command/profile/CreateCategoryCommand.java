@@ -10,7 +10,7 @@ public interface CreateCategoryCommand extends Command {
     /**
      * Return the category name
      * 
-     * @return
+     * @return the category name
      */
     public String getCategoryName();
 

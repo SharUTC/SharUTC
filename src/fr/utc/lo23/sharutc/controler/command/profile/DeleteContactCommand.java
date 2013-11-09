@@ -9,16 +9,16 @@ import fr.utc.lo23.sharutc.model.userdata.Peer;
 public interface DeleteContactCommand extends Command {
 
     /**
-     * Return the destination Peer
+     * Return the Peer
      *
-     * @return the destination Peer
+     * @return the Peer
      */
     public Peer getPeer();
 
     /**
      * Set the destination Peer
      *
-     * @param peer the destination Peer
+     * @param peer
      */
     public void setPeer(Peer peer);
 }
