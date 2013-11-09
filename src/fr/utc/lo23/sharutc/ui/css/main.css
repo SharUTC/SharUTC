@@ -105,6 +105,12 @@
     -fx-padding: 5px 0px 5px 10px;
 }
 
+.peopleCardDrag {
+	-fx-border-width: 4px 4px 4px 4px;
+	-fx-border-style : dashed;
+	-fx-opacity: 0.4;
+}
+
 .groupCard {
     -fx-padding: 5px 0px 5px 0px;
 }
