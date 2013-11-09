@@ -2,19 +2,21 @@ package fr.utc.lo23.sharutc.ui;
 
 import com.cathive.fx.guice.GuiceFXMLLoader;
 import com.google.inject.Inject;
+import fr.utc.lo23.sharutc.ui.custom.SharutcLogo;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,8 +29,10 @@ public class RegistrationController implements Initializable {
 
     private static final Logger log = LoggerFactory
             .getLogger(RegistrationController.class);
+    
+    public BorderPane registrationRoot;
     public Button buttonCancel;
-    public ImageView logoContainer;
+    public SharutcLogo sharutcLogo;
     public VBox errorContainer;
     public TextField userNameField;
     public TextField passwordField;
@@ -46,12 +50,14 @@ public class RegistrationController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        logoContainer.setCache(true);
-        logoContainer.setSmooth(true);
-        logoContainer.setPreserveRatio(true);
-        logoContainer.setImage(new Image("fr/utc/lo23/sharutc/ui/drawable/logo.png"));
-
         mErrorMessages = new ArrayList<>();
+        
+        registrationRoot.setOnMouseMoved(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                sharutcLogo.animate(mouseEvent);
+            }      
+        });
     }
 
     @FXML
