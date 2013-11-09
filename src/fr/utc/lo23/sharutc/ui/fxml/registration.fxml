@@ -141,7 +141,8 @@
             
                     <Button minWidth="100" styleClass="formButton" text="Sign Up"
                             fx:id="buttonSignUp" GridPane.rowIndex="3"
-                            GridPane.columnIndex="1">
+                            GridPane.columnIndex="1"
+                            onAction="#handleSignUp" >
                         <HBox.margin>
                             <javafx.geometry.Insets >
                                 <left>10</left>
@@ -149,6 +150,13 @@
                         </HBox.margin>
                     </Button>
                 </HBox>
+                
+                <VBox fx:id="errorContainer" alignment="CENTER" styleClass="errorMessageContainer"  >
+                    <VBox.margin>
+                        <javafx.geometry.Insets top="20"/>
+                    </VBox.margin>
+                </VBox>
+                
             </VBox>
         </center>
     
