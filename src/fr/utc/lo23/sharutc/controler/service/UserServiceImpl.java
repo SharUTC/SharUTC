@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import fr.utc.lo23.sharutc.model.AppModel;
+import fr.utc.lo23.sharutc.model.userdata.ActivePeerList;
 import fr.utc.lo23.sharutc.model.userdata.Category;
 import fr.utc.lo23.sharutc.model.userdata.Peer;
 import fr.utc.lo23.sharutc.model.userdata.Profile;
@@ -142,7 +143,9 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public void updateConnectedPeers(UserInfo userInfo) {
-        log.warn("Not supported yet.");
+        ActivePeerList activePeerList = appModel.getActivePeerList();
+        Peer newPeer = new Peer(userInfo.getPeerId(), userInfo.getLogin());
+        activePeerList.update(newPeer);
     }
 
     /**
@@ -150,7 +153,9 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public void removeFromConnectedPeers(long peerId) {
-        log.warn("Not supported yet.");
+        ActivePeerList activePeerList = appModel.getActivePeerList();
+        Peer removePeer = activePeerList.getByPeerId(peerId);
+        activePeerList.remove(removePeer);
     }
 
     /**
@@ -167,5 +172,14 @@ public class UserServiceImpl implements UserService {
         Peer contact = appModel.getProfile().getCategories().
                 findCategoryById(Category.PUBLIC_CATEGORY_ID).getContacts().findById(peerId);
         return contact.getId();
+    }
+    
+    @Override
+    public void disconnectionRequest(){
+        Long peerId = this.profile.getUserInfo().getPeerId();
+        
+        this.saveProfileFiles();
+        this.removeFromConnectedPeers(peerId);
+        // Notify network
     }
 }

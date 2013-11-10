@@ -90,4 +90,10 @@ public interface UserService {
      * @return
      */
     public Long findContactIdByPeerId(Long peerId);
+    
+    /**
+     * Send a disconnection request to the network and save profile 
+     * 
+     */
+    public void disconnectionRequest();
 }
