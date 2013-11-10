@@ -11,7 +11,7 @@ import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.util.Scanner;
 
-public class PlayerServiceManualTest implements PropertyChangeListener {
+public class PlayerServiceManual implements PropertyChangeListener {
 
     private final static int EXIT = 0;
     private final static int PLAY = 1;
@@ -26,7 +26,7 @@ public class PlayerServiceManualTest implements PropertyChangeListener {
     private static long currentTimeSec;
 
     public static void main(String[] args) {
-        PlayerServiceManualTest p = new PlayerServiceManualTest();
+        PlayerServiceManual p = new PlayerServiceManual();
         p.run();
     }
 

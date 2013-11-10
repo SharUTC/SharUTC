@@ -58,11 +58,12 @@ public interface PlayerService {
     public void playOneMusic(Music music);
 
     /**
-     * NOT USED
+     * Replace the actual music in playlist by this one, and play it to simulate
+     * local file behaviour
      *
-     * @param music
+     * @param musicToPlay the music to play
      */
-    public void updatePlaylist(Music music);
+    public void updateAndPlayMusic(Music musicToPlay);
 
     /**
      * Play currently selected music (and for which file is present)
@@ -151,7 +152,6 @@ public interface PlayerService {
      */
     public Long getTotalTimeSec();
 
-    
     public boolean isPause();
 
     /**

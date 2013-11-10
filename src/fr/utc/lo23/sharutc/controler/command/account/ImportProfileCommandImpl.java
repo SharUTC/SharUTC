@@ -21,10 +21,9 @@ public class ImportProfileCommandImpl implements ImportProfileCommand{
     private String mPath;
     
     @Inject
-    public ImportProfileCommandImpl(FileService fs, AppModel appModel, String path) {
+    public ImportProfileCommandImpl(FileService fs, AppModel appModel) {
         this.fs = fs;
         this.appModel = appModel;
-        mPath = path;
     }
 
     @Override

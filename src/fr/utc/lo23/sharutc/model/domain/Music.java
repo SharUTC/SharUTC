@@ -210,7 +210,7 @@ public class Music implements Serializable {
      *
      * @param file
      */
-    public void setFile(Byte[] file) {
+    public void setFileByte(Byte[] file) {
         this.mFile = file;
     }
 
