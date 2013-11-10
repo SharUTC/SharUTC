@@ -1,22 +1,11 @@
 package fr.utc.lo23.sharutc.controler.network;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import java.io.IOException;
-import java.io.StringWriter;
-import java.util.logging.Level;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 /**
- *
+ * List of constants used in all the messages, describes each value that is to
+ * be set in a message to find it at reading
  */
 public class Message {
 
-    private static final Logger log = LoggerFactory
-        .getLogger(Message.class);
-    private static final ObjectMapper mapper = new ObjectMapper();
-// list of constants used in all the messages, describes each value that is 
-    // to be set in a message to find it at reading
     /**
      *
      */
@@ -36,7 +25,11 @@ public class Message {
     /**
      *
      */
-    public final static String MUSIC_ID = "MUSIC";
+    public final static String MUSIC_ID = "MUSIC_ID";
+    /**
+     *
+     */
+    public final static String MUSIC = "MUSIC";
     /**
      *
      */
@@ -63,7 +56,10 @@ public class Message {
      */
     private Long fromPeerId;
     /**
-     * used to filter messages coming too late, the view makes this value changes in the app., networkService has only to copy this value here before sending it (not in each message, answer must re-use the value contained in the message)
+     * used to filter messages coming too late, the view makes this value
+     * changes in the app., networkService has only to copy this value here
+     * before sending it (not in each message, answer must re-use the value
+     * contained in the message)
      */
     private Long conversationId;
 
@@ -155,36 +151,5 @@ public class Message {
      */
     public void setConversationId(Long conversationId) {
         this.conversationId = conversationId;
-    }
-
-    /**
-     * Serialize the message to JSON
-     *
-     * @return
-     */
-    public String toJSON() {
-        StringWriter sw = new StringWriter();
-        try {
-            mapper.writeValue(sw, this);
-        } catch (IOException ex) {
-            log.error(ex.getMessage());
-        }
-        return sw.toString();
-    }
-
-    /**
-     * Return a message object from json
-     *
-     * @param json
-     * @return
-     */
-    public static Message fromJSON(String json) {
-        Message incomingMessage = null;
-        try {
-            incomingMessage = mapper.readValue(json, Message.class);
-        } catch (IOException ex) {
-            log.error(ex.toString());
-        }
-        return incomingMessage;
     }
 }

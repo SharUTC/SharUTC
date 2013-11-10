@@ -12,14 +12,14 @@ public interface FileService {
 
     /**
      *
-     * @param path
-     * @param password
+     * @param srcPath
+     * @throws java.lang.Exception
      */
-    public void importFile(String path, String password);
+    public void importWholeProfile(String srcPath) throws Exception;
 
     /**
      * Compress the folder srcPath and write it at destPath
-     * 
+     *
      * @param srcPath path of the folder to compress
      * @param destPath path of the destination
      * @throws java.io.IOException
@@ -43,4 +43,13 @@ public interface FileService {
      * @return the content of the file as an array of Bytes
      */
     public Byte[] getFileAsByteArray(File file) throws IOException;
+
+    /**
+     * Give access to a temporary file automatically deleted when application
+     * stops, used by musicPlayer
+     *
+     * @param currentMusic
+     * @return the temporary file
+     */
+    public File buildTmpMusicFile(Byte[] musicBytes) throws Exception;
 }

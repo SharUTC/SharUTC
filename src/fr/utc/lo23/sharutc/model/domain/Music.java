@@ -38,6 +38,7 @@ public class Music implements Serializable {
      * null before returning the results, file must be present for transfers
      */
     private Byte[] mFile;
+    private Long mFrames;
     private Boolean mFileMissing;
     private Long mOwnerPeerId;
     private Integer mHash;
@@ -71,12 +72,13 @@ public class Music implements Serializable {
         this.mId = new Long(music.mId);
         this.mFileName = music.mFileName;
         this.mRealName = music.mRealName;
-        if (music.getFile() != null) {
-            this.mFile = new Byte[music.getFile().length];
-            System.arraycopy(music.mFile, 0, this.mFile, 0, music.getFile().length);
+        if (music.getFileBytes() != null) {
+            this.mFile = new Byte[music.getFileBytes().length];
+            System.arraycopy(music.mFile, 0, this.mFile, 0, music.getFileBytes().length);
         } else {
             this.mFile = null;
         }
+        this.mFrames = music.mFrames;
         this.mFileMissing = music.mFileMissing;
         this.mOwnerPeerId = new Long(music.mOwnerPeerId);
         this.mHash = new Integer(music.mHash);
@@ -92,7 +94,7 @@ public class Music implements Serializable {
         this.mTrackLength = new Integer(music.mTrackLength);
         this.mYear = new Integer(music.mYear);
         this.mComments = new ArrayList<Comment>();
-        // using a clone to not erase 
+        // using a clone also for contained classes, always
         for (Comment comment : music.mComments) {
             this.mComments.add(comment.clone());
         }
@@ -119,7 +121,7 @@ public class Music implements Serializable {
      * @param track
      * @param trackLength
      */
-    public Music(Long id, Long ownerPeerId, Byte[] file, String fileName, String realName, Integer hashcode, String title, String artist, String album, String track, Integer trackLength) {
+    public Music(Long id, Long ownerPeerId, Byte[] file, String fileName, String realName, Integer hashcode, String title, String artist, String album, String track, Integer trackLength, Long frames) {
         this.mId = id;
         this.mFileName = fileName;
         this.mRealName = realName;
@@ -128,7 +130,7 @@ public class Music implements Serializable {
         this.mHash = hashcode;
         this.mCategoryIds = new HashSet<Integer>();
         this.mFile = file;
-
+        this.mFrames = frames;
         this.mComments = new ArrayList<Comment>();
         this.mScores = new HashSet<Score>();
         this.mTags = new HashSet<String>();
@@ -196,7 +198,7 @@ public class Music implements Serializable {
      *
      * @return
      */
-    public Byte[] getFile() {
+    public Byte[] getFileBytes() {
         return mFile;
     }
 
@@ -214,6 +216,22 @@ public class Music implements Serializable {
      */
     public Boolean getFileMissing() {
         return mFileMissing;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public Long getFrames() {
+        return mFrames;
+    }
+
+    /**
+     *
+     * @param frames
+     */
+    public void setFrames(Long frames) {
+        this.mFrames = frames;
     }
 
     /**

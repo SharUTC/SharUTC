@@ -101,7 +101,7 @@ public interface MusicService {
     public void unsetScore(Peer peer, Music music);
 
     /**
-     *
+     * Write to disk Catalog and RightsList in a JSON file
      */
     public void saveUserMusicFiles();
 
@@ -131,11 +131,23 @@ public interface MusicService {
     public void installMusics(Catalog catalog);
 
     /**
+     * Load file into passed music, work with the instance in parameter
+     *
+     * @param music the music to load
+     * @return the instance of music with file inside
+     */
+    public void loadMusicFile(Music music);
+
+    /**
      * Load file into passed catalog of musics, work with the instance in
      * parameter
      *
      * @param catalog the catalog containing the music files to load
      * @return the instance of catalog with modified musics inside
      */
-    public Catalog loadMusicFiles(Catalog catalog);
+    public void loadMusicFiles(Catalog catalog);
+
+    public void createAndSetCatalog();
+
+    public void createAndSetRightsList();
 }

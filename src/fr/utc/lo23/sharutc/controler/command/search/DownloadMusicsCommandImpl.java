@@ -2,6 +2,7 @@ package fr.utc.lo23.sharutc.controler.command.search;
 
 import com.google.inject.Inject;
 import fr.utc.lo23.sharutc.controler.network.NetworkService;
+import fr.utc.lo23.sharutc.controler.service.MusicService;
 import fr.utc.lo23.sharutc.model.AppModel;
 import fr.utc.lo23.sharutc.model.domain.Catalog;
 import fr.utc.lo23.sharutc.model.domain.Music;
@@ -22,12 +23,14 @@ public class DownloadMusicsCommandImpl implements DownloadMusicsCommand {
             .getLogger(DownloadMusicsCommandImpl.class);
     private final AppModel appModel;
     private final NetworkService networkService;
+    private final MusicService musicService;
     private Catalog mCatalog;
 
     @Inject
-    public DownloadMusicsCommandImpl(AppModel appModel, NetworkService networkService) {
+    public DownloadMusicsCommandImpl(AppModel appModel, NetworkService networkService, MusicService musicService) {
         this.appModel = appModel;
         this.networkService = networkService;
+        this.musicService = musicService;
     }
 
     /**
@@ -65,7 +68,7 @@ public class DownloadMusicsCommandImpl implements DownloadMusicsCommand {
             }
             // checking temporary catalog to avoid useless transfer
             Music musicWithSameHash = appModel.getTmpCatalog().findMusicByHash(music.getHash());
-            if (musicWithSameHash != null && musicWithSameHash.getFile() != null) {
+            if (musicWithSameHash != null && musicWithSameHash.getFileBytes() != null) {
                 mCatalog.remove(music);
                 //add music to local catalog and put it in local catalog
                 appModel.getLocalCatalog().add(musicWithSameHash);
@@ -75,8 +78,7 @@ public class DownloadMusicsCommandImpl implements DownloadMusicsCommand {
         }
 
         if (musicWithHashMoved) {
-            // TODO use musicService to save music file
-            log.warn("DownloadMusicsCommand partially not implemented");
+            musicService.saveUserMusicFiles();
         }
 
         // splitting catalog following owner of each music

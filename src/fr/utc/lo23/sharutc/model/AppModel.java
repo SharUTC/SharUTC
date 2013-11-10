@@ -4,28 +4,14 @@ import fr.utc.lo23.sharutc.model.domain.Catalog;
 import fr.utc.lo23.sharutc.model.domain.RightsList;
 import fr.utc.lo23.sharutc.model.domain.TagMap;
 import fr.utc.lo23.sharutc.model.userdata.ActivePeerList;
-import fr.utc.lo23.sharutc.model.userdata.KnownPeerList;
 import fr.utc.lo23.sharutc.model.userdata.Profile;
+import java.beans.PropertyChangeListener;
 
 /**
  * The Root object of the Model part in the MVC schema. Instance is Observable
  * via a PropertyChangeListener to detect user connection at least.
  */
 public interface AppModel {
-
-    /**
-     * Return the object containing the list of known peers
-     *
-     * @return the object containing the list of known peers
-     */
-    public KnownPeerList getKnownPeerList();
-
-    /**
-     * Set the object containing the list of known peers
-     *
-     * @param knownPeerList the object containing the list of known peers
-     */
-    public void setKnownPeerList(KnownPeerList knownPeerList);
 
     /**
      * Return the object containing the list of active peers
@@ -188,4 +174,18 @@ public interface AppModel {
      * the current user
      */
     public void setRightsList(RightsList rightsList);
+
+    /**
+     * Adds a property change listener
+     *
+     * @param listener the property change listener to add
+     */
+    public void addPropertyChangeListener(PropertyChangeListener listener);
+
+    /**
+     * Removes a property change listener
+     *
+     * @param listener the property change listener to remove
+     */
+    public void removePropertyChangeListener(PropertyChangeListener listener);
 }

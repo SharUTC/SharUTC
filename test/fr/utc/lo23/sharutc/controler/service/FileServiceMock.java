@@ -23,18 +23,17 @@ public class FileServiceMock extends FileServiceImpl implements FileService {
     /**
      *
      * @param path
-     * @param password
      */
     @Override
-    public void importFile(String path, String password) {
-        super.importFile(path, password);
+    public void importWholeProfile(String path) throws Exception {
+        super.importWholeProfile(path);
     }
 
     /**
-     * 
+     *
      * @param srcPath
      * @param destPath
-     * @throws IOException 
+     * @throws IOException
      */
     @Override
     public void exportFile(String srcPath, String destPath) throws IOException {
@@ -60,5 +59,10 @@ public class FileServiceMock extends FileServiceImpl implements FileService {
     @Override
     public Byte[] getFileAsByteArray(File file) throws IOException {
         return super.getFileAsByteArray(file);
+    }
+
+    @Override
+    public File buildTmpMusicFile(Byte[] musicBytes) throws Exception {
+        return super.buildTmpMusicFile(musicBytes);
     }
 }

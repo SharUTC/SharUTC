@@ -1,22 +1,22 @@
 package fr.utc.lo23.sharutc.controler.network;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import fr.utc.lo23.sharutc.controler.command.Command;
-import fr.utc.lo23.sharutc.controler.command.music.AddCommentCommand;
 import fr.utc.lo23.sharutc.controler.command.music.IntegrateRemoteCatalogCommand;
 import fr.utc.lo23.sharutc.controler.command.music.IntegrateRemoteTagMapCommand;
 import fr.utc.lo23.sharutc.controler.command.music.SendCatalogCommand;
 import fr.utc.lo23.sharutc.controler.command.music.SendTagMapCommand;
+import fr.utc.lo23.sharutc.controler.command.player.PlayIncomingMusicCommand;
+import fr.utc.lo23.sharutc.controler.command.player.SendMusicToPlayCommand;
 import fr.utc.lo23.sharutc.controler.command.search.InstallRemoteMusicsCommand;
 import fr.utc.lo23.sharutc.controler.command.search.SendMusicsCommand;
 import fr.utc.lo23.sharutc.controler.service.MusicService;
 import fr.utc.lo23.sharutc.controler.service.UserService;
 import fr.utc.lo23.sharutc.model.AppModel;
 import fr.utc.lo23.sharutc.model.domain.Catalog;
+import fr.utc.lo23.sharutc.model.domain.Music;
 import fr.utc.lo23.sharutc.model.domain.TagMap;
-import fr.utc.lo23.sharutc.model.userdata.Peer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,8 +27,7 @@ import org.slf4j.LoggerFactory;
 public class MessageHandlerImpl implements MessageHandler {
 
     private static final Logger log = LoggerFactory
-        .getLogger(MessageHandlerImpl.class);
-    private static final ObjectMapper mapper = new ObjectMapper();
+            .getLogger(MessageHandlerImpl.class);
     private final AppModel appModel;
     private final MessageParser messageParser;
     private final MusicService musicService;
@@ -55,6 +54,10 @@ public class MessageHandlerImpl implements MessageHandler {
     private SendCatalogCommand sendCatalogCommand;
     @Inject
     private IntegrateRemoteCatalogCommand integrateRemoteCatalogCommand;
+    @Inject
+    private SendMusicToPlayCommand sendMusicToPlayCommand;
+    @Inject
+    private PlayIncomingMusicCommand playIncomingMusicCommand;
     //@Inject
     //private AddCommentCommand addCommentCommand;
     // more...
@@ -64,12 +67,13 @@ public class MessageHandlerImpl implements MessageHandler {
      */
     @Override
     public void handleMessage(String string) {
-        Message incomingMessage = Message.fromJSON(string);
+        command = null;
+        Message incomingMessage = messageParser.fromJSON(string);
         if (incomingMessage != null) {
             try {
                 messageParser.read(incomingMessage);
-                messageParser.setFromPeerId(getLocalPeerId());
                 // searching which command to execute following message type
+                log.info("Handling message '{}' from '{}'", incomingMessage.getType().name(), messageParser.getSource());
                 switch (incomingMessage.getType()) {
                     case MUSIC_GET_CATALOG:
                         sendCatalogCommand.setPeer(messageParser.getSource());
@@ -78,8 +82,9 @@ public class MessageHandlerImpl implements MessageHandler {
                         break;
                     case MUSIC_CATALOG:
                         if (isMessageForCurrentConversation(incomingMessage)) {
-                          integrateRemoteCatalogCommand.setCatalog((Catalog) messageParser.getValue(Message.CATALOG));
-                          command = integrateRemoteCatalogCommand;
+                            integrateRemoteCatalogCommand.setPeer(messageParser.getSource());
+                            integrateRemoteCatalogCommand.setCatalog((Catalog) messageParser.getValue(Message.CATALOG));
+                            command = integrateRemoteCatalogCommand;
                         }
                         break;
                     case TAG_GET_MAP:
@@ -124,19 +129,26 @@ public class MessageHandlerImpl implements MessageHandler {
                         command = installRemoteMusicsCommand;
                         break;
                     case MUSIC_GET_TO_PLAY:
+                        sendMusicToPlayCommand.setPeer(messageParser.getSource());
+                        sendMusicToPlayCommand.setMusic(appModel.getLocalCatalog().findMusicById((Long) messageParser.getValue(Message.MUSIC_ID)));
+                        command = sendMusicToPlayCommand;
                         break;
                     case MUSIC_SEND_TO_PLAY:
+                        playIncomingMusicCommand.setMusic((Music) messageParser.getValue(Message.MUSIC));
+                        command = playIncomingMusicCommand;
                         break;
                     case DISCONNECT:
                         break;
                     default:
-                        log.warn("MISSING COMMAND {}", incomingMessage.getType().name());
+                        command = null;
+                        log.warn("Missing command : {}", incomingMessage.getType().name());
                         break;
                 }
                 if (command != null) {
                     Thread thread = new Thread() {
                         @Override
                         public void run() {
+                            log.info("Running new command : {}", command.getClass().getName());
                             command.execute();
                         }
                     };
@@ -150,9 +162,5 @@ public class MessageHandlerImpl implements MessageHandler {
 
     private boolean isMessageForCurrentConversation(Message message) {
         return appModel.getCurrentConversationId().equals(message.getConversationId());
-    }
-
-    private long getLocalPeerId() {
-        return appModel.getProfile().getUserInfo().getPeerId();
     }
 }

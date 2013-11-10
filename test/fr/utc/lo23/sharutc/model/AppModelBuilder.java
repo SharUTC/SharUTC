@@ -6,11 +6,9 @@ import fr.utc.lo23.sharutc.model.domain.Catalog;
 import fr.utc.lo23.sharutc.model.domain.Music;
 import fr.utc.lo23.sharutc.model.domain.RightsList;
 import fr.utc.lo23.sharutc.model.userdata.ActivePeerList;
-import fr.utc.lo23.sharutc.model.userdata.KnownPeerList;
 import fr.utc.lo23.sharutc.model.userdata.Profile;
 import fr.utc.lo23.sharutc.model.userdata.UserInfo;
 import java.io.File;
-import java.util.logging.Level;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,7 +42,6 @@ public class AppModelBuilder {
 
     public void clearAppModel() {
         appModel.setProfile(null);
-        appModel.setKnownPeerList(new KnownPeerList());
         appModel.setActivePeerList(new ActivePeerList());
         appModel.setLocalCatalog(new Catalog());
         appModel.setRightsList(new RightsList());
@@ -77,6 +74,7 @@ public class AppModelBuilder {
                 music.addTag("ROCK");
                 catalog.add(music);
             } catch (Exception ex) {
+                ex.printStackTrace();
                 log.error(ex.toString());
             }
         }

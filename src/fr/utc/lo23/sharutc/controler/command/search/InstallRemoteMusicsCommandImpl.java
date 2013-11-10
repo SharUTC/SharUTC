@@ -42,11 +42,11 @@ public class InstallRemoteMusicsCommandImpl implements InstallRemoteMusicsComman
     @Override
     public void execute() {
         log.info("InstallRemoteMusicsCommand ...");
-        
+
         // copying all musics from catalog to local data stored on hard drive
         // reads Byte[] and transform it back into a mp3 file
         musicService.installMusics(mCatalog);
-        
+
         log.info("InstallRemoteMusicsCommand DONE");
     }
 }

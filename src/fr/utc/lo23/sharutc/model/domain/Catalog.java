@@ -65,12 +65,13 @@ public class Catalog implements Serializable {
      * @return the searched music if id exists in this catalog, else null
      */
     public Music findMusicById(long id) {
+        Music foundMusic = null;
         for (Music m : mMusics) {
             if (m.getId().longValue() == id) {
-                return m;
+                foundMusic = m;
             }
         }
-        return null;
+        return foundMusic;
     }
 
     /**
@@ -79,12 +80,13 @@ public class Catalog implements Serializable {
      * @return the searched music if hash exists in this catalog, else null
      */
     public Music findMusicByHash(int hash) {
+        Music foundMusic = null;
         for (Music m : mMusics) {
-            if (m.getFile() != null && m.getMusicHash() == hash) {
-                return m;
+            if (m.getFileBytes() != null && m.getMusicHash() == hash) {
+                foundMusic = m;
             }
         }
-        return null;
+        return foundMusic;
     }
 
     /**

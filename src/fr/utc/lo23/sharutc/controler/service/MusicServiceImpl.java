@@ -1,5 +1,6 @@
 package fr.utc.lo23.sharutc.controler.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import fr.utc.lo23.sharutc.model.AppModel;
@@ -7,10 +8,10 @@ import fr.utc.lo23.sharutc.model.domain.Catalog;
 import fr.utc.lo23.sharutc.model.domain.Comment;
 import fr.utc.lo23.sharutc.model.domain.Music;
 import fr.utc.lo23.sharutc.model.domain.Rights;
+import fr.utc.lo23.sharutc.model.domain.RightsList;
 import fr.utc.lo23.sharutc.model.domain.Score;
 import fr.utc.lo23.sharutc.model.domain.SearchCriteria;
 import fr.utc.lo23.sharutc.model.domain.TagMap;
-import fr.utc.lo23.sharutc.model.userdata.Contact;
 import fr.utc.lo23.sharutc.model.userdata.Peer;
 import java.io.File;
 import java.io.IOException;
@@ -29,16 +30,19 @@ public class MusicServiceImpl implements MusicService {
 
     private static final Logger log = LoggerFactory.getLogger(MusicServiceImpl.class);
     private final AppModel appModel;
+    private final UserService userService;
     private final FileService fileService;
     private TagMap localTagMap = null;
     private boolean localTagMapDirty = true;
+    private static final String dataPath = "";
 
     /**
      * {@inheritDoc}
      */
     @Inject
-    public MusicServiceImpl(AppModel appModel, FileService fileService) {
+    public MusicServiceImpl(AppModel appModel, UserService userService, FileService fileService) {
         this.appModel = appModel;
+        this.userService = userService;
         this.fileService = fileService;
     }
 
@@ -47,6 +51,7 @@ public class MusicServiceImpl implements MusicService {
      */
     @Override
     public void addToLocalCatalog(Collection<File> mp3Files) {
+        log.trace("addToLocalCatalog ...");
         Catalog localCatalog = appModel.getLocalCatalog();
 
         for (File currentFile : mp3Files) {
@@ -66,6 +71,7 @@ public class MusicServiceImpl implements MusicService {
                 }
             }
         }
+        log.trace("addToLocalCatalog DONE");
     }
 
     /**
@@ -73,6 +79,7 @@ public class MusicServiceImpl implements MusicService {
      */
     @Override
     public void removeFromLocalCatalog(Collection<Music> musics) {
+        log.trace("removeFromLocalCatalog ...");
         Catalog localCatalog = appModel.getLocalCatalog();
 
         for (Music currentMusic : musics) {
@@ -82,6 +89,7 @@ public class MusicServiceImpl implements MusicService {
                 log.warn("Music to delete not found !\n{}", currentMusic.getRealName());
             }
         }
+        log.trace("removeFromLocalCatalog DONE");
     }
 
     /**
@@ -155,6 +163,7 @@ public class MusicServiceImpl implements MusicService {
      */
     @Override
     public TagMap getLocalTagMap() {
+        log.trace("getLocalTagMap ...");
         if (localTagMap == null || isLocalTagMapDirty()) {
             buildLocalTagMap();
         }
@@ -166,7 +175,9 @@ public class MusicServiceImpl implements MusicService {
      */
     @Override
     public void integrateRemoteTagMap(TagMap tagMap) {
+        log.trace("integrateRemoteTagMap ...");
         appModel.getNetworkTagMap().merge(tagMap);
+        log.trace("integrateRemoteTagMap DONE");
     }
 
     /**
@@ -174,11 +185,13 @@ public class MusicServiceImpl implements MusicService {
      */
     @Override
     public void addTag(Music music, String tag) {
+        log.trace("addTag ...");
         if (music != null && tag != null && !tag.isEmpty()) {
             if (music.addTag(tag)) {
                 localTagMapDirty = true;
             }
         }
+        log.trace("addTag DONE");
     }
 
     /**
@@ -186,11 +199,13 @@ public class MusicServiceImpl implements MusicService {
      */
     @Override
     public void removeTag(Music music, String tag) {
+        log.trace("removeTag ...");
         if (music != null && tag != null && !tag.isEmpty()) {
             if (music.removeTag(tag)) {
                 localTagMapDirty = true;
             }
         }
+        log.trace("removeTag DONE");
     }
 
     /**
@@ -222,19 +237,30 @@ public class MusicServiceImpl implements MusicService {
      */
     @Override
     public void setScore(Peer peer, Music music, Integer score) {
+        log.trace("setScore ...");
         if (peer == null || music == null) {
             return;
         }
-        for (Score musicScore : music.getScores()) {
-            if (musicScore.getPeerId() == peer.getId()) {
-                musicScore.setValue(score);
-                return;
+        if (score == null || score.intValue() == Score.MIN_VALUE) {
+            unsetScore(peer, music);
+        }
+        if (score != null && score > Score.MIN_VALUE && score <= Score.MAX_VALUE) {
+            boolean update = false;
+            for (Score musicScore : music.getScores()) {
+                if (musicScore.getPeerId().equals(peer.getId())) {
+                    // peer already scored the music
+                    log.debug("setScore : update score value");
+                    musicScore.setValue(score);
+                    update = true;
+                }
+            }
+            if (!update) {
+                log.debug("setScore : add score");
+                Score musicScore = new Score(score, peer.getId());
+                music.addScore(musicScore);
             }
         }
-        Score musicScore = new Score();
-        musicScore.setPeerId(peer.getId());
-        musicScore.setValue(score);
-        music.addScore(musicScore);
+        log.trace("setScore DONE");
     }
 
     /**
@@ -242,15 +268,16 @@ public class MusicServiceImpl implements MusicService {
      */
     @Override
     public void unsetScore(Peer peer, Music music) {
-        if (peer == null || music == null) {
-            return;
-        }
-        for (Score musicScore : music.getScores()) {
-            if (musicScore.getPeerId() == peer.getId()) {
-                music.removeScore(musicScore);
-                return;
+        log.trace("unsetScore ...");
+        if (peer != null && music != null) {
+            for (Score musicScore : music.getScores()) {
+                if (musicScore.getPeerId().equals(peer.getId())) {
+                    music.removeScore(musicScore);
+                    break;
+                }
             }
         }
+        log.trace("unsetScore DONE");
     }
 
     /**
@@ -258,7 +285,17 @@ public class MusicServiceImpl implements MusicService {
      */
     @Override
     public void saveUserMusicFiles() {
-        log.warn("Not supported yet.");
+        Catalog localCatalog = appModel.getLocalCatalog();
+        if (localCatalog != null) {
+            ObjectMapper mapper = new ObjectMapper();
+            try {
+                mapper.writeValue(new File(dataPath + "\\music.json"), localCatalog);
+            } catch (IOException ex) {
+                log.error(ex.toString());
+            }
+        } else {
+            log.warn("Can't save current music Catalog(null)");
+        }
     }
 
     /**
@@ -266,7 +303,17 @@ public class MusicServiceImpl implements MusicService {
      */
     @Override
     public void loadUserMusicFiles(String path) {
-        log.warn("Not supported yet.");
+        if (path != null) {
+            ObjectMapper mapper = new ObjectMapper();
+            try {
+                Catalog tmpCatalog = mapper.readValue(new File(path), Catalog.class);
+                appModel.setTmpCatalog(tmpCatalog);
+            } catch (IOException ex) {
+                log.error(ex.toString());
+            }
+        } else {
+            log.warn("Don't have any path(null)");
+        }
 
     }
 
@@ -275,14 +322,15 @@ public class MusicServiceImpl implements MusicService {
      */
     @Override
     public Catalog searchMusic(Peer peer, SearchCriteria criteria) {
+        log.trace("searchMusic ... ({} : {})",
+                peer != null ? peer.getDisplayName() : "",
+                criteria != null ? criteria.getSearch() : "");
         Catalog catalogResult = new Catalog();
 
-        if (criteria.getSearch() != null && criteria.getSearch().trim().length() > 0) {
-
-            // 2 modes : when peer is a contact and when peer isn't a contact
-            Contact contact = appModel.getProfile().getContacts().findById(peer.getId());
-            if (contact != null) {
-                Set<Integer> contactCategoryIds = contact.getCategoryIds();
+        if (criteria != null && criteria.getSearch() != null && criteria.getSearch().trim().length() > 0 && peer != null) {
+            Long contactId = userService.findContactIdByPeerId(peer.getId());
+            if (contactId != null) {
+                Set<Integer> contactCategoryIds = appModel.getProfile().getCategories().getCategoriesIdsByContactId(contactId);
 
                 // looping on whole catalog, searching for matching music informations
                 for (Music music : appModel.getLocalCatalog().getMusics()) {
@@ -296,7 +344,7 @@ public class MusicServiceImpl implements MusicService {
                         boolean mayReadInfo = false;
                         boolean mayListen = false;
                         boolean mayNoteAndComment = false;
-                        if (matchingCategoryIds.isEmpty()) {
+                        if (!matchingCategoryIds.isEmpty()) {
                             for (Integer categoryId : matchingCategoryIds) {
                                 // avoid useless loop
                                 if (mayReadInfo && mayListen && mayNoteAndComment) {
@@ -340,13 +388,14 @@ public class MusicServiceImpl implements MusicService {
                  */
             }
         }
+        log.trace("searchMusic DONE");
         return catalogResult;
     }
 
     private void fillCommentAuthorNames(Music musicToReturn) {
-        // use known peer list from app model to set each author name in the comments
+        // use known peer list from profile to set each author name in the comments
         for (Comment comment : musicToReturn.getComments()) {
-            musicToReturn.setCommentAuthor(comment.getIndex(), appModel.getKnownPeerList().getPeerNameById(comment.getAuthorPeerId()));
+            musicToReturn.setCommentAuthor(comment.getIndex(), appModel.getProfile().getKnownPeerList().getPeerNameById(comment.getAuthorPeerId()));
         }
     }
 
@@ -355,15 +404,15 @@ public class MusicServiceImpl implements MusicService {
         boolean match = music.getTitle().toLowerCase().contains(searchString)
                 || music.getArtist().toLowerCase().contains(searchString)
                 || music.getAlbum().toLowerCase().contains(searchString);
-        if (match) {
-            return true;
-        }
-        for (String tag : music.getTags()) {
-            if (tag.toLowerCase().contains(searchString)) {
-                return true;
+        if (!match) {
+            for (String tag : music.getTags()) {
+                if (tag.toLowerCase().contains(searchString)) {
+                    match = true;
+                    break;
+                }
             }
         }
-        return false;
+        return match;
     }
 
     private List<Integer> getAllMatchingCategoryIds(Music music, Set<Integer> contactCategoryIds) {
@@ -389,18 +438,28 @@ public class MusicServiceImpl implements MusicService {
      * {@inheritDoc}
      */
     @Override
-    public Catalog loadMusicFiles(Catalog catalog) {
-        for (Music music : catalog.getMusics()) {
-            Music modifiableMusicFromRequestCatalog = catalog.get(catalog.indexOf(music));
-            Byte[] byteArray;
-            try {
-                byteArray = fileService.getFileAsByteArray(new File(".\\" + appModel.getProfile().getUserInfo().getLogin() + "\\" + music.getFileName()));
-                modifiableMusicFromRequestCatalog.setFile(byteArray);
-            } catch (IOException ex) {
-                log.error(ex.toString());
-            }
+    public void loadMusicFiles(Catalog catalog) {
+        log.trace("loadMusicFiles ...");
+        for (int i = 0; i < catalog.size(); i++) {
+            loadMusicFile(catalog.get(i));
         }
-        return catalog;
+        log.trace("loadMusicFiles DONE");
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void loadMusicFile(Music music) {
+        log.trace("loadMusicFile ...");
+        Byte[] byteArray;
+        try {
+            byteArray = fileService.getFileAsByteArray(new File(".\\" + appModel.getProfile().getUserInfo().getLogin() + "\\" + music.getFileName()));
+            music.setFile(byteArray);
+        } catch (IOException ex) {
+            log.error(ex.toString());
+        }
+        log.trace("loadMusicFile DONE");
     }
 
     /**
@@ -418,5 +477,15 @@ public class MusicServiceImpl implements MusicService {
     private synchronized void buildLocalTagMap() {
         localTagMap = new TagMap(appModel.getLocalCatalog());
         localTagMapDirty = false;
+    }
+
+    @Override
+    public void createAndSetCatalog() {
+        appModel.setLocalCatalog(new Catalog());
+    }
+
+    @Override
+    public void createAndSetRightsList() {
+        appModel.setRightsList(new RightsList());
     }
 }

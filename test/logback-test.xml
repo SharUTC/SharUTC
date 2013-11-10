@@ -35,6 +35,9 @@
     <logger name="fr.utc.lo23.sharutc.controler.service.FileServiceMock" level="DEBUG" />
     <logger name="fr.utc.lo23.sharutc.controler.service.PlayerServiceMock" level="DEBUG" />
     
+    <!-- MUSIC PLAYER -->
+    <logger name="fr.utc.lo23.sharutc.controler.player" level="DEBUG" />
+    
     <!-- NETWORK -->
     <logger name="fr.utc.lo23.sharutc.controler.network.NetworkServiceMock" level="DEBUG" />
     <logger name="fr.utc.lo23.sharutc.controler.network.MessageParserImpl" level="DEBUG" />
