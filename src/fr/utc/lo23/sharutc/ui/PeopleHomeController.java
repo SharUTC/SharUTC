@@ -7,6 +7,7 @@ import fr.utc.lo23.sharutc.ui.custom.PeopleCard;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.FlowPane;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -84,9 +85,15 @@ public class PeopleHomeController implements Initializable, PeopleCard.IPeopleCa
     }
 
     @Override
-    public void onCardBeingDragged(boolean isDragged) {
+    public void onCardBeingDragged(boolean isDragged, MouseEvent event, PeopleCard draggedCard) {
         if (isDragged) {
+            //had to checked if this card is already selected because user
+            //can drag a selected one or a new one
+            mPeopleCardSelected.remove(draggedCard);
+            mPeopleCardSelected.add(draggedCard);
+
             //drag event start, inform all selected card
+            mInterface.onDraggedCardDisplayRequested(mPeopleCardSelected, event);
             for (PeopleCard peopleCard : mPeopleCardSelected) {
                 peopleCard.dragged();
             }
@@ -97,6 +104,7 @@ public class PeopleHomeController implements Initializable, PeopleCard.IPeopleCa
             }
             //clean the selection
             mPeopleCardSelected.clear();
+            mInterface.onDraggedCardHideRequested();
         }
 
     }
@@ -118,11 +126,7 @@ public class PeopleHomeController implements Initializable, PeopleCard.IPeopleCa
     }
 
     @Override
-    public void onUsersAdded(Category category, PeopleCard droppedCard) {
-        //had to checked if this card is already selected because user
-        //can drag a selected one or a new one
-        if (!mPeopleCardSelected.contains(droppedCard))
-            mPeopleCardSelected.add(droppedCard);
+    public void onUsersAdded(Category category) {
         for (PeopleCard people : mPeopleCardSelected) {
             //add all selected card to the new category
             final UserInfo user = people.getModel();
@@ -131,6 +135,7 @@ public class PeopleHomeController implements Initializable, PeopleCard.IPeopleCa
         }
         //clean the selection
         mPeopleCardSelected.clear();
+        mInterface.onDraggedCardHideRequested();
     }
 
     public interface IPeopleHomeController {
@@ -146,5 +151,18 @@ public class PeopleHomeController implements Initializable, PeopleCard.IPeopleCa
          * display group details
          */
         void onGroupDetailRequested();
+
+        /**
+         * Display preview for dragged card
+         *
+         * @param cards
+         * @param event
+         */
+        void onDraggedCardDisplayRequested(ArrayList<PeopleCard> cards, MouseEvent event);
+
+        /**
+         * Hide preview for dragged card
+         */
+        void onDraggedCardHideRequested();
     }
 }

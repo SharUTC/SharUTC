@@ -86,12 +86,12 @@ public class PeopleCard extends UserCard implements EventHandler<Event> {
         } else if (event.getEventType() == MouseEvent.DRAG_DETECTED) {
             if (source.equals(this)) {
                 onDragStart((MouseEvent) event);
-                mInterface.onCardBeingDragged(true);
+                mInterface.onCardBeingDragged(true, (MouseEvent) event, this);
             }
         } else if (event.getEventType() == DragEvent.DRAG_DONE) {
             if (source.equals(this)) {
                 onDragDone((DragEvent) event);
-                mInterface.onCardBeingDragged(false);
+                mInterface.onCardBeingDragged(false, null, this);
             }
         }
     }
@@ -151,6 +151,6 @@ public class PeopleCard extends UserCard implements EventHandler<Event> {
          *
          * @param isDragged true if drag start, false if drag failed
          */
-        public void onCardBeingDragged(boolean isDragged);
+        public void onCardBeingDragged(boolean isDragged, MouseEvent event, PeopleCard draggedCard);
     }
 }

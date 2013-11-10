@@ -1,49 +1,48 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.collections.*?>
+<AnchorPane xmlns:fx="http://javafx.com/fxml" fx:controller="fr.utc.lo23.sharutc.ui.MainController" prefWidth="800"
+            prefHeight="600">
+    <VBox id="gridPane" AnchorPane.topAnchor="0" AnchorPane.bottomAnchor="0" AnchorPane.rightAnchor="0"
+          AnchorPane.leftAnchor="0">
 
-<?import javafx.scene.control.cell.*?>
-
-<?import fr.utc.lo23.sharutc.ui.*?>
-<?import javafx.geometry.Insets?>
-<VBox id="gridPane" prefWidth="800" prefHeight="600" xmlns:fx="http://javafx.com/fxml"
-          fx:controller="fr.utc.lo23.sharutc.ui.MainController">
-
-    <GridPane id="topbar" minHeight="40" GridPane.hgrow="ALWAYS"
-              alignment="CENTER_LEFT">
-        <Label text="SharUTC" minWidth="200" alignment="CENTER"/>
-        <TextField GridPane.columnIndex="1" minWidth="400" GridPane.hgrow="ALWAYS"
-                   promptText="Search a song, an artist..." onAction="#handleTextEntered"/>
-        <Label text="Alexandre Masciulli" minWidth="200" alignment="CENTER" GridPane.columnIndex="2"/>
-    </GridPane>
-
-    <GridPane VBox.vgrow="ALWAYS">
-        <VBox id="leftpane" GridPane.vgrow="ALWAYS">
-            <Button minWidth="200" minHeight="40" text="Songs" onAction="#handleMenuButtonAction" fx:id="songsbutton"/>
-            <Button minWidth="200" minHeight="40" text="People" onAction="#handleMenuButtonAction" fx:id="peoplebutton"/>
-            <Button minWidth="200" minHeight="40" text="Artists" onAction="#handleMenuButtonAction" fx:id="artistsbutton"/>
-            <Button minWidth="200" minHeight="40" text="Albums" onAction="#handleMenuButtonAction" fx:id="albumsbutton"/>
-        </VBox>
-
-        <GridPane fx:id="rightpane" GridPane.columnIndex="1" GridPane.vgrow="ALWAYS" GridPane.hgrow="ALWAYS">
-            <GridPane.margin>
-                <Insets>
-                    <left>8</left>
-                    <right>8</right>
-                </Insets>
-            </GridPane.margin>
+        <GridPane id="topbar" minHeight="40" GridPane.hgrow="ALWAYS"
+                  alignment="CENTER_LEFT">
+            <Label text="SharUTC" minWidth="200" alignment="CENTER"/>
+            <TextField GridPane.columnIndex="1" minWidth="400" GridPane.hgrow="ALWAYS"
+                       promptText="Search a song, an artist..." onAction="#handleTextEntered"/>
+            <Label text="Alexandre Masciulli" minWidth="200" alignment="CENTER" GridPane.columnIndex="2"/>
         </GridPane>
-    </GridPane>
 
-    <HBox fx:id="bottombar" minHeight="100">
-        <padding>
-            <Insets bottom="5" left="5" right="5" top="5"/>
-        </padding>
-    </HBox>
+        <GridPane VBox.vgrow="ALWAYS">
+            <VBox id="leftpane" GridPane.vgrow="ALWAYS">
+                <Button minWidth="200" minHeight="40" text="Songs" onAction="#handleMenuButtonAction"
+                        fx:id="songsbutton"/>
+                <Button minWidth="200" minHeight="40" text="People" onAction="#handleMenuButtonAction"
+                        fx:id="peoplebutton"/>
+                <Button minWidth="200" minHeight="40" text="Artists" onAction="#handleMenuButtonAction"
+                        fx:id="artistsbutton"/>
+                <Button minWidth="200" minHeight="40" text="Albums" onAction="#handleMenuButtonAction"
+                        fx:id="albumsbutton"/>
+            </VBox>
 
-</VBox>
+            <GridPane fx:id="rightpane" GridPane.columnIndex="1" GridPane.vgrow="ALWAYS" GridPane.hgrow="ALWAYS">
+                <GridPane.margin>
+                    <Insets>
+                        <left>8</left>
+                        <right>8</right>
+                    </Insets>
+                </GridPane.margin>
+            </GridPane>
+        </GridPane>
+
+        <HBox fx:id="bottombar" minHeight="100">
+            <padding>
+                <Insets bottom="5" left="5" right="5" top="5"/>
+            </padding>
+        </HBox>
+
+    </VBox>
+</AnchorPane>
