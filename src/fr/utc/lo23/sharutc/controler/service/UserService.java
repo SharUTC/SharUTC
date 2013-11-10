@@ -1,5 +1,6 @@
 package fr.utc.lo23.sharutc.controler.service;
 
+import fr.utc.lo23.sharutc.controler.network.NetworkService;
 import fr.utc.lo23.sharutc.model.userdata.Category;
 import fr.utc.lo23.sharutc.model.userdata.Peer;
 import fr.utc.lo23.sharutc.model.userdata.UserInfo;
@@ -67,13 +68,15 @@ public interface UserService {
     public void connectionRequest(String login, String password);
 
     /**
-     *
+     * Update the connected peers list with userInfo.
+     * If the peerId didn't exist in the list, it is added.
+     * Else, the peer info is updated
      * @param userInfo
      */
     public void updateConnectedPeers(UserInfo userInfo);
 
     /**
-     *
+     * Remove a peer from the connected peers list with id.
      * @param peerId
      */
     public void removeFromConnectedPeers(long peerId);
@@ -92,8 +95,7 @@ public interface UserService {
     public Long findContactIdByPeerId(Long peerId);
     
     /**
-     * Send a disconnection request to the network and save profile 
-     * 
+     * Send a disconnection request to the network and save profile. 
      */
-    public void disconnectionRequest();
+    public void disconnectionRequest(NetworkService mNetworkService);
 }

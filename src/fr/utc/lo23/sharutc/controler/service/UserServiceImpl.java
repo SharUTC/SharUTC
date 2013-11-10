@@ -3,6 +3,7 @@ package fr.utc.lo23.sharutc.controler.service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import fr.utc.lo23.sharutc.controler.network.NetworkService;
 import fr.utc.lo23.sharutc.model.AppModel;
 import fr.utc.lo23.sharutc.model.userdata.ActivePeerList;
 import fr.utc.lo23.sharutc.model.userdata.Category;
@@ -175,8 +176,9 @@ public class UserServiceImpl implements UserService {
     }
     
     @Override
-    public void disconnectionRequest(){
+    public void disconnectionRequest(NetworkService mNetworkService){
         this.saveProfileFiles();
         // Notify network
+        mNetworkService.disconnectionBroadcast();
     }
 }
