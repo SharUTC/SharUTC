@@ -178,9 +178,7 @@ public class UserServiceImpl implements UserService {
     }
     
     @Override
-    public void disconnectionRequest(NetworkService mNetworkService){
+    public void disconnectionRequest(){
         this.saveProfileFiles();
-        // Notify network
-        mNetworkService.disconnectionBroadcast();
     }
 }

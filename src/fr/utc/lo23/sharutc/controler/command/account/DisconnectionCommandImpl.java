@@ -21,7 +21,7 @@ public class DisconnectionCommandImpl implements DisconnectionCommand {
             .getLogger(IntegrateDisconnectionCommandImpl.class);
     final private UserService mUserService;
     final private NetworkService mNetworkService;
-    
+
     /**
      * {@inheritDoc}
      */
@@ -36,7 +36,9 @@ public class DisconnectionCommandImpl implements DisconnectionCommand {
         log.info("DisconnectionCommand ...");
 
         mUserService.disconnectionRequest();
-
+        // Notify network
+        mNetworkService.disconnectionBroadcast();
+        
         log.info("DisconnectionCommand DONE");
     }
 }
