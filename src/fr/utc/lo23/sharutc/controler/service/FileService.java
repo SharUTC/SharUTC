@@ -12,10 +12,10 @@ public interface FileService {
 
     /**
      *
-     * @param path
-     * @param password
+     * @param srcPath
+     * @throws java.lang.Exception
      */
-    public void importFile(String path, String password);
+    public void importWholeProfile(String srcPath) throws Exception;
 
     /**
      * Compress the folder srcPath and write it at destPath

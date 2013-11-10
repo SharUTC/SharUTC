@@ -23,11 +23,10 @@ public class FileServiceMock extends FileServiceImpl implements FileService {
     /**
      *
      * @param path
-     * @param password
      */
     @Override
-    public void importFile(String path, String password) {
-        super.importFile(path, password);
+    public void importWholeProfile(String path) throws Exception {
+        super.importWholeProfile(path);
     }
 
     /**

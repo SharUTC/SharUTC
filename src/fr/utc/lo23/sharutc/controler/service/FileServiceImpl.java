@@ -13,9 +13,13 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
+import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
+import javax.swing.JFileChooser;
 import org.jaudiotagger.audio.AudioFile;
 import org.jaudiotagger.audio.AudioFileIO;
 import org.jaudiotagger.audio.AudioHeader;
@@ -32,6 +36,10 @@ import org.slf4j.LoggerFactory;
 public class FileServiceImpl implements FileService {
 
     private static String appFolder;
+    private static final String APP_NAME = "SharUTC";
+    private static final String FOLDER_USERS = "users";
+    private static final String FOLDER_PROFIL = "profile";
+    private static final String FOLDER_MUSIC = "music";
     private static final int BUFFER_SIZE = 2048;
     private static final int COMPRESSION_LEVEL = 9;
     private static final Logger log = LoggerFactory
@@ -43,19 +51,87 @@ public class FileServiceImpl implements FileService {
     @Inject
     public FileServiceImpl(AppModel appModel) {
         this.appModel = appModel;
-        try {
-            appFolder = new File(".").getCanonicalPath();
-        } catch (IOException ex) {
-            log.error("Can't write in AppFolder");
+
+        appFolder = new JFileChooser().getFileSystemView().getDefaultDirectory().toString();
+        appFolder += File.separator + APP_NAME + File.separator;
+        
+        if(!new File(appFolder).exists()) {
+            new File(appFolder + FOLDER_USERS).mkdirs();
         }
+    }
+
+    public static String getAppFolder() {
+        return appFolder;
+    }
+
+    public static String getAppName() {
+        return APP_NAME;
+    }
+
+    public static String getFolderUsers() {
+        return FOLDER_USERS;
+    }
+
+    public static String getFolderProfil() {
+        return FOLDER_PROFIL;
+    }
+
+    public static String getFolderMusic() {
+        return FOLDER_MUSIC;
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void importFile(String path, String password) {
-        log.warn("Not supported yet.");
+    public void importWholeProfile(String srcPath) throws Exception {
+        String userName = srcPath.substring(srcPath.lastIndexOf("\\"), srcPath.lastIndexOf('.'));
+        
+        //chech the structure of the file
+        boolean profileFolderExists = false;
+        boolean musicFolderExists = false;
+        
+        ZipFile zf = new ZipFile(srcPath);
+        Enumeration entries = zf.entries();
+        
+        while(entries.hasMoreElements()){
+            ZipEntry ze = (ZipEntry) entries.nextElement();
+            String entryName = ze.getName();
+            if(entryName.indexOf("\\") != -1) {
+                if(entryName.substring(0, entryName.indexOf("\\")).equals(FOLDER_PROFIL))
+                    profileFolderExists = true;
+                else if(entryName.substring(0, entryName.indexOf("\\")).equals(FOLDER_MUSIC))
+                    musicFolderExists = true;
+            }
+        }
+        
+        if(!profileFolderExists || !musicFolderExists)
+            throw new Exception ("Corrupted zip file");
+        
+        //Create user folder and sub folders
+        new File(appFolder + FOLDER_USERS + File.separator + userName + File.separator + FOLDER_PROFIL).mkdirs();
+        new File(appFolder + FOLDER_USERS + File.separator + userName + File.separator + FOLDER_MUSIC).mkdirs();
+        
+        //Unzip
+        byte data[] = new byte[BUFFER_SIZE];
+        FileInputStream inStream = new FileInputStream(srcPath);
+        BufferedInputStream inBuffer = new BufferedInputStream(inStream);
+        ZipInputStream zipInStream = new ZipInputStream(inBuffer);
+        
+        ZipEntry entry;
+        while((entry = zipInStream.getNextEntry()) != null){
+            String outputPath = appFolder + FOLDER_USERS + File.separator + userName + File.separator + entry.getName();
+            FileOutputStream outStream = new FileOutputStream(outputPath);
+            BufferedOutputStream outBuffer = new BufferedOutputStream(outStream, BUFFER_SIZE);
+            
+            int count;
+            while((count = zipInStream.read(data, 0, BUFFER_SIZE)) != -1) {
+                outBuffer.write(data, 0, count);
+            }
+            outBuffer.flush();
+            outBuffer.close();
+        }
+        zipInStream.close();
     }
 
     /**
@@ -68,7 +144,7 @@ public class FileServiceImpl implements FileService {
 
         getFilesRec(fileList, new File(srcPath), srcPath);
 
-        //Traitement de la sortie
+        //Output
         FileOutputStream dest = new FileOutputStream(destPath);
         BufferedOutputStream outBuffer = new BufferedOutputStream(dest);
         ZipOutputStream outStream = new ZipOutputStream(outBuffer);
@@ -76,7 +152,7 @@ public class FileServiceImpl implements FileService {
         outStream.setLevel(COMPRESSION_LEVEL);
 
         for (String path : fileList) {
-            //traitement de l'entree
+            //Input
             FileInputStream srcFile = new FileInputStream(srcPath + File.separator + path);
             BufferedInputStream inBuffer = new BufferedInputStream(srcFile, BUFFER_SIZE);
             ZipEntry entry = new ZipEntry(path);
