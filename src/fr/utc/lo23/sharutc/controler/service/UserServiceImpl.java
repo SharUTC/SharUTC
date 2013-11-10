@@ -123,13 +123,14 @@ public class UserServiceImpl implements UserService {
         Profile profile;
         ObjectMapper mapper = new ObjectMapper();
         try {
+            //FIXME: use fileService constantes instead of local folder definitions
             profile = mapper.readValue(new File(dataPath + login + "\\profile.json"), Profile.class);
             boolean success = profile.getUserInfo().getLogin().equals(login)
                     && profile.getUserInfo().getPassword().equals(password);
             if (success) {
                 appModel.setProfile(profile);
             } else {
-                // TODO: add a new error message instead of null 
+                // TODO: add a new error message instead of null
                 appModel.getErrorBus().pushErrorMessage(null);
             }
             profile = null;
@@ -146,6 +147,7 @@ public class UserServiceImpl implements UserService {
         ActivePeerList activePeerList = appModel.getActivePeerList();
         Peer newPeer = new Peer(userInfo.getPeerId(), userInfo.getLogin());
         activePeerList.update(newPeer);
+        //TODO: also update known peer list
     }
 
     /**
@@ -177,6 +179,6 @@ public class UserServiceImpl implements UserService {
     @Override
     public void disconnectionRequest(){
         this.saveProfileFiles();
-        // Notify network
+        // TODO: Notify network
     }
 }

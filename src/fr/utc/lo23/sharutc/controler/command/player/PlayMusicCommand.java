@@ -4,7 +4,8 @@ import fr.utc.lo23.sharutc.controler.command.Command;
 import fr.utc.lo23.sharutc.model.domain.Music;
 
 /**
- *
+ * Used for local and remote music, clear playlist and play instantly if music
+ * is local, else send a specific request to get file and play it then
  */
 public interface PlayMusicCommand extends Command {
 

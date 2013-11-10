@@ -10,14 +10,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
+ * TODO : add comments
  *
  * @author Alexandre
  */
-public class DisconnectionCommandImpl implements DisconnectionCommand{
+public class DisconnectionCommandImpl implements DisconnectionCommand {
+
     private static final Logger log = LoggerFactory
             .getLogger(IntegrateDisconnectionCommandImpl.class);
     final private UserService mUserService;
-    
+
     /**
      * {@inheritDoc}
      */
@@ -28,9 +30,10 @@ public class DisconnectionCommandImpl implements DisconnectionCommand{
 
     @Override
     public void execute() {
-        log.info("Disconnection...");
-        this.mUserService.disconnectionRequest();
-        log.info("Disconnected.");
+        log.info("DisconnectionCommand ...");
+
+        mUserService.disconnectionRequest();
+
+        log.info("DisconnectionCommand DONE");
     }
-    
 }

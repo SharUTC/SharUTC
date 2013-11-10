@@ -191,8 +191,7 @@ public class MusicServiceImpl implements MusicService {
         }
         if (score == null || score.intValue() == Score.MIN_VALUE) {
             unsetScore(peer, music);
-        }
-        if (score != null && score > Score.MIN_VALUE && score <= Score.MAX_VALUE) {
+        } else if (score > Score.MIN_VALUE && score <= Score.MAX_VALUE) {
             Score musicScore = music.getScore(peer);
             if (musicScore != null) {
                 // peer already scored the music
@@ -256,7 +255,6 @@ public class MusicServiceImpl implements MusicService {
         } else {
             log.warn("Don't have any path(null)");
         }
-
     }
 
     /**
@@ -397,7 +395,7 @@ public class MusicServiceImpl implements MusicService {
         Byte[] byteArray;
         try {
             byteArray = fileService.getFileAsByteArray(new File(".\\" + appModel.getProfile().getUserInfo().getLogin() + "\\" + music.getFileName()));
-            music.setFile(byteArray);
+            music.setFileByte(byteArray);
         } catch (IOException ex) {
             log.error(ex.toString());
         }

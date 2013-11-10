@@ -14,33 +14,38 @@ public interface UserService {
      * a JSON file.
      */
     public void saveProfileFiles();
-    
+
     /**
      * Add a new contact represented by one's id in the category
+     *
      * @param peer
      */
     public void addContact(Peer peer);
 
     /**
      * Remove the contact represented by one's peer from every category
+     *
      * @param peer
      */
     public void deleteContact(Peer peer);
-    
+
     /**
      * Create the category categoryName
+     *
      * @param categoryName
      */
     public void createCategory(String categoryName);
 
     /**
      * Delete the category category
+     *
      * @param category
      */
     public void deleteCategory(Category category);
 
     /**
      * Add a contact represented by one's peer to a specified category
+     *
      * @param peer
      * @param category
      */
@@ -48,6 +53,7 @@ public interface UserService {
 
     /**
      * Remove a contact represented by one's peer from a specified category
+     *
      * @param peer
      * @param category
      */
@@ -90,10 +96,10 @@ public interface UserService {
      * @return
      */
     public Long findContactIdByPeerId(Long peerId);
-    
+
     /**
-     * Send a disconnection request to the network and save profile 
-     * 
+     * Send a disconnection request to the network and save profile
+     *
      */
     public void disconnectionRequest();
 }

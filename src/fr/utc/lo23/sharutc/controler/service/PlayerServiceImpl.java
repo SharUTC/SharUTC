@@ -94,8 +94,16 @@ public class PlayerServiceImpl implements PlayerService, PropertyChangeListener,
      * {@inheritDoc}
      */
     @Override
-    public void updatePlaylist(Music music) {
-        log.warn("Not supported yet.");
+    public void updateAndPlayMusic(Music musicWithBytes) {
+        log.info("updateAndPlayMusic");
+        if (musicWithBytes != null && mPlaylist.contains(musicWithBytes)) {
+            playerStop();
+            int musicIndex = mPlaylist.indexOf(musicWithBytes);
+            Music musicFromPlaylist = mPlaylist.get(musicIndex);
+            musicFromPlaylist.setFileByte(musicWithBytes.getFileBytes());
+            setCurrentMusic(musicFromPlaylist);
+            playerPlay();
+        }
     }
 
     /**

@@ -14,8 +14,8 @@ import java.util.logging.Logger;
 public class ExportProfileCommandImpl implements ExportProfileCommand {
     private final FileService fs;
     private final AppModel appModel;
-    private String mSrcFile = "";
-    private String mDestFolder = "";
+    private String mSrcFile;
+    private String mDestFolder;
     
     /**
      * Constructor
@@ -25,11 +25,9 @@ public class ExportProfileCommandImpl implements ExportProfileCommand {
      * @param destPath
      */
     @Inject
-    public ExportProfileCommandImpl(FileService fs, AppModel appModel, String srcPath, String destPath) {
+    public ExportProfileCommandImpl(FileService fs, AppModel appModel) {
         this.fs = fs;
         this.appModel = appModel;
-        mSrcFile = srcPath;
-        mDestFolder = destPath;
     }
 
     /**
