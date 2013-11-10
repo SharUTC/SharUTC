@@ -1,4 +1,4 @@
-package fr.utc.lo23.sharutc.controler.command.profile;
+package fr.utc.lo23.sharutc.controler.command.account;
 
 import com.google.inject.Inject;
 import fr.utc.lo23.sharutc.controler.service.UserService;
@@ -13,13 +13,31 @@ public class IntegrateDisconnectionCommandImpl implements IntegrateDisconnection
     private static final Logger log = LoggerFactory
             .getLogger(IntegrateDisconnectionCommandImpl.class);
     final private UserService mUserService;
+    private long mPeerId;
     
     /**
      * {@inheritDoc}
      */
     @Inject
-    public IntegrateDisconnectionCommandImpl(UserService mUserService) {
+    public IntegrateDisconnectionCommandImpl(UserService mUserService, long peerId) {
         this.mUserService = mUserService;
+        this.mPeerId = peerId;
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public long getPeerId() {
+        return mPeerId;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void setPeerId(long peerId) {
+        this.mPeerId = peerId;
     }
 
     /**
@@ -27,8 +45,10 @@ public class IntegrateDisconnectionCommandImpl implements IntegrateDisconnection
      */
     @Override
     public void execute() {
-        log.info("Disconnection...");
-        this.mUserService.disconnectionRequest();
-        log.info("Disconnected.");  
+        log.info("Remove Peer...");
+        this.mUserService.removeFromConnectedPeers(mPeerId);
+        log.info("Peer removed..");  
     }
+
+    
 }

@@ -176,10 +176,7 @@ public class UserServiceImpl implements UserService {
     
     @Override
     public void disconnectionRequest(){
-        Long peerId = this.profile.getUserInfo().getPeerId();
-        
         this.saveProfileFiles();
-        this.removeFromConnectedPeers(peerId);
         // Notify network
     }
 }
