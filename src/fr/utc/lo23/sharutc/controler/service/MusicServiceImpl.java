@@ -19,6 +19,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
+import org.jaudiotagger.audio.AudioFile;
+import org.jaudiotagger.audio.AudioFileIO;
+import org.jaudiotagger.tag.FieldKey;
+import org.jaudiotagger.tag.Tag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -58,13 +62,15 @@ public class MusicServiceImpl implements MusicService {
             Music musicFromFile = null;
             try {
                 musicFromFile = fileService.readFile(currentFile);
+                String filename = fileService.computeFileName("", currentFile.getName());
+                musicFromFile.setFileName(filename);
             } catch (Exception ex) {
                 log.error(ex.toString());
             }
             if (musicFromFile != null) {
                 if (localCatalog.contains(musicFromFile)) {
                     log.warn("Skipping add of already existing music (hash equals) :\n{}\n{}",
-                            localCatalog.findMusicByHash(musicFromFile.getMusicHash()).getRealName(),
+                            localCatalog.findMusicByHash(musicFromFile.getHash()).getRealName(),
                             musicFromFile.getRealName());
                 } else {
                     localCatalog.add(musicFromFile);
@@ -188,14 +194,11 @@ public class MusicServiceImpl implements MusicService {
         }
         if (score != null && score > Score.MIN_VALUE && score <= Score.MAX_VALUE) {
             Score musicScore = music.getScore(peer);
-            if(musicScore != null)
-            {
+            if (musicScore != null) {
                 // peer already scored the music
                 musicScore.setValue(score);
                 log.debug("setScore : update score value");
-            }
-            else
-            {
+            } else {
                 log.debug("setScore : add score");
                 musicScore = new Score(score, peer.getId());
                 music.addScore(musicScore);
@@ -212,7 +215,9 @@ public class MusicServiceImpl implements MusicService {
         log.trace("unsetScore ...");
         if (peer != null && music != null) {
             Score musicScore = music.getScore(peer);
-            if(musicScore != null) music.removeScore(musicScore);
+            if (musicScore != null) {
+                music.removeScore(musicScore);
+            }
         }
         log.trace("unsetScore DONE");
     }
@@ -416,13 +421,134 @@ public class MusicServiceImpl implements MusicService {
         localTagMapDirty = false;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void createAndSetCatalog() {
         appModel.setLocalCatalog(new Catalog());
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void createAndSetRightsList() {
         appModel.setRightsList(new RightsList());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void updateMusicFileName(Music music, String name) {
+        log.trace("updateMusicFileName ...");
+        Music localMusic = appModel.getLocalCatalog().findMusicById(music.getId());
+        /*
+         * we need to check if musicId is found, and also need to check the owner id else client
+         * might be trying to rename a music that doesn't belongs to him
+         */
+        if (localMusic != null && localMusic.getOwnerPeerId().equals(music.getOwnerPeerId())) {
+            String filename = null;
+            String realname = null;
+            if (name != null) {
+                name = name.trim();
+                if (name.length() < FileService.MIN_FILENAME_LENGTH) {
+                    realname = fileService.computeRealName(name);
+                    if (!localMusic.getRealName().equals(realname)) {
+                        // user changed the name of the file, but another file may already use it,
+                        // we allow the change, we have to :
+                        // check if the value is different from previous (realname)
+                        // check if other files are using the same "realname"
+                        //  if no other, then let the name as is
+                        //  if other(s) exist, find next x following :  filename (x).mp3
+                        filename = fileService.computeFileName(music.getRealName(), realname);
+                    }
+                }
+                if (realname != null && filename != null) {
+                    File file = fileService.getFileOfLocalMusic(localMusic);
+
+                    String oldMusicFilePath = null;
+                    try {
+                        oldMusicFilePath = file.getCanonicalPath();
+                    } catch (IOException ex) {
+                        log.error(ex.toString());
+                    }
+                    if (oldMusicFilePath != null) {
+                        String newMusicFilePath = oldMusicFilePath.replaceAll(localMusic.getFileName(), filename);
+                        log.info("Renaming file from '{}' to '{}'", localMusic.getFileName(), filename);
+                        localMusic.setFileName(filename);
+                        log.info("Moving file from '{}' to '{}'", oldMusicFilePath, newMusicFilePath);
+                        file.renameTo(new File(newMusicFilePath));
+                        log.info("Setting realName to '{}'", realname);
+                        localMusic.setRealName(realname);
+                    }
+                }
+            }
+            log.info("Saving music update");
+            saveUserMusicFiles();
+        }
+        log.trace("updateMusicFileName DONE");
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void saveMusicFieldChanges(Music music, String title, String artist, String album, String track, String year) {
+        log.trace("saveMusicFieldChanges ...");
+        Music localMusic = appModel.getLocalCatalog().findMusicById(music.getId());
+        /*
+         * we need to check if musicId is found, and also need to check the owner id else client
+         * might be trying to change a music that doesn't belongs to him
+         */ if (localMusic != null && localMusic.getOwnerPeerId().equals(music.getOwnerPeerId())) {
+            boolean atLeastOneId3TagHasChanged = false;
+            if (title != null && localMusic.getTitle() != null && !localMusic.getTitle().equals(title)
+                    || artist != null && localMusic.getArtist() != null && !localMusic.getArtist().equals(artist)
+                    || album != null && localMusic.getAlbum() != null && !localMusic.getAlbum().equals(album)
+                    || track != null && localMusic.getTrack() != null && !localMusic.getTrack().equals(track)
+                    || year != null && localMusic.getYear() != null && !localMusic.getYear().equals(year)) {
+                atLeastOneId3TagHasChanged = true;
+            }
+
+            if (atLeastOneId3TagHasChanged) {
+                File file = fileService.getFileOfLocalMusic(localMusic);
+                if (file != null) {
+                    if (atLeastOneId3TagHasChanged) {
+                        try {
+                            AudioFile audioFile = AudioFileIO.read(file);
+                            Tag tag = audioFile.getTag();
+                            if (title != null) {
+                                tag.setField(FieldKey.TITLE, title);
+                                localMusic.setTitle(title);
+                            }
+                            if (artist != null) {
+                                tag.setField(FieldKey.ARTIST, artist);
+                                localMusic.setArtist(artist);
+                            }
+                            if (album != null) {
+                                tag.setField(FieldKey.ALBUM, album);
+                                localMusic.setAlbum(album);
+                            }
+                            if (track != null) {
+                                tag.setField(FieldKey.TRACK, track);
+                                localMusic.setTrack(track);
+                            }
+                            if (year != null) {
+                                tag.setField(FieldKey.YEAR, year);
+                                localMusic.setYear(year);
+                            }
+                            audioFile.setTag(tag);
+                            audioFile.commit();
+                        } catch (Exception ex) {
+                            log.error("Unable to write music file informations : {}", ex.toString());
+                        }
+                    }
+                }
+                log.info("Saving music field(s) update");
+                saveUserMusicFiles();
+            }
+        }
+        log.trace("saveMusicFieldChanges DONE");
     }
 }

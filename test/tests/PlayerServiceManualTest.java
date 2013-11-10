@@ -61,16 +61,19 @@ public class PlayerServiceManualTest implements PropertyChangeListener {
     private static void runConsole() {
         boolean exit = false;
         while (!exit) {
-            System.out.println("0=EXIT");
-            System.out.println("1=PLAY");
-            System.out.println("2=PAUSE");
-            System.out.println("3=STOP");
-            System.out.println("4=NEXT");
-            System.out.println("5=PREV");
-            System.out.println("6= currentTime -= 15s");
-            System.out.println("7= currentTime += 15s");
-            System.out.println("8= volume -= 10)");
-            System.out.println("9= volume += 10)");
+            System.out.println("0 = EXIT");
+            System.out.println("1 = PLAY");
+            System.out.println("2 = PAUSE");
+            System.out.println("3 = STOP");
+            System.out.println("4 = NEXT");
+            System.out.println("5 = PREV");
+            System.out.println("6 = SET CURRENT TIME -= 15 sec");
+            System.out.println("7 = SET CURRENT TIME += 15 sec");
+            System.out.println("8 = SET VOLUME -= 10");
+            System.out.println("9 = SET VOLUME += 10");
+            System.out.println("10= MUTE ON/OFF");
+            System.out.println("11..100= SET VOLUME += x");
+
             System.out.println("Input : ");
             String actionTxt = scanIn.nextLine();
             System.out.println("");
@@ -108,26 +111,30 @@ public class PlayerServiceManualTest implements PropertyChangeListener {
                     playerService.playerPrevious();
                     break;
                 case 6:
-                    System.out.println("setCurrentTime(-15L)");
+                    System.out.println("SET CURRENT TIME(-= 15 sec)");
                     playerService.setCurrentTimeSec(Math.max(0, currentTimeSec - 15L));
                     break;
                 case 7:
-                    System.out.println("setCurrentTime(+15L)");
+                    System.out.println("SET CURRENT TIME(+= 15 sec)");
                     playerService.setCurrentTimeSec(Math.min((playerService != null && playerService.getTotalTimeSec() != null) ? playerService.getTotalTimeSec() : Long.MAX_VALUE, currentTimeSec + 15L));
                     break;
                 case 8:
-                    System.out.println("volume (50)");
+                    System.out.println("SET VOLUME (50)");
                     playerService.setVolume(50);
                     break;
                 case 9:
-                    System.out.println("volume (100)");
+                    System.out.println("SET VOLUME (100)");
                     playerService.setVolume(100);
                     break;
                 case 10:
-                    System.out.println("mute");
-                    playerService.setMute(playerService.isMute());
+                    System.out.println("MUTE ON/OFF");
+                    playerService.setMute(!playerService.isMute());
                     break;
                 default:
+                    if (action >= 0 && action <= 100) {
+                        System.out.println("SET VOLUME (" + action + ")");
+                        playerService.setVolume(action);
+                    }
                     break;
             }
         }
@@ -137,9 +144,15 @@ public class PlayerServiceManualTest implements PropertyChangeListener {
     public void propertyChange(PropertyChangeEvent evt) {
         if (evt.getPropertyName().equals(PlayerServiceImpl.Property.CURRENT_TIME.name())) {
             currentTimeSec = (Long) evt.getNewValue();
-            System.out.println("time : " + currentTimeSec + " / " + playerService.getTotalTimeSec());
+            System.out.println("Time : " + currentTimeSec + " / " + playerService.getTotalTimeSec() + " seconds");
         } else if (evt.getPropertyName().equals(PlayerServiceImpl.Property.SELECTED_MUSIC.name())) {
             System.out.println("Music : " + evt.getNewValue());
+        } else if (evt.getPropertyName().equals(PlayerServiceImpl.Property.MUTE.name())) {
+            System.out.println("Mute : " + (((Boolean) evt.getNewValue()).booleanValue() == true ? "ON" : "OFF"));
+        } else if (evt.getPropertyName().equals(PlayerServiceImpl.Property.VOLUME.name())) {
+            System.out.println("Volume : " + evt.getNewValue());
+        } else if (evt.getPropertyName().equals(PlayerServiceImpl.Property.PAUSE.name())) {
+            System.out.println("Pause : " + (((Boolean) evt.getNewValue()).booleanValue() == true ? "ON" : "OFF"));
         }
     }
 }

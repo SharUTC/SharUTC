@@ -10,6 +10,14 @@ import java.io.IOException;
  */
 public interface FileService {
 
+    public static final String APP_NAME = "SharUTC";
+    public static final String FOLDER_USERS = "users";
+    public static final String FOLDER_PROFIL = "profile";
+    public static final String FOLDER_MUSIC = "music";
+    public static final String DOT_MP3 = ".mp3";
+    public static final String[] AUTHORIZED_MUSIC_FILE_TYPE = {"mp3"};
+    public static final int MIN_FILENAME_LENGTH = 1;
+
     /**
      *
      * @param srcPath
@@ -52,4 +60,16 @@ public interface FileService {
      * @return the temporary file
      */
     public File buildTmpMusicFile(Byte[] musicBytes) throws Exception;
+
+    /**
+     * Return a file instance of a local music, null if the file doesn't exist
+     *
+     * @param localMusic the music from which we want the file
+     * @return a file instance of a local music, null if the file doesn't exist
+     */
+    public File getFileOfLocalMusic(Music localMusic);
+
+    public String computeRealName(String name);
+
+    public String computeFileName(String realName, String realname);
 }

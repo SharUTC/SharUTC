@@ -38,6 +38,9 @@ public class Mp3Player {
 
     public void pause() {
         isPaused = true;
+        if (listener != null) {
+            listener.playbackPaused(new PlayerEvent(this, PlayerEventType.PAUSED, frameToTime(frameIndexCurrent)));
+        }
         close();
     }
 
@@ -191,7 +194,7 @@ public class Mp3Player {
 
     private void updateCurrentFrameIndex() {
         frameIndexCurrent++;
-        listener.newFrameIndex(frameIndexCurrent);
+        listener.setCurrentFrameIndex(frameIndexCurrent);
     }
 
     public FloatControl getMasterGainControl() {
@@ -210,5 +213,13 @@ public class Mp3Player {
 
     void setGain(float gain) {
         this.gain = gain;
+    }
+
+    private int frameToTime(int frame) {
+        int time = 0;
+        if (listener != null && listener.getMusic() != null && listener.getMusic().getTrackLength() != null && listener.getMusic().getFrames() != null) {
+            time = (int) ((frame * (double) listener.getMusic().getTrackLength()) / listener.getMusic().getFrames());
+        }
+        return time;
     }
 }

@@ -36,26 +36,26 @@ import org.slf4j.LoggerFactory;
 public class FileServiceImpl implements FileService {
 
     private static String appFolder;
-    private static final String APP_NAME = "SharUTC";
-    private static final String FOLDER_USERS = "users";
-    private static final String FOLDER_PROFIL = "profile";
-    private static final String FOLDER_MUSIC = "music";
     private static final int BUFFER_SIZE = 2048;
     private static final int COMPRESSION_LEVEL = 9;
     private static final Logger log = LoggerFactory
             .getLogger(FileServiceImpl.class);
     private final AppModel appModel;
-    private static final String[] AUTHORIZED_MUSIC_FILE_TYPE = {"mp3"};
     private File tmpFile;
 
     @Inject
     public FileServiceImpl(AppModel appModel) {
         this.appModel = appModel;
 
-        appFolder = new JFileChooser().getFileSystemView().getDefaultDirectory().toString();
+        try {
+            appFolder = new File(".").getCanonicalPath();
+        } catch (IOException ex) {
+            log.error("Can't run application in this folder : \n{}", ex.toString());
+            throw new RuntimeException("Can't run application in this folder", ex);
+        }
         appFolder += File.separator + APP_NAME + File.separator;
-        
-        if(!new File(appFolder).exists()) {
+
+        if (!new File(appFolder).exists()) {
             new File(appFolder + FOLDER_USERS).mkdirs();
         }
     }
@@ -64,68 +64,54 @@ public class FileServiceImpl implements FileService {
         return appFolder;
     }
 
-    public static String getAppName() {
-        return APP_NAME;
-    }
-
-    public static String getFolderUsers() {
-        return FOLDER_USERS;
-    }
-
-    public static String getFolderProfil() {
-        return FOLDER_PROFIL;
-    }
-
-    public static String getFolderMusic() {
-        return FOLDER_MUSIC;
-    }
-
     /**
      * {@inheritDoc}
      */
     @Override
     public void importWholeProfile(String srcPath) throws Exception {
         String userName = srcPath.substring(srcPath.lastIndexOf("\\"), srcPath.lastIndexOf('.'));
-        
+
         //chech the structure of the file
         boolean profileFolderExists = false;
         boolean musicFolderExists = false;
-        
+
         ZipFile zf = new ZipFile(srcPath);
         Enumeration entries = zf.entries();
-        
-        while(entries.hasMoreElements()){
+
+        while (entries.hasMoreElements()) {
             ZipEntry ze = (ZipEntry) entries.nextElement();
             String entryName = ze.getName();
-            if(entryName.indexOf("\\") != -1) {
-                if(entryName.substring(0, entryName.indexOf("\\")).equals(FOLDER_PROFIL))
+            if (entryName.indexOf("\\") != -1) {
+                if (entryName.substring(0, entryName.indexOf("\\")).equals(FOLDER_PROFIL)) {
                     profileFolderExists = true;
-                else if(entryName.substring(0, entryName.indexOf("\\")).equals(FOLDER_MUSIC))
+                } else if (entryName.substring(0, entryName.indexOf("\\")).equals(FOLDER_MUSIC)) {
                     musicFolderExists = true;
+                }
             }
         }
-        
-        if(!profileFolderExists || !musicFolderExists)
-            throw new Exception ("Corrupted zip file");
-        
+
+        if (!profileFolderExists || !musicFolderExists) {
+            throw new Exception("Corrupted zip file");
+        }
+
         //Create user folder and sub folders
         new File(appFolder + FOLDER_USERS + File.separator + userName + File.separator + FOLDER_PROFIL).mkdirs();
         new File(appFolder + FOLDER_USERS + File.separator + userName + File.separator + FOLDER_MUSIC).mkdirs();
-        
+
         //Unzip
         byte data[] = new byte[BUFFER_SIZE];
         FileInputStream inStream = new FileInputStream(srcPath);
         BufferedInputStream inBuffer = new BufferedInputStream(inStream);
         ZipInputStream zipInStream = new ZipInputStream(inBuffer);
-        
+
         ZipEntry entry;
-        while((entry = zipInStream.getNextEntry()) != null){
+        while ((entry = zipInStream.getNextEntry()) != null) {
             String outputPath = appFolder + FOLDER_USERS + File.separator + userName + File.separator + entry.getName();
             FileOutputStream outStream = new FileOutputStream(outputPath);
             BufferedOutputStream outBuffer = new BufferedOutputStream(outStream, BUFFER_SIZE);
-            
+
             int count;
-            while((count = zipInStream.read(data, 0, BUFFER_SIZE)) != -1) {
+            while ((count = zipInStream.read(data, 0, BUFFER_SIZE)) != -1) {
                 outBuffer.write(data, 0, count);
             }
             outBuffer.flush();
@@ -158,7 +144,7 @@ public class FileServiceImpl implements FileService {
             ZipEntry entry = new ZipEntry(path);
             outStream.putNextEntry(entry);
 
-            int count = 0;
+            int count;
             while ((count = inBuffer.read(data, 0, BUFFER_SIZE)) != -1) {
                 outStream.write(data, 0, count);
             }
@@ -209,6 +195,7 @@ public class FileServiceImpl implements FileService {
         String title;
         String artist;
         String album;
+        String year;
         String track;
         Integer trackLength;
         Long frames;
@@ -220,6 +207,7 @@ public class FileServiceImpl implements FileService {
             title = tag.getFirst(FieldKey.TITLE);
             artist = tag.getFirst(FieldKey.ARTIST);
             album = tag.getFirst(FieldKey.ALBUM);
+            year = tag.getFirst(FieldKey.YEAR);
             track = tag.getFirst(FieldKey.TRACK);
             trackLength = ah.getTrackLength();
             frames = mp3AudioHeader.getNumberOfFrames();
@@ -228,6 +216,7 @@ public class FileServiceImpl implements FileService {
             title = null;
             artist = null;
             album = null;
+            year = null;
             track = null;
             trackLength = null;
             frames = 0L;
@@ -235,7 +224,7 @@ public class FileServiceImpl implements FileService {
         return new Music(appModel.getProfile().getNewMusicId(),
                 appModel.getProfile().getUserInfo().getPeerId(),
                 getFileAsByteArray(file),
-                file.getName(), file.getName(), file.hashCode(), title, artist, album, track,
+                file.getName(), file.getName(), file.hashCode(), title, artist, album, year, track,
                 trackLength, frames);
     }
 
@@ -268,7 +257,7 @@ public class FileServiceImpl implements FileService {
             byte[] buffer = new byte[4096];
             baos = new ByteArrayOutputStream();
             inputStream = new FileInputStream(file);
-            int read = 0;
+            int read;
             while ((read = inputStream.read(buffer)) != -1) {
                 baos.write(buffer, 0, read);
             }
@@ -336,5 +325,79 @@ public class FileServiceImpl implements FileService {
         fileOuputStream.write(bytes);
         fileOuputStream.close();
         return tmpFile;
+    }
+
+    @Override
+    public File getFileOfLocalMusic(Music localMusic) {
+        File file = null;
+        if (localMusic != null) {
+            String ownerLogin = appModel.getProfile().getUserInfo().getLogin();
+            if (ownerLogin != null && !ownerLogin.isEmpty() && appModel.getProfile().getUserInfo().getPeerId().equals(localMusic.getOwnerPeerId())) {
+                file = new File(appFolder + "\\" + ownerLogin + "\\mp3\\" + localMusic.getRealName());
+            }
+        }
+        return file;
+    }
+
+    @Override
+    public String computeRealName(String name) {
+        if (name != null && !name.endsWith(DOT_MP3)) {
+            name = name + DOT_MP3;
+        }
+        return name;
+    }
+
+    @Override
+    public String computeFileName(String musicActualRealName, String realname) {
+        String filename = null;
+        if (realname != null && musicActualRealName != null) {
+            if (!realname.endsWith(DOT_MP3)) {
+                realname = realname + DOT_MP3;
+            }
+            filename = realname;
+            if (!musicActualRealName.equals(realname)) {
+                //  check if realName is already in use, change value to set if needed
+                List<String> sameRealnameFilenames = new ArrayList<String>();
+                for (Music m : appModel.getLocalCatalog().getMusics()) {
+                    if (m.getRealName().equals(realname)) {
+                        sameRealnameFilenames.add(m.getFileName());
+                    }
+                }
+                if (!sameRealnameFilenames.isEmpty()) {
+                    int newSameRealNameIndex = computeNextUnusedIndex(sameRealnameFilenames);
+                    filename = realname.substring(0, realname.lastIndexOf(DOT_MP3));
+                    filename = filename.trim();
+                    filename += " (" + newSameRealNameIndex + ")" + DOT_MP3;
+                }
+            }
+        }
+        return filename;
+    }
+
+    private int computeNextUnusedIndex(List<String> sameRealnameFilenames) {
+        int newSameRealNameIndex = 1;
+        for (String name : sameRealnameFilenames) {
+            int ob = name.lastIndexOf('(');
+            int cb = name.lastIndexOf(')');
+            if (ob > 0
+                    && cb > 0
+                    && ob < cb
+                    && cb - ob >= 1
+                    && cb - ob < 3) {
+                String numStr = name.substring(ob + 1, cb);
+                if (numStr != null && !numStr.isEmpty()) {
+                    Integer num = null;
+                    try {
+                        num = Integer.parseInt(numStr);
+                    } catch (NumberFormatException nfe) {
+                        log.warn("Failed at extracting same real name index");
+                    }
+                    if (num != null && num > newSameRealNameIndex) {
+                        newSameRealNameIndex = num;
+                    }
+                }
+            }
+        }
+        return newSameRealNameIndex;
     }
 }
