@@ -17,6 +17,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 import org.jaudiotagger.audio.AudioFile;
@@ -161,7 +162,21 @@ public class MusicServiceImpl implements MusicService {
      */
     @Override
     public void addComment(Peer peer, Music music, String comment) {
-        log.warn("Not supported yet.");
+        log.trace("addComment ...");
+        if (peer == null || music == null) {
+            return;
+        }
+        if(!comment.isEmpty())
+        {
+            Comment myComment = new Comment();
+            myComment.setAuthorPeerId(peer.getId());
+            myComment.setAuthorName(peer.getDisplayName());
+            myComment.setText(comment);
+            myComment.setIndex(Comment.getCurrentIndex() + 1);
+            myComment.setCreationDate(new Date());
+            music.addComment(myComment);
+        }
+        log.trace("addComment DONE");
     }
 
     /**
@@ -169,7 +184,13 @@ public class MusicServiceImpl implements MusicService {
      */
     @Override
     public void editComment(Peer peer, Music music, String comment, Integer commentIndex) {
-        log.warn("Not supported yet.");
+        log.trace("editComment ...");
+        if (peer == null || music == null || commentIndex == null) {
+            return;
+        }
+        Comment myComment = music.getComment(peer, commentIndex);
+        myComment.setText(comment);
+        log.trace("editComment DONE");
     }
 
     /**
@@ -177,7 +198,13 @@ public class MusicServiceImpl implements MusicService {
      */
     @Override
     public void removeComment(Peer peer, Music music, Integer commentIndex) {
-        log.warn("Not supported yet.");
+        log.trace("removeComment ...");
+        if (peer == null || music == null || commentIndex == null) {
+            return;
+        }
+        Comment myComment = music.getComment(peer, commentIndex);
+        music.removeComment(myComment);
+        log.trace("removeComment DONE");
     }
 
     /**

@@ -61,6 +61,7 @@ public class Music implements Serializable {
      *
      */
     public Music() {
+        this.mComments = new ArrayList<Comment>();
         this.mScores = new HashSet<Score>();
     }
 
@@ -386,19 +387,67 @@ public class Music implements Serializable {
     }
 
     /**
+     * Return the list of comments
      *
-     * @return
+     * @return The list of comments
      */
     public List<Comment> getComments() {
         return Collections.unmodifiableList(mComments);
     }
+    
+    /**
+     * Return a comment of the peer
+     * 
+     * @param peer The peer
+     * @param commentIndex The index of comment
+     * @return A comment of the peer
+     */
+    public Comment getComment(Peer peer, Integer commentIndex) {
+        return peer == null ? null : getComment(peer.getId(), commentIndex);
+    }
+    
+    /**
+     * Return a comment of the peer
+     * 
+     * @param peerId The id of the peer
+     * @param commentIndex The index of comment
+     * @return A comment of the peer
+     */
+    public Comment getComment(Long peerId, Integer commentIndex) {
+        Comment comment = null;
+        for (Comment tmpComment : getComments()) {
+            if (tmpComment.getAuthorPeerId().equals(peerId)) {
+                comment = tmpComment;
+            }
+        }
+        return comment;
+    }
 
     /**
+     * Define the list of comments
      *
-     * @param comments
+     * @param comments The list of comments
      */
     public void setComments(List<Comment> comments) {
         this.mComments = comments;
+    }
+    
+    /**
+     * Add a comment
+     * 
+     * @param comment The comment
+     */
+    public void addComment(Comment comment) {
+        this.mComments.add(comment);
+    }
+    
+    /**
+     * Remove a comment
+     * 
+     * @param comment The comment
+     */
+    public void removeComment(Comment comment) {
+        this.mComments.remove(comment);
     }
 
     /**
@@ -417,7 +466,7 @@ public class Music implements Serializable {
      * @return The list of scores
      */
     public Score getScore(Peer peer) {
-        return getScore(peer.getId());
+        return peer == null ? null : getScore(peer.getId());
     }
 
     /**
