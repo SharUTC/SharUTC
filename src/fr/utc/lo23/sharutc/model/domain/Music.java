@@ -1,6 +1,7 @@
 package fr.utc.lo23.sharutc.model.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import fr.utc.lo23.sharutc.model.userdata.Peer;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.Serializable;
@@ -60,6 +61,7 @@ public class Music implements Serializable {
      *
      */
     public Music() {
+        this.mScores = new HashSet<Score>();
     }
 
     /**
@@ -400,11 +402,41 @@ public class Music implements Serializable {
 
     /**
      * Return the list of scores
-     *
+     * 
      * @return The list of scores
      */
     public Set<Score> getScores() {
         return Collections.unmodifiableSet(mScores);
+    }
+    
+    /**
+     * Return the score of the peer
+     * 
+     * @param peer The peer
+     * @return The list of scores
+     */
+    public Score getScore(Peer peer)
+    {
+        return getScore(peer.getId());
+    }
+
+    /**
+     * Return the score of the peer
+     * 
+     * @param peerId The id of the peer
+     * @return The list of scores
+     */
+    public Score getScore(Long peerId)
+    {
+        Score score = null;
+        for(Score tmpScore : getScores())
+        {
+            if(tmpScore.getPeerId().equals(peerId))
+            {
+                score = tmpScore;
+            }
+        }
+        return score;
     }
 
     /**

@@ -187,18 +187,17 @@ public class MusicServiceImpl implements MusicService {
             unsetScore(peer, music);
         }
         if (score != null && score > Score.MIN_VALUE && score <= Score.MAX_VALUE) {
-            boolean update = false;
-            for (Score musicScore : music.getScores()) {
-                if (musicScore.getPeerId().equals(peer.getId())) {
-                    // peer already scored the music
-                    log.debug("setScore : update score value");
-                    musicScore.setValue(score);
-                    update = true;
-                }
+            Score musicScore = music.getScore(peer);
+            if(musicScore != null)
+            {
+                // peer already scored the music
+                musicScore.setValue(score);
+                log.debug("setScore : update score value");
             }
-            if (!update) {
+            else
+            {
                 log.debug("setScore : add score");
-                Score musicScore = new Score(score, peer.getId());
+                musicScore = new Score(score, peer.getId());
                 music.addScore(musicScore);
             }
         }
@@ -212,12 +211,8 @@ public class MusicServiceImpl implements MusicService {
     public void unsetScore(Peer peer, Music music) {
         log.trace("unsetScore ...");
         if (peer != null && music != null) {
-            for (Score musicScore : music.getScores()) {
-                if (musicScore.getPeerId().equals(peer.getId())) {
-                    music.removeScore(musicScore);
-                    break;
-                }
-            }
+            Score musicScore = music.getScore(peer);
+            if(musicScore != null) music.removeScore(musicScore);
         }
         log.trace("unsetScore DONE");
     }
