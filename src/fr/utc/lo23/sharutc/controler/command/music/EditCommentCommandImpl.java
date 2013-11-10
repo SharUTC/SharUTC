@@ -1,5 +1,7 @@
 package fr.utc.lo23.sharutc.controler.command.music;
 
+import com.google.inject.Inject;
+import fr.utc.lo23.sharutc.controler.service.MusicService;
 import fr.utc.lo23.sharutc.model.domain.Music;
 import fr.utc.lo23.sharutc.model.userdata.Peer;
 import org.slf4j.Logger;
@@ -12,6 +14,7 @@ public class EditCommentCommandImpl implements EditCommentCommand {
 
     private static final Logger log = LoggerFactory
             .getLogger(EditCommentCommandImpl.class);
+    private final MusicService musicService;
     private Peer mOwnerPeer;
     private Peer mAuthorPeer;
     private Music mMusic;
@@ -21,7 +24,9 @@ public class EditCommentCommandImpl implements EditCommentCommand {
     /**
      * {@inheritDoc}
      */
-    public EditCommentCommandImpl() {
+    @Inject
+    public EditCommentCommandImpl(MusicService musicService) {
+        this.musicService = musicService;
     }
 
     /**
@@ -109,6 +114,8 @@ public class EditCommentCommandImpl implements EditCommentCommand {
      */
     @Override
     public void execute() {
-        log.warn("Not supported yet.");
+        log.info("EditCommentCommandImpl ...");
+        musicService.editComment(mAuthorPeer, mMusic, mComment, mCommentId);
+        log.info("EditCommentCommandImpl DONE");
     }
 }
