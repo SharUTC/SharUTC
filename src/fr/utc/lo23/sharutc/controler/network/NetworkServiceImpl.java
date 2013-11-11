@@ -234,14 +234,12 @@ public class NetworkServiceImpl implements NetworkService {
     /**
      * {inheritDoc}
      */
-    @Override
+        @Override
     public void userInfoBroadcast(UserInfo userInfo) {
-//        Long myPeerId = mAppModel.getProfile().getUserInfo().getPeerId();
-//        Message msgToSend = new Message(myPeerId, MessageType.CONNECTION, msg.getContent());
-        if (userInfo != null) {
-            sendBroadcast(mMessageParser.write(MessageType.CONNECTION, new Object[][]{{Message.CONVERSATION_ID, mAppModel.getCurrentConversationId()}, {Message.USER_INFO, userInfo}}, null));
+        if(userInfo != null){
+            mPeerDiscoverySocket.send(mMessageParser.write(MessageType.USER_INFO, new Object[][]{{Message.USER_INFO, userInfo}}, mAppModel.getCurrentConversationId()));
         } else {
-            log.error("[NetworkService - userInfoBroadCast()] - userInfo is null");
+            log.equals("[NetworkService - userInfoBroadCast()] - userInfo is null");
         }
     }
 
