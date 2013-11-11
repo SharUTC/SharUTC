@@ -97,7 +97,8 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public void deleteCategory(Category category) {
-        if (category.getId() != 0) {
+         //Check that the category is not the Public one
+        if (category.getId() != Category.PUBLIC_CATEGORY_ID) {
             profile.getCategories().remove(category);
         }
         else {
@@ -137,7 +138,15 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public void removeContactFromCategory(Peer peer, Category category) {
-        profile.getCategories().findCategoryById(category.getId()).removeContact(peer);
+        //Check that the category is not the Public one
+        if (category.getId() != Category.PUBLIC_CATEGORY_ID) {
+           profile.getCategories().findCategoryById(category.getId()).removeContact(peer);
+        }
+        else {
+            log.warn("Can't remove the contact from category Public");
+            ErrorMessage nErrorMessage = new ErrorMessage("Can't remove the contact from category Public");
+            appModel.getErrorBus().pushErrorMessage(nErrorMessage);
+        } 
     }
 
     /**
