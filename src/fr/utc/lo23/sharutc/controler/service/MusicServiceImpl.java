@@ -101,9 +101,10 @@ public class MusicServiceImpl implements MusicService {
             appModel.getRemoteUserCatalog().clear();
         
             // 2 modes : when peer is a contact and when peer isn't a contact
-            Contact contact = appModel.getProfile().getContacts().findById(peer.getId());
-            if (contact != null) {
-                Set<Integer> contactCategoryIds = contact.getCategoryIds();
+            Long contactId = userService.findContactIdByPeerId(peer.getId());
+            if (contactId != null) {
+                Set<Integer> contactCategoryIds = appModel.getProfile().getCategories().getCategoriesIdsByContactId(contactId);
+
 
                 // looping on whole catalog, searching for matching music informations
                 for (Music music : appModel.getLocalCatalog().getMusics()) {
