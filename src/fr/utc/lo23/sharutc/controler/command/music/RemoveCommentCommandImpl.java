@@ -1,5 +1,7 @@
 package fr.utc.lo23.sharutc.controler.command.music;
 
+import com.google.inject.Inject;
+import fr.utc.lo23.sharutc.controler.service.MusicService;
 import fr.utc.lo23.sharutc.model.domain.Music;
 import fr.utc.lo23.sharutc.model.userdata.Peer;
 import org.slf4j.Logger;
@@ -12,6 +14,7 @@ public class RemoveCommentCommandImpl implements RemoveCommentCommand {
 
     private static final Logger log = LoggerFactory
             .getLogger(RemoveCommentCommandImpl.class);
+    private final MusicService musicService;
     private Peer mPeer;
     private Music mMusic;
     private int mCommentId;
@@ -19,7 +22,9 @@ public class RemoveCommentCommandImpl implements RemoveCommentCommand {
     /**
      * {@inheritDoc}
      */
-    public RemoveCommentCommandImpl() {
+    @Inject
+    public RemoveCommentCommandImpl(MusicService musicService) {
+        this.musicService = musicService;
     }
 
     /**
@@ -75,6 +80,8 @@ public class RemoveCommentCommandImpl implements RemoveCommentCommand {
      */
     @Override
     public void execute() {
-        log.warn("Not supported yet.");
+        log.info("RemoveCommentCommandImpl ...");
+        musicService.removeComment(mPeer, mMusic, mCommentId);
+        log.info("RemoveCommentCommandImpl DONE");
     }
 }

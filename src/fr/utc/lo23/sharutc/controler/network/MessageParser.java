@@ -22,9 +22,12 @@ public interface MessageParser {
      * @param messageType the type of the message to specify which command run
      * after reading
      * @param content the different values of the message with a key
-     * @return
+     * @param conversationId optional, some commands require the local
+     * conversationId, others require to return the conversationId given in an
+     * incoming Message
+     * @return the mesage build with given informations
      */
-    public Message write(MessageType messageType, Object[][] content);
+    public Message write(MessageType messageType, Object[][] content, Long conversationID);
 
     /**
      * Return the Peer who send the parsed message
@@ -43,16 +46,6 @@ public interface MessageParser {
     public Object getValue(String field);
 
     /**
-     *
-     * Only for write purpose. Set the source of the message that is
-     * uatomatically included when the write method is used
-     *
-     * @param localPeerId the source of the message that is uatomatically
-     * included when the write method is used
-     */
-    public void setFromPeerId(long localPeerId);
-
-    /**
      * Only for read purpose. return the conversation id included in the lattest
      * parsed message, or null if no conversation id is included
      *
@@ -60,4 +53,20 @@ public interface MessageParser {
      * null if no conversation id is included
      */
     public Long getConversationId();
+
+    /**
+     * Return a message object from a JSON String
+     *
+     * @param json the JSON String to parse
+     * @return a Message objet from a JSON String
+     */
+    public Message fromJSON(String json);
+
+    /**
+     * Serialize a message to a JSON String
+     *
+     * @param string the Message to transfom into a JSON String
+     * @return the parsed JSON String
+     */
+    public String toJSON(Message string);
 }

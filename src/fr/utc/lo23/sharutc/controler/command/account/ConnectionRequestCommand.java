@@ -3,31 +3,31 @@ package fr.utc.lo23.sharutc.controler.command.account;
 import fr.utc.lo23.sharutc.controler.command.Command;
 
 /**
- *
+ * TODO : add comments
  */
 public interface ConnectionRequestCommand extends Command {
 
     /**
-     *
-     * @return
+     * Give the login to use for connection
+     * @return a String corresponding to user login
      */
     public String getLogin();
 
     /**
-     *
-     * @param login
+     * Modify the login to use for connection
+     * @param login String for user login
      */
     public void setLogin(String login);
 
     /**
-     *
-     * @return
+     * Give the password to use for connection
+     * @return a String corresponding to user password
      */
     public String getPassword();
 
     /**
-     *
-     * @param password
+     * Modify the password to use for connection
+     * @param password String for user password
      */
     public void setPassword(String password);
 }

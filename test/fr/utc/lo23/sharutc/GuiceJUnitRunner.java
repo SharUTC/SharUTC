@@ -13,26 +13,26 @@ import org.junit.runners.model.InitializationError;
 
 /**
  *
-
+ *
  */
 public class GuiceJUnitRunner extends BlockJUnit4ClassRunner {
+
     private Injector injector;
- 
+
     /**
      *
      * @param klass
      * @throws InitializationError
      */
-        public GuiceJUnitRunner(Class<?> klass) throws InitializationError {
+    public GuiceJUnitRunner(Class<?> klass) throws InitializationError {
         super(klass);
         Class<?>[] classes = getModulesFor(klass);
         injector = createInjectorFor(classes);
     }
- 
+
     /**
      *
-     * @return
-     * @throws Exception
+     * @return @throws Exception
      */
     @Override
     public Object createTest() throws Exception {
@@ -40,7 +40,7 @@ public class GuiceJUnitRunner extends BlockJUnit4ClassRunner {
         injector.injectMembers(obj);
         return obj;
     }
- 
+
     private Injector createInjectorFor(Class<?>[] classes) throws InitializationError {
         Module[] modules = new Module[classes.length];
         for (int i = 0; i < classes.length; i++) {
@@ -54,16 +54,17 @@ public class GuiceJUnitRunner extends BlockJUnit4ClassRunner {
         }
         return Guice.createInjector(modules);
     }
- 
+
     private Class<?>[] getModulesFor(Class<?> klass) throws InitializationError {
         GuiceModules annotation = klass.getAnnotation(GuiceModules.class);
-        if (annotation == null)
+        if (annotation == null) {
             throw new InitializationError(
                     "Missing @GuiceModules annotation for unit test '" + klass.getName()
-                            + "'");
+                    + "'");
+        }
         return annotation.value();
     }
- 
+
     /**
      *
      */
@@ -71,11 +72,11 @@ public class GuiceJUnitRunner extends BlockJUnit4ClassRunner {
     @Retention(RetentionPolicy.RUNTIME)
     @Inherited
     public @interface GuiceModules {
+
         /**
          *
          * @return
          */
         Class<?>[] value();
     }
-    
 }

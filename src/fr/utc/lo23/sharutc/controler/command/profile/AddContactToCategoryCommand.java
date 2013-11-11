@@ -2,7 +2,7 @@ package fr.utc.lo23.sharutc.controler.command.profile;
 
 import fr.utc.lo23.sharutc.controler.command.Command;
 import fr.utc.lo23.sharutc.model.userdata.Category;
-import fr.utc.lo23.sharutc.model.userdata.Contact;
+import fr.utc.lo23.sharutc.model.userdata.Peer;
 
 /**
  *
@@ -10,26 +10,30 @@ import fr.utc.lo23.sharutc.model.userdata.Contact;
 public interface AddContactToCategoryCommand extends Command {
 
     /**
-     *
-     * @return
+     * Return the category
+     * 
+     * @return the category
      */
     public Category getCategory();
 
     /**
-     *
+     * Set the category
+     * 
      * @param category
      */
     public void setCategory(Category category);
 
     /**
+     * Return the Peer
      *
-     * @return
+     * @return the Peer
      */
-    public Contact getContact();
+    public Peer getPeer();
 
     /**
+     * Set the Peer
      *
-     * @param contact
+     * @param peer
      */
-    public void setContact(Contact contact);
+    public void setPeer(Peer peer);
 }

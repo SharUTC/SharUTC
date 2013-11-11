@@ -9,13 +9,15 @@ import fr.utc.lo23.sharutc.model.userdata.Category;
 public interface DeleteCategoryCommand extends Command {
 
     /**
-     *
-     * @return
+     * Return the category
+     * 
+     * @return the category
      */
     public Category getCategory();
 
     /**
-     *
+     * Set the category
+     * 
      * @param category
      */
     public void setCategory(Category category);

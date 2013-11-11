@@ -18,16 +18,4 @@ public interface ImportProfileCommand extends Command {
      * @param path
      */
     public void setPath(String path);
-
-    /**
-     *
-     * @return
-     */
-    public String getPassword();
-
-    /**
-     *
-     * @param password
-     */
-    public void setPassword(String password);
 }

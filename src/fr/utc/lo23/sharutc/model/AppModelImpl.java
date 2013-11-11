@@ -4,7 +4,6 @@ import fr.utc.lo23.sharutc.model.domain.Catalog;
 import fr.utc.lo23.sharutc.model.domain.RightsList;
 import fr.utc.lo23.sharutc.model.domain.TagMap;
 import fr.utc.lo23.sharutc.model.userdata.ActivePeerList;
-import fr.utc.lo23.sharutc.model.userdata.KnownPeerList;
 import fr.utc.lo23.sharutc.model.userdata.Profile;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
@@ -29,10 +28,9 @@ public class AppModelImpl implements AppModel, Serializable {
     private Catalog tmpCatalog = new Catalog();
     private Catalog remoteUserCatalog = new Catalog();
     private Catalog searchResults = new Catalog();
-    private Long currentConversationId = new Long(0);
+    protected Long currentConversationId = new Long(0);
     private Profile profile;
     private Catalog localCatalog;
-    private KnownPeerList knownPeerList;
     private RightsList rightsList;
 
     /**
@@ -55,31 +53,6 @@ public class AppModelImpl implements AppModel, Serializable {
     @Override
     public Long getNextConversationId() {
         return ++currentConversationId;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public KnownPeerList getKnownPeerList() {
-        return knownPeerList;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void setKnownPeerList(KnownPeerList knownPeerList) {
-        if (knownPeerList != null) {
-            log.trace("Setting KNOWN peers list (contains {} peer{})", knownPeerList.size(), knownPeerList.size() > 1 ? "s" : "");
-        } else {
-            log.trace("Setting KNOWN peers list (null)");
-        }
-        KnownPeerList oldKnownPeerList = this.knownPeerList;
-        this.knownPeerList = knownPeerList;
-        propertyChangeSupport.firePropertyChange(
-                Property.KNOWN_PEERS.name(), oldKnownPeerList,
-                knownPeerList);
     }
 
     /**
@@ -123,7 +96,7 @@ public class AppModelImpl implements AppModel, Serializable {
         log.debug("Setting profile");
         Profile oldLoadedProfile = this.profile;
         this.profile = profile;
-        propertyChangeSupport.firePropertyChange(
+        this.propertyChangeSupport.firePropertyChange(
                 Property.PROFILE.name(), oldLoadedProfile,
                 profile);
     }
@@ -152,6 +125,7 @@ public class AppModelImpl implements AppModel, Serializable {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void addPropertyChangeListener(PropertyChangeListener listener) {
         propertyChangeSupport.addPropertyChangeListener(listener);
     }
@@ -159,6 +133,7 @@ public class AppModelImpl implements AppModel, Serializable {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void removePropertyChangeListener(PropertyChangeListener listener) {
         propertyChangeSupport.removePropertyChangeListener(listener);
     }
@@ -268,10 +243,6 @@ public class AppModelImpl implements AppModel, Serializable {
          *
          */
         ACTIVE_PEERS,
-        /**
-         *
-         */
-        KNOWN_PEERS,
         /**
          *
          */

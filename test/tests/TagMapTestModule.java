@@ -7,6 +7,8 @@ import fr.utc.lo23.sharutc.controler.command.music.SendTagMapCommand;
 import fr.utc.lo23.sharutc.controler.command.music.SendTagMapCommandImpl;
 import fr.utc.lo23.sharutc.controler.command.music.ShowTagMapCommand;
 import fr.utc.lo23.sharutc.controler.command.music.ShowTagMapCommandImpl;
+import fr.utc.lo23.sharutc.controler.network.MessageParser;
+import fr.utc.lo23.sharutc.controler.network.MessageParserImpl;
 import fr.utc.lo23.sharutc.controler.network.NetworkService;
 import fr.utc.lo23.sharutc.controler.network.NetworkServiceMock;
 import fr.utc.lo23.sharutc.controler.service.FileService;
@@ -22,6 +24,7 @@ public class TagMapTestModule extends AbstractModule {
 
     @Override
     protected void configure() {
+        bind(MessageParser.class).to(MessageParserImpl.class);
         bind(FileService.class).to(FileServiceMock.class);
         bind(AppModel.class).to(AppModelMock.class);
         bind(UserService.class).to(UserServiceMock.class);

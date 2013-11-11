@@ -14,6 +14,8 @@ import java.io.Serializable;
 public class Score implements Serializable {
 
     private static final long serialVersionUID = 8217480208364879598L;
+    public static final int MIN_VALUE = 0;
+    public static final int MAX_VALUE = 5;
     @JsonIgnore
     private PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
     /**
@@ -97,6 +99,19 @@ public class Score implements Serializable {
      */
     public void removePropertyChangeListener(PropertyChangeListener listener) {
         propertyChangeSupport.removePropertyChangeListener(listener);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return (obj != null && obj instanceof Score && ((Score) obj).mPeerId.equals(this.mPeerId) && ((Score) obj).mValue.equals(this.mValue));
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 41 * hash + (this.mValue != null ? this.mValue.hashCode() : 0);
+        hash = 41 * hash + (this.mPeerId != null ? this.mPeerId.hashCode() : 0);
+        return hash;
     }
 
     /**

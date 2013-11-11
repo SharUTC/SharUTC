@@ -1,12 +1,15 @@
 package fr.utc.lo23.sharutc.controler.network;
 
+import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import fr.utc.lo23.sharutc.model.AppModel;
 import fr.utc.lo23.sharutc.model.domain.Catalog;
 import fr.utc.lo23.sharutc.model.domain.Music;
 import fr.utc.lo23.sharutc.model.domain.SearchCriteria;
 import fr.utc.lo23.sharutc.model.domain.TagMap;
 import fr.utc.lo23.sharutc.model.userdata.Peer;
 import fr.utc.lo23.sharutc.model.userdata.UserInfo;
+import java.util.HashMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,112 +18,34 @@ import org.slf4j.LoggerFactory;
  *
  */
 @Singleton
-public class NetworkServiceMock implements NetworkService {
+public class NetworkServiceMock extends NetworkServiceImpl implements NetworkService {
+
     private static final Logger log = LoggerFactory
             .getLogger(NetworkServiceMock.class);
+    private Message sendMessage = null;
+    private Peer peer = null;
 
-    @Override
-    public void start(int port, String group) {
-        log.warn("Not supported yet.");
+    @Inject
+    public NetworkServiceMock(AppModel appModel, MessageParser messageParser) {
+        super(appModel, messageParser);
     }
 
     @Override
-    public void stop() {
-        log.warn("Not supported yet.");
+    protected void sendBroadcast(Message message) {
+        this.sendMessage = message;
     }
 
     @Override
-    public void addPeer(long peerId, PeerSocket peerSocket) {
-        log.warn("Not supported yet.");
+    protected void sendUnicast(Message message, Peer peer) {
+        this.sendMessage = message;
+        this.peer = peer;
     }
 
-    @Override
-    public void removePeer(PeerSocket peerSocket) {
-        log.warn("Not supported yet.");
+    public Message getSendMessage() {
+        return sendMessage;
     }
 
-    @Override
-    public void sendUnicastGetCatalog(Peer peer) {
-        log.warn("Not supported yet.");
-    }
-
-    @Override
-    public void sendUnicastCatalog(Peer peer, Long conversationID, Catalog catalog) {
-        log.warn("Not supported yet.");
-    }
-
-    @Override
-    public void sendBroadcastGetTagMap() {
-        log.warn("Not supported yet.");
-    }
-
-    @Override
-    public void sendUnicastTagMap(Peer peer, Long conversationId, TagMap tagMap) {
-        log.warn("Not supported yet.");
-    }
-
-    @Override
-    public void addComment(Peer peer, Music music, String comment) {
-        log.warn("Not supported yet.");
-    }
-
-    @Override
-    public void editComment(Peer peer, Music music, String comment, Integer commentIndex) {
-        log.warn("Not supported yet.");
-    }
-
-    @Override
-    public void removeComment(Peer peer, Music music, Integer commentIndex) {
-        log.warn("Not supported yet.");
-    }
-
-    @Override
-    public void setScore(Peer peer, Music music, Integer rating) {
-        log.warn("Not supported yet.");
-    }
-
-    @Override
-    public void unsetScore(Peer peer, Music music) {
-        log.warn("Not supported yet.");
-    }
-
-    @Override
-    public void searchRequestBroadcast(SearchCriteria criteria) {
-        log.warn("Not supported yet.");
-    }
-
-    @Override
-    public void sendMusicSearchResults(Peer peer, Catalog catalog) {
-        log.warn("Not supported yet.");
-    }
-
-    @Override
-    public void sendDownloadRequest(Peer peer, Catalog catalog) {
-        log.warn("Not supported yet.");
-    }
-
-    @Override
-    public void sendMusics(Peer peer, Catalog catalog) {
-        log.warn("Not supported yet.");
-    }
-
-    @Override
-    public void downloadMusicForPlaying(Peer peer, long musicId) {
-        log.warn("Not supported yet.");
-    }
-
-    @Override
-    public void sendMusicToPlay(Peer peer, Music music) {
-        log.warn("Not supported yet.");
-    }
-
-    @Override
-    public void userInfoBroadcast(UserInfo userInfo) {
-        log.warn("Not supported yet.");
-    }
-
-    @Override
-    public void disconnectionBroadcast() {
-        log.warn("Not supported yet.");
+    public Peer getPeer() {
+        return peer;
     }
 }
