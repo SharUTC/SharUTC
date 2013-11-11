@@ -75,8 +75,7 @@ public class MusicCommentTest {
 
         addCommentCommand.execute();
 
-        Comment myComment = dummyMusic.getComment(dummyPeer,
-                Comment.getCurrentIndex());
+        Comment myComment = dummyMusic.getComment(dummyPeer, 0);
 
         Assert.assertNotNull("editComment failed", myComment);
 
@@ -107,13 +106,12 @@ public class MusicCommentTest {
 
         editCommentCommand.setMusic(dummyMusic);
         editCommentCommand.setAuthorPeer(dummyPeer);
-        editCommentCommand.setCommentId(Comment.getCurrentIndex());
+        editCommentCommand.setCommentId(0);
         editCommentCommand.setComment("This is the new comment");
 
         editCommentCommand.execute();
 
-        Comment myComment = dummyMusic.getComment(dummyPeer,
-                Comment.getCurrentIndex());
+        Comment myComment = dummyMusic.getComment(dummyPeer, 0);
 
         Assert.assertNotNull("editComment failed", myComment);
 
@@ -143,14 +141,13 @@ public class MusicCommentTest {
         addCommentCommand.setComment("This is a comment");
 
         addCommentCommand.execute();
-        
+
         removeCommentCommand.setMusic(dummyMusic);
         removeCommentCommand.setPeer(dummyPeer);
-        removeCommentCommand.setCommentId(Comment.getCurrentIndex());
+        removeCommentCommand.setCommentId(0);
         removeCommentCommand.execute();
 
-        Comment myComment = dummyMusic.getComment(dummyPeer,
-                Comment.getCurrentIndex());
+        Comment myComment = dummyMusic.getComment(dummyPeer, 0);
 
         Assert.assertNull("editComment failed", myComment);
     }
