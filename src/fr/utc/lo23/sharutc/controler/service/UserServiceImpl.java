@@ -13,6 +13,7 @@ import fr.utc.lo23.sharutc.model.userdata.Profile;
 import fr.utc.lo23.sharutc.model.userdata.UserInfo;
 import java.io.File;
 import java.io.IOException;
+import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -61,7 +62,15 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public void addContact(Peer peer) {
-        profile.getCategories().findCategoryById(Category.PUBLIC_CATEGORY_ID).addContact(peer);
+        //Check that the contact does not exist in the category Public
+        if (!profile.getCategories().findCategoryById(Category.PUBLIC_CATEGORY_ID).getContacts().contains(peer)) {
+               profile.getCategories().findCategoryById(Category.PUBLIC_CATEGORY_ID).addContact(peer);
+        }
+        else {
+            log.warn("This contact already exists");
+            ErrorMessage nErrorMessage = new ErrorMessage("This contact already exists");
+            appModel.getErrorBus().pushErrorMessage(nErrorMessage);
+        }
     }
 
     /**
@@ -103,7 +112,24 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public void addContactToCategory(Peer peer, Category category) {
-        profile.getCategories().findCategoryById(category.getId()).addContact(peer);
+        Long peerId = peer.getId();
+        Set<Integer> CategoriesIdsList = profile.getCategories().getCategoriesIdsByContactId(peerId);
+        /*
+         * Check that the contact does not exist in the category Public. 
+         * If it does not exist, the contact is added to the category Public.
+         */
+        if (!CategoriesIdsList.contains(Category.PUBLIC_CATEGORY_ID)) {
+            profile.getCategories().findCategoryById(Category.PUBLIC_CATEGORY_ID).addContact(peer);
+        }
+        //Check that the contact does not exist in this category
+        if (!CategoriesIdsList.contains(category.getId())) {
+            profile.getCategories().findCategoryById(category.getId()).addContact(peer);
+        }
+        else {
+            log.warn("This contact already exists in this category");
+            ErrorMessage nErrorMessage = new ErrorMessage("This contact already exists in this category");
+            appModel.getErrorBus().pushErrorMessage(nErrorMessage);
+        }
     }
 
     /**
