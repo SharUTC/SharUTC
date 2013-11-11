@@ -147,7 +147,37 @@ public interface MusicService {
      */
     public void loadMusicFiles(Catalog catalog);
 
+    /**
+     * Create a new Catalog instance and set it to appModel. Used at Profile
+     * creation only
+     */
     public void createAndSetCatalog();
 
+    /**
+     * Create a new RightsList instance and set it to appModel. Used at Profile
+     * creation only
+     */
     public void createAndSetRightsList();
+
+    /**
+     * Changes the realname (visible one) and the filename (hidden).
+     *
+     * @param music the music to modify
+     * @param name with or without .mp3, must be at leacht one char
+     */
+    public void updateMusicFileName(Music music, String name);
+
+    /**
+     * Only used to save updated values of music from local files. Compare
+     * updatable fields one by one between the music passed in parameter and the
+     * one stored in localCatalog
+     *
+     * @param music the music to modify, nothing happens if null
+     * @param title the title to set, or null if not changed
+     * @param artist the artist to set, or null if not changed
+     * @param album the album to set, or null if not changed
+     * @param track the track to set, or null if not changed
+     * @param year the year to set, or null if not changed
+     */
+    public void saveMusicFieldChanges(Music music, String title, String artist, String album, String track, String year);
 }

@@ -1,6 +1,7 @@
 package fr.utc.lo23.sharutc.model.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import fr.utc.lo23.sharutc.model.userdata.Peer;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.Serializable;
@@ -48,7 +49,7 @@ public class Music implements Serializable {
     private String mAlbum;
     private String mTrack;
     private Integer mTrackLength;
-    private Integer mYear;
+    private String mYear;
     private List<Comment> mComments;
     private Set<Score> mScores;
     private Set<String> mTags;
@@ -60,6 +61,8 @@ public class Music implements Serializable {
      *
      */
     public Music() {
+        this.mComments = new ArrayList<Comment>();
+        this.mScores = new HashSet<Score>();
     }
 
     /**
@@ -92,7 +95,7 @@ public class Music implements Serializable {
         this.mAlbum = music.mAlbum;
         this.mTrack = music.mTrack;
         this.mTrackLength = new Integer(music.mTrackLength);
-        this.mYear = new Integer(music.mYear);
+        this.mYear = music.mYear;
         this.mComments = new ArrayList<Comment>();
         // using a clone also for contained classes, always
         for (Comment comment : music.mComments) {
@@ -121,7 +124,7 @@ public class Music implements Serializable {
      * @param track
      * @param trackLength
      */
-    public Music(Long id, Long ownerPeerId, Byte[] file, String fileName, String realName, Integer hashcode, String title, String artist, String album, String track, Integer trackLength, Long frames) {
+    public Music(Long id, Long ownerPeerId, Byte[] file, String fileName, String realName, Integer hashcode, String title, String artist, String album, String year, String track, Integer trackLength, Long frames) {
         this.mId = id;
         this.mFileName = fileName;
         this.mRealName = realName;
@@ -137,6 +140,7 @@ public class Music implements Serializable {
         this.mTitle = title;
         this.mArtist = artist;
         this.mAlbum = album;
+        this.mYear = year;
         this.mTrack = track;
         this.mTrackLength = trackLength;
         this.mMayReadInfo = null;
@@ -206,7 +210,7 @@ public class Music implements Serializable {
      *
      * @param file
      */
-    public void setFile(Byte[] file) {
+    public void setFileByte(Byte[] file) {
         this.mFile = file;
     }
 
@@ -371,31 +375,79 @@ public class Music implements Serializable {
         this.mTrackLength = trackLength;
     }
 
-    public Integer getYear() {
+    public String getYear() {
         return mYear;
     }
 
-    public void setYear(Integer year) {
-        Integer oldYear = this.mYear;
+    public void setYear(String year) {
+        String oldYear = this.mYear;
         this.mYear = year;
         propertyChangeSupport.firePropertyChange(Property.YEAR.name(), oldYear, year);
 
     }
 
     /**
+     * Return the list of comments
      *
-     * @return
+     * @return The list of comments
      */
     public List<Comment> getComments() {
         return Collections.unmodifiableList(mComments);
     }
+    
+    /**
+     * Return a comment of the peer
+     * 
+     * @param peer The peer
+     * @param commentIndex The index of comment
+     * @return A comment of the peer
+     */
+    public Comment getComment(Peer peer, Integer commentIndex) {
+        return peer == null ? null : getComment(peer.getId(), commentIndex);
+    }
+    
+    /**
+     * Return a comment of the peer
+     * 
+     * @param peerId The id of the peer
+     * @param commentIndex The index of comment
+     * @return A comment of the peer
+     */
+    public Comment getComment(Long peerId, Integer commentIndex) {
+        Comment comment = null;
+        for (Comment tmpComment : getComments()) {
+            if (tmpComment.getAuthorPeerId().equals(peerId)) {
+                comment = tmpComment;
+            }
+        }
+        return comment;
+    }
 
     /**
+     * Define the list of comments
      *
-     * @param comments
+     * @param comments The list of comments
      */
     public void setComments(List<Comment> comments) {
         this.mComments = comments;
+    }
+    
+    /**
+     * Add a comment
+     * 
+     * @param comment The comment
+     */
+    public void addComment(Comment comment) {
+        this.mComments.add(comment);
+    }
+    
+    /**
+     * Remove a comment
+     * 
+     * @param comment The comment
+     */
+    public void removeComment(Comment comment) {
+        this.mComments.remove(comment);
     }
 
     /**
@@ -405,6 +457,32 @@ public class Music implements Serializable {
      */
     public Set<Score> getScores() {
         return Collections.unmodifiableSet(mScores);
+    }
+
+    /**
+     * Return the score of the peer
+     *
+     * @param peer The peer
+     * @return The list of scores
+     */
+    public Score getScore(Peer peer) {
+        return peer == null ? null : getScore(peer.getId());
+    }
+
+    /**
+     * Return the score of the peer
+     *
+     * @param peerId The id of the peer
+     * @return The list of scores
+     */
+    public Score getScore(Long peerId) {
+        Score score = null;
+        for (Score tmpScore : getScores()) {
+            if (tmpScore.getPeerId().equals(peerId)) {
+                score = tmpScore;
+            }
+        }
+        return score;
     }
 
     /**
@@ -514,36 +592,30 @@ public class Music implements Serializable {
         propertyChangeSupport.removePropertyChangeListener(listener);
     }
 
-    /**
-     *
-     * @return
-     */
-    public int getMusicHash() {
-        return mFile != null ? mFile.hashCode() : 0;
-    }
-
     public boolean addTag(String tag) {
+        boolean added = false;
         if (tag != null && tag.trim().length() > 0) {
             tag = tag.toLowerCase();
             tag = tag.substring(0, 1).toUpperCase() + (tag.length() > 1 ? tag.substring(1) : "");
             if (mTags.add(tag)) {
                 propertyChangeSupport.firePropertyChange(Property.TAGS.name(), null, tag);
-                return true;
+                added = true;
             }
         }
-        return false;
+        return added;
     }
 
     public boolean removeTag(String tag) {
+        boolean removed = false;
         if (tag != null && tag.trim().length() > 0) {
             tag = tag.toLowerCase();
             tag = tag.substring(0, 1).toUpperCase() + (tag.length() > 1 ? tag.substring(1) : "");
             if (mTags.remove(tag)) {
                 propertyChangeSupport.firePropertyChange(Property.TAGS.name(), tag, null);
-                return true;
+                removed = true;
             }
         }
-        return false;
+        return removed;
     }
 
     public void setCommentAuthor(Integer index, String authorName) {
@@ -554,7 +626,9 @@ public class Music implements Serializable {
     @Override
     public boolean equals(Object obj) {
         // be careful, don't use public int hashCode() here, equals is realized with from music Bytes directly
-        return (obj != null && obj instanceof Music && ((Music) obj).getMusicHash() == this.getMusicHash());
+        return (obj != null && obj instanceof Music
+                && (((Music) obj).mHash.equals(this.mHash)
+                || ((Music) obj).mId.equals(this.mId) && ((Music) obj).mOwnerPeerId.equals(this.mOwnerPeerId)));
     }
 
     @Override

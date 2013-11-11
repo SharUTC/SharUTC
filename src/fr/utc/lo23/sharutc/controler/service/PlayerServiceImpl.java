@@ -5,6 +5,8 @@ import com.google.inject.Singleton;
 import fr.utc.lo23.sharutc.controler.player.PlaybackListener;
 import fr.utc.lo23.sharutc.controler.player.PlayerEvent;
 import fr.utc.lo23.sharutc.controler.player.PlaybackListenerImpl;
+import static fr.utc.lo23.sharutc.controler.service.PlayerServiceImpl.VOLUME_MAX;
+import static fr.utc.lo23.sharutc.controler.service.PlayerServiceImpl.VOLUME_MIN;
 import fr.utc.lo23.sharutc.model.domain.Catalog;
 import fr.utc.lo23.sharutc.model.domain.Music;
 import fr.utc.lo23.sharutc.util.CollectionChangeListener;
@@ -33,6 +35,7 @@ public class PlayerServiceImpl implements PlayerService, PropertyChangeListener,
     private Long mCurrentTimeSec = 0L;
     private Integer volume = 100;
     private boolean mute = false;
+    private boolean pause = false;
     private PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
 
     @Inject
@@ -46,7 +49,9 @@ public class PlayerServiceImpl implements PlayerService, PropertyChangeListener,
      */
     @Override
     public void addToPlaylist(Music music) {
-        mPlaylist.add(music);
+        if (music != null && !music.getFileMissing() && music.getFileBytes() != null) {
+            mPlaylist.add(music);
+        }
     }
 
     /**
@@ -54,7 +59,22 @@ public class PlayerServiceImpl implements PlayerService, PropertyChangeListener,
      */
     @Override
     public void removeFromPlaylist(Music music) {
-        mPlaylist.remove(music);
+        if (music != null) {
+            mPlaylist.remove(music);
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void playMusicFromPlaylist(Music music) {
+        log.info("playMusicFromPlaylist");
+        if (music != null && mPlaylist.contains(music)) {
+            playerStop();
+            mCurrentMusic = mPlaylist.get(mPlaylist.indexOf(music));
+            playerPlay();
+        }
     }
 
     /**
@@ -62,8 +82,8 @@ public class PlayerServiceImpl implements PlayerService, PropertyChangeListener,
      */
     @Override
     public void playOneMusic(Music music) {
-        log.info("play music");
-        if (music != null) {
+        log.info("playOneMusic");
+        if (music != null && !music.getFileMissing() && music.getFileBytes() != null) {
             mPlaylist.clear();
             mPlaylist.add(music);
             playerPlay();
@@ -74,8 +94,16 @@ public class PlayerServiceImpl implements PlayerService, PropertyChangeListener,
      * {@inheritDoc}
      */
     @Override
-    public void updatePlaylist(Music music) {
-        log.warn("Not supported yet.");
+    public void updateAndPlayMusic(Music musicWithBytes) {
+        log.info("updateAndPlayMusic");
+        if (musicWithBytes != null && mPlaylist.contains(musicWithBytes)) {
+            playerStop();
+            int musicIndex = mPlaylist.indexOf(musicWithBytes);
+            Music musicFromPlaylist = mPlaylist.get(musicIndex);
+            musicFromPlaylist.setFileByte(musicWithBytes.getFileBytes());
+            setCurrentMusic(musicFromPlaylist);
+            playerPlay();
+        }
     }
 
     /**
@@ -95,6 +123,13 @@ public class PlayerServiceImpl implements PlayerService, PropertyChangeListener,
                         @Override
                         public void playbackStarted(PlayerEvent playerEvent) {
                             log.debug("playbackStarted");
+                            onPause(false);
+                        }
+
+                        @Override
+                        public void playbackPaused(PlayerEvent playerEvent) {
+                            log.debug("playbackPaused");
+                            onPause(true);
                         }
 
                         @Override
@@ -111,6 +146,14 @@ public class PlayerServiceImpl implements PlayerService, PropertyChangeListener,
         } else {
             player.pauseToggle();
         }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean isPause() {
+        return this.pause;
     }
 
     /**
@@ -135,6 +178,7 @@ public class PlayerServiceImpl implements PlayerService, PropertyChangeListener,
             player = null;
         }
         setCurrentTimeSec(0L);
+        onPause(false);
     }
 
     /**
@@ -271,6 +315,17 @@ public class PlayerServiceImpl implements PlayerService, PropertyChangeListener,
         }
     }
 
+    /**
+     * For intern usage only, automatically switch on/off pause value for ui
+     * usage, doesn't pauses the music
+     *
+     * @param pause the pause value seen by client
+     */
+    private void onPause(boolean pause) {
+        this.pause = pause;
+        propertyChangeSupport.firePropertyChange(Property.PAUSE.name(), !pause, pause);
+    }
+
     private void onMusicEnd() {
         player = null;
         if (mPlaylist.indexOf(mCurrentMusic) < (mPlaylist.size() - 1)) {
@@ -384,22 +439,5 @@ public class PlayerServiceImpl implements PlayerService, PropertyChangeListener,
         if (mPlaylist.size() == 1) {
             mCurrentMusic = mPlaylist.get(0);
         }
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public enum Property {
-
-        /**
-         * {@inheritDoc}
-         */
-        CURRENT_TIME, /**
-         * {@inheritDoc}
-         */
-        SELECTED_MUSIC, /**
-         * {@inheritDoc}
-         */
-        VOLUME, MUTE
     }
 }

@@ -6,6 +6,7 @@ import fr.utc.lo23.sharutc.model.domain.Catalog;
 import fr.utc.lo23.sharutc.model.domain.Music;
 import fr.utc.lo23.sharutc.model.domain.RightsList;
 import fr.utc.lo23.sharutc.model.userdata.ActivePeerList;
+import fr.utc.lo23.sharutc.model.userdata.Peer;
 import fr.utc.lo23.sharutc.model.userdata.Profile;
 import fr.utc.lo23.sharutc.model.userdata.UserInfo;
 import java.io.File;
@@ -20,6 +21,7 @@ public class AppModelBuilder {
     private static final String[] TEST_MP3_FILENAMES = {"Sting & The Police - The Very Best Of Sting & The Police - 17 - Roxanne.mp3"};
     private final AppModel appModel;
     private final FileService fileService;
+    private Peer[] activePeers = {new Peer(1L, "Peer Mock (id=1)"), new Peer(2L, "Peer Mock (id=2)"), new Peer(3L, "Peer Mock (id=3)")};
 
     @Inject
     public AppModelBuilder(AppModel appModel, FileService fileService) {
@@ -52,7 +54,11 @@ public class AppModelBuilder {
     }
 
     private void mockActivePeerList() {
-        log.info("mockActivePeerList - Not supported yet.");
+        log.info("MockingActivePeerList ...");
+        for (Peer peer : activePeers) {
+            appModel.getActivePeerList().update(peer);
+        }
+        log.info("MockingActivePeerList DONE");
     }
 
     private void mockProfile() {

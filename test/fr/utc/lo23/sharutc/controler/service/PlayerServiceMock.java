@@ -37,8 +37,8 @@ public class PlayerServiceMock extends PlayerServiceImpl implements PlayerServic
     }
 
     @Override
-    public void updatePlaylist(Music music) {
-        super.updatePlaylist(music);
+    public void updateAndPlayMusic(Music music) {
+        super.updateAndPlayMusic(music);
     }
 
     @Override

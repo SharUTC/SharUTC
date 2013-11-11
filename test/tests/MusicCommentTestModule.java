@@ -1,12 +1,12 @@
 package tests;
 
 import com.google.inject.AbstractModule;
-import fr.utc.lo23.sharutc.controler.command.music.IntegrateRemoteTagMapCommand;
-import fr.utc.lo23.sharutc.controler.command.music.IntegrateRemoteTagMapCommandImpl;
-import fr.utc.lo23.sharutc.controler.command.music.SendTagMapCommand;
-import fr.utc.lo23.sharutc.controler.command.music.SendTagMapCommandImpl;
-import fr.utc.lo23.sharutc.controler.command.music.ShowTagMapCommand;
-import fr.utc.lo23.sharutc.controler.command.music.ShowTagMapCommandImpl;
+import fr.utc.lo23.sharutc.controler.command.music.AddCommentCommand;
+import fr.utc.lo23.sharutc.controler.command.music.AddCommentCommandImpl;
+import fr.utc.lo23.sharutc.controler.command.music.EditCommentCommand;
+import fr.utc.lo23.sharutc.controler.command.music.EditCommentCommandImpl;
+import fr.utc.lo23.sharutc.controler.command.music.RemoveCommentCommand;
+import fr.utc.lo23.sharutc.controler.command.music.RemoveCommentCommandImpl;
 import fr.utc.lo23.sharutc.controler.network.MessageParser;
 import fr.utc.lo23.sharutc.controler.network.MessageParserImpl;
 import fr.utc.lo23.sharutc.controler.network.NetworkService;
@@ -20,7 +20,7 @@ import fr.utc.lo23.sharutc.controler.service.UserServiceMock;
 import fr.utc.lo23.sharutc.model.AppModel;
 import fr.utc.lo23.sharutc.model.AppModelMock;
 
-public class TagMapTestModule extends AbstractModule {
+public class MusicCommentTestModule extends AbstractModule {
 
     @Override
     protected void configure() {
@@ -30,9 +30,9 @@ public class TagMapTestModule extends AbstractModule {
         bind(UserService.class).to(UserServiceMock.class);
         bind(MusicService.class).to(MusicServiceMock.class);
         bind(NetworkService.class).to(NetworkServiceMock.class);
-        bind(ShowTagMapCommand.class).to(ShowTagMapCommandImpl.class);
-        bind(SendTagMapCommand.class).to(SendTagMapCommandImpl.class);
-        bind(IntegrateRemoteTagMapCommand.class).to(IntegrateRemoteTagMapCommandImpl.class);
+        bind(AddCommentCommand.class).to(AddCommentCommandImpl.class);
+        bind(EditCommentCommand.class).to(EditCommentCommandImpl.class);
+        bind(RemoveCommentCommand.class).to(RemoveCommentCommandImpl.class);
         requestInjection(this);
     }
 }

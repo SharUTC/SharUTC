@@ -156,7 +156,7 @@ public class PeerDiscoverySocket implements Runnable {
     public void sendPersonalInformationToPeer(PeerSocket pSocket) {
         Message msgInfo = null;
         Long myPeerId = mAppModel.getProfile().getUserInfo().getPeerId();
-        msgInfo = new Message(myPeerId, MessageType.CONNECTION_RESPONSE, "I send you my personal information (peerId = " + myPeerId + ")");
+        msgInfo = new Message(myPeerId, MessageType.CONNECTION_RESPONSE, "I send you my personal information (peerId = " + myPeerId + ")", null);
         pSocket.send(msgInfo);
     }
 

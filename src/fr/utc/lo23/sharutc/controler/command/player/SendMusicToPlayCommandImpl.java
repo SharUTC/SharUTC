@@ -1,6 +1,7 @@
 package fr.utc.lo23.sharutc.controler.command.player;
 
 import com.google.inject.Inject;
+import fr.utc.lo23.sharutc.controler.network.NetworkService;
 import fr.utc.lo23.sharutc.controler.service.MusicService;
 import fr.utc.lo23.sharutc.model.domain.Music;
 import fr.utc.lo23.sharutc.model.userdata.Peer;
@@ -15,11 +16,14 @@ public class SendMusicToPlayCommandImpl implements SendMusicToPlayCommand {
     private static final Logger log = LoggerFactory.getLogger(SendMusicToPlayCommandImpl.class);
     private Music mMusic;
     private Peer mPeer;
+    private Long mConversationId;
     private final MusicService musicService;
+    private final NetworkService networkService;
 
     @Inject
-    public SendMusicToPlayCommandImpl(MusicService musicService) {
+    public SendMusicToPlayCommandImpl(MusicService musicService, NetworkService networkService) {
         this.musicService = musicService;
+        this.networkService = networkService;
     }
 
     /**
@@ -54,18 +58,23 @@ public class SendMusicToPlayCommandImpl implements SendMusicToPlayCommand {
         this.mMusic = music;
     }
 
+    public Long getConversationId() {
+        return mConversationId;
+    }
+
+    public void setConversationId(Long conversationId) {
+        this.mConversationId = conversationId;
+    }
+
     /**
      * {@inheritDoc}
      */
     @Override
     public void execute() {
         log.info("SendMusicToPlayCommand ...");
-        Music m = mMusic.clone();
-        m.getComments().clear();
-        m.getScores().clear();
-        m.getCategoryIds().clear();
-        m.getTags().clear();
-        musicService.loadMusicFile(m);
+        Music musicToSend = mMusic.clone();
+        musicService.loadMusicFile(musicToSend);
+        networkService.sendMusicToPlay(mPeer, mConversationId, musicToSend);
         log.info("SendMusicToPlayCommand DONE");
     }
 }
