@@ -5,6 +5,7 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import fr.utc.lo23.sharutc.controler.network.NetworkService;
 import fr.utc.lo23.sharutc.model.AppModel;
+import fr.utc.lo23.sharutc.model.ErrorMessage;
 import fr.utc.lo23.sharutc.model.userdata.ActivePeerList;
 import fr.utc.lo23.sharutc.model.userdata.Category;
 import fr.utc.lo23.sharutc.model.userdata.Peer;
@@ -87,7 +88,14 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public void deleteCategory(Category category) {
-        profile.getCategories().remove(category);
+        if (category.getId() != 0) {
+            profile.getCategories().remove(category);
+        }
+        else {
+            log.warn("Can't delete Category Public");
+            ErrorMessage nErrorMessage = new ErrorMessage("Can't delete Category Public");
+            appModel.getErrorBus().pushErrorMessage(nErrorMessage);
+        }   
     }
 
     /**
