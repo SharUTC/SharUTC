@@ -9,10 +9,14 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.geometry.Point2D;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.scene.input.DragEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,6 +29,10 @@ public class MainController implements Initializable, PeopleHomeController.IPeop
     private static final Logger log = LoggerFactory.getLogger(MainController.class);
     @Inject
     private GuiceFXMLLoader mFxmlLoader;
+    /**
+     * the drag Preview
+     */
+    private StackPane mDragPreview;
     public Button songsbutton;
     public Button peoplebutton;
     public Button artistsbutton;
@@ -38,6 +46,31 @@ public class MainController implements Initializable, PeopleHomeController.IPeop
             bottombar.getChildren().add((Node) FXMLLoader.load(getClass().getResource("fxml/player.fxml")));
         } catch (IOException exception) {
         }
+
+        mDragPreview = new StackPane();
+        mDragPreview.setOpacity(0.6);
+        mDragPreview.setMouseTransparent(true);
+        mDragPreview.toFront();
+    }
+
+    /**
+     * all init which need scene
+     */
+    public void sceneCreated() {
+        final AnchorPane root = (AnchorPane) rightpane.getScene().getRoot();
+        //add a Drag Handler to move the drag preview
+        root.setOnDragOver(new javafx.event.EventHandler<DragEvent>() {
+            @Override
+            public void handle(DragEvent dragEvent) {
+                Point2D localPoint = root.sceneToLocal(new Point2D(dragEvent.getSceneX(), dragEvent.getSceneY()));
+                mDragPreview.relocate(
+                        (int) (localPoint.getX() - mDragPreview.getBoundsInParent().getWidth() / 2),
+                        (int) (localPoint.getY() - mDragPreview.getBoundsInParent().getHeight() / 2));
+                dragEvent.consume();
+            }
+        });
+
+        root.getChildren().add(mDragPreview);
     }
 
     @FXML
@@ -51,6 +84,7 @@ public class MainController implements Initializable, PeopleHomeController.IPeop
         } else if (event.getSource() == peoplebutton) {
             final Result loadingResult = mFxmlLoader.load(getClass().getResource("fxml/people_home.fxml"));
             ((PeopleHomeController) loadingResult.getController()).setInterface(this);
+            ((DragPreviewDrawer) loadingResult.getController()).init(mDragPreview);
             children.add((Node) loadingResult.getRoot());
         } else if (event.getSource() == artistsbutton) {
             children.add((Node) mFxmlLoader.load(getClass().getResource("fxml/artists_detail.fxml")).getRoot());

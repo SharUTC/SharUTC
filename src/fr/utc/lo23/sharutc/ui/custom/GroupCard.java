@@ -108,7 +108,8 @@ public class GroupCard extends SimpleCard implements EventHandler<Event> {
         if (gestureSource instanceof PeopleCard) {
             dragEvent.acceptTransferModes(TransferMode.COPY_OR_MOVE);
         }
-        dragEvent.consume();
+        //don't consume because root uses it to relocate preview
+        //dragEvent.consume();
     }
 
     /**
@@ -150,7 +151,7 @@ public class GroupCard extends SimpleCard implements EventHandler<Event> {
         boolean success = false;
         if (db.hasString() && db.getString().equals(PeopleCard.DROP_KEY)) {
             final PeopleCard droppedCard = (PeopleCard) dragEvent.getGestureSource();
-            mInterface.onUsersAdded(mModel, droppedCard);
+            mInterface.onUsersAdded(mModel);
         }
         dragEvent.setDropCompleted(success);
         dragEvent.consume();
@@ -184,6 +185,6 @@ public class GroupCard extends SimpleCard implements EventHandler<Event> {
         /**
          * user added people
          */
-        public void onUsersAdded(Category category, PeopleCard droppedCard);
+        public void onUsersAdded(Category category);
     }
 }
