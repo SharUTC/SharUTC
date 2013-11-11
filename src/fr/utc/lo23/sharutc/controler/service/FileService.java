@@ -11,9 +11,8 @@ import java.io.IOException;
 public interface FileService {
 
     public static final String APP_NAME = "SharUTC";
-    public static final String FOLDER_USERS = "users";
-    public static final String FOLDER_PROFIL = "profile";
-    public static final String FOLDER_MUSIC = "music";
+    public static final String ROOT_FOLDER_USERS = "users";
+    public static final String FOLDER_MUSICS = "musics";
     public static final String DOT_MP3 = ".mp3";
     public static final String[] AUTHORIZED_MUSIC_FILE_TYPE = {"mp3"};
     public static final int MIN_FILENAME_LENGTH = 1;
@@ -72,4 +71,8 @@ public interface FileService {
     public String computeRealName(String name);
 
     public String computeFileName(String realName, String realname);
+
+    public void saveToFile(SharUTCFile sharUTCFile, Object objectToSave);
+
+    public <T> T readFile(SharUTCFile sharUTCFile, Class<T> clazz);
 }

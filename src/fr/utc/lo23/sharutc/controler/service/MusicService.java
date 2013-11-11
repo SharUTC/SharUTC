@@ -104,13 +104,23 @@ public interface MusicService {
     /**
      * Write to disk Catalog and RightsList in a JSON file
      */
-    public void saveUserMusicFiles();
+    public void saveUserMusicFile();
 
     /**
      *
      * @param path
      */
-    public void loadUserMusicFiles(String path);
+    public void loadUserMusicFile();
+
+    /**
+     *
+     */
+    public void saveUserRightsListFile();
+
+    /**
+     *
+     */
+    public void loadUserRightsListFile();
 
     /**
      *

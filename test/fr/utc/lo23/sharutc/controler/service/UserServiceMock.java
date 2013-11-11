@@ -19,8 +19,8 @@ public class UserServiceMock extends UserServiceImpl implements UserService {
             .getLogger(UserServiceMock.class);
 
     @Inject
-    public UserServiceMock(AppModel appModel) {
-        super(appModel);
+    public UserServiceMock(AppModel appModel, FileService fileService) {
+        super(appModel, fileService);
     }
 
     @Override

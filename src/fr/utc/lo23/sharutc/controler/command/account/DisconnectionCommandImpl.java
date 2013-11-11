@@ -6,6 +6,7 @@ package fr.utc.lo23.sharutc.controler.command.account;
 
 import com.google.inject.Inject;
 import fr.utc.lo23.sharutc.controler.network.NetworkService;
+import fr.utc.lo23.sharutc.controler.service.MusicService;
 import fr.utc.lo23.sharutc.controler.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,26 +20,29 @@ public class DisconnectionCommandImpl implements DisconnectionCommand {
 
     private static final Logger log = LoggerFactory
             .getLogger(IntegrateDisconnectionCommandImpl.class);
-    final private UserService mUserService;
-    final private NetworkService mNetworkService;
+    final private UserService userService;
+    final private NetworkService networkService;
+    private final MusicService musicService;
 
     /**
      * {@inheritDoc}
      */
     @Inject
-    public DisconnectionCommandImpl(UserService mUserService, NetworkService mNetworkService) {
-        this.mUserService = mUserService;
-        this.mNetworkService = mNetworkService;
+    public DisconnectionCommandImpl(UserService userService, MusicService musicService, NetworkService networkService) {
+        this.userService = userService;
+        this.musicService = musicService;
+        this.networkService = networkService;
     }
 
     @Override
     public void execute() {
         log.info("DisconnectionCommand ...");
-
-        mUserService.disconnectionRequest();
+        musicService.saveUserMusicFile();
+        musicService.saveUserRightsListFile();
+        userService.disconnectionRequest();
         // Notify network
-        mNetworkService.disconnectionBroadcast();
-        
+        networkService.disconnectionBroadcast();
+
         log.info("DisconnectionCommand DONE");
     }
 }

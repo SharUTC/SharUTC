@@ -19,7 +19,7 @@ public class MessageParserImpl implements MessageParser {
 
     private static final Logger log = LoggerFactory
             .getLogger(MessageParserImpl.class);
-    private static ObjectMapper mapper = new ObjectMapper();
+    private final ObjectMapper mapper = new ObjectMapper();
     private final AppModel appModel;
     private Message message;
     private HashMap<String, Object> messageContent = null;

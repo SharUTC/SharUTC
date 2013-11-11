@@ -349,16 +349,11 @@ public class MusicServiceImpl implements MusicService {
      * {@inheritDoc}
      */
     @Override
-    public void saveUserMusicFiles() {
+    public void saveUserMusicFile() {
         log.trace("saveUserMusicFiles ...");
         Catalog localCatalog = appModel.getLocalCatalog();
         if (localCatalog != null) {
-            ObjectMapper mapper = new ObjectMapper();
-            try {
-                mapper.writeValue(new File(dataPath + "\\music.json"), localCatalog);
-            } catch (IOException ex) {
-                log.error(ex.toString());
-            }
+            fileService.saveToFile(SharUTCFile.CATALOG, localCatalog);
         } else {
             log.warn("Can't save current music Catalog(null)");
         }
@@ -369,19 +364,46 @@ public class MusicServiceImpl implements MusicService {
      * {@inheritDoc}
      */
     @Override
-    public void loadUserMusicFiles(String path) {
-        log.trace("loadUserMusicFiles ...");
-        if (path == null) {
-            throwMissingParameter();
+    public void saveUserRightsListFile() {
+        log.trace("saveUserRightsListFiles ...");
+        RightsList rightsList = appModel.getRightsList();
+        if (rightsList != null) {
+            fileService.saveToFile(SharUTCFile.RIGHTSLIST, rightsList);
         } else {
-            ObjectMapper mapper = new ObjectMapper();
-            try {
-                Catalog tmpCatalog = mapper.readValue(new File(path), Catalog.class);
-                appModel.setTmpCatalog(tmpCatalog);
-            } catch (IOException ex) {
-                log.error(ex.toString());
-            }
+            log.warn("Can't save current rightsList (null)");
         }
+        log.trace("saveUserRightsListFiles DONE");
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void loadUserRightsListFile() {
+        log.trace("loadUserRightsListFiles ...");
+        RightsList rightsList = fileService.readFile(SharUTCFile.RIGHTSLIST, RightsList.class);
+        if (rightsList != null) {
+            appModel.setRightsList(rightsList);
+        } else {
+            log.warn("loadUserRightsListFiles : no rightsList loaded");
+        }
+        log.trace("loadUserRightsListFiles DONE");
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void loadUserMusicFile() {
+        log.trace("loadUserMusicFiles ...");
+
+        Catalog catalog = fileService.readFile(SharUTCFile.CATALOG, Catalog.class);
+        if (catalog != null) {
+            appModel.setLocalCatalog(catalog);
+        } else {
+            log.warn("loadUserMusicFiles : no catalog loaded");
+        }
+
         log.trace("loadUserMusicFiles DONE");
     }
 
@@ -633,7 +655,7 @@ public class MusicServiceImpl implements MusicService {
                     }
                 }
                 log.info("Saving music update");
-                saveUserMusicFiles();
+                saveUserMusicFile();
             }
         }
         log.trace("updateMusicFileName DONE");
@@ -697,7 +719,7 @@ public class MusicServiceImpl implements MusicService {
                         }
                     }
                     log.info("Saving music field(s) update");
-                    saveUserMusicFiles();
+                    saveUserMusicFile();
                 }
             }
         }

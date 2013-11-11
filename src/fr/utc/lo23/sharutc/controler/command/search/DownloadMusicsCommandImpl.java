@@ -78,7 +78,7 @@ public class DownloadMusicsCommandImpl implements DownloadMusicsCommand {
         }
 
         if (musicWithHashMoved) {
-            musicService.saveUserMusicFiles();
+            musicService.saveUserMusicFile();
         }
 
         // splitting catalog following owner of each music
