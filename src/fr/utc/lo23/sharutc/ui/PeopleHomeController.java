@@ -6,9 +6,12 @@ import fr.utc.lo23.sharutc.ui.custom.GroupCard;
 import fr.utc.lo23.sharutc.ui.custom.PeopleCard;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.StackPane;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,7 +19,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 
-public class PeopleHomeController implements Initializable, PeopleCard.IPeopleCard, GroupCard.IGroupCard {
+public class PeopleHomeController extends DragPreviewDrawer implements Initializable, PeopleCard.IPeopleCard, GroupCard.IGroupCard {
 
     private static final Logger log = LoggerFactory.getLogger(PeopleHomeController.class);
     private IPeopleHomeController mInterface;
@@ -93,7 +96,7 @@ public class PeopleHomeController implements Initializable, PeopleCard.IPeopleCa
             mPeopleCardSelected.add(draggedCard);
 
             //drag event start, inform all selected card
-            mInterface.onDraggedCardDisplayRequested(mPeopleCardSelected, event);
+            updateDragPreview(event);
             for (PeopleCard peopleCard : mPeopleCardSelected) {
                 peopleCard.dragged();
             }
@@ -104,14 +107,14 @@ public class PeopleHomeController implements Initializable, PeopleCard.IPeopleCa
             }
             //clean the selection
             mPeopleCardSelected.clear();
-            mInterface.onDraggedCardHideRequested();
+            hideDragPreview();
         }
 
     }
 
     @Override
     public void onGroupDeletionRequested(GroupCard g) {
-        log.info("onPeopleDeletetionRequested " + g.getModel().getName());
+        log.info("onGroupDeletionRequested " + g.getModel().getName());
         groupContainer.getChildren().remove(g);
     }
 
@@ -135,8 +138,25 @@ public class PeopleHomeController implements Initializable, PeopleCard.IPeopleCa
         }
         //clean the selection
         mPeopleCardSelected.clear();
-        mInterface.onDraggedCardHideRequested();
+        hideDragPreview();
     }
+
+    /**
+     * Display PeopleCard selected as Drag preview
+     *
+     * @param event
+     */
+    protected void updateDragPreview(MouseEvent event) {
+        super.updateDragPreview(event);
+        int i = 0;
+        for (PeopleCard people : mPeopleCardSelected) {
+            final ImageView preview = new ImageView(people.snapshot(null, null));
+            StackPane.setMargin(preview, new Insets(20 * i, 20 * i, 0, 0));
+            mDragPreview.getChildren().add(preview);
+            i++;
+        }
+    }
+
 
     public interface IPeopleHomeController {
 
@@ -151,18 +171,5 @@ public class PeopleHomeController implements Initializable, PeopleCard.IPeopleCa
          * display group details
          */
         void onGroupDetailRequested();
-
-        /**
-         * Display preview for dragged card
-         *
-         * @param cards
-         * @param event
-         */
-        void onDraggedCardDisplayRequested(ArrayList<PeopleCard> cards, MouseEvent event);
-
-        /**
-         * Hide preview for dragged card
-         */
-        void onDraggedCardHideRequested();
     }
 }

@@ -7,12 +7,13 @@ import com.google.inject.Module;
 import fr.utc.lo23.sharutc.injection.CommandModule;
 import fr.utc.lo23.sharutc.injection.ModelModule;
 import fr.utc.lo23.sharutc.injection.ServiceModule;
-import java.util.List;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.List;
 
 public class App extends GuiceApplication {
 
@@ -24,7 +25,8 @@ public class App extends GuiceApplication {
     @Override
     public void start(Stage stage) throws Exception {
 
-        final Parent root = mFxmlLoader.load(getClass().getResource("fxml/main.fxml")).getRoot();
+        final GuiceFXMLLoader.Result loadingResult = mFxmlLoader.load(getClass().getResource("fxml/main.fxml"));
+        final Parent root = loadingResult.getRoot();
 
         Scene scene = new Scene((Parent) root);
         scene.getStylesheets().add(this.getClass().getResource("css/main.css").toExternalForm());
@@ -32,7 +34,7 @@ public class App extends GuiceApplication {
 
         //If needed, cast your controller
         //and call any public method here
-        //MainController controller = loader.<MainController>getController();
+        ((MainController) loadingResult.getController()).sceneCreated();
 
         stage.show();
     }
