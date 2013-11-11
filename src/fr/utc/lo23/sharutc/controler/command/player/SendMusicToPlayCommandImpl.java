@@ -16,6 +16,7 @@ public class SendMusicToPlayCommandImpl implements SendMusicToPlayCommand {
     private static final Logger log = LoggerFactory.getLogger(SendMusicToPlayCommandImpl.class);
     private Music mMusic;
     private Peer mPeer;
+    private Long mConversationId;
     private final MusicService musicService;
     private final NetworkService networkService;
 
@@ -57,6 +58,14 @@ public class SendMusicToPlayCommandImpl implements SendMusicToPlayCommand {
         this.mMusic = music;
     }
 
+    public Long getConversationId() {
+        return mConversationId;
+    }
+
+    public void setConversationId(Long conversationId) {
+        this.mConversationId = conversationId;
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -65,7 +74,7 @@ public class SendMusicToPlayCommandImpl implements SendMusicToPlayCommand {
         log.info("SendMusicToPlayCommand ...");
         Music musicToSend = mMusic.clone();
         musicService.loadMusicFile(musicToSend);
-        networkService.sendMusicToPlay(mPeer, musicToSend);
+        networkService.sendMusicToPlay(mPeer, mConversationId, musicToSend);
         log.info("SendMusicToPlayCommand DONE");
     }
 }

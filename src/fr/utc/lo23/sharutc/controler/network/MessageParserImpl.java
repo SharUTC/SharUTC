@@ -93,7 +93,7 @@ public class MessageParserImpl implements MessageParser {
      * {@inheritDoc}
      */
     @Override
-    public Message write(MessageType messageType, Object[][] content) {
+    public Message write(MessageType messageType, Object[][] content, Long conversationId) {
         if (messageType == null) {
             log.error("Missing messageType");
         }
@@ -101,7 +101,7 @@ public class MessageParserImpl implements MessageParser {
         try {
             String contentAsString = content != null ? mapper.writeValueAsString(content) : "";
             log.debug("Writing Message : content = {}", contentAsString);
-            newMessage = new Message(appModel.getProfile().getUserInfo().getPeerId(), messageType, contentAsString);
+            newMessage = new Message(appModel.getProfile().getUserInfo().getPeerId(), messageType, contentAsString, conversationId);
         } catch (JsonProcessingException ex) {
             log.error(ex.toString());
         }

@@ -28,7 +28,7 @@ public class AppModelImpl implements AppModel, Serializable {
     private Catalog tmpCatalog = new Catalog();
     private Catalog remoteUserCatalog = new Catalog();
     private Catalog searchResults = new Catalog();
-    private Long currentConversationId = new Long(0);
+    protected Long currentConversationId = new Long(0);
     private Profile profile;
     private Catalog localCatalog;
     private RightsList rightsList;
