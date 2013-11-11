@@ -88,7 +88,8 @@ public interface MusicService {
      *
      * @param peer The peer who gives the score
      * @param music The music which has to be scored
-     * @param score The value of the score
+     * @param score The value of the score, might be null to remove value
+     * (unsetScore)
      */
     public void setScore(Peer peer, Music music, Integer score);
 

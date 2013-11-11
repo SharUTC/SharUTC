@@ -239,7 +239,7 @@ public class NetworkServiceImpl implements NetworkService {
         if(userInfo != null){
             mPeerDiscoverySocket.send(mMessageParser.write(MessageType.USER_INFO, new Object[][]{{Message.USER_INFO, userInfo}}, mAppModel.getCurrentConversationId()));
         } else {
-            log.equals("[NetworkService - userInfoBroadCast()] - userInfo is null");
+            log.error("[NetworkService - userInfoBroadCast()] - userInfo is null");
         }
     }
 

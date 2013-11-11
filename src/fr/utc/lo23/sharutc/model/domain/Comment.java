@@ -21,7 +21,6 @@ import java.util.Date;
  */
 public class Comment implements Serializable {
 
-    private static Integer sCurrentIndex = 0;
     private static final long serialVersionUID = -4908693993402023011L;
     @JsonIgnore
     private PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
@@ -61,10 +60,6 @@ public class Comment implements Serializable {
         this.mCreationDate = creationDate;
     }
     
-    public static Integer getCurrentIndex() {
-        return sCurrentIndex;
-    }
-
     /**
      *
      * @return
@@ -79,7 +74,6 @@ public class Comment implements Serializable {
      */
     public void setIndex(Integer index) {
         this.mIndex = index;
-        sCurrentIndex = Math.max(sCurrentIndex, mIndex);
     }
 
     /**
