@@ -6,17 +6,17 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.paint.*?>
 <?import javafx.scene.text.*?>
-
-<VBox fillWidth="true" layoutX="0.0" layoutY="0.0" prefHeight="-1.0" prefWidth="-1.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2">
-  <children>
-    <AnchorPane prefHeight="50.0" prefWidth="-1.0">
+<fx:root type="fr.utc.lo23.sharutc.ui.custom.CardList" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fillWidth="true" layoutX="0.0" layoutY="0.0" prefHeight="-1.0" prefWidth="-1.0">
+<children>
+    <AnchorPane prefHeight="40.0" prefWidth="-1.0">
       <children>
-        <Text fx:id="boxtitle" fill="#404040" strokeType="OUTSIDE" strokeWidth="0.0" text="Title" underline="true" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="8.0">
+        <Label fx:id="boxtitle" prefHeight="25.0" prefWidth="220.0" styleClass="largeTextGreyBold" text="Title"  AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="8.0">
           <font>
-            <Font size="16.0" />
+            <Font  size="20.0"/>
+            
           </font>
-        </Text>
-        <Button fx:id="morebt" onAction="#handleMenuButtonAction" alignment="CENTER_RIGHT" contentDisplay="RIGHT" mnemonicParsing="false" text="More" textAlignment="LEFT" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="8.0">
+        </Label>
+        <Button fx:id="morebt" styleClass="rectButton" onAction="#handleMenuButtonAction" alignment="CENTER_RIGHT" contentDisplay="RIGHT" mnemonicParsing="false" text="see more" textAlignment="LEFT" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="8.0">
           <font>
             <Font size="12.0" />
           </font>
@@ -25,4 +25,4 @@
     </AnchorPane>
     <FlowPane fx:id="content" hgap="5.0" prefHeight="-1.0" prefWidth="-1.0" prefWrapLength="200.0" vgap="5.0" VBox.vgrow="ALWAYS" />
   </children>
-</VBox>
+</fx:root>

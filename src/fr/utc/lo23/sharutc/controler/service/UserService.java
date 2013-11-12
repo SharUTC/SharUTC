@@ -14,32 +14,37 @@ public interface UserService {
      * a JSON file.
      */
     public void saveProfileFiles();
-    
+
     /**
      * Add a new contact represented by one's id in the category
+     *
      * @param peer
      */
     public void addContact(Peer peer);
 
     /**
-     * Remove the contact represented by one's id from every category
-     * @param contactId
+     * Remove the contact represented by one's peer from every category
+     *
+     * @param peer
      */
-    public void deleteContact(Long contactId);
-    
+    public void deleteContact(Peer peer);
+
     /**
+     * Create the category categoryName
      *
      * @param categoryName
      */
     public void createCategory(String categoryName);
 
     /**
+     * Delete the category category
      *
      * @param category
      */
     public void deleteCategory(Category category);
 
     /**
+     * Add a contact represented by one's peer to a specified category
      *
      * @param peer
      * @param category
@@ -47,6 +52,7 @@ public interface UserService {
     public void addContactToCategory(Peer peer, Category category);
 
     /**
+     * Remove a contact represented by one's peer from a specified category
      *
      * @param peer
      * @param category
@@ -67,13 +73,15 @@ public interface UserService {
     public void connectionRequest(String login, String password);
 
     /**
-     *
+     * Update the connected peers list with userInfo.
+     * If the peerId didn't exist in the list, it is added.
+     * Else, the peer info is updated
      * @param userInfo
      */
     public void updateConnectedPeers(UserInfo userInfo);
 
     /**
-     *
+     * Remove a peer from the connected peers list with id.
      * @param peerId
      */
     public void removeFromConnectedPeers(long peerId);
@@ -90,4 +98,11 @@ public interface UserService {
      * @return
      */
     public Long findContactIdByPeerId(Long peerId);
+
+    /**
+     * Send a disconnection request to the network and save profile
+     *
+     */
+    public void disconnectionRequest();
+    
 }

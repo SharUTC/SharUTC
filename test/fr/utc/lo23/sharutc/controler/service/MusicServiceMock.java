@@ -89,13 +89,13 @@ public class MusicServiceMock extends MusicServiceImpl implements MusicService {
     }
 
     @Override
-    public void saveUserMusicFiles() {
-        super.saveUserMusicFiles();
+    public void saveUserMusicFile() {
+        super.saveUserMusicFile();
     }
 
     @Override
-    public void loadUserMusicFiles(String path) {
-        super.loadUserMusicFiles(path);
+    public void loadUserMusicFile() {
+        super.loadUserMusicFile();
     }
 
     @Override

@@ -1,6 +1,6 @@
 package fr.utc.lo23.sharutc.ui;
 
-import fr.utc.lo23.sharutc.ui.widget.RatingStar;
+import fr.utc.lo23.sharutc.ui.custom.RatingStar;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.beans.value.ChangeListener;

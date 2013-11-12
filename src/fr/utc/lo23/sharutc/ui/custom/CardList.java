@@ -3,60 +3,48 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package fr.utc.lo23.sharutc.ui.widget;
+package fr.utc.lo23.sharutc.ui.custom;
 
-import fr.utc.lo23.sharutc.ui.custom.SimpleCard;
-import javafx.fxml.FXMLLoader;
-import javafx.fxml.Initializable;
 import javafx.scene.layout.FlowPane;
-import javafx.scene.layout.Pane;
 
 import java.io.IOException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.ResourceBundle;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
-import javafx.scene.text.Text;
+import javafx.scene.control.Label;
+import javafx.scene.layout.VBox;
 
-public class CardList implements Initializable {
+public class CardList extends VBox {
 
     static final Logger log = Logger.getLogger(CardList.class.getName());
 
     private final static int MIN_CARD = 4;
     private boolean showAll = false;
 
-    private String title;
-    public Text boxtitle;
+    public Label boxtitle;
     public FlowPane content;
     public Button morebt;
     private List<SimpleCard> childs = new ArrayList<SimpleCard>();
 
-    public CardList(String title) {
-        this.title = title;
-    }
+    public CardList(String title, String styleClass) {
+        FXMLLoader fxmlLoader = new FXMLLoader(
+                getClass().getResource("../fxml/card_list.fxml"));
+        fxmlLoader.setRoot(this);
+        fxmlLoader.setController(this);
 
-    public Pane buildPane() {
-        Pane pane = null;
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("../fxml/card_list.fxml"));
-            loader.setController(this);
-            pane = (Pane) loader.load();
-
-        } catch (IOException ex) {
-            log.log(Level.SEVERE, null, ex);
+            fxmlLoader.load();
+            boxtitle.setText(title);
+            morebt.getStyleClass().add(styleClass);
+        } catch (IOException exception) {
+            throw new RuntimeException(exception);
         }
-        return pane;
-    }
-
-    @Override
-    public void initialize(URL url, ResourceBundle rb) {
-        boxtitle.setText(title);
-
+        
+        
     }
 
     @FXML

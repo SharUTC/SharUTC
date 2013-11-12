@@ -99,12 +99,6 @@ public class PeopleCard extends DraggableCard implements EventHandler<Event> {
      * interface for PeopleCard's callback
      */
     public interface IPeopleCard extends IDraggableCardListener {
-        /**
-         * user requested the deletion
-         *
-         * @param peopleCard
-         */
-        public void onPeopleDeletetionRequested(PeopleCard peopleCard);
 
         /**
          * user requested more details
@@ -112,6 +106,14 @@ public class PeopleCard extends DraggableCard implements EventHandler<Event> {
          * @param userInfo
          */
         public void onPeopleDetailsRequested(UserInfo userInfo);
+
+        /**
+         * user requested the deletion
+         *
+         * @param peopleCard
+         */
+        public void onPeopleDeletetionRequested(PeopleCard peopleCard);
+
 
         /**
          * card has been selected
