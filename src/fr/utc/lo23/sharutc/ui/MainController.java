@@ -24,7 +24,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class MainController implements Initializable, PeopleHomeController.IPeopleHomeController {
+public class MainController implements Initializable, PeopleHomeController.IPeopleHomeController, SearchResultController.ISearchResultController {
 
     private static final Logger log = LoggerFactory.getLogger(MainController.class);
     @Inject
@@ -97,7 +97,10 @@ public class MainController implements Initializable, PeopleHomeController.IPeop
     public void handleTextEntered(ActionEvent actionEvent) throws IOException {
         ObservableList<Node> children = rightpane.getChildren();
         children.clear();
-        children.add((Node) mFxmlLoader.load(getClass().getResource("fxml/searchresult_detail.fxml")).getRoot());
+        final Result loadingResult = mFxmlLoader.load(getClass().getResource("fxml/searchresult_detail.fxml"));
+        ((SearchResultController) loadingResult.getController()).setInterface(this);
+        children.add((Node) loadingResult.getRoot());
+        
     }
 
     @Override

@@ -195,3 +195,29 @@
 .largeTextGreyBold{
       -fx-font-weight: bold;
  }
+
+ #boxtitle{
+    -fx-border-color: #BDC3C7;
+    -fx-border-width: 0px 0px 2px 0px;
+     
+ }
+ 
+ .rectButton{
+    -fx-border-radius: 0;
+    -fx-background-radius: 0;
+ }
+ .bgBlue{
+     -fx-background-color: #33B5E5;
+ }
+ 
+ .bgGreen{
+     -fx-background-color: #99CC00;     
+ }
+ 
+ .bgRed{
+     -fx-background-color: #FF4444;
+ }
+ 
+ .bgOrange{
+     -fx-background-color: #FFBB33;
+ }

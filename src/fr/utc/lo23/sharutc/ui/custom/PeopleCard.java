@@ -3,11 +3,10 @@ package fr.utc.lo23.sharutc.ui.custom;
 import fr.utc.lo23.sharutc.model.userdata.UserInfo;
 import javafx.collections.ObservableList;
 import javafx.event.Event;
-import javafx.event.EventHandler;
 import javafx.scene.control.Button;
 import javafx.scene.input.*;
 
-public class PeopleCard extends UserCard implements EventHandler<Event> {
+public class PeopleCard extends UserCard {
 
     /**
      * key used for the drag event to identify the content
@@ -20,18 +19,15 @@ public class PeopleCard extends UserCard implements EventHandler<Event> {
     public Button detailButton;
 
     public PeopleCard(UserInfo userInfo) {
-        super(userInfo, "../fxml/people_card.fxml");
-        getStyleClass().add("peopleCard");
-
+        this(userInfo, null);
     }
 
     public PeopleCard(UserInfo userInfo, IPeopleCard i) {
-        super(userInfo, "../fxml/people_card.fxml");
+        super(userInfo,i, "../fxml/people_card.fxml");
         getStyleClass().add("peopleCard");
         mInterface = i;
         deleteButton.setOnMouseClicked(this);
         detailButton.setOnMouseClicked(this);
-        setOnMouseClicked(this);
         setOnMouseEntered(this);
         setOnMouseExited(this);
         setOnDragDetected(this);
@@ -124,7 +120,7 @@ public class PeopleCard extends UserCard implements EventHandler<Event> {
     /**
      * interface for PeopleCard's callback
      */
-    public interface IPeopleCard {
+    public interface IPeopleCard extends IUserCard{
         /**
          * user requested the deletion
          *
@@ -132,12 +128,7 @@ public class PeopleCard extends UserCard implements EventHandler<Event> {
          */
         public void onPeopleDeletetionRequested(PeopleCard peopleCard);
 
-        /**
-         * user requested more details
-         *
-         * @param userInfo
-         */
-        public void onPeopleDetailsRequested(UserInfo userInfo);
+      
 
         /**
          * card has been selected

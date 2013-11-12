@@ -1,4 +1,4 @@
-package fr.utc.lo23.sharutc.ui.widget;
+package fr.utc.lo23.sharutc.ui.custom;
 
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
