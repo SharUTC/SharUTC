@@ -56,15 +56,10 @@ public class RightsList implements Serializable {
      * @return true if the rights was added (java norm, not used here)
      */
     public boolean add(Rights rights) {
-        boolean added = mRightsList.add(rights);
-        if (added) {
-            collectionChangeSupport.fireCollectionChanged(rights, mRightsList.size() - 1, CollectionEvent.Type.ADD);
-        }
-        return added;
+        add(mRightsList.size(), rights);
+        return true;
     }
 
-    //  public RightsList getRightsListByMusicAndPeer(Peer peer, Music music) {
-    //  }
     /**
      * Add a Rights instancve to the RightsList at the specified index, send
      * update (ADD)
@@ -196,5 +191,16 @@ public class RightsList implements Serializable {
             }
         }
         return rights;
+    }
+
+    public void setRights(Rights rights) {
+        if (rights != null) {
+            Rights r = getByMusicIdAndCategoryId(rights.getMusicId(), rights.getCategoryId());
+            if (r != null) {
+                r.copyRightsValues(rights);
+            } else {
+                mRightsList.add(rights);
+            }
+        }
     }
 }

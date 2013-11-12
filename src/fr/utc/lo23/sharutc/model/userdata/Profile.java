@@ -43,6 +43,10 @@ public class Profile implements Serializable {
         return ++musicCounter;
     }
 
+    public void decrementMusicId() {
+        musicCounter--;
+    }
+
     /**
      * Return the object containing the list of known peers
      *

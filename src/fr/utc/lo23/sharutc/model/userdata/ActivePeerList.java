@@ -118,13 +118,14 @@ public class ActivePeerList implements Serializable {
      * @return
      */
     public Peer getByPeerId(Long peerId) {
+        Peer peer = null;
         if (peerId != null) {
             for (Map.Entry<Peer, Date> activePeer : mActivePeers.entrySet()) {
                 if (activePeer.getKey().getId() == peerId.longValue()) {
-                    return activePeer.getKey();
+                    peer = activePeer.getKey();
                 }
             }
         }
-        return null;
+        return peer;
     }
 }

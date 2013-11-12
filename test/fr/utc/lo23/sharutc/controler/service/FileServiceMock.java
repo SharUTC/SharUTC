@@ -52,8 +52,8 @@ public class FileServiceMock extends FileServiceImpl implements FileService {
      * @throws Exception
      */
     @Override
-    public Music readFile(File file) throws Exception {
-        return super.readFile(file);
+    public Music createMusicFromFile(File file) throws Exception {
+        return super.createMusicFromFile(file);
     }
 
     /**

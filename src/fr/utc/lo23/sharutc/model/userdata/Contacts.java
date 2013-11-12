@@ -22,6 +22,7 @@ public class Contacts implements Serializable {
      *
      */
     public Contacts() {
+        mContacts = new HashSet<Contact>();
     }
 
     /**

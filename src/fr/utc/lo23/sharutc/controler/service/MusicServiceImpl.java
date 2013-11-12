@@ -69,7 +69,7 @@ public class MusicServiceImpl implements MusicService {
             for (File currentFile : mp3Files) {
                 Music musicFromFile = null;
                 try {
-                    musicFromFile = fileService.readFile(currentFile);
+                    musicFromFile = fileService.createMusicFromFile(currentFile);
                     String filename = fileService.computeFileName("", currentFile.getName());
                     musicFromFile.setFileName(filename);
                 } catch (Exception ex) {
@@ -84,8 +84,11 @@ public class MusicServiceImpl implements MusicService {
                         throw new RuntimeException("Error while copying music file to user folder", ex);
                     }
                     musicFromFile.setFileByte(null);
+                    appModel.getRightsList().setRights(new Rights(Category.PUBLIC_CATEGORY_ID, musicFromFile.getId(),
+                            Rights.DEFAULT_MAY_READ_INFO,
+                            Rights.DEFAULT_LISTEN,
+                            Rights.DEFAULT_MAY_NOTE_AND_COMMENT));
                     localCatalog.add(musicFromFile);
-
                 }
             }
         }

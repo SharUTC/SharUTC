@@ -196,7 +196,7 @@ public class FileServiceImpl implements FileService {
      * {@inheritDoc}
      */
     @Override
-    public Music readFile(File file) throws Exception {
+    public Music createMusicFromFile(File file) throws Exception {
         if (file == null) {
             log.error("File is null");
             throw new Exception("File is null");
@@ -245,6 +245,13 @@ public class FileServiceImpl implements FileService {
                 appModel.getProfile().getUserInfo().getPeerId(), bytes,
                 file.getName(), file.getName(), file.hashCode(), title, artist, album, year, track,
                 trackLength, frames);
+    }
+
+    @Override
+    public Music fakeMusicFromFile(File file) throws Exception {
+        Music music = createMusicFromFile(file);
+        appModel.getProfile().decrementMusicId();
+        return music;
     }
 
     /**
