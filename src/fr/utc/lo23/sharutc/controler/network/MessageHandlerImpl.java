@@ -3,6 +3,8 @@ package fr.utc.lo23.sharutc.controler.network;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import fr.utc.lo23.sharutc.controler.command.Command;
+import fr.utc.lo23.sharutc.controler.command.account.IntegrateBroadcastConnectionCommand;
+import fr.utc.lo23.sharutc.controler.command.account.IntegrateConnectionCommand;
 import fr.utc.lo23.sharutc.controler.command.music.IntegrateRemoteCatalogCommand;
 import fr.utc.lo23.sharutc.controler.command.music.IntegrateRemoteTagMapCommand;
 import fr.utc.lo23.sharutc.controler.command.music.SendCatalogCommand;
@@ -17,6 +19,7 @@ import fr.utc.lo23.sharutc.model.AppModel;
 import fr.utc.lo23.sharutc.model.domain.Catalog;
 import fr.utc.lo23.sharutc.model.domain.Music;
 import fr.utc.lo23.sharutc.model.domain.TagMap;
+import fr.utc.lo23.sharutc.model.userdata.UserInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -58,6 +61,10 @@ public class MessageHandlerImpl implements MessageHandler {
     private SendMusicToPlayCommand sendMusicToPlayCommand;
     @Inject
     private PlayIncomingMusicCommand playIncomingMusicCommand;
+    @Inject
+    private IntegrateBroadcastConnectionCommand integrateBroadcastConnectionCommand;
+    @Inject
+    private IntegrateConnectionCommand integrateConnectionCommand;
     //@Inject
     //private AddCommentCommand addCommentCommand;
     // more...
@@ -138,8 +145,12 @@ public class MessageHandlerImpl implements MessageHandler {
                         command = playIncomingMusicCommand;
                         break;
                     case CONNECTION:
-                        // TODO
-//                        command = repondreMessageConnection;
+                        integrateBroadcastConnectionCommand.setUserInfo((UserInfo) messageParser.getValue(Message.USER_INFO));
+                        command = integrateBroadcastConnectionCommand;
+                        break;
+                    case CONNECTION_RESPONSE:
+                        integrateConnectionCommand.setUserInfo((UserInfo) messageParser.getValue(Message.USER_INFO));
+                        command = integrateConnectionCommand;
                         break;
                     case DISCONNECT:
                         break;

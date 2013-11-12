@@ -101,7 +101,6 @@ public class NetworkServiceImpl implements NetworkService {
         } else {
             log.error("[NetworkService - sendUnicast()] - object Peer is null");
         }
-
     }
 
     /**
@@ -251,5 +250,14 @@ public class NetworkServiceImpl implements NetworkService {
     @Override
     public void disconnectionBroadcast() {
         sendBroadcast(messageParser.write(MessageType.DISCONNECT, null, null));
+    }
+
+    /**
+     * {inheritDoc}
+     */
+    @Override
+    public void sendConnectionResponse(Peer peer, UserInfo userInfo) {
+        Message message = messageParser.write(MessageType.CONNECTION_RESPONSE, new Object[][]{{Message.USER_INFO, userInfo}}, null);
+        sendUnicast(message, peer);
     }
 }
