@@ -8,8 +8,6 @@ import java.io.Serializable;
 public class Profile implements Serializable {
 
     private static final long serialVersionUID = 4883249865688142273L;
-    public static final Integer PUBLIC_CATEGORY_ID = new Integer(0);
-    public static final String PUBLIC_CATEGORY_NAME = "Public";
     private KnownPeerList mKnownPeerList;
     private Categories mCategories;
     private Contacts mContacts;
@@ -32,7 +30,7 @@ public class Profile implements Serializable {
         this.musicCounter = 0L;
         this.mKnownPeerList = new KnownPeerList();
         this.mCategories = new Categories();
-        mCategories.add(new Category(PUBLIC_CATEGORY_ID, PUBLIC_CATEGORY_NAME));
+        mCategories.add(new Category(Category.PUBLIC_CATEGORY_ID, Category.PUBLIC_CATEGORY_NAME));
         this.mContacts = new Contacts();
         this.mUserInfo = userInfo;
     }

@@ -65,7 +65,8 @@ public class FileServiceImpl implements FileService {
         }
     }
 
-    public static String getAppFolder() {
+    @Override
+    public String getAppFolder() {
         return appFolder;
     }
 

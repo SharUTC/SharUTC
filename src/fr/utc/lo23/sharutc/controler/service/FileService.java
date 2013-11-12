@@ -17,6 +17,8 @@ public interface FileService {
     public static final String[] AUTHORIZED_MUSIC_FILE_TYPE = {"mp3"};
     public static final int MIN_FILENAME_LENGTH = 1;
 
+    public String getAppFolder();
+
     /**
      *
      * @param srcPath

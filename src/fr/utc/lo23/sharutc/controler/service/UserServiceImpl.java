@@ -56,7 +56,7 @@ public class UserServiceImpl implements UserService {
     public void addContact(Contact contact) {
         Long contactId = contact.getUserInfo().getPeerId();
         if (!contact.isInPublic()) {
-            profile.getContacts().findById(contactId).addCategoryId(Profile.PUBLIC_CATEGORY_ID);
+            profile.getContacts().findById(contactId).addCategoryId(Category.PUBLIC_CATEGORY_ID);
         } 
         else {
             log.warn("This contact already exists");
@@ -87,7 +87,7 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public void deleteCategory(Category category) {
-        if (category.getId() != Profile.PUBLIC_CATEGORY_ID) {
+        if (category.getId() != Category.PUBLIC_CATEGORY_ID) {
             profile.getCategories().remove(category);
         } else {
             log.warn("Can't delete Category Public");
@@ -105,8 +105,8 @@ public class UserServiceImpl implements UserService {
         Set<Integer> CategoriesIdsList = contact.getCategoryIds();
 
         if (!profile.getCategories().contains(category)) {
-            if (CategoriesIdsList.contains(Profile.PUBLIC_CATEGORY_ID))
-                profile.getContacts().findById(contactId).removeCategoryId(Profile.PUBLIC_CATEGORY_ID);
+            if (CategoriesIdsList.contains(Category.PUBLIC_CATEGORY_ID))
+                profile.getContacts().findById(contactId).removeCategoryId(Category.PUBLIC_CATEGORY_ID);
 
             profile.getContacts().findById(contactId).addCategoryId(category.getId());
         } 
@@ -122,7 +122,7 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public void removeContactFromCategory(Contact contact, Category category) {
-        if (category.getId() != Profile.PUBLIC_CATEGORY_ID)
+        if (category.getId() != Category.PUBLIC_CATEGORY_ID)
             profile.getContacts().findById(contact.getUserInfo().getPeerId()).removeCategoryId(category.getId());
         else {
             log.warn("Can't remove contact from Public category");

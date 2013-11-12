@@ -189,11 +189,12 @@ public class RightsList implements Serializable {
     }
 
     public Rights getByMusicIdAndCategoryId(Long musicId, Integer categoryId) {
-        for (Rights rights : mRightsList) {
-            if (rights.getMusicId().equals(musicId) && rights.getCategoryId().equals(categoryId)) {
-                return rights;
+        Rights rights = null;
+        for (Rights r : mRightsList) {
+            if (r.getMusicId().equals(musicId) && r.getCategoryId().equals(categoryId)) {
+                r = rights;
             }
         }
-        return null;
+        return rights;
     }
 }

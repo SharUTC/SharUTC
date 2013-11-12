@@ -11,14 +11,18 @@ import fr.utc.lo23.sharutc.model.domain.RightsList;
 import fr.utc.lo23.sharutc.model.domain.Score;
 import fr.utc.lo23.sharutc.model.domain.SearchCriteria;
 import fr.utc.lo23.sharutc.model.domain.TagMap;
+import fr.utc.lo23.sharutc.model.userdata.Categories;
+import fr.utc.lo23.sharutc.model.userdata.Category;
 import fr.utc.lo23.sharutc.model.userdata.Contact;
 import fr.utc.lo23.sharutc.model.userdata.Peer;
+import fr.utc.lo23.sharutc.model.userdata.Profile;
 import fr.utc.lo23.sharutc.util.Utils;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.jaudiotagger.audio.AudioFile;
@@ -127,7 +131,7 @@ public class MusicServiceImpl implements MusicService {
             // looping on whole catalog, searching for matching music informations
             for (Music music : appModel.getLocalCatalog().getMusics()) {
                 // only deal with needed musics
-                List<Integer> matchingCategoryIds = getAllMatchingCategoryIds(music, contactCategoryIds);
+                Set<Integer> matchingCategoryIds = getAllMatchingCategoryIds(music, contactCategoryIds);
 
                 // searching Rights values to be set directly on a copy of music instance if added to the results
                 boolean mayReadInfo = false;
@@ -421,6 +425,18 @@ public class MusicServiceImpl implements MusicService {
         if (peer == null || criteria == null) {
             throwMissingParameter();
         } else {
+            /*
+             * Algorithme de recherche :
+             * # Récupération des catégories associées aux contact qui demande
+             * # Pour chaque musique du catalogue
+             * #    Récupération des catégories associées à cette musique
+             * #    Filtrage des deux ensembles d'ids
+             * #        Pour chaque catégorie restante :
+             * #            Si public (0, exclusif) : vérification des droits pour cette musique et cette catégorie dans RightsList
+             * #            Si autre(s) : chargement de l'ensemble des droits dispos pour cette musique et cette catégorie via RightsList, on recherche les différents objets Rights tant qu'on ne trouve pas de valeur à *true*.
+             */
+
+
             catalogResult = new Catalog();
             if (criteria.getSearch() != null && criteria.getSearch().trim().length() > 0) {
                 Contact contact = userService.findContactByPeerId(peer.getId());
@@ -433,21 +449,15 @@ public class MusicServiceImpl implements MusicService {
                         if (musicMatchesSearchCriteria(music, criteria)) {
 
                             // searching for useful categories only
-                            List<Integer> matchingCategoryIds = getAllMatchingCategoryIds(music, contactCategoryIds);
+                            Set<Integer> matchingCategoryIds = getAllMatchingCategoryIds(music, contactCategoryIds);
 
                             // searching Rights values to be set directly on a copy of music instance if added to the results
                             boolean mayReadInfo = false;
                             boolean mayListen = false;
                             boolean mayNoteAndComment = false;
                             if (!matchingCategoryIds.isEmpty()) {
-                                for (Integer categoryId : matchingCategoryIds) {
-                                    // avoid useless loop
-                                    if (mayReadInfo && mayListen && mayNoteAndComment) {
-                                        break; //true > false, then skip the remaining ids since all is already set to true
-                                    }
-                                    // get the unique Rights instance for this music and category from RightsList
-                                    // set tmp boolean values to true if rights values are set to true
-                                    Rights rights = appModel.getRightsList().getByMusicIdAndCategoryId(music.getId(), categoryId);
+                                if (matchingCategoryIds.size() == 1 && matchingCategoryIds.iterator().next().equals(Category.PUBLIC_CATEGORY_ID)) {
+                                    Rights rights = appModel.getRightsList().getByMusicIdAndCategoryId(music.getId(), Category.PUBLIC_CATEGORY_ID);
                                     if (rights.getMayReadInfo()) {
                                         mayReadInfo = true;
                                     }
@@ -456,6 +466,25 @@ public class MusicServiceImpl implements MusicService {
                                     }
                                     if (rights.getMayNoteAndComment()) {
                                         mayNoteAndComment = true;
+                                    }
+                                } else {
+                                    for (Integer categoryId : matchingCategoryIds) {
+                                        // avoid useless loop
+                                        if (mayReadInfo && mayListen && mayNoteAndComment) {
+                                            break; //true > false, then skip the remaining ids since all is already set to true
+                                        }
+                                        // get the unique Rights instance for this music and category from RightsList
+                                        // set tmp boolean values to true if rights values are set to true
+                                        Rights rights = appModel.getRightsList().getByMusicIdAndCategoryId(music.getId(), categoryId);
+                                        if (rights.getMayReadInfo()) {
+                                            mayReadInfo = true;
+                                        }
+                                        if (rights.getMayListen()) {
+                                            mayListen = true;
+                                        }
+                                        if (rights.getMayNoteAndComment()) {
+                                            mayNoteAndComment = true;
+                                        }
                                     }
                                 }
                             }
@@ -475,12 +504,44 @@ public class MusicServiceImpl implements MusicService {
                         }
                     }
                 } else {
-                    // peer isn't a contact, check PUBLIC category only and associated rights values, as they may change like others
-                /*
-                     * 
-                     * TODO : complete method
-                     * 
-                     */
+                    // peer isn't a contact, only check PUBLIC category and associated rights values, as they may change like others
+                    for (Music music : appModel.getLocalCatalog().getMusics()) {
+                        Rights rights = appModel.getRightsList().getByMusicIdAndCategoryId(music.getId(), Category.PUBLIC_CATEGORY_ID);
+                        if (rights != null) {
+                            // only deal with needed musics
+                            if (musicMatchesSearchCriteria(music, criteria)) {
+                                // searching Rights values to be set directly on a copy of music instance if added to the results
+                                boolean mayReadInfo = false;
+                                boolean mayListen = false;
+                                boolean mayNoteAndComment = false;
+
+                                if (rights.getMayReadInfo()) {
+                                    mayReadInfo = true;
+                                }
+                                if (rights.getMayListen()) {
+                                    mayListen = true;
+                                }
+                                if (rights.getMayNoteAndComment()) {
+                                    mayNoteAndComment = true;
+                                }
+                                // if the peer is autorized to get the music
+                                if (mayReadInfo) {
+                                    // using a new instance to set specific attributes
+                                    Music musicToReturn = music.clone();
+                                    // copying rights values
+                                    musicToReturn.setMayReadInfo(true); // useless... not used by other peers
+                                    musicToReturn.setMayListen(mayListen);
+                                    musicToReturn.setMayCommentAndNote(mayNoteAndComment);
+                                    // loading last used and known peer name
+                                    fillCommentAuthorNames(musicToReturn);
+                                    // add the music to the returned set of music
+                                    catalogResult.add(musicToReturn);
+                                }
+                            }
+                        } else {
+                            log.warn("Wrong state of categories, peer isn't a contact and there should be a Rights for music ({}) and PUBLIC category", music.getRealName());
+                        }
+                    }
                 }
             }
         }
@@ -518,15 +579,16 @@ public class MusicServiceImpl implements MusicService {
         return match;
     }
 
-    private List<Integer> getAllMatchingCategoryIds(Music music, Set<Integer> contactCategoryIds) {
-        Set<Integer> musicCategories = music.getCategoryIds();
-        List<Integer> matchingCategoryIds = new ArrayList<Integer>();
-        for (Integer musicCategoryId : musicCategories) {
-            if (contactCategoryIds.contains(musicCategoryId)) {
-                matchingCategoryIds.add(musicCategoryId);
-            }
+    private Set<Integer> getAllMatchingCategoryIds(Music music, Set<Integer> contactCategoryIds) {
+        Set<Integer> matchingCategories = new HashSet<Integer>(Math.min(contactCategoryIds.size(), music.getCategoryIds().size()));
+        if (contactCategoryIds.size() < music.getCategoryIds().size()) {
+            matchingCategories.addAll(contactCategoryIds);
+            matchingCategories.retainAll(music.getCategoryIds());
+        } else {
+            matchingCategories.addAll(music.getCategoryIds());
+            matchingCategories.retainAll(contactCategoryIds);
         }
-        return matchingCategoryIds;
+        return matchingCategories;
     }
 
     /**
@@ -568,7 +630,7 @@ public class MusicServiceImpl implements MusicService {
         } else {
             byte[] byteArray;
             try {
-                byteArray = fileService.getFileAsByteArray(new File(".\\" + appModel.getProfile().getUserInfo().getLogin() + "\\" + music.getFileName()));
+                byteArray = fileService.getFileAsByteArray(new File(fileService.getAppFolder() + FileService.ROOT_FOLDER_USERS + File.separator + appModel.getProfile().getUserInfo().getLogin() + File.separator + FileService.FOLDER_MUSICS + File.separator + music.getFileName()));
                 Byte[] bytes = new Byte[byteArray.length];
                 for (int i = 0; i < byteArray.length; i++) {
                     bytes[i] = byteArray[i];

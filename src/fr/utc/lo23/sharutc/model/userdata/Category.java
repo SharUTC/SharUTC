@@ -8,9 +8,12 @@ import java.io.Serializable;
 public class Category implements Serializable {
 
     private static final long serialVersionUID = 3790688676428360970L;
+    public static final Integer PUBLIC_CATEGORY_ID = new Integer(0);
+    public static final String PUBLIC_CATEGORY_NAME = "Public";
     /**
      * Undeletable category ID
      */
+    //FIXME ca ne fonctionnera pas comme ça, la valeur sera perdue.
     public static Integer IDS_SEQUENCE = new Integer(0);
     private Integer mId;
     private String mName;
@@ -19,18 +22,17 @@ public class Category implements Serializable {
      *
      */
     public Category() {
-        
     }
-    
-     /**
+
+    /**
      *
      */
     public Category(String name) {
-        this.mId = IDS_SEQUENCE ++;
+        this.mId = IDS_SEQUENCE++;
         this.mName = name;
     }
 
-     /**
+    /**
      *
      */
     public Category(Integer mId, String mName) {
