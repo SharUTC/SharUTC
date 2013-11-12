@@ -26,8 +26,8 @@ public class NetworkServiceMock extends NetworkServiceImpl implements NetworkSer
     private Peer peer = null;
 
     @Inject
-    public NetworkServiceMock(AppModel appModel, MessageParser messageParser) {
-        super(appModel, messageParser);
+    public NetworkServiceMock(AppModel appModel, MessageParser messageParser, MessageHandler messageHandler) {
+        super(appModel, messageParser, messageHandler);
     }
 
     @Override
