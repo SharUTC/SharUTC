@@ -46,7 +46,7 @@ public class NetworkServiceImpl implements NetworkService {
     @Override
     public void start(int port, String group) throws UnknownHostException {
         InetAddress g = InetAddress.getByName(group);
-        mListenThread = new ListenThread(port, this, appModel);
+        mListenThread = new ListenThread(port, this, appModel, messageParser, messageHandler);
         mListenThread.start();
         mPeerDiscoverySocket = new PeerDiscoverySocket(port, g, this, appModel, messageParser, messageHandler);
         mPeerDiscoverySocket.start();

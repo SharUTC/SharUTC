@@ -143,7 +143,7 @@ public class PeerDiscoverySocket implements Runnable {
             // obtain sender peerId
             Long peerId = msg.getFromPeerId();
             // add new peer
-            peerSocket = new PeerSocket(socket, mNs, peerId);
+            peerSocket = new PeerSocket(socket, mNs, peerId, messageParser, messageHandler);
             peerSocket.start();
         } catch (IOException ex) {
             log.error(ex.toString());
