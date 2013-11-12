@@ -1,0 +1,10 @@
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<fx:root type="fr.utc.lo23.sharutc.ui.custom.SongCard"
+         xmlns:fx="http://javafx.com/fxml">
+    <Label fx:id="songTitle" text="New York New York"  />
+    <Label fx:id="songArtist" text=" Frank Sinatra" />
+</fx:root>
+

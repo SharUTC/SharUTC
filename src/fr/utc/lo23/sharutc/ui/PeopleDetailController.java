@@ -1,10 +1,13 @@
 package fr.utc.lo23.sharutc.ui;
 
 import fr.utc.lo23.sharutc.model.userdata.UserInfo;
+import fr.utc.lo23.sharutc.ui.custom.PeopleCard;
+import fr.utc.lo23.sharutc.ui.custom.SongCard;
 import javafx.event.ActionEvent;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.layout.FlowPane;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -13,10 +16,17 @@ public class PeopleDetailController implements Initializable {
 
     public Label login;
     public Button addToFriendsButton;
+    public FlowPane songsContainer;
+    public FlowPane artistsContainer;
+    public FlowPane tagsContainer;
     private UserInfo mUserInfo;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        for (int i = 0; i < 3; i++) {
+            SongCard newCard = new SongCard();
+            songsContainer.getChildren().add(newCard);
+        }
         
     }
     
