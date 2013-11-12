@@ -1,6 +1,7 @@
 package fr.utc.lo23.sharutc.ui;
 
 import fr.utc.lo23.sharutc.model.userdata.UserInfo;
+import fr.utc.lo23.sharutc.ui.custom.ArtistCard;
 import fr.utc.lo23.sharutc.ui.custom.PeopleCard;
 import fr.utc.lo23.sharutc.ui.custom.SongCard;
 import javafx.event.ActionEvent;
@@ -26,6 +27,10 @@ public class PeopleDetailController implements Initializable {
         for (int i = 0; i < 3; i++) {
             SongCard newCard = new SongCard();
             songsContainer.getChildren().add(newCard);
+        }
+        for (int i = 0; i < 3; i++) {
+            ArtistCard newCard = new ArtistCard();
+            artistsContainer.getChildren().add(newCard);
         }
         
     }
