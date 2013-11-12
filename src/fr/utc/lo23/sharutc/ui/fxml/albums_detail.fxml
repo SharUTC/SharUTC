@@ -10,4 +10,24 @@
 <?import javafx.scene.control.cell.*?>
 
 <?import fr.utc.lo23.sharutc.ui.*?>
-<Label xmlns:fx="http://javafx.com/fxml" fx:controller="fr.utc.lo23.sharutc.ui.AlbumsDetailController" text="This is the albums layout" styleClass="panetitle"/>
+
+<VBox id="gridPane" prefWidth="-1.0" GridPane.hgrow="ALWAYS"
+      GridPane.vgrow="ALWAYS" xmlns:fx="http://javafx.com/fxml"
+      fx:controller="fr.utc.lo23.sharutc.ui.AlbumsDetailController" >
+
+    <Label xmlns:fx="http://javafx.com/fxml" text="Albums" styleClass="panetitle"/>
+
+    <ScrollPane xmlns:fx="http://javafx.com/fxml" styleClass="myScrollPane" VBox.vgrow="ALWAYS" fitToWidth="true" fitToHeight="true">
+
+        <FlowPane GridPane.hgrow="ALWAYS"
+                  GridPane.vgrow="ALWAYS" fx:id="albumsContainer"
+                  prefHeight="-1.0" prefWidth="-1.0"
+                  prefWrapLength="230.0" vgap="10.0"
+                  hgap="10.0">
+            <padding>
+                <javafx.geometry.Insets bottom="5" left="5" right="5" top="5"/>
+            </padding>
+        </FlowPane>
+
+    </ScrollPane>
+</VBox>
