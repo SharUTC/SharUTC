@@ -76,5 +76,9 @@ public enum MessageType {
     /**
      *
      */
-    CONNECTION_RESPONSE
+    CONNECTION_RESPONSE,
+    /**
+     * 
+     */
+    USER_INFO
 }

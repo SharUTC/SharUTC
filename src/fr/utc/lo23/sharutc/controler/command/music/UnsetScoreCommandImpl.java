@@ -1,5 +1,7 @@
 package fr.utc.lo23.sharutc.controler.command.music;
 
+import com.google.inject.Inject;
+import fr.utc.lo23.sharutc.controler.service.MusicService;
 import fr.utc.lo23.sharutc.model.domain.Music;
 import fr.utc.lo23.sharutc.model.userdata.Peer;
 import org.slf4j.Logger;
@@ -12,13 +14,16 @@ public class UnsetScoreCommandImpl implements UnsetScoreCommand {
 
     private static final Logger log = LoggerFactory
             .getLogger(UnsetScoreCommandImpl.class);
+    private final MusicService musicService;
     private Peer mPeer;
     private Music mMusic;
 
     /**
      * {@inheritDoc}
      */
-    public UnsetScoreCommandImpl() {
+    @Inject
+    public UnsetScoreCommandImpl(MusicService musicService) {
+        this.musicService = musicService;
     }
 
     /**
@@ -58,6 +63,8 @@ public class UnsetScoreCommandImpl implements UnsetScoreCommand {
      */
     @Override
     public void execute() {
-        log.warn("Not supported yet.");
+        log.info("UnsetScoreCommandImpl ...");
+        musicService.unsetScore(mPeer, mMusic);
+        log.info("UnsetScoreCommandImpl DONE");
     }
 }

@@ -186,6 +186,9 @@
     -fx-font-size : 28px;
 }
 
+.panesubtitle {
+    -fx-font-size : 20px;
+}
 .largeTextGrey ,
 .largeTextGreyBold{
 	-fx-font-size : 18px;

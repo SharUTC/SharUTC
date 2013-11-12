@@ -14,12 +14,14 @@ import java.net.ServerSocket;
  * @author Arselle
  */
 public class ListenThread implements Runnable {
-    private static final Logger slog = LoggerFactory.getLogger(PeerDiscoverySocket.class);
+    private static final Logger log = LoggerFactory.getLogger(PeerDiscoverySocket.class);
     private final int mPort;
     private final NetworkService mNetworkService;
     private Thread thread;
     private boolean threadShouldStop = false;
     private final AppModel mAppModel;
+    private final MessageParser messageParser;
+    private final MessageHandler messageHandler;
     
     /**
      *
@@ -27,10 +29,12 @@ public class ListenThread implements Runnable {
      * @param ns the network service
      * @param appModel the model of the global application
      */
-    public ListenThread(int p, NetworkService ns, AppModel appModel) {
+    public ListenThread(int p, NetworkService ns, AppModel appModel, MessageParser messageParser, MessageHandler messageHandler) {
         this.mPort = p;
         mNetworkService = ns;
         mAppModel = appModel;
+        this.messageParser = messageParser;
+        this.messageHandler = messageHandler;
     }
 
     /**
@@ -60,12 +64,12 @@ public class ListenThread implements Runnable {
             
             while (socketServeur.isBound()) {
                 Socket socketClient = socketServeur.accept();
-                PeerSocket ps = new PeerSocket(socketClient,mNetworkService,peerID);
+                PeerSocket ps = new PeerSocket(socketClient, mNetworkService, peerID, messageParser, messageHandler);
                 ps.start();
             }
             
-        } catch (Exception e) {
-          e.printStackTrace();
+        } catch (IOException e) {
+            log.error(e.toString());
         }
     }
   }

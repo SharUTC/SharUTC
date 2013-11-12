@@ -4,6 +4,8 @@ import com.google.inject.Inject;
 import fr.utc.lo23.sharutc.GuiceJUnitRunner;
 import fr.utc.lo23.sharutc.GuiceJUnitRunner.GuiceModules;
 import fr.utc.lo23.sharutc.controler.command.music.IntegrateRemoteTagMapCommand;
+import fr.utc.lo23.sharutc.controler.command.music.SendTagMapCommand;
+import fr.utc.lo23.sharutc.controler.network.NetworkServiceMock;
 import fr.utc.lo23.sharutc.controler.service.FileService;
 import fr.utc.lo23.sharutc.controler.service.MusicService;
 import fr.utc.lo23.sharutc.model.AppModel;
@@ -33,14 +35,18 @@ public class TagMapTest {
     @Inject
     private MusicService musicService;
     @Inject
+    private NetworkServiceMock networkService;
+    @Inject
     private IntegrateRemoteTagMapCommand integrateRemoteTagMapCommand;
+    @Inject
+    private SendTagMapCommand sendTagMapCommand;
     private AppModelBuilder appModelBuilder = null;
 
     @Before
     public void before() {
         log.trace("building appModel");
         if (appModelBuilder == null) {
-            appModelBuilder = new AppModelBuilder(appModel, fileService);
+            appModelBuilder = new AppModelBuilder(appModel, musicService);
         }
         appModelBuilder.mockAppModel();
     }
@@ -61,6 +67,7 @@ public class TagMapTest {
         // here I'm testing both merge methods
         TagMap dummyTagMap = new TagMap();
 
+        appModel.getLocalCatalog().get(0).addTag("ROCK");
         TagMap dummyTagMap1 = new TagMap();
         dummyTagMap1.merge("Rock", 1);
 
@@ -123,5 +130,16 @@ public class TagMapTest {
         dummyTagMap3.merge("Disco", 2000);
         Assert.assertEquals("IntegrateRemoteTagMapCommand failed", dummyTagMap3,
                 appModel.getNetworkTagMap());
+    }
+
+    @Test
+    public void sendTagMapCommand() {
+        long conversationId = 0L;
+        sendTagMapCommand.setConversationId(conversationId);
+        sendTagMapCommand.setPeer(appModel.getActivePeerList().getByPeerId(1L));
+        sendTagMapCommand.execute();
+        Assert.assertNotNull(networkService.getSendMessage());
+        log.info(networkService.getSendMessage().toString());
+        // TODO extract values from created message and validate them
     }
 }

@@ -2,6 +2,8 @@ package fr.utc.lo23.sharutc.ui;
 
 import com.cathive.fx.guice.GuiceFXMLLoader;
 import com.google.inject.Inject;
+import fr.utc.lo23.sharutc.controler.command.account.AccountCreationCommand;
+import fr.utc.lo23.sharutc.model.userdata.UserInfo;
 import fr.utc.lo23.sharutc.ui.custom.SharutcLogo;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -49,6 +51,8 @@ public class RegistrationController implements Initializable {
     @Inject
     private GuiceFXMLLoader mFxmlLoader;
     private ArrayList<String> mErrorMessages;
+    @Inject
+    private AccountCreationCommand mAccountCreationCommand;
 
     /**
      * Initializes the controller class.
@@ -78,7 +82,17 @@ public class RegistrationController implements Initializable {
         log.info("Sign Up Button Clicked");
         errorContainer.getChildren().clear();
         if (!validateForm()) {
-            displayErrorMessages();
+            displayErrorMessages();            
+        } else {
+            final UserInfo userInfo = new UserInfo();
+            userInfo.setLogin(userNameField.getText());
+            userInfo.setFirstName(firstNameField.getText());
+            userInfo.setLastName(lastNameField.getText());
+            userInfo.setPassword(passwordField.getText());
+            userInfo.setAge(Integer.valueOf(ageField.getText()));
+            mAccountCreationCommand.setUserInfo(userInfo);
+            mAccountCreationCommand.execute();
+            log.info("AccountCreationCommand.execute()");
         }
     }
 

@@ -5,6 +5,7 @@ import fr.utc.lo23.sharutc.model.domain.RightsList;
 import fr.utc.lo23.sharutc.model.domain.TagMap;
 import fr.utc.lo23.sharutc.model.userdata.ActivePeerList;
 import fr.utc.lo23.sharutc.model.userdata.Profile;
+import java.beans.PropertyChangeListener;
 
 /**
  * The Root object of the Model part in the MVC schema. Instance is Observable
@@ -173,4 +174,18 @@ public interface AppModel {
      * the current user
      */
     public void setRightsList(RightsList rightsList);
+
+    /**
+     * Adds a property change listener
+     *
+     * @param listener the property change listener to add
+     */
+    public void addPropertyChangeListener(PropertyChangeListener listener);
+
+    /**
+     * Removes a property change listener
+     *
+     * @param listener the property change listener to remove
+     */
+    public void removePropertyChangeListener(PropertyChangeListener listener);
 }

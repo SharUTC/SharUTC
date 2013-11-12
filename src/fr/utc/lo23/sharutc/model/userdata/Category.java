@@ -11,6 +11,7 @@ public class Category implements Serializable {
     /**
      * Undeletable category ID
      */
+    public static Integer IDS_SEQUENCE = new Integer(0);
     public static final Integer PUBLIC_CATEGORY_ID = new Integer(0);
     public static final String PUBLIC_CATEGORY_NAME = "Public";
     private Integer mId;
@@ -26,13 +27,18 @@ public class Category implements Serializable {
      * @param name
      */
     public Category(String name) {
-        mName = name;
+        this.mId = IDS_SEQUENCE ++;
+        this.mName = name;
+        this.mContacts = new Contacts();
     }
 
     public Category(Integer id, String name) {
         this.mId = id;
         this.mName = name;
         this.mContacts = new Contacts();
+        
+        if (this.mId >= IDS_SEQUENCE)
+            IDS_SEQUENCE = this.mId + 1;
     }
 
     /**
@@ -84,20 +90,30 @@ public class Category implements Serializable {
     }
 
     /**
-     * add an id to the contacts list
+     * add a peer to the contacts list
      *
-     * @param id
+     * @param peer
      */
-    public void addContactId(Long id) {
-        mContacts.add(id);
+    public void addContact(Peer peer) {
+        mContacts.add(peer);
     }
+    
+     /**
+     * remove a peer from the contacts list
+     *
+     * @param peer
+     */
+    public void removeContact(Peer peer) {
+        mContacts.remove(peer);
+    }
+
 
     /**
      *
      * @param id
      * @return
      */
-    public Long findContactId(Long id) {
+    public Peer findContactById(Long id) {
         return mContacts.findById(id);
     }
 }

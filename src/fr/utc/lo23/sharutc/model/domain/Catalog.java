@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import fr.utc.lo23.sharutc.util.CollectionChangeListener;
 import fr.utc.lo23.sharutc.util.CollectionChangeSupport;
 import fr.utc.lo23.sharutc.util.CollectionEvent;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -12,12 +14,13 @@ import java.util.List;
 /**
  * Contains a list of Music instance. Send updates when a music is addeed,
  * removed, updated, and when the list is cleared through a
- * CollectionChangeListener
+ * CollectionChangeListener. Inform listener if a contained music has been
+ * updated or is missing
  *
  * getter for Musics returns an unmodifiable list, use the catalog to change
  * them, getter is here for looping purpose or others, not altering
  */
-public class Catalog implements Serializable {
+public class Catalog implements Serializable, PropertyChangeListener {
 
     private static final long serialVersionUID = -6927278754684107936L;
     private ArrayList<Music> mMusics = new ArrayList<Music>();
@@ -69,6 +72,7 @@ public class Catalog implements Serializable {
         for (Music m : mMusics) {
             if (m.getId().longValue() == id) {
                 foundMusic = m;
+                break;
             }
         }
         return foundMusic;
@@ -82,8 +86,9 @@ public class Catalog implements Serializable {
     public Music findMusicByHash(int hash) {
         Music foundMusic = null;
         for (Music m : mMusics) {
-            if (m.getFileBytes() != null && m.getMusicHash() == hash) {
+            if (m.getHash() == hash) {
                 foundMusic = m;
+                break;
             }
         }
         return foundMusic;
@@ -96,11 +101,8 @@ public class Catalog implements Serializable {
      * @return true if the music was added (java norm, not used here)
      */
     public boolean add(Music music) {
-        boolean added = mMusics.add(music);
-        if (added) {
-            collectionChangeSupport.fireCollectionChanged(music, mMusics.size() - 1, CollectionEvent.Type.ADD);
-        }
-        return added;
+        add(mMusics.size(), music);
+        return true;
     }
 
     /**
@@ -110,6 +112,7 @@ public class Catalog implements Serializable {
      * @param music the music to add
      */
     public void add(int index, Music music) {
+        music.addPropertyChangeListener(this);
         mMusics.add(index, music);
         collectionChangeSupport.fireCollectionChanged(music, index, CollectionEvent.Type.ADD);
     }
@@ -148,6 +151,7 @@ public class Catalog implements Serializable {
      * @return true if the music was removed, else false
      */
     public boolean remove(Music music) {
+        music.removePropertyChangeListener(this);
         boolean removed = mMusics.remove(music);
         if (removed) {
             collectionChangeSupport.fireCollectionChanged(music, -1, CollectionEvent.Type.REMOVE);
@@ -160,6 +164,9 @@ public class Catalog implements Serializable {
      */
     public void clear() {
         if (!mMusics.isEmpty()) {
+            for (Music music : mMusics) {
+                music.removePropertyChangeListener(this);
+            }
             mMusics.clear();
             collectionChangeSupport.fireCollectionChanged(null, -1, CollectionEvent.Type.CLEAR);
         }
@@ -222,5 +229,30 @@ public class Catalog implements Serializable {
      */
     public void removePropertyChangeListener(CollectionChangeListener listener) {
         collectionChangeSupport.removeCollectionListener(listener);
+    }
+
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) {
+        if (evt.getSource() != null && evt.getSource() instanceof Music && evt.getPropertyName() != null) {
+            boolean musicFieldOrNameUpdated = false;
+            if (evt.getPropertyName().equals(Music.Property.FILENAME.name())) {
+                musicFieldOrNameUpdated = true;
+            } else if (evt.getPropertyName().equals(Music.Property.TITLE.name())) {
+                musicFieldOrNameUpdated = true;
+            } else if (evt.getPropertyName().equals(Music.Property.ARTIST.name())) {
+                musicFieldOrNameUpdated = true;
+            } else if (evt.getPropertyName().equals(Music.Property.ALBUM.name())) {
+                musicFieldOrNameUpdated = true;
+            } else if (evt.getPropertyName().equals(Music.Property.TRACK.name())) {
+                musicFieldOrNameUpdated = true;
+            } else if (evt.getPropertyName().equals(Music.Property.YEAR.name())) {
+                musicFieldOrNameUpdated = true;
+            } else if (evt.getPropertyName().equals(Music.Property.FILE_MISSING.name())) {
+                collectionChangeSupport.fireCollectionChanged(evt.getSource(), indexOf((Music) evt.getSource()), CollectionEvent.Type.UPDATE);
+            }
+            if (musicFieldOrNameUpdated) {
+                collectionChangeSupport.fireCollectionChanged(evt.getSource(), indexOf((Music) evt.getSource()), CollectionEvent.Type.UPDATE);
+            }
+        }
     }
 }

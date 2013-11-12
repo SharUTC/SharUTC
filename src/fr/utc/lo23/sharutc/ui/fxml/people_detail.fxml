@@ -2,8 +2,75 @@
 
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.*?>
+
+<?import javafx.scene.control.Button?>
 <VBox xmlns:fx="http://javafx.com/fxml"
-      fx:controller="fr.utc.lo23.sharutc.ui.PeopleDetailController">
-    <Label xmlns:fx="http://javafx.com/fxml" text="This is the people layout" styleClass="panetitle"/>
-    <Label xmlns:fx="http://javafx.com/fxml" fx:id="login" styleClass="panetitle"/>
+      fx:controller="fr.utc.lo23.sharutc.ui.PeopleDetailController" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS">
+    <Label fx:id="login" styleClass="panetitle"/>
+
+    <ScrollPane styleClass="myScrollPane"
+                VBox.vgrow="ALWAYS" fitToWidth="true" fitToHeight="true" vbarPolicy="AS_NEEDED">
+        <VBox>
+            <HBox>
+                <ImageView fitWidth="150" fitHeight="150">
+                    <image>
+                        <Image url="@../drawable/avatar_default.png"/>
+                    </image>
+                </ImageView>
+                <Button text="Add to friends" fx:id="addToFriendsButton" onAction="#handleAddToFriendsClicked"/>
+            </HBox>
+            <HBox>
+                <Label text="Songs" styleClass="panesubtitle"/>
+                <Button text="See more" fx:id="seeMoreSongs" onAction="#handleSeeMoreFriendsClicked"/>
+            </HBox>
+            <FlowPane
+                    fx:id="songsContainer"
+                    minHeight="100"
+                    prefHeight="100" prefWidth="-1.0"
+                    orientation="VERTICAL"
+                    prefWrapLength="230.0" vgap="10.0"
+                    hgap="10.0">
+                <padding>
+                    <javafx.geometry.Insets bottom="5" left="5" right="5" top="10"/>
+                </padding>
+            </FlowPane>
+            <HBox>
+                <Label text="Artists" styleClass="panesubtitle"/>
+                <Button text="See more" fx:id="seeMoreArtists" onAction="#handleSeeMoreArtistsClicked"/>
+            </HBox>
+            <FlowPane
+                    fx:id="artistsContainer"
+                    minHeight="100"
+                    prefHeight="100" prefWidth="-1.0"
+                    orientation="VERTICAL"
+                    prefWrapLength="230.0" vgap="10.0"
+                    hgap="10.0">
+                <padding>
+                    <javafx.geometry.Insets bottom="5" left="5" right="5" top="10"/>
+                </padding>
+            </FlowPane>
+            <HBox>
+                <Label text="Tags" styleClass="panesubtitle" />
+                <Button text="See more" fx:id="seeMoreTags" onAction="#handleSeeMoreTagsClicked"/>
+            </HBox>
+            <FlowPane
+                    fx:id="tagsContainer"
+                    minHeight="100"
+                    prefHeight="100" prefWidth="-1.0"
+                    orientation="VERTICAL"
+                    prefWrapLength="230.0" vgap="10.0"
+                    hgap="10.0">
+                <padding>
+                    <javafx.geometry.Insets bottom="5" left="5" right="5" top="10"/>
+                </padding>
+            </FlowPane>
+        </VBox>
+    </ScrollPane>
+
 </VBox>

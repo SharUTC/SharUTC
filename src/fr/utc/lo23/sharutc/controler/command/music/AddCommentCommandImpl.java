@@ -1,5 +1,7 @@
 package fr.utc.lo23.sharutc.controler.command.music;
 
+import com.google.inject.Inject;
+import fr.utc.lo23.sharutc.controler.service.MusicService;
 import fr.utc.lo23.sharutc.model.domain.Music;
 import fr.utc.lo23.sharutc.model.userdata.Peer;
 import org.slf4j.Logger;
@@ -12,10 +14,19 @@ public class AddCommentCommandImpl implements AddCommentCommand {
 
     private static final Logger log = LoggerFactory
             .getLogger(AddCommentCommandImpl.class);
+    private final MusicService musicService;
     private Peer mOwnerPeer;
     private Peer mAuthorPeer;
     private Music mMusic;
     private String mComment;
+
+    /**
+     * {@inheritDoc}
+     */
+    @Inject
+    public AddCommentCommandImpl(MusicService musicService) {
+        this.musicService = musicService;
+    }
 
     /**
      * {@inheritDoc}
@@ -86,6 +97,8 @@ public class AddCommentCommandImpl implements AddCommentCommand {
      */
     @Override
     public void execute() {
-        log.warn("Not supported yet.");
+        log.info("AddCommentCommandImpl ...");
+        musicService.addComment(mAuthorPeer, mMusic, mComment);
+        log.info("AddCommentCommandImpl DONE");
     }
 }

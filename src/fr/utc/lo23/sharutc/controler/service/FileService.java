@@ -10,12 +10,19 @@ import java.io.IOException;
  */
 public interface FileService {
 
+    public static final String APP_NAME = "SharUTC";
+    public static final String ROOT_FOLDER_USERS = "users";
+    public static final String FOLDER_MUSICS = "musics";
+    public static final String DOT_MP3 = ".mp3";
+    public static final String[] AUTHORIZED_MUSIC_FILE_TYPE = {"mp3"};
+    public static final int MIN_FILENAME_LENGTH = 1;
+
     /**
      *
-     * @param path
-     * @param password
+     * @param srcPath
+     * @throws java.lang.Exception
      */
-    public void importFile(String path, String password);
+    public void importWholeProfile(String srcPath) throws Exception;
 
     /**
      * Compress the folder srcPath and write it at destPath
@@ -42,7 +49,7 @@ public interface FileService {
      * @param file the file to read
      * @return the content of the file as an array of Bytes
      */
-    public Byte[] getFileAsByteArray(File file) throws IOException;
+    public byte[] getFileAsByteArray(File file) throws IOException;
 
     /**
      * Give access to a temporary file automatically deleted when application
@@ -52,4 +59,22 @@ public interface FileService {
      * @return the temporary file
      */
     public File buildTmpMusicFile(Byte[] musicBytes) throws Exception;
+
+    /**
+     * Return a file instance of a local music, null if the file doesn't exist
+     *
+     * @param localMusic the music from which we want the file
+     * @return a file instance of a local music, null if the file doesn't exist
+     */
+    public File getFileOfLocalMusic(Music localMusic);
+
+    public String computeRealName(String name);
+
+    public String computeFileName(String realName, String realname);
+
+    public void saveToFile(SharUTCFile sharUTCFile, Object objectToSave);
+
+    public <T> T readFile(SharUTCFile sharUTCFile, Class<T> clazz);
+
+    public void createFile(byte[] bytes, String fileName);
 }
