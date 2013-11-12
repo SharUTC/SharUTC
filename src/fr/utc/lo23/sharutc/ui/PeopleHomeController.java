@@ -2,6 +2,7 @@ package fr.utc.lo23.sharutc.ui;
 
 import fr.utc.lo23.sharutc.model.userdata.Category;
 import fr.utc.lo23.sharutc.model.userdata.UserInfo;
+import fr.utc.lo23.sharutc.ui.custom.DraggableCard;
 import fr.utc.lo23.sharutc.ui.custom.GroupCard;
 import fr.utc.lo23.sharutc.ui.custom.PeopleCard;
 import javafx.fxml.FXML;
@@ -88,31 +89,6 @@ public class PeopleHomeController extends DragPreviewDrawer implements Initializ
     }
 
     @Override
-    public void onCardBeingDragged(boolean isDragged, MouseEvent event, PeopleCard draggedCard) {
-        if (isDragged) {
-            //had to checked if this card is already selected because user
-            //can drag a selected one or a new one
-            mPeopleCardSelected.remove(draggedCard);
-            mPeopleCardSelected.add(draggedCard);
-
-            //drag event start, inform all selected card
-            updateDragPreview(event);
-            for (PeopleCard peopleCard : mPeopleCardSelected) {
-                peopleCard.dragged();
-            }
-        } else {
-            //drag event failed, inform all selected card
-            for (PeopleCard peopleCard : mPeopleCardSelected) {
-                peopleCard.dropped();
-            }
-            //clean the selection
-            mPeopleCardSelected.clear();
-            hideDragPreview();
-        }
-
-    }
-
-    @Override
     public void onGroupDeletionRequested(GroupCard g) {
         log.info("onGroupDeletionRequested " + g.getModel().getName());
         groupContainer.getChildren().remove(g);
@@ -154,6 +130,36 @@ public class PeopleHomeController extends DragPreviewDrawer implements Initializ
             StackPane.setMargin(preview, new Insets(20 * i, 20 * i, 0, 0));
             mDragPreview.getChildren().add(preview);
             i++;
+        }
+    }
+
+    @Override
+    public void onDragStart(MouseEvent event, DraggableCard draggableCard) {
+        if (draggableCard instanceof PeopleCard) {
+            final PeopleCard draggedCard = (PeopleCard) draggableCard;
+            //had to checked if this card is already selected because user
+            //can drag a selected one or a new one
+            mPeopleCardSelected.remove(draggedCard);
+            mPeopleCardSelected.add(draggedCard);
+
+            //drag event start, inform all selected card
+            updateDragPreview(event);
+            for (PeopleCard peopleCard : mPeopleCardSelected) {
+                peopleCard.dragged();
+            }
+        }
+    }
+
+    @Override
+    public void onDragStop(DraggableCard draggableCard) {
+        if (draggableCard instanceof PeopleCard) {
+            //drag event failed, inform all selected card
+            for (PeopleCard peopleCard : mPeopleCardSelected) {
+                peopleCard.dropped();
+            }
+            //clean the selection
+            mPeopleCardSelected.clear();
+            hideDragPreview();
         }
     }
 

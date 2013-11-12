@@ -5,9 +5,10 @@ import javafx.collections.ObservableList;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.scene.control.Button;
-import javafx.scene.input.*;
+import javafx.scene.control.Label;
+import javafx.scene.input.MouseEvent;
 
-public class PeopleCard extends UserCard implements EventHandler<Event> {
+public class PeopleCard extends DraggableCard implements EventHandler<Event> {
 
     /**
      * key used for the drag event to identify the content
@@ -15,18 +16,18 @@ public class PeopleCard extends UserCard implements EventHandler<Event> {
     public static final String DROP_KEY = "PeopleCardContent";
 
     private IPeopleCard mInterface;
+    private UserInfo mUserInfo;
+
+    public Label userLogin;
+    public Label userName;
 
     public Button deleteButton;
     public Button detailButton;
 
-    public PeopleCard(UserInfo userInfo) {
-        super(userInfo, "../fxml/people_card.fxml");
-        getStyleClass().add("peopleCard");
-
-    }
 
     public PeopleCard(UserInfo userInfo, IPeopleCard i) {
-        super(userInfo, "../fxml/people_card.fxml");
+        super("../fxml/people_card.fxml", DROP_KEY, i);
+        initModel(userInfo);
         getStyleClass().add("peopleCard");
         mInterface = i;
         deleteButton.setOnMouseClicked(this);
@@ -34,8 +35,6 @@ public class PeopleCard extends UserCard implements EventHandler<Event> {
         setOnMouseClicked(this);
         setOnMouseEntered(this);
         setOnMouseExited(this);
-        setOnDragDetected(this);
-        setOnDragDone(this);
     }
 
     public void onHover(boolean isHover) {
@@ -63,6 +62,16 @@ public class PeopleCard extends UserCard implements EventHandler<Event> {
 
     }
 
+    public UserInfo getModel() {
+        return mUserInfo;
+    }
+
+    private void initModel(UserInfo userInfo) {
+        mUserInfo = userInfo;
+        userLogin.setText(mUserInfo.getLogin());
+        userName.setText(mUserInfo.getFirstName() + " " + mUserInfo.getLastName());
+    }
+
     @Override
     public void handle(Event event) {
         final Object source = event.getSource();
@@ -83,48 +92,13 @@ public class PeopleCard extends UserCard implements EventHandler<Event> {
             if (source.equals(this)) {
                 this.onHover(false);
             }
-        } else if (event.getEventType() == MouseEvent.DRAG_DETECTED) {
-            if (source.equals(this)) {
-                onDragStart((MouseEvent) event);
-                mInterface.onCardBeingDragged(true, (MouseEvent) event, this);
-            }
-        } else if (event.getEventType() == DragEvent.DRAG_DONE) {
-            if (source.equals(this)) {
-                onDragDone((DragEvent) event);
-                mInterface.onCardBeingDragged(false, null, this);
-            }
         }
-    }
-
-    /**
-     * Change style and add the model to the Dragboard
-     *
-     * @param mouseEvent
-     */
-    private void onDragStart(MouseEvent mouseEvent) {
-        this.getStyleClass().add("peopleCardDrag");
-        Dragboard db = this.startDragAndDrop(TransferMode.ANY);
-        ClipboardContent content = new ClipboardContent();
-        content.putString(DROP_KEY);
-        db.setContent(content);
-        mouseEvent.consume();
-    }
-
-    /**
-     * Retrieve original style whe drag gesture is done
-     *
-     * @param dragEvent
-     */
-    private void onDragDone(DragEvent dragEvent) {
-
-        this.getStyleClass().remove("peopleCardDrag");
-        dragEvent.consume();
     }
 
     /**
      * interface for PeopleCard's callback
      */
-    public interface IPeopleCard {
+    public interface IPeopleCard extends IDraggableCardListener {
         /**
          * user requested the deletion
          *
@@ -146,11 +120,5 @@ public class PeopleCard extends UserCard implements EventHandler<Event> {
          */
         public void onPeopleCardSelected(PeopleCard peopleCard);
 
-        /**
-         * inform that a PeopleCard is being dragged
-         *
-         * @param isDragged true if drag start, false if drag failed
-         */
-        public void onCardBeingDragged(boolean isDragged, MouseEvent event, PeopleCard draggedCard);
     }
 }
