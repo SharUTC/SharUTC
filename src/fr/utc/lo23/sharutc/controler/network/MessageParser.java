@@ -22,9 +22,12 @@ public interface MessageParser {
      * @param messageType the type of the message to specify which command run
      * after reading
      * @param content the different values of the message with a key
-     * @return
+     * @param conversationId optional, some commands require the local
+     * conversationId, others require to return the conversationId given in an
+     * incoming Message
+     * @return the mesage build with given informations
      */
-    public Message write(MessageType messageType, Object[][] content);
+    public Message write(MessageType messageType, Object[][] content, Long conversationID);
 
     /**
      * Return the Peer who send the parsed message

@@ -59,7 +59,7 @@ public class Comment implements Serializable {
         this.mAuthorPeerId = peerId;
         this.mCreationDate = creationDate;
     }
-
+    
     /**
      *
      * @return

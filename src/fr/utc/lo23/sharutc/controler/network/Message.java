@@ -68,18 +68,6 @@ public class Message {
      * @param fromPeerId
      * @param messageType
      * @param content
-     */
-    public Message(long fromPeerId, MessageType messageType, String content) {
-        this.type = messageType;
-        this.content = content;
-        this.fromPeerId = fromPeerId;
-    }
-
-    /**
-     *
-     * @param fromPeerId
-     * @param messageType
-     * @param content
      * @param conversationId
      */
     public Message(long fromPeerId, MessageType messageType, String content, Long conversationId) {
@@ -151,5 +139,10 @@ public class Message {
      */
     public void setConversationId(Long conversationId) {
         this.conversationId = conversationId;
+    }
+
+    @Override
+    public String toString() {
+        return "Message{" + "type=" + type + ", content=" + content + ", fromPeerId=" + fromPeerId + ", conversationId=" + conversationId + '}';
     }
 }

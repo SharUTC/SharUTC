@@ -19,8 +19,8 @@ public class UserServiceMock extends UserServiceImpl implements UserService {
             .getLogger(UserServiceMock.class);
 
     @Inject
-    public UserServiceMock(AppModel appModel) {
-        super(appModel);
+    public UserServiceMock(AppModel appModel, FileService fileService) {
+        super(appModel, fileService);
     }
 
     @Override
@@ -29,8 +29,8 @@ public class UserServiceMock extends UserServiceImpl implements UserService {
     }
 
     @Override
-    public void deleteContact(Long contact) {
-        super.deleteContact(contact);
+    public void deleteContact(Peer peer) {
+        super.deleteContact(peer);
     }
 
     @Override

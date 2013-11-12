@@ -28,7 +28,7 @@ public class AppModelImpl implements AppModel, Serializable {
     private Catalog tmpCatalog = new Catalog();
     private Catalog remoteUserCatalog = new Catalog();
     private Catalog searchResults = new Catalog();
-    private Long currentConversationId = new Long(0);
+    protected Long currentConversationId = new Long(0);
     private Profile profile;
     private Catalog localCatalog;
     private RightsList rightsList;
@@ -125,6 +125,7 @@ public class AppModelImpl implements AppModel, Serializable {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void addPropertyChangeListener(PropertyChangeListener listener) {
         propertyChangeSupport.addPropertyChangeListener(listener);
     }
@@ -132,6 +133,7 @@ public class AppModelImpl implements AppModel, Serializable {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void removePropertyChangeListener(PropertyChangeListener listener) {
         propertyChangeSupport.removePropertyChangeListener(listener);
     }

@@ -49,14 +49,22 @@ public class PlayMusicCommandImpl implements PlayMusicCommand {
     @Override
     public void execute() {
         log.info("PlayMusicCommand ...");
+
         if (mMusic.getOwnerPeerId().equals(appModel.getProfile().getUserInfo().getPeerId())) {
             // file is local
-            playerService.playerPlay();
+            playerService.playOneMusic(mMusic);
         } else {
+            // remove all musics from playlist
+            for (Music m : playerService.getPlaylist().getMusics()) {
+                playerService.removeFromPlaylist(m);
+            }
+            // add music to update ui before file has arrived
+            playerService.addToPlaylist(mMusic);
             // file is remote, music.id belongs to the remote peer
             Peer peer = appModel.getActivePeerList().getByPeerId(mMusic.getOwnerPeerId());
             networkService.downloadMusicForPlaying(peer, mMusic.getId());
         }
+
         log.info("PlayMusicCommand DONE");
     }
 }

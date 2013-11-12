@@ -1,17 +1,33 @@
 package fr.utc.lo23.sharutc.controler.command.account;
 
+import com.google.inject.Inject;
+import fr.utc.lo23.sharutc.controler.service.FileService;
+import fr.utc.lo23.sharutc.model.AppModel;
+import fr.utc.lo23.sharutc.model.ErrorMessage;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  * implementation of export profile command {@inheritDoc}
  */
 public class ExportProfileCommandImpl implements ExportProfileCommand {
-
-    private String mSrcFile = "";
-    private String mDestFolder = "";
-
+    private final FileService fs;
+    private final AppModel appModel;
+    private String mSrcFile;
+    private String mDestFolder;
+    
     /**
      * Constructor
+     * @param fs
+     * @param appModel
+     * @param srcPath
+     * @param destPath
      */
-    public ExportProfileCommandImpl() {
+    @Inject
+    public ExportProfileCommandImpl(FileService fs, AppModel appModel) {
+        this.fs = fs;
+        this.appModel = appModel;
     }
 
     /**
@@ -51,7 +67,10 @@ public class ExportProfileCommandImpl implements ExportProfileCommand {
      */
     @Override
     public void execute() {
-        //TODO FileService.getInstance()
-        //exportProfile(mSrcPath, mDestPath);
+        try {
+            fs.exportFile(mSrcFile, mDestFolder);
+        } catch (IOException ex) {
+            appModel.getErrorBus().pushErrorMessage(new ErrorMessage(ex.getMessage()));
+        }
     }
 }
