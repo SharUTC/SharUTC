@@ -13,6 +13,8 @@ import fr.utc.lo23.sharutc.model.userdata.UserInfo;
 import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import fr.utc.lo23.sharutc.controler.command.account.IntegrateConnectionCommandImpl;
+import fr.utc.lo23.sharutc.model.userdata.KnownPeerList;
 
 /**
  * {@inheritDoc}
@@ -137,6 +139,7 @@ public class UserServiceImpl implements UserService {
         Profile nProfile = new Profile(userInfo);
         appModel.setProfile(nProfile);
         this.profile = nProfile;
+        this.saveProfileFiles();
     }
 
     /**
@@ -151,13 +154,16 @@ public class UserServiceImpl implements UserService {
                     && userInfo.getPassword().equals(password);
             if (success) {
                 appModel.setProfile(profileToConnect);
+                this.integrateConnection(appModel.getProfile().getUserInfo());
             } else {
-                // TODO: add a new error message instead of null
-                appModel.getErrorBus().pushErrorMessage(null);
+                String message = "Incorrect login or password";
+                log.warn(message);
+                appModel.getErrorBus().pushErrorMessage(new ErrorMessage(message));
             }
         } else {
-            // TODO: add a new error message instead of null
-            appModel.getErrorBus().pushErrorMessage(null);
+            String message = "Unknown user";
+            log.warn(message);
+            appModel.getErrorBus().pushErrorMessage(new ErrorMessage(message));
         }
 
     }
@@ -168,9 +174,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public void updateConnectedPeers(UserInfo userInfo) {
         ActivePeerList activePeerList = appModel.getActivePeerList();
+        KnownPeerList knownPeerList = appModel.getProfile().getKnownPeerList();
         Peer newPeer = new Peer(userInfo.getPeerId(), userInfo.getLogin());
         activePeerList.update(newPeer);
         //TODO: also update known peer list
+        knownPeerList.update(newPeer);
     }
 
     /**
@@ -188,7 +196,9 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public void integrateConnection(UserInfo userinfo) {
-        log.warn("Not supported yet.");
+        IntegrateConnectionCommandImpl command = new IntegrateConnectionCommandImpl(appModel,this);
+        command.setUserInfo(userinfo);
+        command.execute();
     }
 
     @Override

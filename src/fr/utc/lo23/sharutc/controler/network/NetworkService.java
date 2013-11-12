@@ -188,4 +188,11 @@ public interface NetworkService {
      * Notify all user of the client's disconnection.
      */
     public void disconnectionBroadcast();
+
+    /**
+     * 
+     * @param peer
+     * @param userInfo 
+     */
+    public void sendConnectionResponse(Peer peer, UserInfo userInfo);
 }

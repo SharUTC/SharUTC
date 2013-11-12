@@ -19,7 +19,15 @@ public class PeerDiscoverySocket implements Runnable {
     /**
      *
      */
+    private final AppModel appModel;
+    /**
+     *
+     */
     private final MessageParser messageParser;
+    /**
+     *
+     */
+    private final MessageHandler messageHandler;
     /**
      *
      */
@@ -48,10 +56,6 @@ public class PeerDiscoverySocket implements Runnable {
      *
      */
     private final NetworkService mNs;
-    /**
-     *
-     */
-    private final AppModel mAppModel;
 
     /**
      *
@@ -59,15 +63,17 @@ public class PeerDiscoverySocket implements Runnable {
      * @param group
      * @param ns
      * @param appModel
+     * @param messageParser
+     * @param messageHandler
      */
-    public PeerDiscoverySocket(int port, InetAddress group, NetworkService ns, AppModel appModel, MessageParser messageParser) {
+    public PeerDiscoverySocket(int port, InetAddress group, NetworkService ns, AppModel appModel, MessageParser messageParser, MessageHandler messageHandler) {
         // preparation
         this.mPort = port;
         this.mGroup = group;
         this.mNs = ns;
         this.threadShouldStop = false;
         this.thread = null;
-        this.mAppModel = appModel;
+        this.appModel = appModel;
         try {
             mSocket = new MulticastSocket(mPort);
             mSocket.joinGroup(mGroup);
@@ -75,6 +81,7 @@ public class PeerDiscoverySocket implements Runnable {
             log.error(e.toString());
         }
         this.messageParser = messageParser;
+        this.messageHandler = messageHandler;
     }
 
     /**
@@ -130,39 +137,23 @@ public class PeerDiscoverySocket implements Runnable {
      *
      * @param p
      * @param msg
-     * @return
      */
-    public PeerSocket addPeer(DatagramPacket p, Message msg) {
+    public void addPeer(DatagramPacket p, Message msg) {
         PeerSocket peerSocket = null;
         try {
             Socket socket = new Socket(p.getAddress(), p.getPort());
             // obtain sender peerId
             Long peerId = msg.getFromPeerId();
             // add new peer
-            peerSocket = new PeerSocket(socket, mNs, peerId);
+            peerSocket = new PeerSocket(socket, mNs, peerId, messageParser, messageHandler);
             peerSocket.start();
         } catch (IOException ex) {
             log.error(ex.toString());
         }
-        return peerSocket;
     }
 
     /**
-     * Send personal information in order to establish the connection with the
-     * new peer
-     *
-     * @param pSocket
-     */
-    public void sendPersonalInformationToPeer(PeerSocket pSocket) {
-        Message msgInfo = null;
-        Long myPeerId = mAppModel.getProfile().getUserInfo().getPeerId();
-        msgInfo = new Message(myPeerId, MessageType.CONNECTION_RESPONSE, "I send you my personal information (peerId = " + myPeerId + ")", null);
-        pSocket.send(msgInfo);
-    }
-
-    /**
-     * Thread which receives a UDP packet, adds a new peer, and send personal
-     * information in order to establish the connection with the new peer
+     * Thread which receives a UDP packet, adds a new peer, and send personal information in order to establish the connection with the new peer
      */
     @Override
     public void run() {
@@ -177,9 +168,11 @@ public class PeerDiscoverySocket implements Runnable {
                 // print information about the sender
                 log.info("<broadcast from " + p.getAddress().toString() + " : " + p.getPort() + " >");
                 log.info("Got packet " + Arrays.toString(p.getData()));
-                // get message object
+                // get json string
                 String json = new String(p.getData());
+                // get message object
                 msgReceived = messageParser.fromJSON(json);
+                // CONNECTION type required
                 if (msgReceived.getType() == MessageType.CONNECTION) {
                     // print more info
                     if (msgReceived.getFromPeerId() != null) {
@@ -187,12 +180,10 @@ public class PeerDiscoverySocket implements Runnable {
                     } else {
                         log.error("Received message with peerId = null !");
                     }
-                    // add a new peer 
-                    PeerSocket newPeer = addPeer(p, msgReceived);
-                    // call model
-                    // TODO recuperer mesage handler to execute command : AddUserCommand
-                    // send personal information to the new peer
-                    sendPersonalInformationToPeer(newPeer);
+                    // add a new 
+                    addPeer(p, msgReceived);
+                    // handle message
+                    messageHandler.handleMessage(json);
                 } else {
                     log.warn("Message type must be CONNECTION !");
                 }
