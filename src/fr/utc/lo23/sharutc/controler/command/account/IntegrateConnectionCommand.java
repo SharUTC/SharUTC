@@ -3,10 +3,6 @@ package fr.utc.lo23.sharutc.controler.command.account;
 import fr.utc.lo23.sharutc.controler.command.Command;
 import fr.utc.lo23.sharutc.model.userdata.UserInfo;
 
-/**
- *
- * @author Tudor Luchiancenco <tudorluchy@gmail.com>
- */
 public interface IntegrateConnectionCommand extends Command {
 
     /**

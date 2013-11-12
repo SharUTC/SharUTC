@@ -10,10 +10,6 @@ import java.util.Arrays;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- *
- * @author Tudor Luchiancenco <tudorluchy@gmail.com>
- */
 public class PeerDiscoverySocket implements Runnable {
 
     /**
