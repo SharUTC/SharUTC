@@ -4,6 +4,7 @@ import fr.utc.lo23.sharutc.model.userdata.UserInfo;
 import fr.utc.lo23.sharutc.ui.custom.ArtistCard;
 import fr.utc.lo23.sharutc.ui.custom.PeopleCard;
 import fr.utc.lo23.sharutc.ui.custom.SongCard;
+import fr.utc.lo23.sharutc.ui.custom.TagCard;
 import javafx.event.ActionEvent;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -31,6 +32,10 @@ public class PeopleDetailController implements Initializable {
         for (int i = 0; i < 3; i++) {
             ArtistCard newCard = new ArtistCard();
             artistsContainer.getChildren().add(newCard);
+        }
+        for (int i = 0; i < 3; i++) {
+            TagCard newCard = new TagCard();
+            tagsContainer.getChildren().add(newCard);
         }
         
     }

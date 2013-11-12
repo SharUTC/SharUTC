@@ -1,0 +1,9 @@
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<fx:root type="fr.utc.lo23.sharutc.ui.custom.TagCard"
+         xmlns:fx="http://javafx.com/fxml">
+    <Label fx:id="tagName" text="Rock"  />
+</fx:root>
+
