@@ -26,15 +26,15 @@ public class UserServiceImpl implements UserService {
             .getLogger(UserServiceImpl.class);
     private final AppModel appModel;
     private final FileService fileService;
-    //FIXME: un service n'est pas un conteneur d'objet, l'instance de profile
-    // est à supprimer, j'imagine qu'elle devrait se trouver dans une commande
-    private Profile profile;
 
     @Inject
     public UserServiceImpl(AppModel appModel, FileService fileService) {
         this.appModel = appModel;
-        this.profile = appModel.getProfile();
         this.fileService = fileService;
+    }
+
+    private Profile getProfile() {
+        return appModel.getProfile();
     }
 
     /**
@@ -42,8 +42,8 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public void saveProfileFiles() {
-        if (profile != null) {
-            fileService.saveToFile(SharUTCFile.PROFILE, profile);
+        if (getProfile() != null) {
+            fileService.saveToFile(SharUTCFile.PROFILE, getProfile());
         } else {
             log.warn("Can't save current profile(null)");
         }
@@ -56,9 +56,8 @@ public class UserServiceImpl implements UserService {
     public void addContact(Contact contact) {
         Long contactId = contact.getUserInfo().getPeerId();
         if (!contact.isInPublic()) {
-            profile.getContacts().findById(contactId).addCategoryId(Category.PUBLIC_CATEGORY_ID);
-        } 
-        else {
+            getProfile().getContacts().findById(contactId).addCategoryId(Category.PUBLIC_CATEGORY_ID);
+        } else {
             log.warn("This contact already exists");
             ErrorMessage nErrorMessage = new ErrorMessage("This contact already exists");
             appModel.getErrorBus().pushErrorMessage(nErrorMessage);
@@ -70,7 +69,7 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public void deleteContact(Contact contact) {
-        profile.getContacts().remove(contact);
+        getProfile().getContacts().remove(contact);
     }
 
     /**
@@ -79,7 +78,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void createCategory(String categoryName) {
         Category c = new Category(categoryName);
-        profile.getCategories().add(c);
+        getProfile().getCategories().add(c);
     }
 
     /**
@@ -88,7 +87,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void deleteCategory(Category category) {
         if (category.getId() != Category.PUBLIC_CATEGORY_ID) {
-            profile.getCategories().remove(category);
+            getProfile().getCategories().remove(category);
         } else {
             log.warn("Can't delete Category Public");
             ErrorMessage nErrorMessage = new ErrorMessage("Can't delete Category Public");
@@ -104,13 +103,13 @@ public class UserServiceImpl implements UserService {
         Long contactId = contact.getUserInfo().getPeerId();
         Set<Integer> CategoriesIdsList = contact.getCategoryIds();
 
-        if (!profile.getCategories().contains(category)) {
-            if (CategoriesIdsList.contains(Category.PUBLIC_CATEGORY_ID))
-                profile.getContacts().findById(contactId).removeCategoryId(Category.PUBLIC_CATEGORY_ID);
+        if (!getProfile().getCategories().contains(category)) {
+            if (CategoriesIdsList.contains(Category.PUBLIC_CATEGORY_ID)) {
+                getProfile().getContacts().findById(contactId).removeCategoryId(Category.PUBLIC_CATEGORY_ID);
+            }
 
-            profile.getContacts().findById(contactId).addCategoryId(category.getId());
-        } 
-        else {
+            getProfile().getContacts().findById(contactId).addCategoryId(category.getId());
+        } else {
             log.warn("This contact already exists in this category");
             ErrorMessage nErrorMessage = new ErrorMessage("This contact already exists in this category");
             appModel.getErrorBus().pushErrorMessage(nErrorMessage);
@@ -122,9 +121,9 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public void removeContactFromCategory(Contact contact, Category category) {
-        if (category.getId() != Category.PUBLIC_CATEGORY_ID)
-            profile.getContacts().findById(contact.getUserInfo().getPeerId()).removeCategoryId(category.getId());
-        else {
+        if (category.getId() != Category.PUBLIC_CATEGORY_ID) {
+            getProfile().getContacts().findById(contact.getUserInfo().getPeerId()).removeCategoryId(category.getId());
+        } else {
             log.warn("Can't remove contact from Public category");
             ErrorMessage nErrorMessage = new ErrorMessage("Can't remove contact from Public category");
             appModel.getErrorBus().pushErrorMessage(nErrorMessage);
@@ -138,7 +137,6 @@ public class UserServiceImpl implements UserService {
     public void createAndSetProfile(UserInfo userInfo) {
         Profile nProfile = new Profile(userInfo);
         appModel.setProfile(nProfile);
-        this.profile = nProfile;
         this.saveProfileFiles();
     }
 
@@ -177,8 +175,9 @@ public class UserServiceImpl implements UserService {
         KnownPeerList knownPeerList = appModel.getProfile().getKnownPeerList();
         Peer newPeer = new Peer(userInfo.getPeerId(), userInfo.getLogin());
         activePeerList.update(newPeer);
-        //TODO: also update known peer list
         knownPeerList.update(newPeer);
+        //TODO: also update contact.userInfo if peer is a contact for offline access
+
     }
 
     /**
@@ -196,14 +195,15 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public void integrateConnection(UserInfo userinfo) {
-        IntegrateConnectionCommandImpl command = new IntegrateConnectionCommandImpl(appModel,this);
-        command.setUserInfo(userinfo);
-        command.execute();
+        // FIXME : pas de commande dans ce service, encore moins l'utilisation de xxxImpl à la main...
+        //IntegrateConnectionCommandImpl command = new IntegrateConnectionCommandImpl(appModel, this);
+        //command.setUserInfo(userinfo);
+        //command.execute();
     }
 
     @Override
     public Contact findContactByPeerId(Long peerId) {
-        return profile.getContacts().findById(peerId);
+        return getProfile().getContacts().findById(peerId);
     }
 
     @Override

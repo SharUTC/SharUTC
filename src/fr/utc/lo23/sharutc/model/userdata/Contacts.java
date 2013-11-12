@@ -24,21 +24,21 @@ public class Contacts implements Serializable {
     public Contacts() {
     }
 
-
     /**
      * Return the Peer who has the Id given in parameter if exists
      *
      * @param peerID the Peer id of a Long
      * @return the Peer who has the Id given in parameter, null is the peer
- isn't a Long
+     * isn't a Long
      */
     public Contact findById(Long peerID) {
+        Contact contact = null;
         for (Contact p : mContacts) {
             if (p.getUserInfo().getPeerId() == peerID) {
-                return p;
+                contact = p;
             }
         }
-        return null;
+        return contact;
     }
 
     /**
