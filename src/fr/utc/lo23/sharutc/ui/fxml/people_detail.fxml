@@ -23,7 +23,7 @@
                         <Image url="@../drawable/avatar_default.png"/>
                     </image>
                 </ImageView>
-                <Button text="Add to friends"/>
+                <Button text="Add to friends" fx:id="addToFriendsButton" onAction="#handleAddToFriendsClicked"/>
             </HBox>
             <Label text="Songs" styleClass="panesubtitle"/>
 
