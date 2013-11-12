@@ -1,6 +1,8 @@
 package fr.utc.lo23.sharutc.model.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import fr.utc.lo23.sharutc.model.userdata.Peer;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
@@ -25,6 +27,7 @@ import org.slf4j.LoggerFactory;
  * Music equality is based on the file Byte[] hash value only
  *
  */
+@JsonInclude(value = Include.NON_NULL)
 public class Music implements Serializable {
 
     private static final Logger log = LoggerFactory.getLogger(Music.class);
@@ -394,10 +397,10 @@ public class Music implements Serializable {
     public List<Comment> getComments() {
         return Collections.unmodifiableList(mComments);
     }
-    
+
     /**
      * Return a comment of the peer
-     * 
+     *
      * @param peer The peer
      * @param commentIndex The index of comment
      * @return A comment of the peer
@@ -405,10 +408,10 @@ public class Music implements Serializable {
     public Comment getComment(Peer peer, Integer commentIndex) {
         return peer == null ? null : getComment(peer.getId(), commentIndex);
     }
-    
+
     /**
      * Return a comment of the peer
-     * 
+     *
      * @param peerId The id of the peer
      * @param commentIndex The index of comment
      * @return A comment of the peer
@@ -431,19 +434,19 @@ public class Music implements Serializable {
     public void setComments(List<Comment> comments) {
         this.mComments = comments;
     }
-    
+
     /**
      * Add a comment
-     * 
+     *
      * @param comment The comment
      */
     public void addComment(Comment comment) {
         this.mComments.add(comment);
     }
-    
+
     /**
      * Remove a comment
-     * 
+     *
      * @param comment The comment
      */
     public void removeComment(Comment comment) {

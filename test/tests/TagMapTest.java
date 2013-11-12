@@ -46,7 +46,7 @@ public class TagMapTest {
     public void before() {
         log.trace("building appModel");
         if (appModelBuilder == null) {
-            appModelBuilder = new AppModelBuilder(appModel, fileService);
+            appModelBuilder = new AppModelBuilder(appModel, musicService);
         }
         appModelBuilder.mockAppModel();
     }
@@ -67,6 +67,7 @@ public class TagMapTest {
         // here I'm testing both merge methods
         TagMap dummyTagMap = new TagMap();
 
+        appModel.getLocalCatalog().get(0).addTag("ROCK");
         TagMap dummyTagMap1 = new TagMap();
         dummyTagMap1.merge("Rock", 1);
 
