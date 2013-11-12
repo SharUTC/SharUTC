@@ -71,7 +71,9 @@ public class FileServiceImpl implements FileService {
 
     @Override
     public void importWholeProfile(String srcPath) throws Exception {
-        // TODO : check if still valid, use File.separator instead of \\
+
+        // FIXME: prevent import if account already exists
+        // TODO : check if following line is still valid, use File.separator instead of \\
         String userName = srcPath.substring(srcPath.lastIndexOf("\\"), srcPath.lastIndexOf('.'));
 
         //chech the structure of the file
@@ -310,7 +312,7 @@ public class FileServiceImpl implements FileService {
     private void resetTmpFile() {
         if (tmpFile == null) {
             // .mp3 extendsion required by other libs
-            tmpFile = new File(appFolder + "\\tmp.mp3");
+            tmpFile = new File(appFolder + File.separator + "tmp" + DOT_MP3);
             tmpFile.deleteOnExit();
         }
         tmpFile.delete();
@@ -345,7 +347,7 @@ public class FileServiceImpl implements FileService {
         if (localMusic != null) {
             String ownerLogin = appModel.getProfile().getUserInfo().getLogin();
             if (ownerLogin != null && !ownerLogin.isEmpty() && appModel.getProfile().getUserInfo().getPeerId().equals(localMusic.getOwnerPeerId())) {
-                file = new File(appFolder + "\\" + ownerLogin + "\\mp3\\" + localMusic.getRealName());
+                file = new File(appFolder + File.separator + ROOT_FOLDER_USERS + File.separator + ownerLogin + File.separator + localMusic.getFileName());
             }
         }
         return file;
@@ -450,6 +452,13 @@ public class FileServiceImpl implements FileService {
         } catch (Exception ex) {
             log.error("Error while creating file '{}' from bytes", fileName, ex.toString());
             throw new RuntimeException("Error while creating file '" + fileName + "' from bytes", ex);
+        }
+    }
+
+    @Override
+    public void createAccountFolder(String login) {
+        if (!new File(appFolder + ROOT_FOLDER_USERS + File.separator + login).exists()) {
+            new File(appFolder + ROOT_FOLDER_USERS + File.separator + login).mkdir();
         }
     }
 }

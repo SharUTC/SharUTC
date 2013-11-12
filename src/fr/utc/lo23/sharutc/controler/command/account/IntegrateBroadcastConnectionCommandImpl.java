@@ -12,7 +12,7 @@ import org.slf4j.LoggerFactory;
 /**
  * {@inheritDoc}
  */
-public class IntegrateBroadcastConnectionCommandImpl implements IntegrateConnectionCommand {
+public class IntegrateBroadcastConnectionCommandImpl implements IntegrateBroadcastConnectionCommand {
 
     private static final Logger log = LoggerFactory
             .getLogger(IntegrateBroadcastConnectionCommandImpl.class);

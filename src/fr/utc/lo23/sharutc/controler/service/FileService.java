@@ -77,4 +77,6 @@ public interface FileService {
     public <T> T readFile(SharUTCFile sharUTCFile, Class<T> clazz);
 
     public void createFile(byte[] bytes, String fileName);
+
+    public void createAccountFolder(String login);
 }

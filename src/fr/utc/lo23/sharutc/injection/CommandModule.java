@@ -3,6 +3,8 @@ package fr.utc.lo23.sharutc.injection;
 import com.google.inject.AbstractModule;
 import fr.utc.lo23.sharutc.controler.command.account.AccountCreationCommand;
 import fr.utc.lo23.sharutc.controler.command.account.AccountCreationCommandImpl;
+import fr.utc.lo23.sharutc.controler.command.account.IntegrateBroadcastConnectionCommand;
+import fr.utc.lo23.sharutc.controler.command.account.IntegrateBroadcastConnectionCommandImpl;
 import fr.utc.lo23.sharutc.controler.command.account.IntegrateConnectionCommand;
 import fr.utc.lo23.sharutc.controler.command.account.IntegrateConnectionCommandImpl;
 import fr.utc.lo23.sharutc.controler.command.music.AddCommentCommand;
@@ -112,5 +114,9 @@ public class CommandModule extends AbstractModule {
         bind(DownloadMusicsCommand.class).to(DownloadMusicsCommandImpl.class);
         bind(SendMusicsCommand.class).to(SendMusicsCommandImpl.class);
         bind(InstallRemoteMusicsCommand.class).to(InstallRemoteMusicsCommandImpl.class);
+
+        //network ??
+        bind(IntegrateBroadcastConnectionCommand.class).to(IntegrateBroadcastConnectionCommandImpl.class);
+
     }
 }
