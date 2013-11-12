@@ -11,6 +11,7 @@ import fr.utc.lo23.sharutc.model.domain.RightsList;
 import fr.utc.lo23.sharutc.model.domain.Score;
 import fr.utc.lo23.sharutc.model.domain.SearchCriteria;
 import fr.utc.lo23.sharutc.model.domain.TagMap;
+import fr.utc.lo23.sharutc.model.userdata.Contact;
 import fr.utc.lo23.sharutc.model.userdata.Peer;
 import fr.utc.lo23.sharutc.util.Utils;
 import java.io.File;
@@ -118,9 +119,9 @@ public class MusicServiceImpl implements MusicService {
         appModel.getRemoteUserCatalog().clear();
 
         // 2 modes : when peer is a contact and when peer isn't a contact
-        Long contactId = userService.findContactIdByPeerId(peer.getId());
-        if (contactId != null) {
-            Set<Integer> contactCategoryIds = appModel.getProfile().getCategories().getCategoriesIdsByContactId(contactId);
+        Contact contact = userService.findContactByPeerId(peer.getId());
+        if (contact != null) {
+            Set<Integer> contactCategoryIds = contact.getCategoryIds();
 
 
             // looping on whole catalog, searching for matching music informations
@@ -422,9 +423,9 @@ public class MusicServiceImpl implements MusicService {
         } else {
             catalogResult = new Catalog();
             if (criteria.getSearch() != null && criteria.getSearch().trim().length() > 0) {
-                Long contactId = userService.findContactIdByPeerId(peer.getId());
-                if (contactId != null) {
-                    Set<Integer> contactCategoryIds = appModel.getProfile().getCategories().getCategoriesIdsByContactId(contactId);
+                Contact contact = userService.findContactByPeerId(peer.getId());
+                if (contact != null) {
+                    Set<Integer> contactCategoryIds = contact.getCategoryIds();
 
                     // looping on whole catalog, searching for matching music informations
                     for (Music music : appModel.getLocalCatalog().getMusics()) {
