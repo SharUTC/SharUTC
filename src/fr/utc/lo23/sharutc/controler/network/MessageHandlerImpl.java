@@ -137,6 +137,10 @@ public class MessageHandlerImpl implements MessageHandler {
                         playIncomingMusicCommand.setMusic((Music) messageParser.getValue(Message.MUSIC));
                         command = playIncomingMusicCommand;
                         break;
+                    case CONNECTION:
+                        // TODO
+//                        command = repondreMessageConnection;
+                        break;
                     case DISCONNECT:
                         break;
                     default:

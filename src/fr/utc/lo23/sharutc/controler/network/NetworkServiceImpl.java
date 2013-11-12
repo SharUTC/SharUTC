@@ -23,16 +23,18 @@ public class NetworkServiceImpl implements NetworkService {
 
     private static final Logger log = LoggerFactory
             .getLogger(NetworkServiceImpl.class);
-    private final AppModel mAppModel;
-    private final MessageParser mMessageParser;
+    private final AppModel appModel;
+    private final MessageParser messageParser;
+    private final MessageHandler messageHandler;
     private final HashMap<Long, PeerSocket> mPeers;
     private ListenThread mListenThread;
     private PeerDiscoverySocket mPeerDiscoverySocket;
 
     @Inject
-    public NetworkServiceImpl(AppModel appModel, MessageParser messageParser) {
-        this.mAppModel = appModel;
-        this.mMessageParser = messageParser;
+    public NetworkServiceImpl(AppModel appModel, MessageParser messageParser, MessageHandler messageHandler) {
+        this.appModel = appModel;
+        this.messageParser = messageParser;
+        this.messageHandler = messageHandler;
         mPeers = new HashMap();
         mListenThread = null;
         mPeerDiscoverySocket = null;
@@ -44,9 +46,9 @@ public class NetworkServiceImpl implements NetworkService {
     @Override
     public void start(int port, String group) throws UnknownHostException {
         InetAddress g = InetAddress.getByName(group);
-        mListenThread = new ListenThread(port, this, mAppModel);
+        mListenThread = new ListenThread(port, this, appModel, messageParser, messageHandler);
         mListenThread.start();
-        mPeerDiscoverySocket = new PeerDiscoverySocket(port, g, this, mAppModel, mMessageParser);
+        mPeerDiscoverySocket = new PeerDiscoverySocket(port, g, this, appModel, messageParser, messageHandler);
         mPeerDiscoverySocket.start();
     }
 
@@ -107,7 +109,7 @@ public class NetworkServiceImpl implements NetworkService {
      */
     @Override
     public void sendUnicastGetCatalog(Peer peer) {
-        Message message = mMessageParser.write(MessageType.MUSIC_GET, new Object[][]{{Message.OWNER_PEER_ID, peer.getId()}}, mAppModel.getCurrentConversationId());
+        Message message = messageParser.write(MessageType.MUSIC_GET, new Object[][]{{Message.OWNER_PEER_ID, peer.getId()}}, appModel.getCurrentConversationId());
         sendUnicast(message, peer);
     }
 
@@ -116,7 +118,7 @@ public class NetworkServiceImpl implements NetworkService {
      */
     @Override
     public void sendUnicastCatalog(Peer peer, Long conversationID, Catalog catalog) {
-        Message message = mMessageParser.write(MessageType.MUSIC_CATALOG, new Object[][]{{Message.CATALOG, catalog}, {Message.OWNER_PEER_ID, peer.getId()}}, conversationID);
+        Message message = messageParser.write(MessageType.MUSIC_CATALOG, new Object[][]{{Message.CATALOG, catalog}, {Message.OWNER_PEER_ID, peer.getId()}}, conversationID);
         sendUnicast(message, peer);
     }
 
@@ -125,7 +127,7 @@ public class NetworkServiceImpl implements NetworkService {
      */
     @Override
     public void sendBroadcastGetTagMap() {
-        Message message = mMessageParser.write(MessageType.TAG_GET_MAP, new Object[][]{}, mAppModel.getCurrentConversationId());
+        Message message = messageParser.write(MessageType.TAG_GET_MAP, new Object[][]{}, appModel.getCurrentConversationId());
         sendBroadcast(message);
     }
 
@@ -134,7 +136,7 @@ public class NetworkServiceImpl implements NetworkService {
      */
     @Override
     public void sendUnicastTagMap(Peer peer, Long conversationId, TagMap tagMap) {
-        Message message = mMessageParser.write(MessageType.TAG_MAP, new Object[][]{{Message.TAG_MAP, tagMap}}, conversationId);
+        Message message = messageParser.write(MessageType.TAG_MAP, new Object[][]{{Message.TAG_MAP, tagMap}}, conversationId);
         sendUnicast(message, peer);
     }
 
@@ -200,7 +202,7 @@ public class NetworkServiceImpl implements NetworkService {
      */
     @Override
     public void sendDownloadRequest(Peer peer, Catalog catalog) {
-        Message message = mMessageParser.write(MessageType.MUSIC_GET, new Object[][]{{Message.CATALOG, catalog}}, null);
+        Message message = messageParser.write(MessageType.MUSIC_GET, new Object[][]{{Message.CATALOG, catalog}}, null);
         sendUnicast(message, peer);
     }
 
@@ -209,7 +211,7 @@ public class NetworkServiceImpl implements NetworkService {
      */
     @Override
     public void sendMusics(Peer peer, Catalog catalog) {
-        Message message = mMessageParser.write(MessageType.MUSIC_INSTALL, new Object[][]{{Message.CATALOG, catalog}}, null);
+        Message message = messageParser.write(MessageType.MUSIC_INSTALL, new Object[][]{{Message.CATALOG, catalog}}, null);
         sendUnicast(message, peer);
     }
 
@@ -218,7 +220,7 @@ public class NetworkServiceImpl implements NetworkService {
      */
     @Override
     public void downloadMusicForPlaying(Peer peer, long musicId) {
-        Message message = mMessageParser.write(MessageType.MUSIC_GET_TO_PLAY, new Object[][]{{Message.MUSIC_ID, musicId}}, mAppModel.getCurrentConversationId());
+        Message message = messageParser.write(MessageType.MUSIC_GET_TO_PLAY, new Object[][]{{Message.MUSIC_ID, musicId}}, appModel.getCurrentConversationId());
         sendUnicast(message, peer);
     }
 
@@ -227,7 +229,7 @@ public class NetworkServiceImpl implements NetworkService {
      */
     @Override
     public void sendMusicToPlay(Peer peer, Long conversationID, Music music) {;
-        Message message = mMessageParser.write(MessageType.MUSIC_SEND_TO_PLAY, new Object[][]{{Message.MUSIC, music}}, conversationID);
+        Message message = messageParser.write(MessageType.MUSIC_SEND_TO_PLAY, new Object[][]{{Message.MUSIC, music}}, conversationID);
         sendUnicast(message, peer);
     }
 
@@ -237,7 +239,7 @@ public class NetworkServiceImpl implements NetworkService {
         @Override
     public void userInfoBroadcast(UserInfo userInfo) {
         if(userInfo != null){
-            mPeerDiscoverySocket.send(mMessageParser.write(MessageType.USER_INFO, new Object[][]{{Message.USER_INFO, userInfo}}, mAppModel.getCurrentConversationId()));
+            mPeerDiscoverySocket.send(messageParser.write(MessageType.USER_INFO, new Object[][]{{Message.USER_INFO, userInfo}}, appModel.getCurrentConversationId()));
         } else {
             log.error("[NetworkService - userInfoBroadCast()] - userInfo is null");
         }
@@ -248,6 +250,6 @@ public class NetworkServiceImpl implements NetworkService {
      */
     @Override
     public void disconnectionBroadcast() {
-        sendBroadcast(mMessageParser.write(MessageType.DISCONNECT, null, null));
+        sendBroadcast(messageParser.write(MessageType.DISCONNECT, null, null));
     }
 }
