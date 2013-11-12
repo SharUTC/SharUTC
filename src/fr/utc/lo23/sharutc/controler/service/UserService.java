@@ -1,8 +1,7 @@
 package fr.utc.lo23.sharutc.controler.service;
 
-import fr.utc.lo23.sharutc.controler.network.NetworkService;
 import fr.utc.lo23.sharutc.model.userdata.Category;
-import fr.utc.lo23.sharutc.model.userdata.Peer;
+import fr.utc.lo23.sharutc.model.userdata.Contact;
 import fr.utc.lo23.sharutc.model.userdata.UserInfo;
 
 /**
@@ -21,14 +20,14 @@ public interface UserService {
      *
      * @param peer
      */
-    public void addContact(Peer peer);
+    public void addContact(Contact contact);
 
     /**
      * Remove the contact represented by one's peer from every category
      *
      * @param peer
      */
-    public void deleteContact(Peer peer);
+    public void deleteContact(Contact contact);
 
     /**
      * Create the category categoryName
@@ -50,7 +49,7 @@ public interface UserService {
      * @param peer
      * @param category
      */
-    public void addContactToCategory(Peer peer, Category category);
+    public void addContactToCategory(Contact contact, Category category);
 
     /**
      * Remove a contact represented by one's peer from a specified category
@@ -58,7 +57,7 @@ public interface UserService {
      * @param peer
      * @param category
      */
-    public void removeContactFromCategory(Peer peer, Category category);
+    public void removeContactFromCategory(Contact contact, Category category);
 
     /**
      *
@@ -98,7 +97,7 @@ public interface UserService {
      * @param peerId
      * @return
      */
-    public Long findContactIdByPeerId(Long peerId);
+    public Contact findContactByPeerId(Long peerId);
 
     /**
      * Send a disconnection request to the network and save profile
