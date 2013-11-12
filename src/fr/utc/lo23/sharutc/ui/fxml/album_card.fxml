@@ -1,0 +1,10 @@
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<fx:root type="fr.utc.lo23.sharutc.ui.custom.AlbumCard"
+         xmlns:fx="http://javafx.com/fxml">
+    <Label fx:id="albumName" text="name"  />
+    <Label fx:id="artistName" text="name" />
+</fx:root>
+
