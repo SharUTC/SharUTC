@@ -114,18 +114,29 @@ public class MusicServiceImpl implements MusicService {
      */
     @Override
     public void integrateRemoteCatalog(Peer peer, Catalog catalog) {
-
-        appModel.getRemoteUserCatalog().clear();
-
+        log.trace("integrateRemoteCatalog ...");
+        // TODO: check if peeer parameter is really needed here (for UI purposes?) refactor by deleting it if it's not the case
+       appModel.getRemoteUserCatalog().addAll(catalog.getMusics()); 
+       log.trace("integrateRemoteCatalog DONE");
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Catalog getCatalogForPeer(Peer peer) {
+        // TODO : refactor method to avoid redundant parts with searchMusic
+        log.trace("getCatalogForPeer ...");
+        
+        Catalog userFilteredCatalog = new Catalog();
+        
         // 2 modes : when peer is a contact and when peer isn't a contact
         Long contactId = userService.findContactIdByPeerId(peer.getId());
         if (contactId != null) {
             Set<Integer> contactCategoryIds = appModel.getProfile().getCategories().getCategoriesIdsByContactId(contactId);
 
-
             // looping on whole catalog, searching for matching music informations
             for (Music music : appModel.getLocalCatalog().getMusics()) {
-                // only deal with needed musics
                 List<Integer> matchingCategoryIds = getAllMatchingCategoryIds(music, contactCategoryIds);
 
                 // searching Rights values to be set directly on a copy of music instance if added to the results
@@ -162,8 +173,8 @@ public class MusicServiceImpl implements MusicService {
                     musicToReturn.setMayCommentAndNote(mayNoteAndComment);
                     // loading last used and known peer name
                     fillCommentAuthorNames(musicToReturn);
-                    // add the music to the returned set of music
-                    appModel.getRemoteUserCatalog().add(musicToReturn);
+                    // add the music to the returned set of music, if peer has the right to read infos
+                    userFilteredCatalog.add(musicToReturn);
                 }
             }
         } else {
@@ -174,6 +185,8 @@ public class MusicServiceImpl implements MusicService {
              * 
              */
         }
+        log.trace("getCatalogForPeer DONE");
+        return userFilteredCatalog;
     }
 
     /**
@@ -185,6 +198,7 @@ public class MusicServiceImpl implements MusicService {
         if (localTagMap == null || isLocalTagMapDirty()) {
             buildLocalTagMap();
         }
+        log.trace("getLocalTagMap DONE");
         return localTagMap;
     }
 
