@@ -150,12 +150,14 @@ public class UserServiceImpl implements UserService {
             if (success) {
                 appModel.setProfile(profileToConnect);
             } else {
-                // TODO: add a new error message instead of null
-                appModel.getErrorBus().pushErrorMessage(null);
+                String message = "Incorrect login or password";
+                log.warn(message);
+                appModel.getErrorBus().pushErrorMessage(new ErrorMessage(message));
             }
         } else {
-            // TODO: add a new error message instead of null
-            appModel.getErrorBus().pushErrorMessage(null);
+            String message = "Unknown user";
+            log.warn(message);
+            appModel.getErrorBus().pushErrorMessage(new ErrorMessage(message));
         }
 
     }
