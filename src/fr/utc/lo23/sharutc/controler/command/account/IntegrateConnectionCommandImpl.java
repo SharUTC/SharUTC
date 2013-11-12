@@ -14,12 +14,13 @@ import org.slf4j.LoggerFactory;
 public class IntegrateConnectionCommandImpl implements IntegrateConnectionCommand {
 
     private static final Logger log = LoggerFactory
-            .getLogger(IntegrateConnectionCommandImpl.class);
+        .getLogger(IntegrateConnectionCommandImpl.class);
     private final AppModel appModel;
     private final UserService userService;
     private UserInfo mUserInfo;
 
     /**
+     * Construct IntegrateConnectionCommand
      *
      * @param appModel
      * @param us
@@ -47,13 +48,15 @@ public class IntegrateConnectionCommandImpl implements IntegrateConnectionComman
     }
 
     /**
-     * Add user info to model Add user info to active peer list
+     * Add user info to model and update active peer list
      */
     @Override
     public void execute() {
         log.info("IntegrateConnectionCommandImpl ...");
+        // add user info to model
         userService.integrateConnection(mUserInfo);
         // TODO ip adresse ?
+        // update active peer list
         Peer peer = new Peer(mUserInfo.getPeerId(), mUserInfo.getLogin());
         appModel.getActivePeerList().update(peer);
         log.info("IntegrateConnectionCommandImpl DONE");
