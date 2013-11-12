@@ -28,4 +28,16 @@ public class PeopleDetailController implements Initializable {
     public void handleAddToFriendsClicked(ActionEvent actionEvent) {
 
     }
+
+    public void handleSeeMoreFriendsClicked(ActionEvent actionEvent) {
+
+    }
+
+    public void handleSeeMoreArtistsClicked(ActionEvent actionEvent) {
+
+    }
+
+    public void handleSeeMoreTagsClicked(ActionEvent actionEvent) {
+
+    }
 }
