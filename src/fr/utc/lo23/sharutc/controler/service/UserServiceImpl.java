@@ -6,6 +6,7 @@ import fr.utc.lo23.sharutc.model.AppModel;
 import fr.utc.lo23.sharutc.model.ErrorMessage;
 import fr.utc.lo23.sharutc.model.userdata.ActivePeerList;
 import fr.utc.lo23.sharutc.model.userdata.Category;
+import fr.utc.lo23.sharutc.model.userdata.Contact;
 import fr.utc.lo23.sharutc.model.userdata.Peer;
 import fr.utc.lo23.sharutc.model.userdata.Profile;
 import fr.utc.lo23.sharutc.model.userdata.UserInfo;
@@ -50,11 +51,12 @@ public class UserServiceImpl implements UserService {
      * {@inheritDoc}
      */
     @Override
-    public void addContact(Peer peer) {
-        //Check that the contact does not exist in the category Public
-        if (!profile.getCategories().findCategoryById(Category.PUBLIC_CATEGORY_ID).getContacts().contains(peer)) {
-            profile.getCategories().findCategoryById(Category.PUBLIC_CATEGORY_ID).addContact(peer);
-        } else {
+    public void addContact(Contact contact) {
+        Long contactId = contact.getUserInfo().getPeerId();
+        if (!contact.isInPublic()) {
+            profile.getContacts().findById(contactId).addCategoryId(Profile.PUBLIC_CATEGORY_ID);
+        } 
+        else {
             log.warn("This contact already exists");
             ErrorMessage nErrorMessage = new ErrorMessage("This contact already exists");
             appModel.getErrorBus().pushErrorMessage(nErrorMessage);
@@ -65,10 +67,8 @@ public class UserServiceImpl implements UserService {
      * {@inheritDoc}
      */
     @Override
-    public void deleteContact(Peer peer) {
-        for (Category cat : profile.getCategories().getCategories()) {
-            cat.getContacts().remove(peer);
-        }
+    public void deleteContact(Contact contact) {
+        profile.getContacts().remove(contact);
     }
 
     /**
@@ -77,7 +77,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void createCategory(String categoryName) {
         Category c = new Category(categoryName);
-        profile.getCategories().getCategories().add(c);
+        profile.getCategories().add(c);
     }
 
     /**
@@ -85,7 +85,7 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public void deleteCategory(Category category) {
-        if (category.getId() != 0) {
+        if (category.getId() != Profile.PUBLIC_CATEGORY_ID) {
             profile.getCategories().remove(category);
         } else {
             log.warn("Can't delete Category Public");
@@ -98,20 +98,17 @@ public class UserServiceImpl implements UserService {
      * {@inheritDoc}
      */
     @Override
-    public void addContactToCategory(Peer peer, Category category) {
-        Long peerId = peer.getId();
-        Set<Integer> CategoriesIdsList = profile.getCategories().getCategoriesIdsByContactId(peerId);
-        /*
-         * Check that the contact does not exist in the category Public.
-         * If it does not exist, the contact is added to the category Public.
-         */
-        if (!CategoriesIdsList.contains(Category.PUBLIC_CATEGORY_ID)) {
-            profile.getCategories().findCategoryById(Category.PUBLIC_CATEGORY_ID).addContact(peer);
-        }
-        //Check that the contact does not exist in this category
-        if (!CategoriesIdsList.contains(category.getId())) {
-            profile.getCategories().findCategoryById(category.getId()).addContact(peer);
-        } else {
+    public void addContactToCategory(Contact contact, Category category) {
+        Long contactId = contact.getUserInfo().getPeerId();
+        Set<Integer> CategoriesIdsList = contact.getCategoryIds();
+
+        if (!profile.getCategories().contains(category)) {
+            if (CategoriesIdsList.contains(Profile.PUBLIC_CATEGORY_ID))
+                profile.getContacts().findById(contactId).removeCategoryId(Profile.PUBLIC_CATEGORY_ID);
+
+            profile.getContacts().findById(contactId).addCategoryId(category.getId());
+        } 
+        else {
             log.warn("This contact already exists in this category");
             ErrorMessage nErrorMessage = new ErrorMessage("This contact already exists in this category");
             appModel.getErrorBus().pushErrorMessage(nErrorMessage);
@@ -122,8 +119,14 @@ public class UserServiceImpl implements UserService {
      * {@inheritDoc}
      */
     @Override
-    public void removeContactFromCategory(Peer peer, Category category) {
-        profile.getCategories().findCategoryById(category.getId()).removeContact(peer);
+    public void removeContactFromCategory(Contact contact, Category category) {
+        if (category.getId() != Profile.PUBLIC_CATEGORY_ID)
+            profile.getContacts().findById(contact.getUserInfo().getPeerId()).removeCategoryId(category.getId());
+        else {
+            log.warn("Can't remove contact from Public category");
+            ErrorMessage nErrorMessage = new ErrorMessage("Can't remove contact from Public category");
+            appModel.getErrorBus().pushErrorMessage(nErrorMessage);
+        }
     }
 
     /**
@@ -189,11 +192,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Long findContactIdByPeerId(Long peerId) {
-        // 2 modes : when peer is a contact and when peer isn't a contact
-        Peer contact = appModel.getProfile().getCategories().
-                findCategoryById(Category.PUBLIC_CATEGORY_ID).getContacts().findById(peerId);
-        return contact.getId();
+    public Contact findContactByPeerId(Long peerId) {
+        return profile.getContacts().findById(peerId);
     }
 
     @Override
