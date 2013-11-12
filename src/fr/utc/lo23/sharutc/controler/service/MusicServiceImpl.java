@@ -490,7 +490,14 @@ public class MusicServiceImpl implements MusicService {
     private void fillCommentAuthorNames(Music musicToReturn) {
         // use known peer list from profile to set each author name in the comments
         for (Comment comment : musicToReturn.getComments()) {
-            musicToReturn.setCommentAuthor(comment.getIndex(), appModel.getProfile().getKnownPeerList().getPeerNameById(comment.getAuthorPeerId()));
+            Long authorPeerId = comment.getAuthorPeerId();
+            String author;
+            if (appModel.getProfile().getUserInfo().getPeerId().equals(authorPeerId)) {
+                author = new StringBuilder(appModel.getProfile().getUserInfo().getFirstName()).append(" ").append(appModel.getProfile().getUserInfo().getLastName()).toString();
+            } else {
+                author = appModel.getProfile().getKnownPeerList().getPeerNameById(comment.getAuthorPeerId());
+            }
+            musicToReturn.setCommentAuthor(comment.getIndex(), author);
         }
     }
 

@@ -25,8 +25,6 @@ public class SaveAccountFileTest {
     @Inject
     private AppModel appModel;
     @Inject
-    private FileService fileService;
-    @Inject
     private MusicService musicService;
     @Inject
     private UserService userService;
