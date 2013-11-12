@@ -134,6 +134,7 @@ public class UserServiceImpl implements UserService {
         Profile nProfile = new Profile(userInfo);
         appModel.setProfile(nProfile);
         this.profile = nProfile;
+        this.saveProfileFiles();
     }
 
     /**
