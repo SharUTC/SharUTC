@@ -35,6 +35,8 @@ public class MusicScoreTest {
     @Inject
     private FileService fileService;
     @Inject
+    private MusicService musicService;
+    @Inject
     private SetScoreCommand setScoreCommand;
     @Inject
     private UnsetScoreCommand unsetScoreCommand;
@@ -44,7 +46,7 @@ public class MusicScoreTest {
     public void before() {
         log.trace("building appModel");
         if (appModelBuilder == null) {
-            appModelBuilder = new AppModelBuilder(appModel, fileService);
+            appModelBuilder = new AppModelBuilder(appModel, musicService);
         }
         appModelBuilder.mockAppModel();
     }
@@ -63,23 +65,22 @@ public class MusicScoreTest {
         Music dummyMusic = new Music();
         dummyMusic.setFileName("Dummy Music");
         setScoreCommand.setMusic(dummyMusic);
-        
+
         Peer dummyPeer = new Peer();
         dummyPeer.setDisplayName("Dummy Peer");
         dummyPeer.setId(436907);
         dummyPeer.setIpAddress("192.168.1.1");
         setScoreCommand.setPeer(dummyPeer);
-        
+
         Integer scoreValue = 4;
         setScoreCommand.setScore(scoreValue);
-        
+
         setScoreCommand.execute();
-        
+
         Score score = dummyMusic.getScore(dummyPeer);
         Assert.assertNotNull("SetScoreCommand failed", score);
-        
-        if(score != null)
-        {
+
+        if (score != null) {
             Assert.assertSame("SetScoreCommand failed", score.getValue(),
                     scoreValue);
         }
@@ -89,26 +90,26 @@ public class MusicScoreTest {
      *
      */
     @Test
-    public void unsetScore(){
+    public void unsetScore() {
         Music dummyMusic = new Music();
         dummyMusic.setFileName("Dummy Music");
         setScoreCommand.setMusic(dummyMusic);
-        
+
         Peer dummyPeer = new Peer();
         dummyPeer.setDisplayName("Dummy Peer");
         dummyPeer.setId(436907);
         dummyPeer.setIpAddress("192.168.1.1");
         setScoreCommand.setPeer(dummyPeer);
-        
+
         Integer scoreValue = 4;
         setScoreCommand.setScore(scoreValue);
-        
+
         setScoreCommand.execute();
-        
+
         unsetScoreCommand.setMusic(dummyMusic);
         unsetScoreCommand.setPeer(dummyPeer);
         unsetScoreCommand.execute();
-        
+
         Score score = dummyMusic.getScore(dummyPeer);
         Assert.assertNull("SetScoreCommand failed", score);
     }

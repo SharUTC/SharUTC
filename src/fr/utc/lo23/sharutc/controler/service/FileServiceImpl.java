@@ -36,14 +36,14 @@ import static fr.utc.lo23.sharutc.controler.service.FileService.ROOT_FOLDER_USER
 @Singleton
 public class FileServiceImpl implements FileService {
 
-    private static String appFolder;
+    protected static String appFolder;
     private static final int BUFFER_SIZE = 2048;
     private static final int COMPRESSION_LEVEL = 9;
     private static final Logger log = LoggerFactory
             .getLogger(FileServiceImpl.class);
     private final AppModel appModel;
     private File tmpFile;
-    private final ObjectMapper mapper = new ObjectMapper();
+    protected final ObjectMapper mapper = new ObjectMapper();
 
     @Inject
     public FileServiceImpl(AppModel appModel) {
@@ -58,7 +58,10 @@ public class FileServiceImpl implements FileService {
         appFolder += File.separator + APP_NAME + File.separator;
 
         if (!new File(appFolder).exists()) {
-            new File(appFolder + ROOT_FOLDER_USERS).mkdirs();
+            new File(appFolder).mkdir();
+            if (!new File(appFolder + ROOT_FOLDER_USERS).exists()) {
+                new File(appFolder + ROOT_FOLDER_USERS).mkdir();
+            }
         }
     }
 
@@ -230,9 +233,13 @@ public class FileServiceImpl implements FileService {
             trackLength = null;
             frames = 0L;
         }
+        byte[] byteArray = getFileAsByteArray(file);
+        Byte[] bytes = new Byte[byteArray.length];
+        for (int i = 0; i < byteArray.length; i++) {
+            bytes[i] = byteArray[i];
+        }
         return new Music(appModel.getProfile().getNewMusicId(),
-                appModel.getProfile().getUserInfo().getPeerId(),
-                getFileAsByteArray(file),
+                appModel.getProfile().getUserInfo().getPeerId(), bytes,
                 file.getName(), file.getName(), file.hashCode(), title, artist, album, year, track,
                 trackLength, frames);
     }
@@ -259,7 +266,8 @@ public class FileServiceImpl implements FileService {
      * {@inheritDoc}
      */
     @Override
-    public Byte[] getFileAsByteArray(File file) throws IOException {
+    public byte[] getFileAsByteArray(File file) throws IOException {
+        byte[] bytes;
         ByteArrayOutputStream baos = null;
         InputStream inputStream = null;
         try {
@@ -290,18 +298,13 @@ public class FileServiceImpl implements FileService {
                 log.trace("getFileAsByteArray : closing InputStream failed");
             }
         }
-        Byte[] array;
         if (baos != null) {
-            byte[] tmpArray = baos.toByteArray();
-            array = new Byte[tmpArray.length];
-            for (int i = 0; i < tmpArray.length; i++) {
-                array[i] = new Byte(tmpArray[i]);
-            }
-            log.debug("Music.Byte[].length = {}", array.length);
+            bytes = baos.toByteArray();
+            log.debug("Music.Byte[].length = {}", bytes.length);
         } else {
-            throw new IOException();
+            throw new RuntimeException("Failed to convert File to byte[]");
         }
-        return array;
+        return bytes;
     }
 
     private void resetTmpFile() {
@@ -412,7 +415,7 @@ public class FileServiceImpl implements FileService {
 
     @Override
     public void saveToFile(SharUTCFile sharUTCFile, Object localCatalog) {
-        StringBuilder builder = new StringBuilder(appFolder).append(ROOT_FOLDER_USERS).append(File.separator).append(getCurrentUserLogin()).append(File.separator).append(sharUTCFile);
+        StringBuilder builder = new StringBuilder(appFolder).append(ROOT_FOLDER_USERS).append(File.separator).append(getCurrentUserLogin()).append(File.separator).append(sharUTCFile.getFilename());
         try {
             mapper.writeValue(new File(builder.toString()), localCatalog);
         } catch (Exception ex) {
@@ -420,13 +423,13 @@ public class FileServiceImpl implements FileService {
         }
     }
 
-    private String getCurrentUserLogin() {
+    protected final String getCurrentUserLogin() {
         return appModel.getProfile().getUserInfo().getLogin();
     }
 
     @Override
     public <T> T readFile(SharUTCFile sharUTCFile, Class<T> clazz) {
-        StringBuilder builder = new StringBuilder(appFolder).append(ROOT_FOLDER_USERS).append(File.separator).append(getCurrentUserLogin()).append(File.separator).append(sharUTCFile);
+        StringBuilder builder = new StringBuilder(appFolder).append(ROOT_FOLDER_USERS).append(File.separator).append(getCurrentUserLogin()).append(File.separator).append(sharUTCFile.getFilename());
         T object = null;
         try {
             object = mapper.readValue(new File(builder.toString()), clazz);
@@ -434,5 +437,19 @@ public class FileServiceImpl implements FileService {
             log.error(ex.toString());
         }
         return object;
+    }
+
+    @Override
+    public void createFile(byte[] bytes, String fileName) {
+        try {
+            //convert array of bytes into file
+            FileOutputStream fileOuputStream =
+                    new FileOutputStream(fileName);
+            fileOuputStream.write(bytes);
+            fileOuputStream.close();
+        } catch (Exception ex) {
+            log.error("Error while creating file '{}' from bytes", fileName, ex.toString());
+            throw new RuntimeException("Error while creating file '" + fileName + "' from bytes", ex);
+        }
     }
 }

@@ -1,6 +1,5 @@
 package fr.utc.lo23.sharutc.controler.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import fr.utc.lo23.sharutc.model.AppModel;
@@ -40,7 +39,6 @@ public class MusicServiceImpl implements MusicService {
     private final FileService fileService;
     private TagMap localTagMap = null;
     private boolean localTagMapDirty = true;
-    private static final String dataPath = "";
 
     /**
      * {@inheritDoc}
@@ -73,13 +71,16 @@ public class MusicServiceImpl implements MusicService {
                     log.error(ex.toString());
                 }
                 if (musicFromFile != null) {
-                    if (localCatalog.contains(musicFromFile)) {
-                        log.warn("Skipping add of already existing music (hash equals) :\n{}\n{}",
-                                localCatalog.findMusicByHash(musicFromFile.getHash()).getRealName(),
-                                musicFromFile.getRealName());
-                    } else {
-                        localCatalog.add(musicFromFile);
+                    try {
+                        byte[] bytes = fileService.getFileAsByteArray(currentFile);
+                        fileService.createFile(bytes, musicFromFile.getFileName());
+                    } catch (Exception ex) {
+                        log.error("Error while copying music file to user folder ({})", ex.toString());
+                        throw new RuntimeException("Error while copying music file to user folder", ex);
                     }
+                    musicFromFile.setFileByte(null);
+                    localCatalog.add(musicFromFile);
+
                 }
             }
         }
@@ -113,66 +114,66 @@ public class MusicServiceImpl implements MusicService {
      */
     @Override
     public void integrateRemoteCatalog(Peer peer, Catalog catalog) {
-        
-            appModel.getRemoteUserCatalog().clear();
-        
-            // 2 modes : when peer is a contact and when peer isn't a contact
-            Long contactId = userService.findContactIdByPeerId(peer.getId());
-            if (contactId != null) {
-                Set<Integer> contactCategoryIds = appModel.getProfile().getCategories().getCategoriesIdsByContactId(contactId);
+
+        appModel.getRemoteUserCatalog().clear();
+
+        // 2 modes : when peer is a contact and when peer isn't a contact
+        Long contactId = userService.findContactIdByPeerId(peer.getId());
+        if (contactId != null) {
+            Set<Integer> contactCategoryIds = appModel.getProfile().getCategories().getCategoriesIdsByContactId(contactId);
 
 
-                // looping on whole catalog, searching for matching music informations
-                for (Music music : appModel.getLocalCatalog().getMusics()) {
-                    // only deal with needed musics
-                        List<Integer> matchingCategoryIds = getAllMatchingCategoryIds(music, contactCategoryIds);
+            // looping on whole catalog, searching for matching music informations
+            for (Music music : appModel.getLocalCatalog().getMusics()) {
+                // only deal with needed musics
+                List<Integer> matchingCategoryIds = getAllMatchingCategoryIds(music, contactCategoryIds);
 
-                        // searching Rights values to be set directly on a copy of music instance if added to the results
-                        boolean mayReadInfo = false;
-                        boolean mayListen = false;
-                        boolean mayNoteAndComment = false;
-                        if (matchingCategoryIds.isEmpty()) {
-                            for (Integer categoryId : matchingCategoryIds) {
-                                // avoid useless loop
-                                if (mayReadInfo && mayListen && mayNoteAndComment) {
-                                    break; //true > false, then skip the remaining ids since all is already set to true
-                                }
-                                // get the unique Rights instance for this music and category from RightsList
-                                // set tmp boolean values to true if rights values are set to true
-                                Rights rights = appModel.getRightsList().getByMusicIdAndCategoryId(music.getId(), categoryId);
-                                if (rights.getMayReadInfo()) {
-                                    mayReadInfo = true;
-                                }
-                                if (rights.getMayListen()) {
-                                    mayListen = true;
-                                }
-                                if (rights.getMayNoteAndComment()) {
-                                    mayNoteAndComment = true;
-                                }
-                            }
+                // searching Rights values to be set directly on a copy of music instance if added to the results
+                boolean mayReadInfo = false;
+                boolean mayListen = false;
+                boolean mayNoteAndComment = false;
+                if (matchingCategoryIds.isEmpty()) {
+                    for (Integer categoryId : matchingCategoryIds) {
+                        // avoid useless loop
+                        if (mayReadInfo && mayListen && mayNoteAndComment) {
+                            break; //true > false, then skip the remaining ids since all is already set to true
                         }
-                        // if the peer is autorized to get the music
-                        if (mayReadInfo) {
-                            // using a new instance to set specific attributes
-                            Music musicToReturn = music.clone();
-                            // copying rights values
-                            musicToReturn.setMayReadInfo(true); // useless... not used by other peers
-                            musicToReturn.setMayListen(mayListen);
-                            musicToReturn.setMayCommentAndNote(mayNoteAndComment);
-                            // loading last used and known peer name
-                            fillCommentAuthorNames(musicToReturn);
-                            // add the music to the returned set of music
-                            appModel.getRemoteUserCatalog().add(musicToReturn);
+                        // get the unique Rights instance for this music and category from RightsList
+                        // set tmp boolean values to true if rights values are set to true
+                        Rights rights = appModel.getRightsList().getByMusicIdAndCategoryId(music.getId(), categoryId);
+                        if (rights.getMayReadInfo()) {
+                            mayReadInfo = true;
                         }
+                        if (rights.getMayListen()) {
+                            mayListen = true;
+                        }
+                        if (rights.getMayNoteAndComment()) {
+                            mayNoteAndComment = true;
+                        }
+                    }
                 }
-            } else {
-                // peer isn't a contact, check PUBLIC category only and associated rights values, as they may change like others
-                /*
-                 * 
-                 * TODO : complete method
-                 * 
-                 */
+                // if the peer is autorized to get the music
+                if (mayReadInfo) {
+                    // using a new instance to set specific attributes
+                    Music musicToReturn = music.clone();
+                    // copying rights values
+                    musicToReturn.setMayReadInfo(true); // useless... not used by other peers
+                    musicToReturn.setMayListen(mayListen);
+                    musicToReturn.setMayCommentAndNote(mayNoteAndComment);
+                    // loading last used and known peer name
+                    fillCommentAuthorNames(musicToReturn);
+                    // add the music to the returned set of music
+                    appModel.getRemoteUserCatalog().add(musicToReturn);
+                }
             }
+        } else {
+            // peer isn't a contact, check PUBLIC category only and associated rights values, as they may change like others
+                /*
+             * 
+             * TODO : complete method
+             * 
+             */
+        }
     }
 
     /**
@@ -557,10 +558,14 @@ public class MusicServiceImpl implements MusicService {
         if (music == null) {
             throwMissingParameter();
         } else {
-            Byte[] byteArray;
+            byte[] byteArray;
             try {
                 byteArray = fileService.getFileAsByteArray(new File(".\\" + appModel.getProfile().getUserInfo().getLogin() + "\\" + music.getFileName()));
-                music.setFileByte(byteArray);
+                Byte[] bytes = new Byte[byteArray.length];
+                for (int i = 0; i < byteArray.length; i++) {
+                    bytes[i] = byteArray[i];
+                }
+                music.setFileByte(bytes);
             } catch (IOException ex) {
                 log.error(ex.toString());
             }

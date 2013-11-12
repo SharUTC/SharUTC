@@ -49,7 +49,7 @@ public interface FileService {
      * @param file the file to read
      * @return the content of the file as an array of Bytes
      */
-    public Byte[] getFileAsByteArray(File file) throws IOException;
+    public byte[] getFileAsByteArray(File file) throws IOException;
 
     /**
      * Give access to a temporary file automatically deleted when application
@@ -75,4 +75,6 @@ public interface FileService {
     public void saveToFile(SharUTCFile sharUTCFile, Object objectToSave);
 
     public <T> T readFile(SharUTCFile sharUTCFile, Class<T> clazz);
+
+    public void createFile(byte[] bytes, String fileName);
 }
