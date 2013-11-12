@@ -58,6 +58,7 @@ public class PeerDiscoverySocket implements Runnable {
     private final NetworkService mNs;
 
     /**
+     * Construct a PeerDiscoverySocket
      *
      * @param port
      * @param group
@@ -133,7 +134,7 @@ public class PeerDiscoverySocket implements Runnable {
     }
 
     /**
-     * Add a new peer (with its peerId) to the peerSocket existing list
+     * Add a new peer (with its peerId) to the peerSocket existing list and start peerSocket thread
      *
      * @param p
      * @param msg
