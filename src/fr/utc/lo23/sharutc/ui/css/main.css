@@ -227,10 +227,15 @@
      
  }
  
- .rectButton{
+ .rectButton {
     -fx-border-radius: 0;
     -fx-background-radius: 0;
  }
+ 
+ .rectButton:hover {
+     -fx-opacity: 0.7;
+ }
+ 
  .bgBlue{
      -fx-background-color: #33B5E5;
  }
