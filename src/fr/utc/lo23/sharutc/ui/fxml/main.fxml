@@ -3,17 +3,40 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <AnchorPane xmlns:fx="http://javafx.com/fxml" fx:controller="fr.utc.lo23.sharutc.ui.MainController" prefWidth="800"
             prefHeight="600">
     <VBox id="gridPane" AnchorPane.topAnchor="0" AnchorPane.bottomAnchor="0" AnchorPane.rightAnchor="0"
           AnchorPane.leftAnchor="0">
 
-        <GridPane id="topbar" minHeight="40" GridPane.hgrow="ALWAYS"
+        <GridPane id="topbar" minHeight="50" GridPane.hgrow="ALWAYS"
                   alignment="CENTER_LEFT">
             <Label text="SharUTC" minWidth="200" alignment="CENTER"/>
             <TextField GridPane.columnIndex="1" minWidth="400" GridPane.hgrow="ALWAYS"
                        promptText="Search a song, an artist..." onAction="#handleTextEntered"/>
-            <Label text="Alexandre Masciulli" minWidth="200" alignment="CENTER" GridPane.columnIndex="2"/>
+            
+            <HBox GridPane.columnIndex="2" fx:id="topBarRightPart" alignment="CENTER" minHeight="40"  >
+                <GridPane.margin>
+                    <Insets left="15" right="5" />
+                </GridPane.margin>   
+                <Label fx:id="labelMyProfile" text="Alexandre Masciulli" minWidth="100" alignment="CENTER" >
+                    <HBox.margin>
+                        <Insets left="15" right="15" />
+                    </HBox.margin>
+                </Label>
+                <Button fx:id="logoutButton" styleClass="imageButton" >
+                    <graphic>
+                        <ImageView fitWidth="25" fitHeight="25">
+                            <image>
+                                <Image url="/fr/utc/lo23/sharutc/ui/drawable/ic_logout.png"/>
+                            </image>
+                        </ImageView>
+                    </graphic>
+                </Button>           
+            </HBox>
+            
+                     
         </GridPane>
 
         <GridPane VBox.vgrow="ALWAYS">

@@ -15,6 +15,21 @@
     -fx-background-color: #95A5A6;
 }
 
+#topBarRightPart{
+    -fx-border-color: #ECF0F1;
+    -fx-border-width: 0px 0px 0px 1px; 
+}
+
+#labelMyProfile {
+    -fx-text-fill: #ECF0F1;
+    -fx-font: 15px Tahoma;
+
+}
+
+#labelMyProfile:hover {
+    -fx-opacity: 0.6;
+}
+
 #bottombar {
     -fx-background-color: #BDC3C7;
 }
