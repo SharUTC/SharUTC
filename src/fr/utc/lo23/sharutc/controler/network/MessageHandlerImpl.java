@@ -12,12 +12,15 @@ import fr.utc.lo23.sharutc.controler.command.music.SendTagMapCommand;
 import fr.utc.lo23.sharutc.controler.command.player.PlayIncomingMusicCommand;
 import fr.utc.lo23.sharutc.controler.command.player.SendMusicToPlayCommand;
 import fr.utc.lo23.sharutc.controler.command.search.InstallRemoteMusicsCommand;
+import fr.utc.lo23.sharutc.controler.command.search.IntegrateMusicSearchCommand;
+import fr.utc.lo23.sharutc.controler.command.search.PerformMusicSearchCommand;
 import fr.utc.lo23.sharutc.controler.command.search.SendMusicsCommand;
 import fr.utc.lo23.sharutc.controler.service.MusicService;
 import fr.utc.lo23.sharutc.controler.service.UserService;
 import fr.utc.lo23.sharutc.model.AppModel;
 import fr.utc.lo23.sharutc.model.domain.Catalog;
 import fr.utc.lo23.sharutc.model.domain.Music;
+import fr.utc.lo23.sharutc.model.domain.SearchCriteria;
 import fr.utc.lo23.sharutc.model.domain.TagMap;
 import fr.utc.lo23.sharutc.model.userdata.UserInfo;
 import org.slf4j.Logger;
@@ -65,6 +68,10 @@ public class MessageHandlerImpl implements MessageHandler {
     private IntegrateBroadcastConnectionCommand integrateBroadcastConnectionCommand;
     @Inject
     private IntegrateConnectionCommand integrateConnectionCommand;
+    @Inject
+    private PerformMusicSearchCommand performMusicSearchCommand;
+    @Inject
+    private IntegrateMusicSearchCommand integrateMusicSearchCommand;
     //@Inject
     //private AddCommentCommand addCommentCommand;
     // more...
@@ -84,7 +91,6 @@ public class MessageHandlerImpl implements MessageHandler {
                 switch (incomingMessage.getType()) {
                     case MUSIC_GET_CATALOG:
                         sendCatalogCommand.setPeer(messageParser.getSource());
-                        sendCatalogCommand.setConversationId(incomingMessage.getConversationId());
                         command = sendCatalogCommand;
                         break;
                     case MUSIC_CATALOG:
@@ -95,9 +101,7 @@ public class MessageHandlerImpl implements MessageHandler {
                         }
                         break;
                     case TAG_GET_MAP:
-                        // nothing relative to local UI, no need to check conversation ID, but we have to forward it
                         sendTagMapCommand.setPeer(messageParser.getSource());
-                        sendTagMapCommand.setConversationId(incomingMessage.getConversationId());
                         command = sendTagMapCommand;
                         break;
                     case TAG_MAP:
@@ -123,8 +127,15 @@ public class MessageHandlerImpl implements MessageHandler {
                     case SCORE_UNSET:
                         break;
                     case MUSIC_SEARCH:
+                        performMusicSearchCommand.setPeer(messageParser.getSource());
+                        performMusicSearchCommand.setSearchCriteria((SearchCriteria) messageParser.getValue(Message.SEARCH));
+                        command = performMusicSearchCommand;
                         break;
                     case MUSIC_RESULTS:
+                        if (isMessageForCurrentConversation(incomingMessage)) {
+                            integrateMusicSearchCommand.setResultsCatalog((Catalog) messageParser.getValue(Message.CATALOG));
+                            command = integrateMusicSearchCommand;
+                        }
                         break;
                     case MUSIC_GET:
                         sendMusicsCommand.setPeer(messageParser.getSource());
@@ -141,8 +152,10 @@ public class MessageHandlerImpl implements MessageHandler {
                         command = sendMusicToPlayCommand;
                         break;
                     case MUSIC_SEND_TO_PLAY:
-                        playIncomingMusicCommand.setMusic((Music) messageParser.getValue(Message.MUSIC));
-                        command = playIncomingMusicCommand;
+                        if (isMessageForCurrentConversation(incomingMessage)) {
+                            playIncomingMusicCommand.setMusic((Music) messageParser.getValue(Message.MUSIC));
+                            command = playIncomingMusicCommand;
+                        }
                         break;
                     case CONNECTION:
                         integrateBroadcastConnectionCommand.setUserInfo((UserInfo) messageParser.getValue(Message.USER_INFO));

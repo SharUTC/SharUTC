@@ -9,10 +9,6 @@ public class Message {
     /**
      *
      */
-    public final static String CONVERSATION_ID = "CONVERSATION_ID";
-    /**
-     *
-     */
     public final static String OWNER_PEER_ID = "OWNER_PEER_ID";
     /**
      *
@@ -39,9 +35,13 @@ public class Message {
      */
     public final static String CATALOG = "CATALOG";
     /**
-     * User info send in the connection
+     * User info sent in the connection
      */
     public final static String USER_INFO = "USER_INFO";
+    /**
+     * Search criteria used for all searches
+     */
+    public final static String SEARCH = "SEARCH";
     // more...
     /**
      * MessageType helps to read the content of the message

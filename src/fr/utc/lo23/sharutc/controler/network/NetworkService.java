@@ -76,7 +76,7 @@ public interface NetworkService {
      * @param conversationId the current conversation id
      * @param tagMap the local tag map to send
      */
-    public void sendUnicastTagMap(Peer peer, Long conversationId, TagMap tagMap);
+    public void sendUnicastTagMap(Peer peer, Long conversationID, TagMap tagMap);
 
     /**
      * Add a comment on a music owned by another peer.
@@ -136,7 +136,7 @@ public interface NetworkService {
      * @param peer the requesting peer
      * @param catalog a Catalog containing the matching musics
      */
-    public void sendMusicSearchResults(Peer peer, Catalog catalog);
+    public void sendMusicSearchResults(Peer peer, Long conversationID, Catalog catalog);
 
     /**
      * Request a list of music.
@@ -190,9 +190,9 @@ public interface NetworkService {
     public void disconnectionBroadcast();
 
     /**
-     * 
+     *
      * @param peer
-     * @param userInfo 
+     * @param userInfo
      */
     public void sendConnectionResponse(Peer peer, UserInfo userInfo);
 }

@@ -60,7 +60,11 @@ public class MessageParserImpl implements MessageParser {
      */
     @Override
     public Long getConversationId() {
-        return (Long) getValue(Message.CONVERSATION_ID);
+        Long conversationId = null;
+        if (message != null) {
+            conversationId = message.getConversationId();
+        }
+        return conversationId;
     }
 
     /**

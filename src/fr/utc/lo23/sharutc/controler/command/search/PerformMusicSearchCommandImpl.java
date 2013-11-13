@@ -17,6 +17,7 @@ public class PerformMusicSearchCommandImpl implements PerformMusicSearchCommand 
     private static final Logger log = LoggerFactory.getLogger(PerformMusicSearchCommandImpl.class);
     private Peer mPeer;
     private SearchCriteria mSearchCriteria;
+    private Long mConversationId;
     private final MusicService musicService;
     private final NetworkService networkService;
 
@@ -58,6 +59,14 @@ public class PerformMusicSearchCommandImpl implements PerformMusicSearchCommand 
         this.mSearchCriteria = searchCriteria;
     }
 
+    public Long getConversationId() {
+        return mConversationId;
+    }
+
+    public void setConversationId(Long conversationId) {
+        this.mConversationId = conversationId;
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -67,7 +76,7 @@ public class PerformMusicSearchCommandImpl implements PerformMusicSearchCommand 
 
         Catalog searchResults = musicService.searchMusic(mPeer, mSearchCriteria);
         if (!searchResults.isEmpty()) {
-            networkService.sendMusicSearchResults(mPeer, searchResults);
+            networkService.sendMusicSearchResults(mPeer, mConversationId, searchResults);
         }
 
         log.info("PerformMusicSearchCommand DONE");

@@ -3,6 +3,7 @@ package fr.utc.lo23.sharutc.controler.service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import static fr.utc.lo23.sharutc.controler.service.FileService.ROOT_FOLDER_TMP;
 import fr.utc.lo23.sharutc.model.AppModel;
 import fr.utc.lo23.sharutc.model.domain.Music;
 import java.io.BufferedInputStream;
@@ -29,6 +30,7 @@ import org.jaudiotagger.tag.Tag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import static fr.utc.lo23.sharutc.controler.service.FileService.ROOT_FOLDER_USERS;
+import fr.utc.lo23.sharutc.model.domain.Catalog;
 
 /**
  *
@@ -197,6 +199,7 @@ public class FileServiceImpl implements FileService {
      */
     @Override
     public Music createMusicFromFile(File file) throws Exception {
+        log.debug("createMusicFromFile ...");
         if (file == null) {
             log.error("File is null");
             throw new Exception("File is null");
@@ -241,10 +244,12 @@ public class FileServiceImpl implements FileService {
         for (int i = 0; i < byteArray.length; i++) {
             bytes[i] = byteArray[i];
         }
-        return new Music(appModel.getProfile().getNewMusicId(),
+        Music music = new Music(appModel.getProfile().getNewMusicId(),
                 appModel.getProfile().getUserInfo().getPeerId(), bytes,
                 file.getName(), file.getName(), file.hashCode(), title, artist, album, year, track,
                 trackLength, frames);
+        log.debug("createMusicFromFile DONE");
+        return music;
     }
 
     @Override
@@ -347,6 +352,52 @@ public class FileServiceImpl implements FileService {
         fileOuputStream.write(bytes);
         fileOuputStream.close();
         return tmpFile;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<File> buildTmpMusicFilesForInstall(Catalog catalog) throws Exception {
+        if (!new File(appFolder + ROOT_FOLDER_TMP).exists()) {
+            new File(appFolder + ROOT_FOLDER_TMP).mkdirs();
+        } else {
+            deleteRecursive(appFolder + ROOT_FOLDER_TMP);
+            new File(appFolder + ROOT_FOLDER_TMP).mkdirs();
+        }
+        List<File> files = new ArrayList<File>(catalog.size());
+        for (Music music : catalog.getMusics()) {
+            Byte[] musicBytes = music.getFileBytes();
+            if (musicBytes != null && musicBytes.length != 0) {
+                File file = new File(appFolder + ROOT_FOLDER_TMP + File.separator + music.getFileName());
+                byte[] bytes = new byte[musicBytes.length];
+                for (int i = 0; i < musicBytes.length; i++) {
+                    bytes[i] = musicBytes[i];
+                }
+                FileOutputStream fileOuputStream = new FileOutputStream(file);
+                fileOuputStream.write(bytes);
+                fileOuputStream.close();
+                file.deleteOnExit();
+                files.add(file);
+            }
+        }
+        return files;
+    }
+
+    private void deleteRecursive(String path) {
+        log.trace("deleteRecursive : {}", path);
+        File fileOrDir = new File(path);
+        if (fileOrDir.isFile()) {
+            fileOrDir.delete();
+        } else if (fileOrDir.isDirectory()) {
+            for (File file : fileOrDir.listFiles()) {
+                try {
+                    deleteRecursive(file.getCanonicalPath());
+                } catch (IOException ex) {
+                    log.error("deleteRecursive failed");
+                }
+            }
+        }
     }
 
     @Override

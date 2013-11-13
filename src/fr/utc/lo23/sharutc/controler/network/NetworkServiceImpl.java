@@ -185,15 +185,17 @@ public class NetworkServiceImpl implements NetworkService {
      */
     @Override
     public void searchRequestBroadcast(SearchCriteria criteria) {
-        log.warn("Not supported yet.");
+        Message message = messageParser.write(MessageType.MUSIC_SEARCH, new Object[][]{{Message.SEARCH, criteria}}, appModel.getCurrentConversationId());
+        sendBroadcast(message);
     }
 
     /**
      * {inheritDoc}
      */
     @Override
-    public void sendMusicSearchResults(Peer peer, Catalog catalog) {
-        log.warn("Not supported yet.");
+    public void sendMusicSearchResults(Peer peer, Long conversationID, Catalog catalog) {
+        Message message = messageParser.write(MessageType.MUSIC_RESULTS, new Object[][]{{Message.CATALOG, catalog}}, conversationID);
+        sendUnicast(message, peer);
     }
 
     /**
@@ -235,9 +237,9 @@ public class NetworkServiceImpl implements NetworkService {
     /**
      * {inheritDoc}
      */
-        @Override
+    @Override
     public void userInfoBroadcast(UserInfo userInfo) {
-        if(userInfo != null){
+        if (userInfo != null) {
             mPeerDiscoverySocket.send(messageParser.write(MessageType.USER_INFO, new Object[][]{{Message.USER_INFO, userInfo}}, appModel.getCurrentConversationId()));
         } else {
             log.error("[NetworkService - userInfoBroadCast()] - userInfo is null");

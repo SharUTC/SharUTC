@@ -32,15 +32,16 @@ public interface MusicService {
      */
     public void integrateRemoteCatalog(Peer peer, Catalog catalog);
 
-     /**
+    /**
      *
-     * Getting available parts of current user's catalog for a given peer, while taking account of current user's rights regarding peer's music
-     * 
+     * Getting available parts of current user's catalog for a given peer, while
+     * taking account of current user's rights regarding peer's music
+     *
      * @param peer
      * @param catalog
      */
     public Catalog getCatalogForPeer(Peer peer);
-    
+
     /**
      *
      * @return
