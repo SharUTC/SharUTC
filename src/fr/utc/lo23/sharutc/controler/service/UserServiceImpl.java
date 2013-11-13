@@ -54,11 +54,17 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public void addContact(Contact contact) {
-        //FIXME : a contact might be in public but might be elsewhere, it is still a contact we already have
-        // -> test if contact already in Contacts instead of current test
         Long contactId = contact.getUserInfo().getPeerId();
-        //check that the contact is not in the Public category
-        if (!contact.isInPublic()) {
+        //check that the contact does not exist
+        boolean present = false;
+        for (Contact c : getProfile().getContacts().getContacts()) {
+                if (c.getUserInfo().getPeerId().equals(contact.getUserInfo().getPeerId())) {
+                    present = true;
+                    break;
+                }
+            }
+        if (!present) {
+            getProfile().getContacts().add(contact);
             getProfile().getContacts().findById(contactId).addCategoryId(Category.PUBLIC_CATEGORY_ID);
         } else {
             log.warn("This contact already exists");
@@ -80,7 +86,6 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public void createCategory(String categoryName) {
-        // FIXME: check if name already exists, don't create if so but use an ErrorMessage
         Category c = new Category(getProfile().getNewCategoryId(), categoryName);
         getProfile().getCategories().add(c);
     }
