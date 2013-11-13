@@ -9,6 +9,9 @@ import java.io.Serializable;
 public class Rights implements Serializable {
 
     private static final long serialVersionUID = -5429412462872354915L;
+    public static final boolean DEFAULT_MAY_READ_INFO = true;
+    public static final boolean DEFAULT_LISTEN = true;
+    public static final boolean DEFAULT_MAY_NOTE_AND_COMMENT = true;
     private Integer mCategoryId;
     private Long mMusicId;
     private Boolean mMayReadInfo;
@@ -115,5 +118,13 @@ public class Rights implements Serializable {
      */
     public void setMayNoteAndComment(Boolean mayNoteAndComment) {
         this.mMayNoteAndComment = mayNoteAndComment;
+    }
+
+    void copyRightsValues(Rights rights) {
+        if (rights != null) {
+            mMayReadInfo = rights.getMayReadInfo();
+            mMayListen = rights.getMayListen();
+            mMayNoteAndComment = rights.getMayNoteAndComment();
+        }
     }
 }

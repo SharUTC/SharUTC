@@ -58,21 +58,6 @@ public class Categories implements Serializable {
 
     /**
      *
-     * @param id
-     * @return
-     */
-    public Set<Integer> getCategoriesIdsByContactId(Long id) {
-        Set<Integer> categoriesIds = new HashSet<Integer>();
-        for (Category category : mCategories) {
-            if (category.findContactById(id) != null) {
-                categoriesIds.add(category.getId());
-            }
-        }
-        return categoriesIds;
-    }
-
-    /**
-     *
      * @param category
      * @return
      */

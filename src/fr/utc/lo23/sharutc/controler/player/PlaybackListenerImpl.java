@@ -99,7 +99,7 @@ public class PlaybackListenerImpl implements Runnable, PlaybackListener {
     private void playerInitialize() {
         try {
             String urlAsString = "file:///" + filePath;
-            music = fileService.readFile(new File(filePath));
+            music = fileService.fakeMusicFromFile(new File(filePath));
             player = new Mp3Player(new URL(urlAsString), this);
             setCurrentTime(playerService.getCurrentTimeSec() != null ? playerService.getCurrentTimeSec() : 0L);
             if (playerService.isMute()) {

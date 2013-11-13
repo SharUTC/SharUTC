@@ -48,7 +48,7 @@ public class PlayerServiceManual implements PropertyChangeListener {
         String[] filenames = {"14 - End Credit Score.mp3", "Air - Moon Safari - Sexy Boy.mp3", "Sting & The Police - The Very Best Of Sting & The Police - 17 - Roxanne.mp3"};
         try {
             for (String mp3File : filenames) {
-                Music music = fileService.readFile(new File(TEST_MP3_FOLDER + mp3File));
+                Music music = fileService.createMusicFromFile(new File(TEST_MP3_FOLDER + mp3File));
                 playerService.addToPlaylist(music);
                 System.out.println("Added : " + music.getTitle() + " from artist " + music.getArtist());
             }

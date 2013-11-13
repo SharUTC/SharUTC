@@ -4,7 +4,7 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import fr.utc.lo23.sharutc.model.AppModel;
 import fr.utc.lo23.sharutc.model.userdata.Category;
-import fr.utc.lo23.sharutc.model.userdata.Peer;
+import fr.utc.lo23.sharutc.model.userdata.Contact;
 import fr.utc.lo23.sharutc.model.userdata.UserInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,12 +24,12 @@ public class UserServiceMock extends UserServiceImpl implements UserService {
     }
 
     @Override
-    public void addContact(Peer peer) {
+    public void addContact(Contact peer) {
         super.addContact(peer);
     }
 
     @Override
-    public void deleteContact(Peer peer) {
+    public void deleteContact(Contact peer) {
         super.deleteContact(peer);
     }
 
@@ -44,13 +44,13 @@ public class UserServiceMock extends UserServiceImpl implements UserService {
     }
 
     @Override
-    public void addContactToCategory(Peer peer, Category category) {
-        super.addContactToCategory(peer, category);
+    public void addContactToCategory(Contact contact, Category category) {
+        super.addContactToCategory(contact, category);
     }
 
     @Override
-    public void removeContactFromCategory(Peer peer, Category category) {
-        super.removeContactFromCategory(peer, category);
+    public void removeContactFromCategory(Contact contact, Category category) {
+        super.removeContactFromCategory(contact, category);
     }
 
     @Override

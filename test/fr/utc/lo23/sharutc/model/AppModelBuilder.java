@@ -9,6 +9,9 @@ import fr.utc.lo23.sharutc.model.domain.Catalog;
 import fr.utc.lo23.sharutc.model.domain.Music;
 import fr.utc.lo23.sharutc.model.domain.RightsList;
 import fr.utc.lo23.sharutc.model.userdata.ActivePeerList;
+import fr.utc.lo23.sharutc.model.userdata.Categories;
+import fr.utc.lo23.sharutc.model.userdata.Contacts;
+import fr.utc.lo23.sharutc.model.userdata.KnownPeerList;
 import fr.utc.lo23.sharutc.model.userdata.Peer;
 import fr.utc.lo23.sharutc.model.userdata.Profile;
 import fr.utc.lo23.sharutc.model.userdata.UserInfo;
@@ -25,7 +28,7 @@ public class AppModelBuilder {
     private static final Logger log = LoggerFactory
             .getLogger(AppModelBuilder.class);
     private static String TEST_MP3_FOLDER;
-    private static final String[] TEST_MP3_FILENAMES = {"Sting & The Police - The Very Best Of Sting & The Police - 17 - Roxanne.mp3"};
+    private static final String[] TEST_MP3_FILENAMES = {"Sting & The Police - The Very Best Of Sting & The Police - 17 - Roxanne.mp3","14 - End Credit Score.mp3","Air - Moon Safari - Sexy Boy.mp3"};
     public static final String LOCAL_ACCOUNT_LOGIN = "test login";
     public static final String LOCAL_ACCOUNT_PASSWORD = "pwd";
     public static final String LOCAL_ACCOUNT_FIRSTNAME = "test";
@@ -53,7 +56,10 @@ public class AppModelBuilder {
         mockProfile();
         mockKnownPeerList();
         mockActivePeerList();
+        appModel.setRightsList(new RightsList());
         mockCatalog();
+        mockContacts();
+        mockCategories();
         mockRights();
         createFolders();
         log.debug("AppModelMock READY");
@@ -71,6 +77,7 @@ public class AppModelBuilder {
 
     private void mockKnownPeerList() {
         log.debug("mockKnownPeerList - Not supported yet.");
+        appModel.getProfile().setKnownPeerList(new KnownPeerList());
     }
 
     private void mockActivePeerList() {
@@ -100,19 +107,9 @@ public class AppModelBuilder {
         log.trace("Mocking Catalog ...");
         appModel.setLocalCatalog(new Catalog());
 
-        //  Catalog catalog = new Catalog();
         ArrayList<File> files = new ArrayList<File>();
         for (String mp3File : TEST_MP3_FILENAMES) {
             files.add(new File(TEST_MP3_FOLDER + mp3File));
-
-            /*    try {
-             Music music = fileService.readFile();
-             music.addTag("ROCK");
-             catalog.add(music);
-             } catch (Exception ex) {
-             ex.printStackTrace();
-             log.error(ex.toString());
-             }*/
         }
         addToLocalCatalogCommand = new AddToLocalCatalogCommandImpl(musicService);
         addToLocalCatalogCommand.setFiles(files);
@@ -121,7 +118,6 @@ public class AppModelBuilder {
     }
 
     private void mockRights() {
-        log.debug("mockRights - Not supported yet.");
     }
 
     private void createFolders() {
@@ -164,5 +160,13 @@ public class AppModelBuilder {
             log.error("getAccountFolder failed");
         }
         return testRootFolder;
+    }
+
+    private void mockContacts() {
+        appModel.getProfile().setContacts(new Contacts());
+    }
+
+    private void mockCategories() {
+        appModel.getProfile().setCategories(new Categories());
     }
 }

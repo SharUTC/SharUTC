@@ -17,6 +17,8 @@ public interface FileService {
     public static final String[] AUTHORIZED_MUSIC_FILE_TYPE = {"mp3"};
     public static final int MIN_FILENAME_LENGTH = 1;
 
+    public String getAppFolder();
+
     /**
      *
      * @param srcPath
@@ -35,13 +37,14 @@ public interface FileService {
 
     /**
      * Used for reading a local mp3 file and creating a new Music, increments
-     * profile's counter If reading id3tag fails, then values are set to null
+     * profile's counter. If reading id3tag fails, then tag values are set to
+     * null
      *
      * @param file a mp3 file
      * @return music whose filename equals realname
      * @throws Exception if file is null or not an mp3
      */
-    public Music readFile(File file) throws Exception;
+    public Music createMusicFromFile(File file) throws Exception;
 
     /**
      * Read a file and return its content as an array of Bytes
@@ -77,4 +80,8 @@ public interface FileService {
     public <T> T readFile(SharUTCFile sharUTCFile, Class<T> clazz);
 
     public void createFile(byte[] bytes, String fileName);
+
+    public void createAccountFolder(String login);
+
+    public Music fakeMusicFromFile(File file) throws Exception;
 }

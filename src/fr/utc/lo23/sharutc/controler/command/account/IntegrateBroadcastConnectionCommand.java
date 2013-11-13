@@ -3,7 +3,7 @@ package fr.utc.lo23.sharutc.controler.command.account;
 import fr.utc.lo23.sharutc.controler.command.Command;
 import fr.utc.lo23.sharutc.model.userdata.UserInfo;
 
-public interface IntegrateConnectionCommand extends Command {
+public interface IntegrateBroadcastConnectionCommand extends Command {
 
     /**
      * Return information about remote peer
@@ -13,7 +13,7 @@ public interface IntegrateConnectionCommand extends Command {
     public UserInfo getUserInfo();
 
     /**
-     * Set information about remote peer
+     * Set informations about remote peer
      *
      * @param userInfo information about remote peer
      */

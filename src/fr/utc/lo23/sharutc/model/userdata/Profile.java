@@ -10,6 +10,7 @@ public class Profile implements Serializable {
     private static final long serialVersionUID = 4883249865688142273L;
     private KnownPeerList mKnownPeerList;
     private Categories mCategories;
+    private Contacts mContacts;
     private UserInfo mUserInfo;
     private Long musicCounter;
 
@@ -30,6 +31,7 @@ public class Profile implements Serializable {
         this.mKnownPeerList = new KnownPeerList();
         this.mCategories = new Categories();
         mCategories.add(new Category(Category.PUBLIC_CATEGORY_ID, Category.PUBLIC_CATEGORY_NAME));
+        this.mContacts = new Contacts();
         this.mUserInfo = userInfo;
     }
 
@@ -39,6 +41,10 @@ public class Profile implements Serializable {
      */
     public Long getNewMusicId() {
         return ++musicCounter;
+    }
+
+    public void decrementMusicId() {
+        musicCounter--;
     }
 
     /**
@@ -73,6 +79,14 @@ public class Profile implements Serializable {
      */
     public void setCategories(Categories categories) {
         this.mCategories = categories;
+    }
+
+    public Contacts getContacts() {
+        return mContacts;
+    }
+
+    public void setContacts(Contacts mContacts) {
+        this.mContacts = mContacts;
     }
 
     /**

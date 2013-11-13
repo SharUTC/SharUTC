@@ -1,6 +1,7 @@
 package fr.utc.lo23.sharutc.controler.command.account;
 
 import com.google.inject.Inject;
+import fr.utc.lo23.sharutc.controler.network.NetworkService;
 import fr.utc.lo23.sharutc.controler.service.UserService;
 import fr.utc.lo23.sharutc.model.AppModel;
 import fr.utc.lo23.sharutc.model.userdata.Peer;
@@ -11,24 +12,27 @@ import org.slf4j.LoggerFactory;
 /**
  * {@inheritDoc}
  */
-public class IntegrateConnectionCommandImpl implements IntegrateConnectionCommand {
+public class IntegrateBroadcastConnectionCommandImpl implements IntegrateBroadcastConnectionCommand {
 
     private static final Logger log = LoggerFactory
-        .getLogger(IntegrateConnectionCommandImpl.class);
+        .getLogger(IntegrateBroadcastConnectionCommandImpl.class);
     private final AppModel appModel;
     private final UserService userService;
+    private final NetworkService networkService;
     private UserInfo mUserInfo;
 
     /**
-     * Construct IntegrateConnectionCommand
+     * Construct IntegrateBroadcastConnectionCommand
      *
      * @param appModel
      * @param us
+     * @param ns
      */
     @Inject
-    public IntegrateConnectionCommandImpl(AppModel appModel, UserService us) {
+    public IntegrateBroadcastConnectionCommandImpl(AppModel appModel, UserService us, NetworkService ns) {
         this.appModel = appModel;
         this.userService = us;
+        this.networkService = ns;
     }
 
     /**
@@ -48,17 +52,19 @@ public class IntegrateConnectionCommandImpl implements IntegrateConnectionComman
     }
 
     /**
-     * Add user info to model and update active peer list
+     * Add user info to model, update active peer list and send personal information to broadcaster
      */
     @Override
     public void execute() {
-        log.info("IntegrateConnectionCommandImpl ...");
-        // add user info to model
+        log.info("IntegrateBroadscastConnectionCommandImpl ...");
+        // add new user to model
         userService.integrateConnection(mUserInfo);
         // TODO ip adresse ?
-        // update active peer list
+        // update active peers
         Peer peer = new Peer(mUserInfo.getPeerId(), mUserInfo.getLogin());
         appModel.getActivePeerList().update(peer);
-        log.info("IntegrateConnectionCommandImpl DONE");
+        // send my personal information to the broadcaster
+        networkService.sendConnectionResponse(peer, appModel.getProfile().getUserInfo());
+        log.info("IntegrateBroadscastConnectionCommandImpl DONE");
     }
 }

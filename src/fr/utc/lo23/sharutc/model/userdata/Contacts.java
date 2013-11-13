@@ -14,7 +14,7 @@ import java.util.HashSet;
 public class Contacts implements Serializable {
 
     private static final long serialVersionUID = -8656809069835780866L;
-    private HashSet<Peer> mPeers;
+    private HashSet<Contact> mContacts;
     @JsonIgnore
     private CollectionChangeSupport mCollectionChangeSupport = new CollectionChangeSupport(this);
 
@@ -22,23 +22,24 @@ public class Contacts implements Serializable {
      *
      */
     public Contacts() {
+        mContacts = new HashSet<Contact>();
     }
-
 
     /**
      * Return the Peer who has the Id given in parameter if exists
      *
      * @param peerID the Peer id of a Long
      * @return the Peer who has the Id given in parameter, null is the peer
- isn't a Long
+     * isn't a Long
      */
-    public Peer findById(Long peerID) {
-        for (Peer p : mPeers) {
-            if (p.getId() == peerID) {
-                return p;
+    public Contact findById(Long peerID) {
+        Contact contact = null;
+        for (Contact p : mContacts) {
+            if (p.getUserInfo().getPeerId() == peerID) {
+                contact = p;
             }
         }
-        return null;
+        return contact;
     }
 
     /**
@@ -46,10 +47,10 @@ public class Contacts implements Serializable {
      * @param contact
      * @return
      */
-    public boolean add(Peer peer) {
-        boolean added = mPeers.add(peer);
+    public boolean add(Contact contact) {
+        boolean added = mContacts.add(contact);
         if (added) {
-            mCollectionChangeSupport.fireCollectionChanged(peer, mPeers.size() - 1, CollectionEvent.Type.ADD);
+            mCollectionChangeSupport.fireCollectionChanged(contact, mContacts.size() - 1, CollectionEvent.Type.ADD);
         }
         return added;
     }
@@ -58,9 +59,9 @@ public class Contacts implements Serializable {
      *
      * @param peers
      */
-    public void addAll(Collection<Peer> peers) {
-        if (peers != null && !peers.isEmpty()) {
-            for (Peer p : peers) {
+    public void addAll(Collection<Contact> contacts) {
+        if (contacts != null && !contacts.isEmpty()) {
+            for (Contact p : contacts) {
                 this.add(p);
             }
         }
@@ -71,10 +72,10 @@ public class Contacts implements Serializable {
      * @param contact
      * @return
      */
-    public boolean remove(Peer peer) {
-        boolean removed = mPeers.remove(peer);
+    public boolean remove(Contact contact) {
+        boolean removed = mContacts.remove(contact);
         if (removed) {
-            mCollectionChangeSupport.fireCollectionChanged(peer, -1, CollectionEvent.Type.REMOVE);
+            mCollectionChangeSupport.fireCollectionChanged(contact, -1, CollectionEvent.Type.REMOVE);
         }
         return removed;
     }
@@ -83,8 +84,8 @@ public class Contacts implements Serializable {
      *
      */
     public void clear() {
-        if (!mPeers.isEmpty()) {
-            mPeers.clear();
+        if (!mContacts.isEmpty()) {
+            mContacts.clear();
             mCollectionChangeSupport.fireCollectionChanged(null, -1, CollectionEvent.Type.CLEAR);
         }
     }
@@ -94,7 +95,7 @@ public class Contacts implements Serializable {
      * @return
      */
     public int size() {
-        return mPeers.size();
+        return mContacts.size();
     }
 
     /**
@@ -102,8 +103,8 @@ public class Contacts implements Serializable {
      * @param peer
      * @return
      */
-    public boolean contains(Peer peer) {
-        return mPeers.contains(peer);
+    public boolean contains(Contact contact) {
+        return mContacts.contains(contact);
     }
 
     /**
@@ -111,7 +112,7 @@ public class Contacts implements Serializable {
      * @return
      */
     public boolean isEmpty() {
-        return mPeers.isEmpty();
+        return mContacts.isEmpty();
     }
 
     /**

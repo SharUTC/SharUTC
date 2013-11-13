@@ -9,10 +9,6 @@ import java.net.Socket;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- *
- * @author Tudor Luchiancenco <tudorluchy@gmail.com>
- */
 public class PeerSocket implements Runnable {
 
     private static final Logger log = LoggerFactory.getLogger(PeerDiscoverySocket.class);
