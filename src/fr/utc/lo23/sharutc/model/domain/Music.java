@@ -66,6 +66,8 @@ public class Music implements Serializable {
     public Music() {
         this.mComments = new ArrayList<Comment>();
         this.mScores = new HashSet<Score>();
+        this.mCategoryIds = new HashSet<Integer>();
+        this.mTags = new HashSet<String>();
     }
 
     /**
@@ -296,6 +298,32 @@ public class Music implements Serializable {
      */
     public void setCategoryIds(Set<Integer> categoryIds) {
         this.mCategoryIds = categoryIds;
+    }
+
+    /**
+     *
+     * @param categoryId
+     */
+    public void addCategoryId(Integer categoryId) {
+        Set<Integer> oldCategoryIds = this.mCategoryIds;
+        Set<Integer> categoryIds = new HashSet<Integer>(this.mCategoryIds);
+        if (categoryIds.add(categoryId)) {
+            this.mCategoryIds = categoryIds;
+            propertyChangeSupport.firePropertyChange(Property.CATEGORY_IDS.name(), oldCategoryIds, this.mCategoryIds);
+        }
+    }
+
+    /**
+     *
+     * @param categoryId
+     */
+    public void removeCategoryId(Integer categoryId) {
+        Set<Integer> oldCategoryIds = this.mCategoryIds;
+        Set<Integer> categoryIds = new HashSet<Integer>(this.mCategoryIds);
+        if (categoryIds.remove(categoryId)) {
+            this.mCategoryIds = categoryIds;
+            propertyChangeSupport.firePropertyChange(Property.CATEGORY_IDS.name(), oldCategoryIds, this.mCategoryIds);
+        }
     }
 
     /**
@@ -681,7 +709,11 @@ public class Music implements Serializable {
         /**
          *
          */
-        TAGS
+        TAGS,
+        /**
+         *
+         */
+        CATEGORY_IDS
     }
 
     @Override
