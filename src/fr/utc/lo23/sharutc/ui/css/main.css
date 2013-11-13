@@ -141,6 +141,10 @@
     -fx-padding: 0px;
 }
 
+.albumCard {
+    -fx-font-size : 18px;
+}
+
 /* imagebutton */
 .imageButton {
     -fx-background-color: transparent;
