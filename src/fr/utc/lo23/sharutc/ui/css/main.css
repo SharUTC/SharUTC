@@ -230,6 +230,7 @@
  .rectButton {
     -fx-border-radius: 0;
     -fx-background-radius: 0;
+    -fx-background-insets: 0;
  }
  
  .rectButton:hover {
