@@ -12,9 +12,13 @@
 
         <GridPane id="topbar" minHeight="50" GridPane.hgrow="ALWAYS"
                   alignment="CENTER_LEFT">
-            <Label text="SharUTC" minWidth="200" alignment="CENTER"/>
+            <Label text="SharUTC" fx:id="sharUtcTitle" minWidth="200" alignment="CENTER"/>
             <TextField GridPane.columnIndex="1" minWidth="400" GridPane.hgrow="ALWAYS"
-                       promptText="Search a song, an artist..." onAction="#handleTextEntered"/>
+                       promptText="Search a song, an artist..." onAction="#handleTextEntered">
+                <GridPane.margin>
+                    <Insets left="10" right="5" />
+                </GridPane.margin> 
+            </TextField>
             
             <HBox GridPane.columnIndex="2" fx:id="topBarRightPart" alignment="CENTER" minHeight="40"  >
                 <GridPane.margin>

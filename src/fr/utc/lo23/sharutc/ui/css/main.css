@@ -26,6 +26,13 @@
 
 }
 
+#sharUtcTitle {
+    -fx-text-fill: #ECF0F1;
+    -fx-font-size: 20px;
+    -fx-font-family: Tahoma;
+    -fx-font-weight: bold;
+}
+
 #labelMyProfile:hover {
     -fx-opacity: 0.6;
 }
