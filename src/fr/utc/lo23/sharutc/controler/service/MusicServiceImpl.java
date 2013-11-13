@@ -124,10 +124,10 @@ public class MusicServiceImpl implements MusicService {
     public void integrateRemoteCatalog(Peer peer, Catalog catalog) {
         log.trace("integrateRemoteCatalog ...");
         // TODO: check if peeer parameter is really needed here (for UI purposes?) refactor by deleting it if it's not the case
-       appModel.getRemoteUserCatalog().addAll(catalog.getMusics()); 
-       log.trace("integrateRemoteCatalog DONE");
+        appModel.getRemoteUserCatalog().addAll(catalog.getMusics());
+        log.trace("integrateRemoteCatalog DONE");
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -135,68 +135,98 @@ public class MusicServiceImpl implements MusicService {
     public Catalog getCatalogForPeer(Peer peer) {
         // TODO : refactor method to avoid redundant parts with searchMusic
         log.trace("getCatalogForPeer ...");
-        
+
         Catalog userFilteredCatalog = new Catalog();
-        
-        // 2 modes : when peer is a contact and when peer isn't a contact
-        Contact contact = userService.findContactByPeerId(peer.getId());
-        if (contact != null) {
-            Set<Integer> contactCategoryIds = contact.getCategoryIds();
 
-            // looping on whole catalog, searching for matching music informations
-            for (Music music : appModel.getLocalCatalog().getMusics()) {
-                // only deal with needed musics
-                Set<Integer> matchingCategoryIds = getAllMatchingCategoryIds(music, contactCategoryIds);
+        if (peer == null) {
+            throwMissingParameter();
+        } else {
+                Contact contact = userService.findContactByPeerId(peer.getId());
+                if (contact != null) {
+                    Set<Integer> contactCategoryIds = contact.getCategoryIds();
 
-                // searching Rights values to be set directly on a copy of music instance if added to the results
-                boolean mayReadInfo = false;
-                boolean mayListen = false;
-                boolean mayNoteAndComment = false;
-                if (matchingCategoryIds.isEmpty()) {
-                    for (Integer categoryId : matchingCategoryIds) {
-                        // avoid useless loop
-                        if (mayReadInfo && mayListen && mayNoteAndComment) {
-                            break; //true > false, then skip the remaining ids since all is already set to true
-                        }
-                        // get the unique Rights instance for this music and category from RightsList
-                        // set tmp boolean values to true if rights values are set to true
-                        Rights rights = appModel.getRightsList().getByMusicIdAndCategoryId(music.getId(), categoryId);
-                        if (rights.getMayReadInfo()) {
-                            mayReadInfo = true;
-                        }
-                        if (rights.getMayListen()) {
-                            mayListen = true;
-                        }
-                        if (rights.getMayNoteAndComment()) {
-                            mayNoteAndComment = true;
+                    for (Music music : appModel.getLocalCatalog().getMusics()) {
+                            Set<Integer> matchingCategoryIds = getAllMatchingCategoryIds(music, contactCategoryIds);
+
+                            boolean mayReadInfo = false;
+                            boolean mayListen = false;
+                            boolean mayNoteAndComment = false;
+                            if (!matchingCategoryIds.isEmpty()) {
+                                if (matchingCategoryIds.size() == 1 && matchingCategoryIds.iterator().next().equals(Category.PUBLIC_CATEGORY_ID)) {
+                                    Rights rights = appModel.getRightsList().getByMusicIdAndCategoryId(music.getId(), Category.PUBLIC_CATEGORY_ID);
+                                    if (rights.getMayReadInfo()) {
+                                        mayReadInfo = true;
+                                    }
+                                    if (rights.getMayListen()) {
+                                        mayListen = true;
+                                    }
+                                    if (rights.getMayNoteAndComment()) {
+                                        mayNoteAndComment = true;
+                                    }
+                                } else {
+                                    for (Integer categoryId : matchingCategoryIds) {
+                                        if (mayReadInfo && mayListen && mayNoteAndComment) {
+                                            break;
+                                        }
+                                        Rights rights = appModel.getRightsList().getByMusicIdAndCategoryId(music.getId(), categoryId);
+                                        if (rights.getMayReadInfo()) {
+                                            mayReadInfo = true;
+                                        }
+                                        if (rights.getMayListen()) {
+                                            mayListen = true;
+                                        }
+                                        if (rights.getMayNoteAndComment()) {
+                                            mayNoteAndComment = true;
+                                        }
+                                    }
+                                }
+                            }
+                            if (mayReadInfo) {
+                                Music musicToReturn = music.clone();
+                                musicToReturn.setMayReadInfo(true);
+                                musicToReturn.setMayListen(mayListen);
+                                musicToReturn.setMayCommentAndNote(mayNoteAndComment);
+                                fillCommentAuthorNames(musicToReturn);
+
+                                userFilteredCatalog.add(musicToReturn);
+                            }
+                    }
+                } else {
+                    // peer isn't a contact, only check PUBLIC category and associated rights values, as they may change like others
+                    for (Music music : appModel.getLocalCatalog().getMusics()) {
+                        Rights rights = appModel.getRightsList().getByMusicIdAndCategoryId(music.getId(), Category.PUBLIC_CATEGORY_ID);
+                        if (rights != null) {
+                                boolean mayReadInfo = false;
+                                boolean mayListen = false;
+                                boolean mayNoteAndComment = false;
+
+                                if (rights.getMayReadInfo()) {
+                                    mayReadInfo = true;
+                                }
+                                if (rights.getMayListen()) {
+                                    mayListen = true;
+                                }
+                                if (rights.getMayNoteAndComment()) {
+                                    mayNoteAndComment = true;
+                                }
+                                if (mayReadInfo) {
+                                    Music musicToReturn = music.clone();
+                                    musicToReturn.setMayReadInfo(true);
+                                    musicToReturn.setMayListen(mayListen);
+                                    musicToReturn.setMayCommentAndNote(mayNoteAndComment);
+                                    fillCommentAuthorNames(musicToReturn);
+
+                                    userFilteredCatalog.add(musicToReturn);
+                                }
+                        } else {
+                            log.warn("Wrong state of categories, peer isn't a contact and there should be a Rights for music ({}) and PUBLIC category", music.getRealName());
                         }
                     }
                 }
-                // if the peer is autorized to get the music
-                if (mayReadInfo) {
-                    // using a new instance to set specific attributes
-                    Music musicToReturn = music.clone();
-                    // copying rights values
-                    musicToReturn.setMayReadInfo(true); // useless... not used by other peers
-                    musicToReturn.setMayListen(mayListen);
-                    musicToReturn.setMayCommentAndNote(mayNoteAndComment);
-                    // loading last used and known peer name
-                    fillCommentAuthorNames(musicToReturn);
-                    // add the music to the returned set of music, if peer has the right to read infos
-                    userFilteredCatalog.add(musicToReturn);
-                }
-            }
-        } else {
-            // peer isn't a contact, check PUBLIC category only and associated rights values, as they may change like others
-                /*
-             * 
-             * TODO : complete method
-             * 
-             */
         }
         log.trace("getCatalogForPeer DONE");
         return userFilteredCatalog;
-    }
+}
 
     /**
      * {@inheritDoc}
@@ -453,7 +483,6 @@ public class MusicServiceImpl implements MusicService {
              * #            Si public (0, exclusif) : vérification des droits pour cette musique et cette catégorie dans RightsList
              * #            Si autre(s) : chargement de l'ensemble des droits dispos pour cette musique et cette catégorie via RightsList, on recherche les différents objets Rights tant qu'on ne trouve pas de valeur à *true*.
              */
-
 
             catalogResult = new Catalog();
             if (criteria.getSearch() != null && criteria.getSearch().trim().length() > 0) {
