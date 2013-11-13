@@ -54,7 +54,6 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public void addContact(Contact contact) {
-        Long contactId = contact.getUserInfo().getPeerId();
         //check that the contact does not exist
         boolean present = false;
         for (Contact c : getProfile().getContacts().getContacts()) {
@@ -64,8 +63,8 @@ public class UserServiceImpl implements UserService {
                 }
             }
         if (!present) {
+            contact.addCategoryId(Category.PUBLIC_CATEGORY_ID);
             getProfile().getContacts().add(contact);
-            getProfile().getContacts().findById(contactId).addCategoryId(Category.PUBLIC_CATEGORY_ID);
         } else {
             log.warn("This contact already exists");
             ErrorMessage nErrorMessage = new ErrorMessage("This contact already exists");
