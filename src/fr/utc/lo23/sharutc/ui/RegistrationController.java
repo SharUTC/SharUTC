@@ -3,8 +3,12 @@ package fr.utc.lo23.sharutc.ui;
 import com.cathive.fx.guice.GuiceFXMLLoader;
 import com.google.inject.Inject;
 import fr.utc.lo23.sharutc.controler.command.account.AccountCreationCommand;
+import fr.utc.lo23.sharutc.model.AppModel;
+import fr.utc.lo23.sharutc.model.AppModelImpl;
 import fr.utc.lo23.sharutc.model.userdata.UserInfo;
 import fr.utc.lo23.sharutc.ui.custom.SharutcLogo;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -28,7 +32,7 @@ import java.util.ResourceBundle;
  * A FXML Controller that displays a registration page.
  *
  */
-public class RegistrationController implements Initializable {
+public class RegistrationController implements Initializable, PropertyChangeListener {
 
     private static final Logger log = LoggerFactory
             .getLogger(RegistrationController.class);
@@ -53,6 +57,8 @@ public class RegistrationController implements Initializable {
     private ArrayList<String> mErrorMessages;
     @Inject
     private AccountCreationCommand mAccountCreationCommand;
+    @Inject
+    private AppModel mAppModel;
 
     /**
      * Initializes the controller class.
@@ -69,6 +75,8 @@ public class RegistrationController implements Initializable {
             }
         });
 
+        mAppModel.addPropertyChangeListener(this);
+
     }
 
     /**
@@ -82,7 +90,7 @@ public class RegistrationController implements Initializable {
         log.info("Sign Up Button Clicked");
         errorContainer.getChildren().clear();
         if (!validateForm()) {
-            displayErrorMessages();            
+            displayErrorMessages();
         } else {
             final UserInfo userInfo = new UserInfo();
             userInfo.setLogin(userNameField.getText());
@@ -92,7 +100,6 @@ public class RegistrationController implements Initializable {
             userInfo.setAge(Integer.valueOf(ageField.getText()));
             mAccountCreationCommand.setUserInfo(userInfo);
             mAccountCreationCommand.execute();
-            log.info("AccountCreationCommand.execute()");
         }
     }
 
@@ -220,5 +227,19 @@ public class RegistrationController implements Initializable {
         }
 
         return isAgeValid;
+    }
+
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) {
+        final String propertyName = evt.getPropertyName();
+        if (AppModelImpl.Property.PROFILE.name().equals(propertyName)) {
+            try {
+                mAppModel.removePropertyChangeListener(this);
+                final Parent root = mFxmlLoader.load(getClass().getResource("/fr/utc/lo23/sharutc/ui/fxml/login.fxml")).getRoot();
+                buttonCancel.getScene().setRoot(root);
+            } catch (IOException ex) {
+                log.error("can't load login page");
+            }
+        }
     }
 }

@@ -2,6 +2,7 @@ package fr.utc.lo23.sharutc.ui;
 
 import com.cathive.fx.guice.GuiceFXMLLoader;
 import com.google.inject.Inject;
+import fr.utc.lo23.sharutc.model.AppModel;
 import fr.utc.lo23.sharutc.ui.custom.SharutcLogo;
 import java.io.File;
 import java.io.IOException;
@@ -55,6 +56,8 @@ public class LoginController implements Initializable {
     @Inject
     private GuiceFXMLLoader mFxmlLoader;
     private ArrayList<String> mErrorMessages;
+    @Inject
+    private AppModel mAppModel;
 
     /**
      * Initializes the controller class.
@@ -73,6 +76,11 @@ public class LoginController implements Initializable {
                 sharutcLogo.animate(mouseEvent);
             }
         });
+
+        if (mAppModel.getProfile() != null && mAppModel.getProfile().getUserInfo() != null) {
+            userNameField.setText(mAppModel.getProfile().getUserInfo().getLogin());
+            passwordField.setText(mAppModel.getProfile().getUserInfo().getPassword());
+        }
 
         //hide drop overlay
         hideDropOverlay();
