@@ -10,4 +10,4 @@
 <?import javafx.scene.control.cell.*?>
 
 <?import fr.utc.lo23.sharutc.ui.*?>
-<Label xmlns:fx="http://javafx.com/fxml" fx:controller="fr.utc.lo23.sharutc.ui.SongsDetailController" text="Manage your songs list" styleClass="panetitle"/>
+<Label xmlns:fx="http://javafx.com/fxml" fx:controller="fr.utc.lo23.sharutc.ui.SongListController" text="Manage your song list" styleClass="panetitle"/>

@@ -80,7 +80,7 @@ public class MainController implements Initializable, PeopleHomeController.IPeop
         children.clear();
 
         if (event.getSource() == songsbutton) {
-            children.add((Node) mFxmlLoader.load(getClass().getResource("/fr/utc/lo23/sharutc/ui/fxml/songs_detail.fxml")).getRoot());
+            children.add((Node) mFxmlLoader.load(getClass().getResource("/fr/utc/lo23/sharutc/ui/fxml/song_list.fxml")).getRoot());
         } else if (event.getSource() == peoplebutton) {
             final Result loadingResult = mFxmlLoader.load(getClass().getResource("/fr/utc/lo23/sharutc/ui/fxml/people_home.fxml"));
             ((PeopleHomeController) loadingResult.getController()).setInterface(this);
