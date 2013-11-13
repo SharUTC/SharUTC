@@ -78,7 +78,7 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public void createCategory(String categoryName) {
-        Category c = new Category(categoryName);
+        Category c = new Category(getProfile().getNewCategoryId(), categoryName);
         getProfile().getCategories().add(c);
     }
 
