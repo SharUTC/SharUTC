@@ -5,9 +5,30 @@
 <?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 <?import javafx.collections.*?>
 
 <?import javafx.scene.control.cell.*?>
 
 <?import fr.utc.lo23.sharutc.ui.*?>
-<Label xmlns:fx="http://javafx.com/fxml" fx:controller="fr.utc.lo23.sharutc.ui.SongListController" text="Manage your song list" styleClass="panetitle"/>
+
+<VBox id="gridPane" GridPane.hgrow="ALWAYS"
+      GridPane.vgrow="ALWAYS" xmlns:fx="http://javafx.com/fxml"
+      fx:controller="fr.utc.lo23.sharutc.ui.SongListController" >
+    
+    <BorderPane>              
+        <left>
+            <Label text="Manage your song list"  styleClass="panetitle"/>  
+        </left>
+        <right>
+            <Button fx:id="addNewSongButton" styleClass="rectButton,bgBlue" text="add a song"
+                    BorderPane.alignment="CENTER_RIGHT" >
+                <font>
+                    <Font size="12.0" />
+                </font>
+            </Button>
+        </right>
+    </BorderPane>
+</VBox>
+
+
