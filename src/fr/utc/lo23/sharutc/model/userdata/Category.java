@@ -19,13 +19,14 @@ public class Category implements Serializable {
     private String mName;
 
     /**
-     *
+     * Default constructor
      */
     public Category() {
     }
 
     /**
      *
+     * @param name
      */
     public Category(String name) {
         this.mId = IDS_SEQUENCE++;
@@ -34,10 +35,15 @@ public class Category implements Serializable {
 
     /**
      *
+     * @param mId
+     * @param mName
      */
     public Category(Integer mId, String mName) {
         this.mId = mId;
         this.mName = mName;
+        
+        if (this.mId >= IDS_SEQUENCE)
+        IDS_SEQUENCE = this.mId + 1;
     }
 
     /**

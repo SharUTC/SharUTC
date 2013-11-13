@@ -55,6 +55,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void addContact(Contact contact) {
         Long contactId = contact.getUserInfo().getPeerId();
+        //check that the contact is not in the Public category
         if (!contact.isInPublic()) {
             getProfile().getContacts().findById(contactId).addCategoryId(Category.PUBLIC_CATEGORY_ID);
         } else {
@@ -86,9 +87,18 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public void deleteCategory(Category category) {
+        //Check that the category is not the public one
         if (category.getId() != Category.PUBLIC_CATEGORY_ID) {
             getProfile().getCategories().remove(category);
-        } else {
+            for (Contact c : getProfile().getContacts().getContacts()) {
+                /*
+                 * for each contact try to delete the categoryId
+                 * and if the contact was only in this category, we put the contact in the public one
+                 */
+                this.removeContactFromCategory(c, category);             
+            }
+        } 
+        else {
             log.warn("Can't delete Category Public");
             ErrorMessage nErrorMessage = new ErrorMessage("Can't delete Category Public");
             appModel.getErrorBus().pushErrorMessage(nErrorMessage);
@@ -101,15 +111,19 @@ public class UserServiceImpl implements UserService {
     @Override
     public void addContactToCategory(Contact contact, Category category) {
         Long contactId = contact.getUserInfo().getPeerId();
-        Set<Integer> CategoriesIdsList = contact.getCategoryIds();
-
-        if (!getProfile().getCategories().contains(category)) {
-            if (CategoriesIdsList.contains(Category.PUBLIC_CATEGORY_ID)) {
+        Set<Integer> categoriesIdsList = contact.getCategoryIds();
+        
+        //Check that the contact does not exist in this category
+        if (!categoriesIdsList.contains(category.getId())) {
+            /* Check if the contact is in the public category
+             * If it is the case, we remove the PUBLIC_CATEGORY_ID
+             */
+            if (categoriesIdsList.contains(Category.PUBLIC_CATEGORY_ID)) {
                 getProfile().getContacts().findById(contactId).removeCategoryId(Category.PUBLIC_CATEGORY_ID);
             }
-
             getProfile().getContacts().findById(contactId).addCategoryId(category.getId());
-        } else {
+        } 
+        else {
             log.warn("This contact already exists in this category");
             ErrorMessage nErrorMessage = new ErrorMessage("This contact already exists in this category");
             appModel.getErrorBus().pushErrorMessage(nErrorMessage);
@@ -121,9 +135,16 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public void removeContactFromCategory(Contact contact, Category category) {
+        //Check that the category is not the public one because it is the default category
         if (category.getId() != Category.PUBLIC_CATEGORY_ID) {
-            getProfile().getContacts().findById(contact.getUserInfo().getPeerId()).removeCategoryId(category.getId());
-        } else {
+            Contact c = getProfile().getContacts().findById(contact.getUserInfo().getPeerId());
+            // Delete the categoryId in the contact
+            c.removeCategoryId(category.getId());
+            // if this category was the only one, we put the contact in the public one
+            if (c.getCategoryIds().isEmpty())
+                c.addCategoryId(Category.PUBLIC_CATEGORY_ID);
+        } 
+        else {
             log.warn("Can't remove contact from Public category");
             ErrorMessage nErrorMessage = new ErrorMessage("Can't remove contact from Public category");
             appModel.getErrorBus().pushErrorMessage(nErrorMessage);

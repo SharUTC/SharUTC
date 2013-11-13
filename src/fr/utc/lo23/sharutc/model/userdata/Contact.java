@@ -18,7 +18,7 @@ public class Contact implements Serializable {
 
     /**
      *
-     * @param peerId
+     * @param userInfo
      */
     public Contact(UserInfo userInfo) {
         this.mUserInfo = userInfo;
@@ -51,20 +51,33 @@ public class Contact implements Serializable {
 
     /**
      *
-     * @param categories
+     * @param categoryIds
      */
     public void setCategoryId(Set<Integer> categoryIds) {
         this.mCategoryIds = categoryIds;
     }
 
+     /**
+     *
+     * @param categoryId
+     */
     public void addCategoryId(Integer categoryId) {
         mCategoryIds.add(categoryId);
     }
 
+    /**
+     *
+     * @param categoryId
+     */
     public void removeCategoryId(Integer categoryId) {
         mCategoryIds.remove(categoryId);
     }
 
+     /**
+     * Check if a contact is in the Public category
+     * 
+     * @return
+     */
     public boolean isInPublic() {
         boolean isInPublic = false;
         for (Integer c : mCategoryIds) {

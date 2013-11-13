@@ -3,7 +3,6 @@ package fr.utc.lo23.sharutc.controler.command.profile;
 import fr.utc.lo23.sharutc.controler.command.Command;
 import fr.utc.lo23.sharutc.model.userdata.Category;
 import fr.utc.lo23.sharutc.model.userdata.Contact;
-import fr.utc.lo23.sharutc.model.userdata.Peer;
 
 /**
  *
@@ -25,16 +24,16 @@ public interface RemoveContactFromCategoryCommand extends Command {
     public void setCategory(Category category);
 
     /**
-     * Return the Peer
+     * Return the contact
      *
-     * @return the Peer
+     * @return the contact
      */
     public Contact getContact();
 
     /**
-     * Set the Peer
+     * Set the contact
      *
-     * @param peer
+     * @param contact
      */
     public void setContact(Contact contact);
 }

@@ -13,7 +13,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  *
- * @author Mathilde
+ * {@inheritDoc}
  */
 public class RemoveContactFromCategoryCommandImpl implements RemoveContactFromCategoryCommand {
     

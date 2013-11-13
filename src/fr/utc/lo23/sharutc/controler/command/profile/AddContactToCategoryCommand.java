@@ -24,16 +24,16 @@ public interface AddContactToCategoryCommand extends Command {
     public void setCategory(Category category);
 
     /**
-     * Return the Peer
+     * Return the contact
      *
-     * @return the Peer
+     * @return the contact
      */
     public Contact getContact();
 
     /**
-     * Set the Peer
+     * Set the contact
      *
-     * @param peer
+     * @param contact
      */
     public void setContact(Contact contact) ;
 }

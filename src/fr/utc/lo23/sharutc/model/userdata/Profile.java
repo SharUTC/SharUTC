@@ -81,10 +81,18 @@ public class Profile implements Serializable {
         this.mCategories = categories;
     }
 
+    /**
+     *
+     * @return
+     */    
     public Contacts getContacts() {
         return mContacts;
     }
 
+    /**
+     *
+     * @param mContacts
+     */    
     public void setContacts(Contacts mContacts) {
         this.mContacts = mContacts;
     }

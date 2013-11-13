@@ -13,7 +13,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  *
- * @author Mathilde
+ * {@inheritDoc}
  */
 public class AddContactToCategoryCommandImpl implements AddContactToCategoryCommand {
 
@@ -47,6 +47,9 @@ public class AddContactToCategoryCommandImpl implements AddContactToCategoryComm
         this.mCategory = category;
     }
 
+     /**
+     * {@inheritDoc}
+     */
     @Override
     public Contact getContact() {
         return mContact;
