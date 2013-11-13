@@ -17,7 +17,7 @@ public class UserCard extends SimpleCard implements EventHandler<Event> {
     private IUserCard mInterface;
 
     public UserCard(UserInfo userInfo, IUserCard i) {
-        this(userInfo, i, "../fxml/user_card.fxml");
+        this(userInfo, i, "/fr/utc/lo23/sharutc/ui/fxml/user_card.fxml");
     }
 
     protected UserCard(UserInfo userInfo, IUserCard i, String resourceFXML) {

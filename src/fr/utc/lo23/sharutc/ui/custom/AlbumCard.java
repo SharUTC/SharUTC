@@ -12,7 +12,7 @@ public class AlbumCard extends SimpleCard{
     public Label artistName;
     
     public AlbumCard(Music music) {
-        super("../fxml/album_card.fxml");
+        super("/fr/utc/lo23/sharutc/ui/fxml/album_card.fxml");
         
         initModel(music);
     }

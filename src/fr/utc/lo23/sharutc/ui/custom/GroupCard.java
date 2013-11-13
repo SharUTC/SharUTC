@@ -39,7 +39,7 @@ public class GroupCard extends SimpleCard implements EventHandler<Event> {
 
 
     public GroupCard(Category category, IGroupCard i) {
-        super("../fxml/group_card.fxml");
+        super("/fr/utc/lo23/sharutc/ui/fxml/group_card.fxml");
         getStyleClass().add("groupCard");
 
         mInterface = i;

@@ -26,7 +26,7 @@ public class PeopleCard extends DraggableCard implements EventHandler<Event> {
 
 
     public PeopleCard(UserInfo userInfo, IPeopleCard i) {
-        super("../fxml/people_card.fxml", DROP_KEY, i);
+        super("/fr/utc/lo23/sharutc/ui/fxml/people_card.fxml", DROP_KEY, i);
         initModel(userInfo);
         getStyleClass().add("peopleCard");
         mInterface = i;

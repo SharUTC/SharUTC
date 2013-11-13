@@ -106,7 +106,7 @@ public class RegistrationController implements Initializable {
     @FXML
     public void handleCancelRegistration(ActionEvent actionEvent) throws IOException {
         log.info("Cancel Button Clicked");
-        Parent root = mFxmlLoader.load(getClass().getResource("fxml/login.fxml")).getRoot();
+        Parent root = mFxmlLoader.load(getClass().getResource("/fr/utc/lo23/sharutc/ui/fxml/login.fxml")).getRoot();
         buttonCancel.getScene().setRoot(root);
     }
 

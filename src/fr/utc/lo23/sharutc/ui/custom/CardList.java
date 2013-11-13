@@ -32,7 +32,7 @@ public class CardList extends VBox {
 
     public CardList(String title, String styleClass) {
         FXMLLoader fxmlLoader = new FXMLLoader(
-                getClass().getResource("../fxml/card_list.fxml"));
+                getClass().getResource("/fr/utc/lo23/sharutc/ui/fxml/card_list.fxml"));
         fxmlLoader.setRoot(this);
         fxmlLoader.setController(this);
 

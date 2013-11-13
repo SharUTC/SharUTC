@@ -43,7 +43,7 @@ public class MainController implements Initializable, PeopleHomeController.IPeop
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         try {
-            bottombar.getChildren().add((Node) FXMLLoader.load(getClass().getResource("fxml/player.fxml")));
+            bottombar.getChildren().add((Node) FXMLLoader.load(getClass().getResource("/fr/utc/lo23/sharutc/ui/fxml/player.fxml")));
         } catch (IOException exception) {
         }
 
@@ -80,16 +80,16 @@ public class MainController implements Initializable, PeopleHomeController.IPeop
         children.clear();
 
         if (event.getSource() == songsbutton) {
-            children.add((Node) mFxmlLoader.load(getClass().getResource("fxml/songs_detail.fxml")).getRoot());
+            children.add((Node) mFxmlLoader.load(getClass().getResource("/fr/utc/lo23/sharutc/ui/fxml/songs_detail.fxml")).getRoot());
         } else if (event.getSource() == peoplebutton) {
-            final Result loadingResult = mFxmlLoader.load(getClass().getResource("fxml/people_home.fxml"));
+            final Result loadingResult = mFxmlLoader.load(getClass().getResource("/fr/utc/lo23/sharutc/ui/fxml/people_home.fxml"));
             ((PeopleHomeController) loadingResult.getController()).setInterface(this);
             ((DragPreviewDrawer) loadingResult.getController()).init(mDragPreview);
             children.add((Node) loadingResult.getRoot());
         } else if (event.getSource() == artistsbutton) {
-            children.add((Node) mFxmlLoader.load(getClass().getResource("fxml/artists_detail.fxml")).getRoot());
+            children.add((Node) mFxmlLoader.load(getClass().getResource("/fr/utc/lo23/sharutc/ui/fxml/artists_detail.fxml")).getRoot());
         } else if (event.getSource() == albumsbutton) {
-            children.add((Node) mFxmlLoader.load(getClass().getResource("fxml/albums_detail.fxml")).getRoot());
+            children.add((Node) mFxmlLoader.load(getClass().getResource("/fr/utc/lo23/sharutc/ui/fxml/albums_detail.fxml")).getRoot());
         }
     }
 
@@ -97,7 +97,7 @@ public class MainController implements Initializable, PeopleHomeController.IPeop
     public void handleTextEntered(ActionEvent actionEvent) throws IOException {
         ObservableList<Node> children = rightpane.getChildren();
         children.clear();
-        final Result loadingResult = mFxmlLoader.load(getClass().getResource("fxml/searchresult_detail.fxml"));
+        final Result loadingResult = mFxmlLoader.load(getClass().getResource("/fr/utc/lo23/sharutc/ui/fxml/searchresult_detail.fxml"));
         ((SearchResultController) loadingResult.getController()).setInterface(this);
         children.add((Node) loadingResult.getRoot());
         
@@ -109,7 +109,7 @@ public class MainController implements Initializable, PeopleHomeController.IPeop
         children.clear();
         log.info("people detail requested : " + user.getLogin());
         try {
-            final Result loadingResult = mFxmlLoader.load(getClass().getResource("fxml/people_detail.fxml"));
+            final Result loadingResult = mFxmlLoader.load(getClass().getResource("/fr/utc/lo23/sharutc/ui/fxml/people_detail.fxml"));
             ((PeopleDetailController) loadingResult.getController()).setUserInfo(user);
             children.add((Node) loadingResult.getRoot());
         } catch (IOException e) {

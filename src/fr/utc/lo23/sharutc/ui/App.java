@@ -25,11 +25,11 @@ public class App extends GuiceApplication {
     @Override
     public void start(Stage stage) throws Exception {
 
-        final GuiceFXMLLoader.Result loadingResult = mFxmlLoader.load(getClass().getResource("fxml/main.fxml"));
+        final GuiceFXMLLoader.Result loadingResult = mFxmlLoader.load(getClass().getResource("/fr/utc/lo23/sharutc/ui/fxml/main.fxml"));
         final Parent root = loadingResult.getRoot();
 
         Scene scene = new Scene((Parent) root);
-        scene.getStylesheets().add(this.getClass().getResource("css/main.css").toExternalForm());
+        scene.getStylesheets().add(this.getClass().getResource("/fr/utc/lo23/sharutc/ui/css/main.css").toExternalForm());
         stage.setScene(scene);
 
         //If needed, cast your controller

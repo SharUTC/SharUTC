@@ -89,7 +89,7 @@ public class LoginController implements Initializable {
     private void handleLoginButtonAction(ActionEvent event) throws IOException {
         if (event.getSource() == buttonSignUp) {
             log.info("Sign Up Button Clicked");
-            Parent root = mFxmlLoader.load(getClass().getResource("fxml/registration.fxml")).getRoot();
+            Parent root = mFxmlLoader.load(getClass().getResource("/fr/utc/lo23/sharutc/ui/fxml/registration.fxml")).getRoot();
             buttonSignUp.getScene().setRoot(root);
         } else if (event.getSource() == buttonSignIn) {
             log.info("Sign In Button Clicked");
