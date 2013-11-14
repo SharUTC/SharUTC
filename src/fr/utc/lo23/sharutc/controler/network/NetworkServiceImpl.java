@@ -144,8 +144,8 @@ public class NetworkServiceImpl implements NetworkService {
      */
     @Override
     public void addComment(Peer peer, Music music, String comment) {
-        // Message message = messageParser.write(MessageType.COMMENT_ADD, new Object[][]{{Message.OWNER_PEER_ID, peer.getId()}, {Message.AUTHOR_PEER_ID, getLocalPeerId()}, {Message.MUSIC_ID, music.getId()}, {Message.COMMENT, comment}});
-        // sendUnicast(message, peer);
+       Message message = messageParser.write(MessageType.COMMENT_ADD, new Object[][]{{Message.OWNER_PEER_ID, peer}, {Message.AUTHOR_PEER_ID, messageParser.getSource() }, {Message.MUSIC_ID, music}, {Message.COMMENT, comment}});
+       sendUnicast(message, peer);
     }
 
     /**
