@@ -4,6 +4,7 @@ import fr.utc.lo23.sharutc.model.domain.Catalog;
 import fr.utc.lo23.sharutc.model.domain.Music;
 import fr.utc.lo23.sharutc.model.domain.SearchCriteria;
 import fr.utc.lo23.sharutc.model.domain.TagMap;
+import fr.utc.lo23.sharutc.model.userdata.Category;
 import fr.utc.lo23.sharutc.model.userdata.Peer;
 import java.io.File;
 import java.util.Collection;
@@ -201,4 +202,19 @@ public interface MusicService {
      * @param year the year to set, or null if not changed
      */
     public void saveMusicFieldChanges(Music music, String title, String artist, String album, String track, String year);
+    
+    /**
+     * Add a music to a category
+     * @param music
+     * @param category 
+     */
+    public void addMusicToCategory(Music music, Category category);
+    
+    /**
+     * Remove a music from a category
+     * @param music
+     * @param category 
+     */
+    public void removeMusicFromCategory(Music music, Category category);
+    
 }
