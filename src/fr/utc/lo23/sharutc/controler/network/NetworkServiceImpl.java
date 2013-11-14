@@ -181,7 +181,8 @@ public class NetworkServiceImpl implements NetworkService {
      */
     @Override
     public void unsetScore(Peer peer, Music music) {
-        log.warn("Not supported yet.");
+        Message message = messageParser.write(MessageType.SCORE_UNSET, new Object[][]{{Message.OWNER_PEER, peer}, {Message.MUSIC, music}});
+        sendUnicast(message, peer);
     }
 
     /**

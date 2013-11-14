@@ -9,6 +9,7 @@ import fr.utc.lo23.sharutc.controler.command.music.AddCommentCommand;
 import fr.utc.lo23.sharutc.controler.command.music.EditCommentCommand;
 import fr.utc.lo23.sharutc.controler.command.music.RemoveCommentCommand;
 import fr.utc.lo23.sharutc.controler.command.music.SetScoreCommand;
+import fr.utc.lo23.sharutc.controler.command.music.UnsetScoreCommand;
 import fr.utc.lo23.sharutc.controler.command.music.IntegrateRemoteCatalogCommand;
 import fr.utc.lo23.sharutc.controler.command.music.IntegrateRemoteTagMapCommand;
 import fr.utc.lo23.sharutc.controler.command.music.SendCatalogCommand;
@@ -86,6 +87,8 @@ public class MessageHandlerImpl implements MessageHandler {
     private RemoveCommentCommand removeCommentCommand;
     @Inject
     private SetScoreCommand setScoreCommand;
+    @Inject
+    private UnsetScoreCommand unsetScoreCommand;
     // more...
 
     /**
@@ -153,6 +156,9 @@ public class MessageHandlerImpl implements MessageHandler {
                         command = setScoreCommand;
                         break;
                     case SCORE_UNSET:
+                        unsetScoreCommand.setMusic((Music) messageParser.getValue(Message.MUSIC));
+                        unsetScoreCommand.setPeer((Peer) messageParser.getValue(Message.OWNER_PEER_ID));
+                        command = unsetScoreCommand;
                         break;
                     case MUSIC_SEARCH:
                         performMusicSearchCommand.setConversationId(appModel.getNextConversationId());
