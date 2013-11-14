@@ -146,18 +146,18 @@ public class MessageHandlerImpl implements MessageHandler {
                     case COMMENT_REMOVE:
                         removeCommentCommand.setCommentId((Integer) messageParser.getValue(Message.COMMENT_ID));
                         removeCommentCommand.setMusic((Music) messageParser.getValue(Message.MUSIC));
-                        removeCommentCommand.setPeer((Peer) messageParser.getValue(Message.OWNER_PEER));
+                        removeCommentCommand.setPeer(messageParser.getSource());
                         command = removeCommentCommand;
                         break;
                     case SCORE_SET:
                         setScoreCommand.setMusic((Music) messageParser.getValue(Message.MUSIC));
-                        setScoreCommand.setPeer((Peer) messageParser.getValue(Message.OWNER_PEER));
+                        setScoreCommand.setPeer(messageParser.getSource());
                         setScoreCommand.setScore((Integer) messageParser.getValue(Message.SCORE));
                         command = setScoreCommand;
                         break;
                     case SCORE_UNSET:
                         unsetScoreCommand.setMusic((Music) messageParser.getValue(Message.MUSIC));
-                        unsetScoreCommand.setPeer((Peer) messageParser.getValue(Message.OWNER_PEER_ID));
+                        unsetScoreCommand.setPeer(messageParser.getSource());
                         command = unsetScoreCommand;
                         break;
                     case MUSIC_SEARCH:
