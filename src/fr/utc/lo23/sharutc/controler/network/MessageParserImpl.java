@@ -22,7 +22,7 @@ public class MessageParserImpl implements MessageParser {
     private final ObjectMapper mapper = new ObjectMapper();
     private final AppModel appModel;
     private Message message;
-    private HashMap<String, Object> messageContent = null;
+    private Map<String, Object> messageContent = null;
 
     @Inject
     public MessageParserImpl(AppModel appModel) {
@@ -35,13 +35,14 @@ public class MessageParserImpl implements MessageParser {
     @Override
     public void read(Message message) {
         this.message = message;
-        Map<String, Object> parsedContent = null;
-        try {
-            log.debug("Reading Message : content = {}", message.getContent());
-            parsedContent = mapper.readValue(message.getContent(), Map.class);
-        } catch (Exception ex) {
-            log.error(ex.toString());
-        }
+        /*  Map<String, Object> parsedContent = null;
+         try {
+         log.debug("Reading Message : content = {}", message.getContent());
+         parsedContent = mapper.readValue(message.getContent(), Map.class);
+         } catch (Exception ex) {
+         log.error(ex.toString());
+         }*/
+        Map<String, Object> parsedContent = message.getContent();
         if (parsedContent != null) {
             messageContent = new HashMap<String, Object>();
             messageContent.putAll(parsedContent);
@@ -86,6 +87,13 @@ public class MessageParserImpl implements MessageParser {
      */
     @Override
     public Message write(MessageType messageType, Object[][] content) {
+        Map<String, Object> map = new HashMap<String, Object>();
+        for (Object[] o : content) {
+            map.put((String) o[0], o[1]);
+        }
+
+
+
         if (messageType == null) {
             log.error("Missing messageType");
         }
@@ -93,7 +101,7 @@ public class MessageParserImpl implements MessageParser {
         try {
             String contentAsString = content != null ? mapper.writeValueAsString(content) : "";
             log.debug("Writing Message : content = {}", contentAsString);
-            newMessage = new Message(appModel.getProfile().getUserInfo().getPeerId(), messageType, contentAsString);
+            newMessage = new Message(appModel.getProfile().getUserInfo().getPeerId(), messageType, map);
         } catch (JsonProcessingException ex) {
             log.error(ex.toString());
         }

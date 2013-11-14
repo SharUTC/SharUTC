@@ -82,12 +82,13 @@ public class MessageHandlerImpl implements MessageHandler {
     @Override
     public void handleMessage(String string) {
         command = null;
+        log.info("handleMessage : {}", string);
         Message incomingMessage = messageParser.fromJSON(string);
         if (incomingMessage != null) {
             try {
                 messageParser.read(incomingMessage);
                 // searching which command to execute following message type
-                log.info("Handling message '{}' from '{}'", incomingMessage.getType().name(), messageParser.getSource());
+                log.info("Handling message '{}' from '{}'", incomingMessage.getType().name(), messageParser.getSource().getDisplayName());
                 switch (incomingMessage.getType()) {
                     case MUSIC_GET_CATALOG:
                         sendCatalogCommand.setConversationId(appModel.getNextConversationId());
@@ -193,6 +194,7 @@ public class MessageHandlerImpl implements MessageHandler {
     }
 
     private boolean isMessageForCurrentConversation() {
-        return (Boolean) messageParser.getValue(Message.CONVERSATION_ID);
+        // parsing read an Integer instead of Long... this will change with change for sub-classes of Message
+        return appModel.getCurrentConversationId().intValue() == ((Integer) messageParser.getValue(Message.CONVERSATION_ID)).intValue();
     }
 }

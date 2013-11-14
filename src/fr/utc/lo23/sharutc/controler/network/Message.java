@@ -1,5 +1,8 @@
 package fr.utc.lo23.sharutc.controler.network;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * List of constants used in all the messages, describes each value that is to
  * be set in a message to find it at reading
@@ -54,11 +57,14 @@ public class Message {
     /**
      * The content of the message in JSON format
      */
-    private String content;
+    private Map<String, Object> content;
     /**
      * Source of message
      */
     private Long fromPeerId;
+
+    public Message() {
+    }
 
     /**
      *
@@ -67,7 +73,7 @@ public class Message {
      * @param content
      * @param conversationId
      */
-    public Message(long fromPeerId, MessageType messageType, String content) {
+    public Message(long fromPeerId, MessageType messageType, Map<String, Object> content) {
         this.type = messageType;
         this.content = content;
         this.fromPeerId = fromPeerId;
@@ -93,7 +99,7 @@ public class Message {
      *
      * @return
      */
-    public String getContent() {
+    public Map<String, Object> getContent() {
         return content;
     }
 
@@ -101,7 +107,7 @@ public class Message {
      *
      * @param content
      */
-    public void setContent(String content) {
+    public void setContent(HashMap<String, Object> content) {
         this.content = content;
     }
 

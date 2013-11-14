@@ -134,6 +134,10 @@ public class TagMapTest {
 
     @Test
     public void sendTagMapCommand() {
+        appModel.getLocalCatalog().get(0).addTag("ROCK");
+        appModel.getLocalCatalog().get(1).addTag("TV");
+        appModel.getLocalCatalog().get(2).addTag("Rock");
+        appModel.getLocalCatalog().get(2).addTag("Rock Indé");
         long conversationId = 0L;
         sendTagMapCommand.setConversationId(conversationId);
         sendTagMapCommand.setPeer(appModel.getActivePeerList().getByPeerId(1L));
