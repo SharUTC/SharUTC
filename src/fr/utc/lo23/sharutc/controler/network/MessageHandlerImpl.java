@@ -6,6 +6,7 @@ import fr.utc.lo23.sharutc.controler.command.Command;
 import fr.utc.lo23.sharutc.controler.command.account.IntegrateBroadcastConnectionCommand;
 import fr.utc.lo23.sharutc.controler.command.account.IntegrateConnectionCommand;
 import fr.utc.lo23.sharutc.controler.command.music.AddCommentCommand;
+import fr.utc.lo23.sharutc.controler.command.music.EditCommentCommand;
 import fr.utc.lo23.sharutc.controler.command.music.IntegrateRemoteCatalogCommand;
 import fr.utc.lo23.sharutc.controler.command.music.IntegrateRemoteTagMapCommand;
 import fr.utc.lo23.sharutc.controler.command.music.SendCatalogCommand;
@@ -76,6 +77,8 @@ public class MessageHandlerImpl implements MessageHandler {
     private IntegrateMusicSearchCommand integrateMusicSearchCommand;
     @Inject
     private AddCommentCommand addCommentCommand;
+    @Inject
+    private EditCommentCommand editCommentCommand;
     // more...
 
     /**
@@ -123,7 +126,12 @@ public class MessageHandlerImpl implements MessageHandler {
                         addCommentCommand.setComment((String) messageParser.getValue(Message.COMMENT));
                         command = addCommentCommand;
                         break;
-                    case COMMENT_EDIT:
+                    case EDIT_COMMENT:
+                        editCommentCommand.setAuthorPeer((Peer) messageParser.getValue(Message.AUTHOR_PEER_ID));
+                        editCommentCommand.setComment((String) messageParser.getValue(Message.COMMENT));
+                        editCommentCommand.setMusic((Music) messageParser.getValue(Message.MUSIC));
+                        editCommentCommand.setOwnerPeer((Peer) messageParser.getValue(Message.OWNER_PEER_ID));
+                        command = editCommentCommand;
                         break;
                     case COMMENT_REMOVE:
                         break;

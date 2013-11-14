@@ -80,5 +80,9 @@ public enum MessageType {
     /**
      * 
      */
-    USER_INFO
+    USER_INFO,
+    /**
+     * 
+     */
+    EDIT_COMMENT
 }
