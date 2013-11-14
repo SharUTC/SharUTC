@@ -111,6 +111,7 @@ public class MainController implements Initializable, PeopleHomeController.IPeop
         try {
             final Result loadingResult = mFxmlLoader.load(getClass().getResource("/fr/utc/lo23/sharutc/ui/fxml/people_detail.fxml"));
             ((PeopleDetailController) loadingResult.getController()).setUserInfo(user);
+            ((DragPreviewDrawer) loadingResult.getController()).init(mDragPreview);
             children.add((Node) loadingResult.getRoot());
         } catch (IOException e) {
             log.error(e.getMessage());

@@ -113,6 +113,7 @@
     -fx-background-color: #FFFFFF;
     -fx-border-color: #BDC3C7;
     -fx-border-width: 0px 0px 2px 0px;
+    -fx-opacity: 1.0;
 }
 
 .simpleCard:hover{
