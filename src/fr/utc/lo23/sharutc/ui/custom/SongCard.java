@@ -3,6 +3,8 @@ package fr.utc.lo23.sharutc.ui.custom;
 import fr.utc.lo23.sharutc.model.domain.Music;
 import javafx.event.Event;
 import javafx.event.EventHandler;
+import javafx.fxml.FXML;
+import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 
 public class SongCard extends DraggableCard implements EventHandler<Event> {
@@ -11,10 +13,14 @@ public class SongCard extends DraggableCard implements EventHandler<Event> {
     private Music mModel;
     private ISongCard mInterface;
 
+    @FXML
+    public Label songTitle;
+
     public SongCard(Music m, ISongCard i) {
         super("/fr/utc/lo23/sharutc/ui/fxml/song_card.fxml", DROP_KEY, i);
         mInterface = i;
         mModel = m;
+        songTitle.setText(mModel.getFileName());
         setOnMouseClicked(this);
     }
 
