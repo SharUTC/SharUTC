@@ -45,7 +45,7 @@ public abstract class DraggableCard extends SimpleCard {
      * @param mouseEvent
      */
     private void onDragStart(MouseEvent mouseEvent) {
-        this.getStyleClass().add("peopleCardDrag");
+        this.getStyleClass().add("cardDragged");
         Dragboard db = this.startDragAndDrop(TransferMode.ANY);
         ClipboardContent content = new ClipboardContent();
         content.putString(mDropKey);
@@ -60,7 +60,7 @@ public abstract class DraggableCard extends SimpleCard {
      */
     private void onDragDone(DragEvent dragEvent) {
 
-        this.getStyleClass().remove("peopleCardDrag");
+        this.getStyleClass().remove("cardDragged");
         dragEvent.consume();
     }
 
@@ -69,7 +69,7 @@ public abstract class DraggableCard extends SimpleCard {
      */
     public void dropped() {
         final ObservableList<String> style = getStyleClass();
-        style.remove("peopleCardDrag");
+        style.remove("cardDragged");
         style.remove("simpleCardClicked");
         mState = STATE_NORMAL;
 
@@ -80,7 +80,7 @@ public abstract class DraggableCard extends SimpleCard {
      */
     public void dragged() {
         final ObservableList<String> style = getStyleClass();
-        style.add("peopleCardDrag");
+        style.add("cardDragged");
 
     }
 
