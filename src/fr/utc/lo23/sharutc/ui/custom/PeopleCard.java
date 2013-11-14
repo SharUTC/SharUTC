@@ -13,7 +13,7 @@ public class PeopleCard extends DraggableCard implements EventHandler<Event> {
     /**
      * key used for the drag event to identify the content
      */
-    public static final String DROP_KEY = "PeopleCardContent";
+    public static final String DROP_KEY = PeopleCard.class+"DropKey";
 
     private IPeopleCard mInterface;
     private UserInfo mUserInfo;
@@ -40,26 +40,6 @@ public class PeopleCard extends DraggableCard implements EventHandler<Event> {
     public void onHover(boolean isHover) {
         deleteButton.setVisible(isHover);
         detailButton.setVisible(isHover);
-    }
-
-    /**
-     * inform that this card as been dropped due to multi selection Drag&Drop
-     */
-    public void dropped() {
-        final ObservableList<String> style = getStyleClass();
-        style.remove("peopleCardDrag");
-        style.remove("simpleCardClicked");
-        mState = STATE_NORMAL;
-
-    }
-
-    /**
-     * inform is being dragged due to multi selection Drag&Drop
-     */
-    public void dragged() {
-        final ObservableList<String> style = getStyleClass();
-        style.add("peopleCardDrag");
-
     }
 
     public UserInfo getModel() {
