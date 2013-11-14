@@ -4,15 +4,17 @@ import com.cathive.fx.guice.GuiceFXMLLoader;
 import com.cathive.fx.guice.GuiceFXMLLoader.Result;
 import com.google.inject.Inject;
 import fr.utc.lo23.sharutc.model.userdata.UserInfo;
+import fr.utc.lo23.sharutc.ui.custom.SongCard;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Point2D;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.input.DragEvent;
+import javafx.scene.input.Dragboard;
+import javafx.scene.input.TransferMode;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
@@ -22,6 +24,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 public class MainController implements Initializable, PeopleHomeController.IPeopleHomeController, SearchResultController.ISearchResultController {
@@ -33,6 +36,8 @@ public class MainController implements Initializable, PeopleHomeController.IPeop
      * the drag Preview
      */
     private StackPane mDragPreview;
+    private PlayerController mPlayerController;
+    private Result mCurrentLoadedRighpaneResult;
     public Button songsbutton;
     public Button peoplebutton;
     public Button artistsbutton;
@@ -43,7 +48,9 @@ public class MainController implements Initializable, PeopleHomeController.IPeop
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         try {
-            bottombar.getChildren().add((Node) FXMLLoader.load(getClass().getResource("/fr/utc/lo23/sharutc/ui/fxml/player.fxml")));
+            final Result loadingResult = mFxmlLoader.load(getClass().getResource("/fr/utc/lo23/sharutc/ui/fxml/player.fxml"));
+            mPlayerController = loadingResult.getController();
+            bottombar.getChildren().add((Node) loadingResult.getRoot());
         } catch (IOException exception) {
         }
 
@@ -80,16 +87,19 @@ public class MainController implements Initializable, PeopleHomeController.IPeop
         children.clear();
 
         if (event.getSource() == songsbutton) {
-            children.add((Node) mFxmlLoader.load(getClass().getResource("/fr/utc/lo23/sharutc/ui/fxml/song_list.fxml")).getRoot());
+            mCurrentLoadedRighpaneResult = mFxmlLoader.load(getClass().getResource("/fr/utc/lo23/sharutc/ui/fxml/song_list.fxml"));
         } else if (event.getSource() == peoplebutton) {
-            final Result loadingResult = mFxmlLoader.load(getClass().getResource("/fr/utc/lo23/sharutc/ui/fxml/people_home.fxml"));
-            ((PeopleHomeController) loadingResult.getController()).setInterface(this);
-            ((DragPreviewDrawer) loadingResult.getController()).init(mDragPreview);
-            children.add((Node) loadingResult.getRoot());
+            mCurrentLoadedRighpaneResult = mFxmlLoader.load(getClass().getResource("/fr/utc/lo23/sharutc/ui/fxml/people_home.fxml"));
+            ((PeopleHomeController) mCurrentLoadedRighpaneResult.getController()).setInterface(this);
+            ((DragPreviewDrawer) mCurrentLoadedRighpaneResult.getController()).init(mDragPreview);
         } else if (event.getSource() == artistsbutton) {
-            children.add((Node) mFxmlLoader.load(getClass().getResource("/fr/utc/lo23/sharutc/ui/fxml/artists_detail.fxml")).getRoot());
+            mCurrentLoadedRighpaneResult = mFxmlLoader.load(getClass().getResource("/fr/utc/lo23/sharutc/ui/fxml/artists_detail.fxml"));
         } else if (event.getSource() == albumsbutton) {
-            children.add((Node) mFxmlLoader.load(getClass().getResource("/fr/utc/lo23/sharutc/ui/fxml/albums_detail.fxml")).getRoot());
+            mCurrentLoadedRighpaneResult = mFxmlLoader.load(getClass().getResource("/fr/utc/lo23/sharutc/ui/fxml/albums_detail.fxml"));
+        }
+
+        if (mCurrentLoadedRighpaneResult != null) {
+            children.add((Node) mCurrentLoadedRighpaneResult.getRoot());
         }
     }
 
@@ -100,7 +110,56 @@ public class MainController implements Initializable, PeopleHomeController.IPeop
         final Result loadingResult = mFxmlLoader.load(getClass().getResource("/fr/utc/lo23/sharutc/ui/fxml/searchresult_detail.fxml"));
         ((SearchResultController) loadingResult.getController()).setInterface(this);
         children.add((Node) loadingResult.getRoot());
-        
+
+    }
+
+    @FXML
+    public void handleBottomBarDragEntered(DragEvent dragEvent) throws IOException {
+        final String dragKey = dragEvent.getDragboard().getString();
+        if (dragKey.equals(SongCard.DROP_KEY)) {
+            //display drag overlay
+            dragEvent.consume();
+        }
+    }
+
+    @FXML
+    public void handleBottomBarDragOver(DragEvent dragEvent) throws IOException {
+        final String dragKey = dragEvent.getDragboard().getString();
+        if (dragKey.equals(SongCard.DROP_KEY)) {
+            dragEvent.acceptTransferModes(TransferMode.COPY_OR_MOVE);
+        }
+        //don't consume because root uses it to relocate preview
+        //dragEvent.consume();
+    }
+
+    @FXML
+    public void handleBottomBarDragDropped(DragEvent dragEvent) throws IOException {
+        final Dragboard db = dragEvent.getDragboard();
+        boolean success = false;
+        //id droppable is a SongCard
+        if (db.hasString() && db.getString().equals(SongCard.DROP_KEY)) {
+            final SongCard droppedCard = (SongCard) dragEvent.getGestureSource();
+            //if the card comes from SongSelectorController
+            if (mCurrentLoadedRighpaneResult.getController() instanceof SongSelectorController) {
+                //Add all selected song to the player
+                final ArrayList<SongCard> songs =
+                        ((SongSelectorController) mCurrentLoadedRighpaneResult.getController()).getSelectedSong();
+                for (SongCard songCard : songs) {
+                    mPlayerController.addSong(songCard.getModel());
+                    songCard.dropped();
+                }
+            } else {
+                //only add selected song to the player
+                mPlayerController.addSong(droppedCard.getModel());
+            }
+        }
+        dragEvent.setDropCompleted(success);
+        dragEvent.consume();
+    }
+
+    @FXML
+    public void handleBottomBarDragExited(DragEvent dragEvent) throws IOException {
+        //hide drag overlay
     }
 
     @Override
@@ -109,10 +168,10 @@ public class MainController implements Initializable, PeopleHomeController.IPeop
         children.clear();
         log.info("people detail requested : " + user.getLogin());
         try {
-            final Result loadingResult = mFxmlLoader.load(getClass().getResource("/fr/utc/lo23/sharutc/ui/fxml/people_detail.fxml"));
-            ((PeopleDetailController) loadingResult.getController()).setUserInfo(user);
-            ((DragPreviewDrawer) loadingResult.getController()).init(mDragPreview);
-            children.add((Node) loadingResult.getRoot());
+            mCurrentLoadedRighpaneResult = mFxmlLoader.load(getClass().getResource("/fr/utc/lo23/sharutc/ui/fxml/people_detail.fxml"));
+            ((PeopleDetailController) mCurrentLoadedRighpaneResult.getController()).setUserInfo(user);
+            ((DragPreviewDrawer) mCurrentLoadedRighpaneResult.getController()).init(mDragPreview);
+            children.add((Node) mCurrentLoadedRighpaneResult.getRoot());
         } catch (IOException e) {
             log.error(e.getMessage());
         }

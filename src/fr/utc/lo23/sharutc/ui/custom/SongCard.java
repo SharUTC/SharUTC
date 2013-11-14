@@ -29,6 +29,10 @@ public class SongCard extends DraggableCard implements EventHandler<Event> {
         }
     }
 
+    public Music getModel() {
+        return mModel;
+    }
+
     public interface ISongCard extends IDraggableCardListener {
         /**
          * user requested play song
