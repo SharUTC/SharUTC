@@ -31,6 +31,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import static fr.utc.lo23.sharutc.controler.service.FileService.ROOT_FOLDER_USERS;
 import fr.utc.lo23.sharutc.model.domain.Catalog;
+import javax.swing.JFileChooser;
 
 /**
  *
@@ -41,6 +42,7 @@ public class FileServiceImpl implements FileService {
     protected static String appFolder;
     private static final int BUFFER_SIZE = 2048;
     private static final int COMPRESSION_LEVEL = 9;
+    private static final String ZIP_FORMAT = "zip";
     private static final Logger log = LoggerFactory
             .getLogger(FileServiceImpl.class);
     private final AppModel appModel;
@@ -51,12 +53,7 @@ public class FileServiceImpl implements FileService {
     public FileServiceImpl(AppModel appModel) {
         this.appModel = appModel;
 
-        try {
-            appFolder = new File(".").getCanonicalPath();
-        } catch (IOException ex) {
-            log.error("Can't run application in this folder : \n{}", ex.toString());
-            throw new RuntimeException("Can't run application in this folder", ex);
-        }
+        appFolder = new JFileChooser().getFileSystemView().getDefaultDirectory().toString();
         appFolder += File.separator + APP_NAME + File.separator;
 
         if (!new File(appFolder).exists()) {
@@ -72,15 +69,36 @@ public class FileServiceImpl implements FileService {
         return appFolder;
     }
 
+    /**
+     * 
+     * {@inheritDoc}
+     */
     @Override
-    public void importWholeProfile(String srcPath) throws Exception {
-
-        // FIXME: prevent import if account already exists
-        // TODO : check if following line is still valid, use File.separator instead of \\
-        String userName = srcPath.substring(srcPath.lastIndexOf("\\"), srcPath.lastIndexOf('.'));
-
+    public void importWholeProfile(String srcPath, boolean force) throws Exception {
+        //check the format
+        int lastP = srcPath.lastIndexOf('.');
+        if(lastP== -1 || srcPath.lastIndexOf(File.separator) == -1
+           || (lastP != -1 && lastP+1 < srcPath.length() && !srcPath.substring(lastP+1).equals(ZIP_FORMAT))){
+            throw new Exception("File format is not supported");
+        }
+        
+        String userName = srcPath.substring(srcPath.lastIndexOf(File.separator), lastP);
+        //check if the user already exists
+        if(new File(appFolder + ROOT_FOLDER_USERS).exists()) {
+            if(!force) {
+                throw new Exception("This user already exists");
+            }
+            else {
+                File userFolder = new File(appFolder + ROOT_FOLDER_USERS);
+                deleteFolderRecursively(userFolder.getAbsolutePath());
+                userFolder.delete();
+            }
+        }
+        
         //chech the structure of the file
-        boolean profileFolderExists = false;
+        boolean musicJsonExists = false;
+        boolean profileJsonExists = false;
+        boolean rightsJsonExists = false;
         boolean musicFolderExists = false;
 
         ZipFile zf = new ZipFile(srcPath);
@@ -89,29 +107,24 @@ public class FileServiceImpl implements FileService {
         while (entries.hasMoreElements()) {
             ZipEntry ze = (ZipEntry) entries.nextElement();
             String entryName = ze.getName();
-            if (entryName.indexOf("\\") != -1) {
-                //TODO: update validation following unified save() methods, folder is unique, files differs
-                // ./SharUTC/users/_login_/musics.json
-                // ./SharUTC/users/_login_/profile.json
-                // ./SharUTC/users/_login_/rights.json
-                // ./SharUTC/users/_login_/musics/xxx.mp3
-                // ./SharUTC/users/_login_/musics/yyy.mp3
-                // ./SharUTC/users/_login_/musics/zzz.mp3
-               /* if (entryName.substring(0, entryName.indexOf("\\")).equals(FOLDER_PROFILE)) {
-                 profileFolderExists = true;
-                 } else if (entryName.substring(0, entryName.indexOf("\\")).equals(FOLDER_MUSICS)) {
-                 musicFolderExists = true;
-                 }*/
-                profileFolderExists = true;
+            if (entryName.equals(JSON_MUSICS)) {
+                musicJsonExists = true;
+            } else if (entryName.equals(JSON_PROFILE)) {
+                profileJsonExists = true;
+            } else if (entryName.equals(JSON_RIGHTS)) {
+                rightsJsonExists = true;
+            } else if (entryName.indexOf(File.separator) != -1
+                       && entryName.substring(0, entryName.indexOf(File.separator)).equals(FOLDER_MUSICS)) {
                 musicFolderExists = true;
             }
         }
 
-        if (!profileFolderExists || !musicFolderExists) {
+        if (!musicJsonExists || !profileJsonExists 
+            || !rightsJsonExists || !musicFolderExists) {
             throw new Exception("Corrupted zip file");
         }
 
-        //Create user folder and sub folders
+        //Create user folder and musics folder
         new File(appFolder + ROOT_FOLDER_USERS + File.separator + userName).mkdirs();
         new File(appFolder + ROOT_FOLDER_USERS + File.separator + userName + File.separator + FOLDER_MUSICS).mkdirs();
 
@@ -192,6 +205,22 @@ public class FileServiceImpl implements FileService {
                 getFilesRec(fileList, new File(node, filename), sourceFolder);
             }
         }
+    }
+    
+    /**
+     * Delete every file and forlder under <i>pathname</i>
+     * @param pathname 
+     */
+    public void deleteFolderRecursively(String pathname){
+         File file = new File(pathname);
+         if(file.exists()){
+             File[] children = file.listFiles();
+             for(int i = 0; i < children.length; ++i){
+                 if(children[i].isDirectory())
+                     deleteFolderRecursively(children[i].getAbsolutePath());
+                 children[i].delete();
+             }
+         }
     }
 
     /**

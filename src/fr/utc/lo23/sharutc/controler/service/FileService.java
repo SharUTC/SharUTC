@@ -16,6 +16,9 @@ public interface FileService {
     public static final String ROOT_FOLDER_USERS = "users";
     public static final String ROOT_FOLDER_TMP = "tmp";
     public static final String FOLDER_MUSICS = "musics";
+    public static final String JSON_MUSICS = "musics.json";
+    public static final String JSON_PROFILE = "profile.json";
+    public static final String JSON_RIGHTS = "rights.json";
     public static final String DOT_MP3 = ".mp3";
     public static final String[] AUTHORIZED_MUSIC_FILE_TYPE = {"mp3"};
     public static final int MIN_FILENAME_LENGTH = 1;
@@ -25,9 +28,10 @@ public interface FileService {
     /**
      *
      * @param srcPath
+     * @param force
      * @throws java.lang.Exception
      */
-    public void importWholeProfile(String srcPath) throws Exception;
+    public void importWholeProfile(String srcPath, boolean force) throws Exception;
 
     /**
      * Compress the folder srcPath and write it at destPath
