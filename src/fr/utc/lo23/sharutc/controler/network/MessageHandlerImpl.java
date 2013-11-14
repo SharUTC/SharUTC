@@ -7,6 +7,7 @@ import fr.utc.lo23.sharutc.controler.command.account.IntegrateBroadcastConnectio
 import fr.utc.lo23.sharutc.controler.command.account.IntegrateConnectionCommand;
 import fr.utc.lo23.sharutc.controler.command.music.AddCommentCommand;
 import fr.utc.lo23.sharutc.controler.command.music.EditCommentCommand;
+import fr.utc.lo23.sharutc.controler.command.music.RemoveCommentCommand;
 import fr.utc.lo23.sharutc.controler.command.music.IntegrateRemoteCatalogCommand;
 import fr.utc.lo23.sharutc.controler.command.music.IntegrateRemoteTagMapCommand;
 import fr.utc.lo23.sharutc.controler.command.music.SendCatalogCommand;
@@ -17,6 +18,7 @@ import fr.utc.lo23.sharutc.controler.command.search.InstallRemoteMusicsCommand;
 import fr.utc.lo23.sharutc.controler.command.search.IntegrateMusicSearchCommand;
 import fr.utc.lo23.sharutc.controler.command.search.PerformMusicSearchCommand;
 import fr.utc.lo23.sharutc.controler.command.search.SendMusicsCommand;
+import fr.utc.lo23.sharutc.controler.command.search.PerformMusicSearchCommand;
 import fr.utc.lo23.sharutc.controler.service.MusicService;
 import fr.utc.lo23.sharutc.controler.service.UserService;
 import fr.utc.lo23.sharutc.model.AppModel;
@@ -79,6 +81,8 @@ public class MessageHandlerImpl implements MessageHandler {
     private AddCommentCommand addCommentCommand;
     @Inject
     private EditCommentCommand editCommentCommand;
+    @Inject
+    private RemoveCommentCommand removeCommentCommand;
     // more...
 
     /**
@@ -134,6 +138,10 @@ public class MessageHandlerImpl implements MessageHandler {
                         command = editCommentCommand;
                         break;
                     case COMMENT_REMOVE:
+                        removeCommentCommand.setCommentId((Integer) messageParser.getValue(Message.COMMENT_ID));
+                        removeCommentCommand.setMusic((Music) messageParser.getValue(Message.MUSIC));
+                        removeCommentCommand.setPeer((Peer) messageParser.getValue(Message.OWNER_PEER_ID));
+                        command = removeCommentCommand;
                         break;
                     case SCORE_SET:
                         break;

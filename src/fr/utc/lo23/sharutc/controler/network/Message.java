@@ -26,6 +26,10 @@ public class Message {
      */
     public final static String COMMENT = "COMMENT";
     /**
+     * 
+     */
+    public final static String COMMENT_ID = "COMMENT_ID";
+    /**
      *
      */
     public final static String MUSIC_ID = "MUSIC_ID";

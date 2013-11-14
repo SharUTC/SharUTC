@@ -163,7 +163,8 @@ public class NetworkServiceImpl implements NetworkService {
      */
     @Override
     public void removeComment(Peer peer, Music music, Integer commentIndex) {
-        log.warn("Not supported yet.");
+        Message message = messageParser.write(MessageType.COMMENT_REMOVE, new Object[][]{{Message.MUSIC,music},{Message.OWNER_PEER_ID, peer}, {Message.COMMENT_ID, commentIndex}});
+        sendUnicast(message, peer);
     }
 
     /**
