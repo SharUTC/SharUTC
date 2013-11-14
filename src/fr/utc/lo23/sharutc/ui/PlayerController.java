@@ -1,8 +1,7 @@
 package fr.utc.lo23.sharutc.ui;
 
+import fr.utc.lo23.sharutc.model.domain.Music;
 import fr.utc.lo23.sharutc.ui.custom.RatingStar;
-import java.net.URL;
-import java.util.ResourceBundle;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.Initializable;
@@ -13,9 +12,11 @@ import javafx.scene.input.MouseEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.net.URL;
+import java.util.ResourceBundle;
+
 /**
  * FXML Controller class
- *
  */
 public class PlayerController implements Initializable {
 
@@ -56,15 +57,24 @@ public class PlayerController implements Initializable {
         });
 
         mRatingStars = new RatingStar[]{
-            ratingStar1,
-            ratingStar2,
-            ratingStar3,
-            ratingStar4,
-            ratingStar5
+                ratingStar1,
+                ratingStar2,
+                ratingStar3,
+                ratingStar4,
+                ratingStar5
         };
 
         displayCurrentRating();
 
+    }
+
+    /**
+     * Player part
+     *
+     * @param music music to add
+     */
+    public void addSong(Music music) {
+        log.info("new music added to the player " + music.getFileName());
     }
 
     private void updateCurrentSongTime(double percent) {
@@ -81,7 +91,7 @@ public class PlayerController implements Initializable {
     //******************
     //*  Rating system
     //******************
-    
+
     private void displayCurrentRating() {
         fillRatingStar(mSongRating);
     }
