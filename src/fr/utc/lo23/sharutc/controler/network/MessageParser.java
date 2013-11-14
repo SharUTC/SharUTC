@@ -27,7 +27,7 @@ public interface MessageParser {
      * incoming Message
      * @return the mesage build with given informations
      */
-    public Message write(MessageType messageType, Object[][] content, Long conversationID);
+    public Message write(MessageType messageType, Object[][] content);
 
     /**
      * Return the Peer who send the parsed message
@@ -44,15 +44,6 @@ public interface MessageParser {
      * found (shouldn't happen)
      */
     public Object getValue(String field);
-
-    /**
-     * Only for read purpose. return the conversation id included in the lattest
-     * parsed message, or null if no conversation id is included
-     *
-     * @return the conversation id included in the lattest parsed message, or
-     * null if no conversation id is included
-     */
-    public Long getConversationId();
 
     /**
      * Return a message object from a JSON String

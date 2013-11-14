@@ -9,6 +9,10 @@ public class Message {
     /**
      *
      */
+    public final static String CONVERSATION_ID = "CONVERSATION_ID";
+    /**
+     *
+     */
     public final static String OWNER_PEER_ID = "OWNER_PEER_ID";
     /**
      *
@@ -55,13 +59,6 @@ public class Message {
      * Source of message
      */
     private Long fromPeerId;
-    /**
-     * used to filter messages coming too late, the view makes this value
-     * changes in the app., networkService has only to copy this value here
-     * before sending it (not in each message, answer must re-use the value
-     * contained in the message)
-     */
-    private Long conversationId;
 
     /**
      *
@@ -70,11 +67,10 @@ public class Message {
      * @param content
      * @param conversationId
      */
-    public Message(long fromPeerId, MessageType messageType, String content, Long conversationId) {
+    public Message(long fromPeerId, MessageType messageType, String content) {
         this.type = messageType;
         this.content = content;
         this.fromPeerId = fromPeerId;
-        this.conversationId = conversationId;
     }
 
     /**
@@ -125,24 +121,8 @@ public class Message {
         this.fromPeerId = fromPeerId;
     }
 
-    /**
-     *
-     * @return
-     */
-    public Long getConversationId() {
-        return conversationId;
-    }
-
-    /**
-     *
-     * @param conversationId
-     */
-    public void setConversationId(Long conversationId) {
-        this.conversationId = conversationId;
-    }
-
     @Override
     public String toString() {
-        return "Message{" + "type=" + type + ", content=" + content + ", fromPeerId=" + fromPeerId + ", conversationId=" + conversationId + '}';
+        return "Message{" + "type=" + type + ", content=" + content + ", fromPeerId=" + fromPeerId + "}";
     }
 }

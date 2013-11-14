@@ -58,10 +58,16 @@ public class SendMusicToPlayCommandImpl implements SendMusicToPlayCommand {
         this.mMusic = music;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public Long getConversationId() {
         return mConversationId;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public void setConversationId(Long conversationId) {
         this.mConversationId = conversationId;
     }

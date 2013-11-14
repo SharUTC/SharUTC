@@ -59,18 +59,6 @@ public class MessageParserImpl implements MessageParser {
      * {@inheritDoc}
      */
     @Override
-    public Long getConversationId() {
-        Long conversationId = null;
-        if (message != null) {
-            conversationId = message.getConversationId();
-        }
-        return conversationId;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     public Peer getSource() {
         checkMessageRead();
         Peer destinationPeer = appModel.getActivePeerList().getByPeerId(message.getFromPeerId());
@@ -97,7 +85,7 @@ public class MessageParserImpl implements MessageParser {
      * {@inheritDoc}
      */
     @Override
-    public Message write(MessageType messageType, Object[][] content, Long conversationId) {
+    public Message write(MessageType messageType, Object[][] content) {
         if (messageType == null) {
             log.error("Missing messageType");
         }
@@ -105,7 +93,7 @@ public class MessageParserImpl implements MessageParser {
         try {
             String contentAsString = content != null ? mapper.writeValueAsString(content) : "";
             log.debug("Writing Message : content = {}", contentAsString);
-            newMessage = new Message(appModel.getProfile().getUserInfo().getPeerId(), messageType, contentAsString, conversationId);
+            newMessage = new Message(appModel.getProfile().getUserInfo().getPeerId(), messageType, contentAsString);
         } catch (JsonProcessingException ex) {
             log.error(ex.toString());
         }

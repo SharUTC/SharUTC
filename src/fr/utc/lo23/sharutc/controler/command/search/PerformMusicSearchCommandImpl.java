@@ -59,10 +59,18 @@ public class PerformMusicSearchCommandImpl implements PerformMusicSearchCommand 
         this.mSearchCriteria = searchCriteria;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public Long getConversationId() {
         return mConversationId;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public void setConversationId(Long conversationId) {
         this.mConversationId = conversationId;
     }
