@@ -8,6 +8,7 @@ import fr.utc.lo23.sharutc.controler.command.account.IntegrateConnectionCommand;
 import fr.utc.lo23.sharutc.controler.command.music.AddCommentCommand;
 import fr.utc.lo23.sharutc.controler.command.music.EditCommentCommand;
 import fr.utc.lo23.sharutc.controler.command.music.RemoveCommentCommand;
+import fr.utc.lo23.sharutc.controler.command.music.SetScoreCommand;
 import fr.utc.lo23.sharutc.controler.command.music.IntegrateRemoteCatalogCommand;
 import fr.utc.lo23.sharutc.controler.command.music.IntegrateRemoteTagMapCommand;
 import fr.utc.lo23.sharutc.controler.command.music.SendCatalogCommand;
@@ -83,6 +84,8 @@ public class MessageHandlerImpl implements MessageHandler {
     private EditCommentCommand editCommentCommand;
     @Inject
     private RemoveCommentCommand removeCommentCommand;
+    @Inject
+    private SetScoreCommand setScoreCommand;
     // more...
 
     /**
@@ -124,26 +127,30 @@ public class MessageHandlerImpl implements MessageHandler {
                         }
                         break;
                     case COMMENT_ADD:
-                        addCommentCommand.setAuthorPeer((Peer) messageParser.getValue(Message.AUTHOR_PEER_ID));
+                        addCommentCommand.setAuthorPeer((Peer) messageParser.getValue(Message.AUTHOR_PEER));
                         addCommentCommand.setMusic((Music) messageParser.getValue(Message.MUSIC_ID));
                         addCommentCommand.setOwnerPeer(messageParser.getSource());
                         addCommentCommand.setComment((String) messageParser.getValue(Message.COMMENT));
                         command = addCommentCommand;
                         break;
                     case EDIT_COMMENT:
-                        editCommentCommand.setAuthorPeer((Peer) messageParser.getValue(Message.AUTHOR_PEER_ID));
+                        editCommentCommand.setAuthorPeer((Peer) messageParser.getValue(Message.AUTHOR_PEER));
                         editCommentCommand.setComment((String) messageParser.getValue(Message.COMMENT));
                         editCommentCommand.setMusic((Music) messageParser.getValue(Message.MUSIC));
-                        editCommentCommand.setOwnerPeer((Peer) messageParser.getValue(Message.OWNER_PEER_ID));
+                        editCommentCommand.setOwnerPeer((Peer) messageParser.getValue(Message.OWNER_PEER));
                         command = editCommentCommand;
                         break;
                     case COMMENT_REMOVE:
                         removeCommentCommand.setCommentId((Integer) messageParser.getValue(Message.COMMENT_ID));
                         removeCommentCommand.setMusic((Music) messageParser.getValue(Message.MUSIC));
-                        removeCommentCommand.setPeer((Peer) messageParser.getValue(Message.OWNER_PEER_ID));
+                        removeCommentCommand.setPeer((Peer) messageParser.getValue(Message.OWNER_PEER));
                         command = removeCommentCommand;
                         break;
                     case SCORE_SET:
+                        setScoreCommand.setMusic((Music) messageParser.getValue(Message.MUSIC));
+                        setScoreCommand.setPeer((Peer) messageParser.getValue(Message.OWNER_PEER));
+                        setScoreCommand.setScore((Integer) messageParser.getValue(Message.SCORE));
+                        command = setScoreCommand;
                         break;
                     case SCORE_UNSET:
                         break;
