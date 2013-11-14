@@ -3,7 +3,6 @@ package fr.utc.lo23.sharutc.controler.service;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import static fr.utc.lo23.sharutc.controler.service.FileService.ROOT_FOLDER_USERS;
 import fr.utc.lo23.sharutc.model.AppModel;
 import fr.utc.lo23.sharutc.model.domain.Music;
 import java.io.File;
@@ -30,8 +29,8 @@ public class FileServiceMock extends FileServiceImpl implements FileService {
      * @param path
      */
     @Override
-    public void importWholeProfile(String path) throws Exception {
-        super.importWholeProfile(path);
+    public void importWholeProfile(String path, boolean force) throws Exception {
+        super.importWholeProfile(path, force);
     }
 
     /**
