@@ -3,6 +3,7 @@ package fr.utc.lo23.sharutc.model.domain;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import fr.utc.lo23.sharutc.model.userdata.Category;
 import fr.utc.lo23.sharutc.model.userdata.Peer;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
@@ -67,6 +68,7 @@ public class Music implements Serializable {
         this.mComments = new ArrayList<Comment>();
         this.mScores = new HashSet<Score>();
         this.mCategoryIds = new HashSet<Integer>();
+        this.mCategoryIds.add(Category.PUBLIC_CATEGORY_ID);
         this.mTags = new HashSet<String>();
     }
 
@@ -137,6 +139,7 @@ public class Music implements Serializable {
         this.mOwnerPeerId = ownerPeerId;
         this.mHash = hashcode;
         this.mCategoryIds = new HashSet<Integer>();
+        this.mCategoryIds.add(Category.PUBLIC_CATEGORY_ID);
         this.mFile = file;
         this.mFrames = frames;
         this.mComments = new ArrayList<Comment>();
@@ -289,7 +292,7 @@ public class Music implements Serializable {
      * @return
      */
     public Set<Integer> getCategoryIds() {
-        return mCategoryIds;
+        return Collections.unmodifiableSet(mCategoryIds);
     }
 
     /**
