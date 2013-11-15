@@ -169,6 +169,9 @@ public class PeerDiscoverySocket implements Runnable {
                 String json = new String(p.getData());
                 // get message object
                 msgReceived = messageParser.fromJSON(json);
+                if (msgReceived.getFromPeerId() == appModel.getProfile().getUserInfo().getPeerId()) {
+                    continue;
+                }
                 // CONNECTION type required
                 if (msgReceived.getType() == MessageType.CONNECTION) {
                     // print more info
