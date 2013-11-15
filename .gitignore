@@ -15,3 +15,4 @@ nb-configuration.xml
 
 # Logging Files #
 *.log
+/src/
