@@ -64,6 +64,8 @@ public class UnsetScoreCommandImpl implements UnsetScoreCommand {
     @Override
     public void execute() {
         log.info("UnsetScoreCommandImpl ...");
+        // FIXME : if mPeer.id is local account (appModel.profile.userInfo.peerId) then use MusicService
+        // ELSE use networkService
         musicService.unsetScore(mPeer, mMusic);
         log.info("UnsetScoreCommandImpl DONE");
     }

@@ -54,7 +54,6 @@ public class MusicServiceImpl implements MusicService {
         this.fileService = fileService;
     }
 
-         
     /**
      * {@inheritDoc}
      */
@@ -730,6 +729,8 @@ public class MusicServiceImpl implements MusicService {
      */
     @Override
     public void createAndSetCatalog() {
+        log.debug("createAndSetCatalog ...");
+
         appModel.setLocalCatalog(new Catalog());
     }
 
@@ -738,6 +739,7 @@ public class MusicServiceImpl implements MusicService {
      */
     @Override
     public void createAndSetRightsList() {
+        log.debug("createAndSetRightsList ...");
         appModel.setRightsList(new RightsList());
     }
 
@@ -865,47 +867,45 @@ public class MusicServiceImpl implements MusicService {
     private void throwMissingParameter() {
         Utils.throwMissingParameter(log, new Throwable());
     }
-    
-   /**
+
+    /**
      * {@inheritDoc}
      */
-    @Override 
-   public void addMusicToCategory(Music music, Category category) {
-		Long musicID=music.getId();
-		Set<Integer> categoriesIdsList = music.getCategoryIds();
-		
-		//Check that the music does not exist in this category
-		 if (!categoriesIdsList.contains(category.getId())){
-			/* Check if the contact is in the public category
+    @Override
+    public void addMusicToCategory(Music music, Category category) {
+        Long musicID = music.getId();
+        Set<Integer> categoriesIdsList = music.getCategoryIds();
+
+        //Check that the music does not exist in this category
+        if (!categoriesIdsList.contains(category.getId())) {
+            /* Check if the contact is in the public category
              * If it is the case, we remove the PUBLIC_CATEGORY_ID
              */
-			  if (categoriesIdsList.contains(Category.PUBLIC_CATEGORY_ID)) {
+            if (categoriesIdsList.contains(Category.PUBLIC_CATEGORY_ID)) {
                 appModel.getLocalCatalog().findMusicById(musicID).removeCategoryId(Category.PUBLIC_CATEGORY_ID);
             }
-			 appModel.getLocalCatalog().findMusicById(musicID).addCategoryId(category.getId());
-		 }
-		 else {
+            appModel.getLocalCatalog().findMusicById(musicID).addCategoryId(category.getId());
+        } else {
             log.warn("This music already exists in this category");
-                     ErrorMessage nErrorMessage = new ErrorMessage("This music already exists in this category");
+            ErrorMessage nErrorMessage = new ErrorMessage("This music already exists in this category");
             appModel.getErrorBus().pushErrorMessage(nErrorMessage);
         }
-		
-	}
-   
-     public void removeMusicFromCategory(Music music, Category category){
-         //Check that the category is not the public one because it is the default category
-         if (!category.getId().equals(Category.PUBLIC_CATEGORY_ID)) {
-             Music m=appModel.getLocalCatalog().findMusicById(music.getId());
-             m.removeCategoryId(category.getId());
-             // if this category was the only one, we put the music in the public one
-             if (m.getCategoryIds().isEmpty()) {
-                 m.addCategoryId(Category.PUBLIC_CATEGORY_ID); 
-             }
-         } else {
+
+    }
+
+    public void removeMusicFromCategory(Music music, Category category) {
+        //Check that the category is not the public one because it is the default category
+        if (!category.getId().equals(Category.PUBLIC_CATEGORY_ID)) {
+            Music m = appModel.getLocalCatalog().findMusicById(music.getId());
+            m.removeCategoryId(category.getId());
+            // if this category was the only one, we put the music in the public one
+            if (m.getCategoryIds().isEmpty()) {
+                m.addCategoryId(Category.PUBLIC_CATEGORY_ID);
+            }
+        } else {
             log.warn("Can't remove music from Public category");
             ErrorMessage nErrorMessage = new ErrorMessage("Can't remove msuic from Public category");
             appModel.getErrorBus().pushErrorMessage(nErrorMessage);
-         }
-     }
-    
+        }
+    }
 }

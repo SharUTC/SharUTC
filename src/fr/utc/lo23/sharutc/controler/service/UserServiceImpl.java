@@ -42,11 +42,13 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public void saveProfileFiles() {
+        log.debug("saveProfileFiles ...");
         if (getProfile() != null) {
             fileService.saveToFile(SharUTCFile.PROFILE, getProfile());
         } else {
             log.warn("Can't save current profile(null)");
         }
+        log.debug("saveProfileFiles DONE");
     }
 
     /**
@@ -54,14 +56,15 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public void addContact(Contact contact) {
+        log.debug("addContact ...");
         //check that the contact does not exist
         boolean present = false;
         for (Contact c : getProfile().getContacts().getContacts()) {
-                if (c.getUserInfo().getPeerId().equals(contact.getUserInfo().getPeerId())) {
-                    present = true;
-                    break;
-                }
+            if (c.getUserInfo().getPeerId().equals(contact.getUserInfo().getPeerId())) {
+                present = true;
+                break;
             }
+        }
         if (!present) {
             contact.addCategoryId(Category.PUBLIC_CATEGORY_ID);
             getProfile().getContacts().add(contact);
@@ -70,6 +73,7 @@ public class UserServiceImpl implements UserService {
             ErrorMessage nErrorMessage = new ErrorMessage("This contact already exists");
             appModel.getErrorBus().pushErrorMessage(nErrorMessage);
         }
+        log.debug("addContact DONE");
     }
 
     /**
@@ -161,9 +165,11 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public void createAndSetProfile(UserInfo userInfo) {
+        log.debug("createAndSetProfile ...");
         Profile nProfile = new Profile(userInfo);
         appModel.setProfile(nProfile);
         this.saveProfileFiles();
+        log.debug("createAndSetProfile DONE");
     }
 
     /**
