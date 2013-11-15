@@ -208,6 +208,9 @@ public class MessageHandlerImpl implements MessageHandler {
                         integrateDisconnectionCommand.setPeerId(messageParser.getSource().getId());
                         command = integrateDisconnectionCommand;
                         break;
+                    case HEARTBEAT : 
+                        command = null;
+                        break;
                     default:
                         command = null;
                         log.warn("Missing command : {}", incomingMessage.getType().name());
