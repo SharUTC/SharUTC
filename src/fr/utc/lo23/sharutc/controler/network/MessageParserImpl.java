@@ -27,6 +27,7 @@ public class MessageParserImpl implements MessageParser {
     @Inject
     public MessageParserImpl(AppModel appModel) {
         this.appModel = appModel;
+        mapper.enableDefaultTyping(ObjectMapper.DefaultTyping.JAVA_LANG_OBJECT);
     }
 
     /**
