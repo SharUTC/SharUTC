@@ -8,6 +8,7 @@ import fr.utc.lo23.sharutc.controler.command.music.SendTagMapCommand;
 import fr.utc.lo23.sharutc.controler.network.NetworkServiceMock;
 import fr.utc.lo23.sharutc.controler.service.FileService;
 import fr.utc.lo23.sharutc.controler.service.MusicService;
+import fr.utc.lo23.sharutc.controler.service.UserService;
 import fr.utc.lo23.sharutc.model.AppModel;
 import fr.utc.lo23.sharutc.model.AppModelBuilder;
 import fr.utc.lo23.sharutc.model.domain.TagMap;
@@ -35,6 +36,8 @@ public class TagMapTest {
     @Inject
     private MusicService musicService;
     @Inject
+    private UserService userService;
+    @Inject
     private NetworkServiceMock networkService;
     @Inject
     private IntegrateRemoteTagMapCommand integrateRemoteTagMapCommand;
@@ -46,7 +49,7 @@ public class TagMapTest {
     public void before() {
         log.trace("building appModel");
         if (appModelBuilder == null) {
-            appModelBuilder = new AppModelBuilder(appModel, musicService);
+            appModelBuilder = new AppModelBuilder(appModel, musicService, userService);
         }
         appModelBuilder.mockAppModel();
     }

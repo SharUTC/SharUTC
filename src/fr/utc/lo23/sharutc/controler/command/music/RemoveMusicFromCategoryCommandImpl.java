@@ -1,9 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package fr.utc.lo23.sharutc.controler.command.music;
 
 import com.google.inject.Inject;
@@ -15,15 +9,15 @@ import org.slf4j.LoggerFactory;
 
 /**
  *
- * @author Amandine
  */
-public class RemoveMusicFromCategoryCommandImpl {
-    private static final Logger log= LoggerFactory
+public class RemoveMusicFromCategoryCommandImpl implements RemoveMusicFromCategoryCommand {
+
+    private static final Logger log = LoggerFactory
             .getLogger(RemoveMusicFromCategoryCommandImpl.class);
     private Category mCategory;
     private Music mMusic;
     final private MusicService mMusicService;
-    
+
     /**
      * {@inheritDoc}
      */
@@ -31,48 +25,46 @@ public class RemoveMusicFromCategoryCommandImpl {
     public RemoveMusicFromCategoryCommandImpl(MusicService mMusicService) {
         this.mMusicService = mMusicService;
     }
-    
-     /**
-     * {@inheritDoc}
-     */
-    
-    public Category getCategory() {
-        return mCategory;
-    }
-    
-     /**
-     * {@inheritDoc}
-     */
 
-    public void setCategory(Category category) {
-        this.mCategory = category;
-    }
-    
-    
-     /**
-     * {@inheritDoc}
-     * 
-     */
-  
-    public Music getMusic() {
-        return mMusic;
-    }
-    
     /**
      * {@inheritDoc}
      */
-   
+    @Override
+    public Category getCategory() {
+        return mCategory;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void setCategory(Category category) {
+        this.mCategory = category;
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     */
+    @Override
+    public Music getMusic() {
+        return mMusic;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public void setMusic(Music music) {
         this.mMusic = music;
     }
-    
+
     /**
      * {@inheritDoc}
      */
     public void execute() {
         log.info("RemoveMusicFromCategoryCommand...");
-        mMusicService.removeMusicFromCategory(mMusic,mCategory);
+        mMusicService.removeMusicFromCategory(mMusic, mCategory);
         log.info("RemoveMusicFromCategoryCommand DONE");
     }
-    
 }

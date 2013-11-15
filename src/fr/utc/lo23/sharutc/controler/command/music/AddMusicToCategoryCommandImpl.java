@@ -1,10 +1,5 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package fr.utc.lo23.sharutc.controler.command.music;
+
 import com.google.inject.Inject;
 import fr.utc.lo23.sharutc.controler.service.MusicService;
 import org.slf4j.Logger;
@@ -14,15 +9,15 @@ import fr.utc.lo23.sharutc.model.userdata.Category;
 
 /**
  *
- * @author Amandine
  */
-public class AddMusicToCategoryCommandImpl {
-    private static final Logger log= LoggerFactory
+public class AddMusicToCategoryCommandImpl implements AddMusicToCategoryCommand {
+
+    private static final Logger log = LoggerFactory
             .getLogger(AddMusicToCategoryCommandImpl.class);
     private Category mCategory;
     private Music mMusic;
     final private MusicService mMusicService;
-    
+
     /**
      * {@inheritDoc}
      */
@@ -30,48 +25,46 @@ public class AddMusicToCategoryCommandImpl {
     public AddMusicToCategoryCommandImpl(MusicService mMusicService) {
         this.mMusicService = mMusicService;
     }
-    
-     /**
-     * {@inheritDoc}
-     */
-    
-    public Category getCategory() {
-        return mCategory;
-    }
-    
-     /**
-     * {@inheritDoc}
-     */
 
-    public void setCategory(Category category) {
-        this.mCategory = category;
-    }
-    
-    
-     /**
-     * {@inheritDoc}
-     * 
-     */
-  
-    public Music getMusic() {
-        return mMusic;
-    }
-    
     /**
      * {@inheritDoc}
      */
-   
+    @Override
+    public Category getCategory() {
+        return mCategory;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void setCategory(Category category) {
+        this.mCategory = category;
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     */
+    @Override
+    public Music getMusic() {
+        return mMusic;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public void setMusic(Music music) {
         this.mMusic = music;
     }
-    
+
     /**
      * {@inheritDoc}
      */
     public void execute() {
         log.info("AddMusicToCategoryCommand...");
-        mMusicService.addMusicToCategory(mMusic,mCategory);
+        mMusicService.addMusicToCategory(mMusic, mCategory);
         log.info("AddMusicToCategoryCommand DONE");
     }
-    
 }

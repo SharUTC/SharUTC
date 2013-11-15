@@ -26,7 +26,7 @@ public class AppModelBuilder {
     private static final Logger log = LoggerFactory
             .getLogger(AppModelBuilder.class);
     private static String TEST_MP3_FOLDER;
-    private static final String[] TEST_MP3_FILENAMES = {"Sting & The Police - The Very Best Of Sting & The Police - 17 - Roxanne.mp3","14 - End Credit Score.mp3","Air - Moon Safari - Sexy Boy.mp3"};
+    private static final String[] TEST_MP3_FILENAMES = {"Sting & The Police - The Very Best Of Sting & The Police - 17 - Roxanne.mp3", "14 - End Credit Score.mp3", "Air - Moon Safari - Sexy Boy.mp3"};
     public static final String LOCAL_ACCOUNT_LOGIN = "test login";
     public static final String LOCAL_ACCOUNT_PASSWORD = "pwd";
     public static final String LOCAL_ACCOUNT_FIRSTNAME = "test";
@@ -34,39 +34,21 @@ public class AppModelBuilder {
     public static final int LOCAL_ACCOUNT_AGE = 23;
     public static final long LOCAL_ACCOUNT_PEER_ID = 0L;
     private final AppModel appModel;
-    private Peer[] activePeers = {new Peer(0L, "LocalPeer Mock (id=0)"),new Peer(1L, "Peer Mock (id=1)"), new Peer(2L, "Peer Mock (id=2)"), new Peer(3L, "Peer Mock (id=3)")};
+    private Peer[] activePeers = {new Peer(0L, "LocalPeer Mock (id=0)"), new Peer(1L, "Peer Mock (id=1)"), new Peer(2L, "Peer Mock (id=2)"), new Peer(3L, "Peer Mock (id=3)")};
     private AddToLocalCatalogCommand addToLocalCatalogCommand;
     private final MusicService musicService;
     private final UserService userService;
-    private final FileService fileService;
 
     @Inject
-    public AppModelBuilder(AppModel appModel, MusicService musicService) {
+    public AppModelBuilder(AppModel appModel, MusicService musicService, UserService userService) {
         this.appModel = appModel;
         this.musicService = musicService;
-        this.userService = null;
-        this.fileService = null;
+        this.userService = userService;
         try {
             TEST_MP3_FOLDER = new File(".").getCanonicalPath() + "\\test\\mp3\\";
         } catch (Exception ex) {
             log.error(ex.toString());
         }
-    }
-    
-    @Inject
-    public AppModelBuilder(AppModel appModel, UserService userService) {
-        this.appModel = appModel;
-        this.userService = userService;
-        this.musicService = null;
-        this.fileService = null;
-    }
-    
-    @Inject
-    public AppModelBuilder(AppModel appModel, FileService fileService) {
-        this.appModel = appModel;
-        this.fileService = fileService;
-        this.userService = null;
-        this.musicService = null;
     }
 
     public void mockAppModel() {
