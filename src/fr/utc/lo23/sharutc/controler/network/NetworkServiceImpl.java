@@ -107,7 +107,14 @@ public class NetworkServiceImpl implements NetworkService {
             log.error("[NetworkService - sendUnicast()] - object Peer is null");
         }
     }
-
+    
+    /**
+     * {inheritDoc}
+     */
+    public void sendBroadcastHeartbeat(){
+        Message message = messageParser.write(MessageType.HEARTBEAT,new Object[][]{{}});
+        sendBroadcast(message);
+    }
     /**
      * {inheritDoc}
      */
