@@ -6,6 +6,7 @@ import fr.utc.lo23.sharutc.ui.custom.ArtistCard;
 import javafx.fxml.Initializable;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;
 import javafx.scene.layout.FlowPane;
@@ -15,38 +16,46 @@ import org.slf4j.LoggerFactory;
 public class ArtistsDetailController implements Initializable {
     
     private static final Logger log = LoggerFactory.getLogger(PeopleHomeController.class);
+    private IArtistsDetailController mInterface;
     
     @FXML
     public FlowPane artistsContainer;
     
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        populate();
+        createCards();
     }
     
-    //TODO Remove once we get a real list of albums
-    private void populate() {
-        for (int i = 0; i < 5; i++) {
-            for(int j = 0; j < 5; j++) {
-                final Music music = new Music();
-                music.setAlbum("Album " + String.valueOf(i));
-                music.setArtist("Artist " + String.valueOf(i));
-                if(!existsAlready(music.getArtist())) {
-                    ArtistCard card = new ArtistCard(music);
-                    artistsContainer.getChildren().add(card);
-                }
+    private void createCards() {
+        for(Music m : MainController.population) {
+            if(!existsAlready(m)) {
+                ArtistCard card = new ArtistCard(m);
+                artistsContainer.getChildren().add(card);
             }
-        }
+        } 
     }
     
-    private boolean existsAlready(String name) {
+    private boolean existsAlready(Music m) {
         for(Object c : artistsContainer.getChildren().toArray()) {
             ArtistCard card = (ArtistCard) c;
-            if(card.artistName.getText().equals(name)) {
+            if(card.artistName.getText().equals(m.getArtist())) {
                 return true;
             }
-        }
-        
+        }      
         return false;
+    }
+      
+    public void onArtistDetailsRequested(Music music) {
+        log.info("onArtistDetailsRequested " + music.getArtist());
+    }
+    
+    public interface IArtistsDetailController {
+
+        /**
+         * display artist details
+         *
+         * @param music
+         */
+        void onArtistDetailsRequested(Music music);
     }
 }

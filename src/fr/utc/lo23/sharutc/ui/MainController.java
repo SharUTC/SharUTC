@@ -3,6 +3,7 @@ package fr.utc.lo23.sharutc.ui;
 import com.cathive.fx.guice.GuiceFXMLLoader;
 import com.cathive.fx.guice.GuiceFXMLLoader.Result;
 import com.google.inject.Inject;
+import fr.utc.lo23.sharutc.model.domain.Music;
 import fr.utc.lo23.sharutc.model.userdata.UserInfo;
 import fr.utc.lo23.sharutc.ui.custom.SongCard;
 import javafx.collections.ObservableList;
@@ -44,6 +45,9 @@ public class MainController implements Initializable, PeopleHomeController.IPeop
     public Button albumsbutton;
     public Pane rightpane;
     public HBox bottombar;
+    
+    //TODO Remove once we get a real list of Musics
+    static public ArrayList<Music> population;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -58,6 +62,10 @@ public class MainController implements Initializable, PeopleHomeController.IPeop
         mDragPreview.setOpacity(0.6);
         mDragPreview.setMouseTransparent(true);
         mDragPreview.toFront();
+        
+        //TODO Remove once we get a real list of Musics
+        population = new ArrayList<>();
+        populateMusics();
     }
 
     /**
@@ -180,5 +188,20 @@ public class MainController implements Initializable, PeopleHomeController.IPeop
 
     @Override
     public void onGroupDetailRequested() {
+    }
+    
+    
+    
+    
+    //TODO Remove once we get a real list of Musics
+    private void populateMusics() {
+        for (int i=0; i<5; i++) {
+            for(int j=0; j<5; j++) {
+                Music m = new Music();
+                m.setArtist("Artist " + String.valueOf(i));
+                m.setAlbum("Album " + String.valueOf(j));
+                population.add(m);
+            }
+        }
     }
 }

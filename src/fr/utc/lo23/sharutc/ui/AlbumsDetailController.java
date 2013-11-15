@@ -22,20 +22,26 @@ public class AlbumsDetailController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
-        populate();
+        createCards();
         
     }
     
-    //TODO Remove once we get a real list of albums
-    private void populate() {
-        for (int i = 0; i < 5; i++) {
-            final Music music = new Music();
-            music.setAlbum("Album " + String.valueOf(i));         
-            for(int j = 0; j < 5; j++) {
-                music.setArtist("Artist " + String.valueOf(j));
-                AlbumCard card = new AlbumCard(music);
+    private void createCards() {
+        for(Music m : MainController.population) {
+            if(!existsAlready(m)) {
+                AlbumCard card = new AlbumCard(m);
                 albumsContainer.getChildren().add(card);
             }
-        }
+        } 
+    }
+    
+    private boolean existsAlready(Music m) {
+        for(Object c : albumsContainer.getChildren().toArray()) {
+            AlbumCard card = (AlbumCard) c;
+            if(card.albumName.getText().equals(m.getAlbum()) && card.artistName.getText().equals(m.getArtist())) {
+                return true;
+            }
+        }      
+        return false;
     }
 }
