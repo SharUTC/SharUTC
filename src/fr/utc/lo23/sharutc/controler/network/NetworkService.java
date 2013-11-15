@@ -47,6 +47,12 @@ public interface NetworkService {
      * @param peerSocket the PeerSocket of the disconnected peer
      */
     public void removePeer(PeerSocket peerSocket);
+    
+    /**
+     * Send a heartbeat message to all the connected peer 
+     * to verify if a peer is always connected
+     */
+    public void sendBroadcastHeartbeat();
 
     /**
      * Request a peer for its music catalog.
