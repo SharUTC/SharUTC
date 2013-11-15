@@ -189,10 +189,10 @@ public class MainController implements Initializable, PeopleHomeController.IPeop
     @Override
     public void onGroupDetailRequested() {
     }
+
     
     
-    
-    
+     
     //TODO Remove once we get a real list of Musics
     private void populateMusics() {
         for (int i=0; i<5; i++) {

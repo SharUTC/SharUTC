@@ -13,10 +13,9 @@ import javafx.scene.layout.FlowPane;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ArtistsDetailController implements Initializable {
+public class ArtistsDetailController implements Initializable{
     
     private static final Logger log = LoggerFactory.getLogger(PeopleHomeController.class);
-    private IArtistsDetailController mInterface;
     
     @FXML
     public FlowPane artistsContainer;
@@ -44,18 +43,5 @@ public class ArtistsDetailController implements Initializable {
         }      
         return false;
     }
-      
-    public void onArtistDetailsRequested(Music music) {
-        log.info("onArtistDetailsRequested " + music.getArtist());
-    }
-    
-    public interface IArtistsDetailController {
 
-        /**
-         * display artist details
-         *
-         * @param music
-         */
-        void onArtistDetailsRequested(Music music);
-    }
 }
