@@ -4,6 +4,6 @@
 
 <fx:root type="fr.utc.lo23.sharutc.ui.custom.ArtistCard"
          xmlns:fx="http://javafx.com/fxml">
-    <Label fx:id="artistName" text=" Frank Sinatra" />
+    <Label fx:id="artistName" text=" Frank Sinatra" styleClass="artistCard" />
 </fx:root>
 

@@ -29,10 +29,10 @@ public class AlbumsDetailController implements Initializable {
     //TODO Remove once we get a real list of albums
     private void populate() {
         for (int i = 0; i < 5; i++) {
+            final Music music = new Music();
+            music.setAlbum("Album " + String.valueOf(i));         
             for(int j = 0; j < 5; j++) {
-                final Music music = new Music();
-                music.setAlbum("Album " + String.valueOf(i));
-                music.setArtist("Artist " + String.valueOf(i));
+                music.setArtist("Artist " + String.valueOf(j));
                 AlbumCard card = new AlbumCard(music);
                 albumsContainer.getChildren().add(card);
             }

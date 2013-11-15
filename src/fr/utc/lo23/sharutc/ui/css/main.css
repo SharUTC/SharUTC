@@ -146,6 +146,10 @@
     -fx-font-size : 18px;
 }
 
+.artistCard {
+    -fx-font-size : 18px;
+}
+
 /* imagebutton */
 .imageButton {
     -fx-background-color: transparent;
