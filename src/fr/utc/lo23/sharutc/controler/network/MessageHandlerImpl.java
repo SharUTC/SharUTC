@@ -5,6 +5,11 @@ import com.google.inject.Singleton;
 import fr.utc.lo23.sharutc.controler.command.Command;
 import fr.utc.lo23.sharutc.controler.command.account.IntegrateBroadcastConnectionCommand;
 import fr.utc.lo23.sharutc.controler.command.account.IntegrateConnectionCommand;
+import fr.utc.lo23.sharutc.controler.command.music.AddCommentCommand;
+import fr.utc.lo23.sharutc.controler.command.music.EditCommentCommand;
+import fr.utc.lo23.sharutc.controler.command.music.RemoveCommentCommand;
+import fr.utc.lo23.sharutc.controler.command.music.SetScoreCommand;
+import fr.utc.lo23.sharutc.controler.command.music.UnsetScoreCommand;
 import fr.utc.lo23.sharutc.controler.command.music.IntegrateRemoteCatalogCommand;
 import fr.utc.lo23.sharutc.controler.command.music.IntegrateRemoteTagMapCommand;
 import fr.utc.lo23.sharutc.controler.command.music.SendCatalogCommand;
@@ -15,6 +20,7 @@ import fr.utc.lo23.sharutc.controler.command.search.InstallRemoteMusicsCommand;
 import fr.utc.lo23.sharutc.controler.command.search.IntegrateMusicSearchCommand;
 import fr.utc.lo23.sharutc.controler.command.search.PerformMusicSearchCommand;
 import fr.utc.lo23.sharutc.controler.command.search.SendMusicsCommand;
+import fr.utc.lo23.sharutc.controler.command.search.PerformMusicSearchCommand;
 import fr.utc.lo23.sharutc.controler.service.MusicService;
 import fr.utc.lo23.sharutc.controler.service.UserService;
 import fr.utc.lo23.sharutc.model.AppModel;
@@ -23,6 +29,7 @@ import fr.utc.lo23.sharutc.model.domain.Music;
 import fr.utc.lo23.sharutc.model.domain.SearchCriteria;
 import fr.utc.lo23.sharutc.model.domain.TagMap;
 import fr.utc.lo23.sharutc.model.userdata.UserInfo;
+import fr.utc.lo23.sharutc.model.userdata.Peer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -72,8 +79,16 @@ public class MessageHandlerImpl implements MessageHandler {
     private PerformMusicSearchCommand performMusicSearchCommand;
     @Inject
     private IntegrateMusicSearchCommand integrateMusicSearchCommand;
-    //@Inject
-    //private AddCommentCommand addCommentCommand;
+    @Inject
+    private AddCommentCommand addCommentCommand;
+    @Inject
+    private EditCommentCommand editCommentCommand;
+    @Inject
+    private RemoveCommentCommand removeCommentCommand;
+    @Inject
+    private SetScoreCommand setScoreCommand;
+    @Inject
+    private UnsetScoreCommand unsetScoreCommand;
     // more...
 
     /**
@@ -115,19 +130,35 @@ public class MessageHandlerImpl implements MessageHandler {
                         }
                         break;
                     case COMMENT_ADD:
-                        //  addCommentCommand.setAuthorPeer(userService.getPeerById((Long) messageReader.getValue(Message.AUTHOR_PEER_ID)));
-                        //  addCommentCommand.setMusic(musicService.getPeerById((Integer) messageReader.getValue(Message.MUSIC_ID)));
-                        //  addCommentCommand.setOwnerPeer(userService.getPeerById((Long) messageReader.getValue(Message.OWNER_PEER_ID)));
-                        //  addCommentCommand.setComment((String) messageReader.getValue(Message.COMMENT));
-                        //  command = addCommentCommand;
+                        addCommentCommand.setAuthorPeer((Peer) messageParser.getValue(Message.AUTHOR_PEER));
+                        addCommentCommand.setMusic((Music) messageParser.getValue(Message.MUSIC_ID));
+                        addCommentCommand.setOwnerPeer(messageParser.getSource());
+                        addCommentCommand.setComment((String) messageParser.getValue(Message.COMMENT));
+                        command = addCommentCommand;
                         break;
-                    case COMMENT_EDIT:
+                    case EDIT_COMMENT:
+                        editCommentCommand.setAuthorPeer((Peer) messageParser.getValue(Message.AUTHOR_PEER));
+                        editCommentCommand.setComment((String) messageParser.getValue(Message.COMMENT));
+                        editCommentCommand.setMusic((Music) messageParser.getValue(Message.MUSIC));
+                        editCommentCommand.setOwnerPeer((Peer) messageParser.getValue(Message.OWNER_PEER));
+                        command = editCommentCommand;
                         break;
                     case COMMENT_REMOVE:
+                        removeCommentCommand.setCommentId((Integer) messageParser.getValue(Message.COMMENT_ID));
+                        removeCommentCommand.setMusic((Music) messageParser.getValue(Message.MUSIC));
+                        removeCommentCommand.setPeer(messageParser.getSource());
+                        command = removeCommentCommand;
                         break;
                     case SCORE_SET:
+                        setScoreCommand.setMusic((Music) messageParser.getValue(Message.MUSIC));
+                        setScoreCommand.setPeer(messageParser.getSource());
+                        setScoreCommand.setScore((Integer) messageParser.getValue(Message.SCORE));
+                        command = setScoreCommand;
                         break;
                     case SCORE_UNSET:
+                        unsetScoreCommand.setMusic((Music) messageParser.getValue(Message.MUSIC));
+                        unsetScoreCommand.setPeer(messageParser.getSource());
+                        command = unsetScoreCommand;
                         break;
                     case MUSIC_SEARCH:
                         performMusicSearchCommand.setConversationId(appModel.getNextConversationId());

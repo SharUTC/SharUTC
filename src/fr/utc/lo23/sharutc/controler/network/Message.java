@@ -24,7 +24,19 @@ public class Message {
     /**
      *
      */
+    public final static String OWNER_PEER = "OWNER_PEER";
+    /**
+     *
+     */
+    public final static String AUTHOR_PEER = "AUTHOR_PEER";
+    /**
+     *
+     */
     public final static String COMMENT = "COMMENT";
+    /**
+     * 
+     */
+    public final static String COMMENT_ID = "COMMENT_ID";
     /**
      *
      */
@@ -49,6 +61,10 @@ public class Message {
      * Search criteria used for all searches
      */
     public final static String SEARCH = "SEARCH";
+    /**
+     *  a music score (integer)
+     */
+    public final static String SCORE = "SCORE";
     // more...
     /**
      * MessageType helps to read the content of the message

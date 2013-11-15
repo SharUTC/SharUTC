@@ -144,8 +144,8 @@ public class NetworkServiceImpl implements NetworkService {
      */
     @Override
     public void addComment(Peer peer, Music music, String comment) {
-        // Message message = messageParser.write(MessageType.COMMENT_ADD, new Object[][]{{Message.OWNER_PEER_ID, peer.getId()}, {Message.AUTHOR_PEER_ID, getLocalPeerId()}, {Message.MUSIC_ID, music.getId()}, {Message.COMMENT, comment}});
-        // sendUnicast(message, peer);
+       Message message = messageParser.write(MessageType.COMMENT_ADD, new Object[][]{{Message.OWNER_PEER, peer}, {Message.AUTHOR_PEER, messageParser.getSource() }, {Message.MUSIC_ID, music}, {Message.COMMENT, comment}});
+       sendUnicast(message, peer);
     }
 
     /**
@@ -153,7 +153,9 @@ public class NetworkServiceImpl implements NetworkService {
      */
     @Override
     public void editComment(Peer peer, Music music, String comment, Integer commentIndex) {
-        log.warn("Not supported yet.");
+        Message message = messageParser.write(MessageType.EDIT_COMMENT, new Object[][]{{Message.OWNER_PEER, peer}, {Message.AUTHOR_PEER, messageParser.getSource()},{Message.MUSIC, music}, {Message.COMMENT,comment}});
+        sendUnicast(message, peer);
+      
     }
 
     /**
@@ -161,7 +163,8 @@ public class NetworkServiceImpl implements NetworkService {
      */
     @Override
     public void removeComment(Peer peer, Music music, Integer commentIndex) {
-        log.warn("Not supported yet.");
+        Message message = messageParser.write(MessageType.COMMENT_REMOVE, new Object[][]{{Message.MUSIC,music},{Message.COMMENT_ID, commentIndex}});
+        sendUnicast(message, peer);
     }
 
     /**
@@ -169,7 +172,8 @@ public class NetworkServiceImpl implements NetworkService {
      */
     @Override
     public void setScore(Peer peer, Music music, Integer rating) {
-        log.warn("Not supported yet.");
+        Message message = messageParser.write(MessageType.SCORE_SET,new Object[][]{{Message.MUSIC, music}, {Message.SCORE, rating}});
+        sendUnicast(message, peer);
     }
 
     /**
@@ -177,7 +181,8 @@ public class NetworkServiceImpl implements NetworkService {
      */
     @Override
     public void unsetScore(Peer peer, Music music) {
-        log.warn("Not supported yet.");
+        Message message = messageParser.write(MessageType.SCORE_UNSET, new Object[][]{{Message.MUSIC, music}});
+        sendUnicast(message, peer);
     }
 
     /**
