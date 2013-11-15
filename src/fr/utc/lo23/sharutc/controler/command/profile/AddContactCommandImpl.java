@@ -17,7 +17,8 @@ public class AddContactCommandImpl implements AddContactCommand {
     final private UserService mUserService;
 
     /**
-     * {@inheritDoc}
+     * 
+     * @param userService
      */
     @Inject
     public AddContactCommandImpl(UserService userService) {
