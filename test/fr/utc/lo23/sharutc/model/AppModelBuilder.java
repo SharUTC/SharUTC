@@ -34,7 +34,7 @@ public class AppModelBuilder {
     public static final int LOCAL_ACCOUNT_AGE = 23;
     public static final long LOCAL_ACCOUNT_PEER_ID = 0L;
     private final AppModel appModel;
-    private Peer[] activePeers = {new Peer(1L, "Peer Mock (id=1)"), new Peer(2L, "Peer Mock (id=2)"), new Peer(3L, "Peer Mock (id=3)")};
+    private Peer[] activePeers = {new Peer(0L, "LocalPeer Mock (id=0)"),new Peer(1L, "Peer Mock (id=1)"), new Peer(2L, "Peer Mock (id=2)"), new Peer(3L, "Peer Mock (id=3)")};
     private AddToLocalCatalogCommand addToLocalCatalogCommand;
     private final MusicService musicService;
     private final UserService userService;
