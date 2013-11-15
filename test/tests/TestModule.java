@@ -7,6 +7,8 @@ import fr.utc.lo23.sharutc.controler.command.account.IntegrateBroadcastConnectio
 import fr.utc.lo23.sharutc.controler.command.account.IntegrateBroadcastConnectionCommandImpl;
 import fr.utc.lo23.sharutc.controler.command.account.IntegrateConnectionCommand;
 import fr.utc.lo23.sharutc.controler.command.account.IntegrateConnectionCommandImpl;
+import fr.utc.lo23.sharutc.controler.command.account.IntegrateDisconnectionCommand;
+import fr.utc.lo23.sharutc.controler.command.account.IntegrateDisconnectionCommandImpl;
 import fr.utc.lo23.sharutc.controler.command.music.AddCommentCommand;
 import fr.utc.lo23.sharutc.controler.command.music.AddCommentCommandImpl;
 import fr.utc.lo23.sharutc.controler.command.music.AddTagCommand;
@@ -136,5 +138,6 @@ class TestModule extends AbstractModule {
 
         //network ??
         bind(IntegrateBroadcastConnectionCommand.class).to(IntegrateBroadcastConnectionCommandImpl.class);
+        bind(IntegrateDisconnectionCommand.class).to(IntegrateDisconnectionCommandImpl.class);
     }
 }

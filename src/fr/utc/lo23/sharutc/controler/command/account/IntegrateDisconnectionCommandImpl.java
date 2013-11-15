@@ -19,9 +19,8 @@ public class IntegrateDisconnectionCommandImpl implements IntegrateDisconnection
      * {@inheritDoc}
      */
     @Inject
-    public IntegrateDisconnectionCommandImpl(UserService mUserService, long peerId) {
+    public IntegrateDisconnectionCommandImpl(UserService mUserService) {
         this.mUserService = mUserService;
-        this.mPeerId = peerId;
     }
     
     /**

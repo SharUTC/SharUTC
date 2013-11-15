@@ -208,7 +208,7 @@ public class MessageHandlerImpl implements MessageHandler {
                         integrateDisconnectionCommand.setPeerId(messageParser.getSource().getId());
                         command = integrateDisconnectionCommand;
                         break;
-                    case HEARTBEAT : 
+                    case HEARTBEAT:
                         command = null;
                         break;
                     default:
@@ -233,7 +233,6 @@ public class MessageHandlerImpl implements MessageHandler {
     }
 
     private boolean isMessageForCurrentConversation() {
-        // parsing read an Integer instead of Long... this will change with change for sub-classes of Message
-        return appModel.getCurrentConversationId().intValue() == ((Integer) messageParser.getValue(Message.CONVERSATION_ID)).intValue();
+        return appModel.getCurrentConversationId().equals(messageParser.getValue(Message.CONVERSATION_ID));
     }
 }
