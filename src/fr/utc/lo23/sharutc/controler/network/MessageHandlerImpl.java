@@ -5,6 +5,7 @@ import com.google.inject.Singleton;
 import fr.utc.lo23.sharutc.controler.command.Command;
 import fr.utc.lo23.sharutc.controler.command.account.IntegrateBroadcastConnectionCommand;
 import fr.utc.lo23.sharutc.controler.command.account.IntegrateConnectionCommand;
+import fr.utc.lo23.sharutc.controler.command.account.IntegrateDisconnectionCommand;
 import fr.utc.lo23.sharutc.controler.command.music.AddCommentCommand;
 import fr.utc.lo23.sharutc.controler.command.music.EditCommentCommand;
 import fr.utc.lo23.sharutc.controler.command.music.RemoveCommentCommand;
@@ -89,6 +90,8 @@ public class MessageHandlerImpl implements MessageHandler {
     private SetScoreCommand setScoreCommand;
     @Inject
     private UnsetScoreCommand unsetScoreCommand;
+    @Inject
+    private IntegrateDisconnectionCommand integrateDisconnectionCommand;
     // more...
 
     /**
@@ -106,7 +109,7 @@ public class MessageHandlerImpl implements MessageHandler {
                 log.info("Handling message '{}' from '{}'", incomingMessage.getType().name(), messageParser.getSource().getDisplayName());
                 switch (incomingMessage.getType()) {
                     case MUSIC_GET_CATALOG:
-                        sendCatalogCommand.setConversationId(appModel.getNextConversationId());
+                        sendCatalogCommand.setConversationId((Long) messageParser.getValue(Message.CONVERSATION_ID));
                         sendCatalogCommand.setPeer(messageParser.getSource());
                         command = sendCatalogCommand;
                         break;
@@ -118,7 +121,7 @@ public class MessageHandlerImpl implements MessageHandler {
                         }
                         break;
                     case TAG_GET_MAP:
-                        sendTagMapCommand.setConversationId(appModel.getNextConversationId());
+                        sendTagMapCommand.setConversationId((Long) messageParser.getValue(Message.CONVERSATION_ID));
                         sendTagMapCommand.setPeer(messageParser.getSource());
                         command = sendTagMapCommand;
                         break;
@@ -130,14 +133,14 @@ public class MessageHandlerImpl implements MessageHandler {
                         }
                         break;
                     case COMMENT_ADD:
-                        addCommentCommand.setAuthorPeer((Peer) messageParser.getValue(Message.AUTHOR_PEER));
+                        addCommentCommand.setAuthorPeer(messageParser.getSource());
                         addCommentCommand.setMusic((Music) messageParser.getValue(Message.MUSIC_ID));
-                        addCommentCommand.setOwnerPeer(messageParser.getSource());
+                        addCommentCommand.setOwnerPeer((Peer) messageParser.getValue(Message.OWNER_PEER));
                         addCommentCommand.setComment((String) messageParser.getValue(Message.COMMENT));
                         command = addCommentCommand;
                         break;
                     case EDIT_COMMENT:
-                        editCommentCommand.setAuthorPeer((Peer) messageParser.getValue(Message.AUTHOR_PEER));
+                        editCommentCommand.setAuthorPeer(messageParser.getSource());
                         editCommentCommand.setComment((String) messageParser.getValue(Message.COMMENT));
                         editCommentCommand.setMusic((Music) messageParser.getValue(Message.MUSIC));
                         editCommentCommand.setOwnerPeer((Peer) messageParser.getValue(Message.OWNER_PEER));
@@ -161,7 +164,7 @@ public class MessageHandlerImpl implements MessageHandler {
                         command = unsetScoreCommand;
                         break;
                     case MUSIC_SEARCH:
-                        performMusicSearchCommand.setConversationId(appModel.getNextConversationId());
+                        performMusicSearchCommand.setConversationId((Long) messageParser.getValue(Message.CONVERSATION_ID));
                         performMusicSearchCommand.setPeer(messageParser.getSource());
                         performMusicSearchCommand.setSearchCriteria((SearchCriteria) messageParser.getValue(Message.SEARCH));
                         command = performMusicSearchCommand;
@@ -182,7 +185,7 @@ public class MessageHandlerImpl implements MessageHandler {
                         command = installRemoteMusicsCommand;
                         break;
                     case MUSIC_GET_TO_PLAY:
-                        sendMusicToPlayCommand.setConversationId(appModel.getNextConversationId());
+                        sendMusicToPlayCommand.setConversationId((Long) messageParser.getValue(Message.CONVERSATION_ID));
                         sendMusicToPlayCommand.setPeer(messageParser.getSource());
                         sendMusicToPlayCommand.setMusic(appModel.getLocalCatalog().findMusicById((Long) messageParser.getValue(Message.MUSIC_ID)));
                         command = sendMusicToPlayCommand;
@@ -202,6 +205,8 @@ public class MessageHandlerImpl implements MessageHandler {
                         command = integrateConnectionCommand;
                         break;
                     case DISCONNECT:
+                        integrateDisconnectionCommand.setPeerId(messageParser.getSource().getId());
+                        command = integrateDisconnectionCommand;
                         break;
                     default:
                         command = null;
