@@ -84,5 +84,9 @@ public enum MessageType {
     /**
      * Edit a music comments
      */
-    EDIT_COMMENT
+    EDIT_COMMENT,
+    /**
+     * Send a heartbeat message
+     */
+    HEARTBEAT
 }
