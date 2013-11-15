@@ -5,8 +5,8 @@ import fr.utc.lo23.sharutc.controler.command.music.AddToLocalCatalogCommand;
 import fr.utc.lo23.sharutc.controler.command.music.AddToLocalCatalogCommandImpl;
 import fr.utc.lo23.sharutc.controler.service.FileService;
 import fr.utc.lo23.sharutc.controler.service.MusicService;
+import fr.utc.lo23.sharutc.controler.service.UserService;
 import fr.utc.lo23.sharutc.model.domain.Catalog;
-import fr.utc.lo23.sharutc.model.domain.Music;
 import fr.utc.lo23.sharutc.model.domain.RightsList;
 import fr.utc.lo23.sharutc.model.userdata.ActivePeerList;
 import fr.utc.lo23.sharutc.model.userdata.Categories;
@@ -18,8 +18,6 @@ import fr.utc.lo23.sharutc.model.userdata.UserInfo;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Level;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,19 +34,39 @@ public class AppModelBuilder {
     public static final int LOCAL_ACCOUNT_AGE = 23;
     public static final long LOCAL_ACCOUNT_PEER_ID = 0L;
     private final AppModel appModel;
-    private Peer[] activePeers = {new Peer(0L, "LocalPeer Mock (id=0)"),new Peer(1L, "Peer Mock (id=1)"), new Peer(2L, "Peer Mock (id=2)"), new Peer(3L, "Peer Mock (id=3)")};
+    private Peer[] activePeers = {new Peer(1L, "Peer Mock (id=1)"), new Peer(2L, "Peer Mock (id=2)"), new Peer(3L, "Peer Mock (id=3)")};
     private AddToLocalCatalogCommand addToLocalCatalogCommand;
     private final MusicService musicService;
+    private final UserService userService;
+    private final FileService fileService;
 
     @Inject
     public AppModelBuilder(AppModel appModel, MusicService musicService) {
         this.appModel = appModel;
         this.musicService = musicService;
+        this.userService = null;
+        this.fileService = null;
         try {
             TEST_MP3_FOLDER = new File(".").getCanonicalPath() + "\\test\\mp3\\";
         } catch (Exception ex) {
             log.error(ex.toString());
         }
+    }
+    
+    @Inject
+    public AppModelBuilder(AppModel appModel, UserService userService) {
+        this.appModel = appModel;
+        this.userService = userService;
+        this.musicService = null;
+        this.fileService = null;
+    }
+    
+    @Inject
+    public AppModelBuilder(AppModel appModel, FileService fileService) {
+        this.appModel = appModel;
+        this.fileService = fileService;
+        this.userService = null;
+        this.musicService = null;
     }
 
     public void mockAppModel() {
