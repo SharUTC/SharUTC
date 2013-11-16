@@ -61,7 +61,8 @@ public class ProfileConnectionDisconnectionTest {
 
     @Test
     public void disconnectionCommand() {
-        //TODO test
-        Assert.assertTrue(false);
+        //Call disconnection command
+        disconnectionCommand.execute();
+        Assert.assertTrue(false); // TODO check content with code (list size, id values, not null and null values)
     }
 }

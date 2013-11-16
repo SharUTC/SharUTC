@@ -23,10 +23,22 @@ public class AddUserCommandImpl implements AddUserCommand {
         this.mUserInfo = mUserInfo;
     }
     
+    
+    
     @Override
     public void execute() {
         log.info("Add user to connected peer list...");
         this.mUserService.updateConnectedPeers(this.mUserInfo);
         log.info("User added.");
+    }
+
+    @Override
+    public UserInfo getUserInfo() {
+        return this.mUserInfo;
+    }
+
+    @Override
+    public void setContact(UserInfo userInfo) {
+        this.mUserInfo = userInfo;
     }
 }

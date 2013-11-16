@@ -46,7 +46,7 @@ public class IntegrateDisconnectionCommandImpl implements IntegrateDisconnection
     public void execute() {
         log.info("Remove Peer...");
         this.mUserService.removeFromConnectedPeers(mPeerId);
-        log.info("Peer removed..");  
+        log.info("Peer removed.");  
     }
 
     
