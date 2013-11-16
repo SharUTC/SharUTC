@@ -74,7 +74,7 @@ public class MusicCommentTest {
         Peer dummyPeer = new Peer();
         dummyPeer.setDisplayName("Dummy Peer");
         dummyPeer.setId(436907);
-        dummyPeer.setIpAddress("192.168.1.1");
+        // dummyPeer.setIpAddress("192.168.1.1");
         addCommentCommand.setAuthorPeer(dummyPeer);
 
         addCommentCommand.setComment("This is a comment");
@@ -103,7 +103,7 @@ public class MusicCommentTest {
         Peer dummyPeer = new Peer();
         dummyPeer.setDisplayName("Dummy Peer");
         dummyPeer.setId(436907);
-        dummyPeer.setIpAddress("192.168.1.1");
+        // dummyPeer.setIpAddress("192.168.1.1");
         addCommentCommand.setAuthorPeer(dummyPeer);
 
         addCommentCommand.setComment("This is a comment");
@@ -141,7 +141,7 @@ public class MusicCommentTest {
         Peer dummyPeer = new Peer();
         dummyPeer.setDisplayName("Dummy Peer");
         dummyPeer.setId(436907);
-        dummyPeer.setIpAddress("192.168.1.1");
+        // dummyPeer.setIpAddress("192.168.1.1");
         addCommentCommand.setAuthorPeer(dummyPeer);
 
         addCommentCommand.setComment("This is a comment");

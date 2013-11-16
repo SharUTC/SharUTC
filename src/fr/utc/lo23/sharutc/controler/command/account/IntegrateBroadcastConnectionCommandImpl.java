@@ -61,7 +61,7 @@ public class IntegrateBroadcastConnectionCommandImpl implements IntegrateBroadca
         userService.integrateConnection(mUserInfo);
         // TODO ip adresse ?
         // update active peers
-        Peer peer = new Peer(mUserInfo.getPeerId(), mUserInfo.getLogin());
+        Peer peer = mUserInfo.toPeer();
         appModel.getActivePeerList().update(peer);
         // send my personal information to the broadcaster
         networkService.sendConnectionResponse(peer, appModel.getProfile().getUserInfo());

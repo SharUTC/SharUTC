@@ -5,9 +5,13 @@ import fr.utc.lo23.sharutc.GuiceJUnitRunner;
 import fr.utc.lo23.sharutc.GuiceJUnitRunner.GuiceModules;
 import fr.utc.lo23.sharutc.controler.command.music.IntegrateRemoteTagMapCommand;
 import fr.utc.lo23.sharutc.controler.command.music.SendTagMapCommand;
+import fr.utc.lo23.sharutc.controler.network.Message;
+import fr.utc.lo23.sharutc.controler.network.MessageParser;
+import fr.utc.lo23.sharutc.controler.network.MessageType;
 import fr.utc.lo23.sharutc.controler.network.NetworkServiceMock;
 import fr.utc.lo23.sharutc.controler.service.FileService;
 import fr.utc.lo23.sharutc.controler.service.MusicService;
+import fr.utc.lo23.sharutc.controler.service.MusicServiceMock;
 import fr.utc.lo23.sharutc.controler.service.UserService;
 import fr.utc.lo23.sharutc.model.AppModel;
 import fr.utc.lo23.sharutc.model.AppModelBuilder;
@@ -43,6 +47,8 @@ public class TagMapTest {
     private IntegrateRemoteTagMapCommand integrateRemoteTagMapCommand;
     @Inject
     private SendTagMapCommand sendTagMapCommand;
+    @Inject
+    private MessageParser messageParser;
     private AppModelBuilder appModelBuilder = null;
 
     @Before
@@ -141,12 +147,16 @@ public class TagMapTest {
         appModel.getLocalCatalog().get(1).addTag("TV");
         appModel.getLocalCatalog().get(2).addTag("Rock");
         appModel.getLocalCatalog().get(2).addTag("Rock Indé");
+        ((MusicServiceMock)musicService).setTagMapDirty();
         long conversationId = 0L;
         sendTagMapCommand.setConversationId(conversationId);
         sendTagMapCommand.setPeer(appModel.getActivePeerList().getByPeerId(1L));
         sendTagMapCommand.execute();
-        Assert.assertNotNull(networkService.getSendMessage());
-        log.info(networkService.getSendMessage().toString());
-        // TODO extract values from created message and validate them
+        Assert.assertNotNull("No message sent", networkService.getSendMessage());
+        // extract values from created message and validate them
+        messageParser.read(networkService.getSendMessage());
+        TagMap tm = (TagMap) messageParser.getValue(Message.TAG_MAP);
+        Assert.assertNotNull("No tagMap in message", tm);
+        Assert.assertEquals(musicService.getLocalTagMap(), tm);
     }
 }

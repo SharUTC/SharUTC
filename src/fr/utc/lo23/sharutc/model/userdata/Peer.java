@@ -19,10 +19,6 @@ public class Peer implements Serializable {
      * lattest knwon peer name displayed in comments
      */
     private String mDisplayName;
-    /**
-     * peer ip address currently in use, specific to network
-     */
-    private String mIpAddress;
 
     /**
      * Default constructor
@@ -38,18 +34,6 @@ public class Peer implements Serializable {
     public Peer(long id, String displayName) {
         this.mId = id;
         this.mDisplayName = displayName;
-    }
-
-    /**
-     *
-     * @param id
-     * @param displayName
-     * @param ipAddress
-     */
-    public Peer(long id, String displayName, String ipAddress) {
-        this.mId = id;
-        this.mDisplayName = displayName;
-        this.mIpAddress = ipAddress;
     }
 
     /**
@@ -88,24 +72,6 @@ public class Peer implements Serializable {
 
     /**
      *
-     * @return
-     */
-    public String getIpAddress() {
-        return mIpAddress;
-    }
-
-    /**
-     * no listener for this attribute since ip doesn't change and the view
-     * doesn't display it anyway
-     *
-     * @param ipAddress
-     */
-    public void setIpAddress(String ipAddress) {
-        this.mIpAddress = ipAddress;
-    }
-
-    /**
-     *
      * @param listener
      */
     public void addPropertyChangeListener(PropertyChangeListener listener) {
@@ -129,5 +95,36 @@ public class Peer implements Serializable {
          *
          */
         DISPLAY_NAME
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 97 * hash + (int) (this.mId ^ (this.mId >>> 32));
+        hash = 97 * hash + (this.mDisplayName != null ? this.mDisplayName.hashCode() : 0);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Peer other = (Peer) obj;
+        if (!new Long(this.mId).equals(new Long(other.mId))) {
+            return false;
+        }
+        if ((this.mDisplayName == null) ? (other.mDisplayName != null) : !this.mDisplayName.equals(other.mDisplayName)) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public String toString() {
+        return "Peer{" + "id=" + mId + ", name=" + mDisplayName + '}';
     }
 }

@@ -3,6 +3,7 @@ package fr.utc.lo23.sharutc.controler.network;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import fr.utc.lo23.sharutc.model.AppModel;
 import fr.utc.lo23.sharutc.model.userdata.Peer;
 import java.io.IOException;
@@ -15,6 +16,7 @@ import org.slf4j.LoggerFactory;
 /**
  * {@inheritDoc}
  */
+@Singleton
 public class MessageParserImpl implements MessageParser {
 
     private static final Logger log = LoggerFactory
@@ -135,5 +137,11 @@ public class MessageParserImpl implements MessageParser {
             log.error(ex.toString());
         }
         return incomingMessage;
+    }
+
+    @Override
+    public void resetParser() {
+        message = null;
+        messageContent = null;
     }
 }

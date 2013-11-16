@@ -229,6 +229,7 @@ public class MessageHandlerImpl implements MessageHandler {
             } catch (Exception ex) {
                 log.error(ex.toString());
             }
+            messageParser.resetParser();
         }
     }
 

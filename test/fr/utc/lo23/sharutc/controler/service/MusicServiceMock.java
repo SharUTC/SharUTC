@@ -117,4 +117,8 @@ public class MusicServiceMock extends MusicServiceImpl implements MusicService {
     public void installMusics(Catalog catalog) {
         super.installMusics(catalog);
     }
+
+    public void setTagMapDirty() {
+        super.localTagMapDirty = true;
+    }
 }
