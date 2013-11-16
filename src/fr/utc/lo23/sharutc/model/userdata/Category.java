@@ -61,4 +61,40 @@ public class Category implements Serializable {
     public void setName(String name) {
         this.mName = name;
     }
+
+    
+     /**
+     * @param obj
+     * 
+     * @return
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Category other = (Category) obj;
+        if (this.mId != other.mId && (this.mId == null || !this.mId.equals(other.mId))) {
+            return false;
+        }
+        if ((this.mName == null) ? (other.mName != null) : !this.mName.equals(other.mName)) {
+            return false;
+        }
+        return true;
+    }
+
+    
+     /**
+     * 
+     * @return
+     */
+    @Override
+    public String toString() {
+        return "Category{" + "mId=" + mId + ", mName=" + mName + '}';
+    }
+    
+    
 }
