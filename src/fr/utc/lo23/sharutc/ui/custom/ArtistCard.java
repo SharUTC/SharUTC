@@ -10,6 +10,7 @@ import javafx.scene.input.MouseEvent;
 public class ArtistCard extends SimpleCard implements EventHandler<Event>{
     
     private Music mMusic;
+    private IArtistCard mInterface;
     
     public Label artistName;
     
@@ -18,8 +19,10 @@ public class ArtistCard extends SimpleCard implements EventHandler<Event>{
         super("/fr/utc/lo23/sharutc/ui/fxml/artist_card.fxml");
     }
     
-    public ArtistCard(Music music) {
+    public ArtistCard(Music music, IArtistCard i) {
         super("/fr/utc/lo23/sharutc/ui/fxml/artist_card.fxml");
+        setOnMouseClicked(this);
+        mInterface = i;
         initModel(music);
     }
     
@@ -34,16 +37,24 @@ public class ArtistCard extends SimpleCard implements EventHandler<Event>{
 
     @Override
     public void handle(Event event) {
-        System.out.println("TEST");
         if (event instanceof MouseEvent) {
             MouseEvent mouseEvent = (MouseEvent) event;
             if (mouseEvent.getButton().equals(MouseButton.PRIMARY)) {
                 if (mouseEvent.getClickCount() == 2) {
-                    System.out.println("TEST2");
-                    //mInterface.onArtistDetailsRequested(mMusic);
+                    mInterface.onArtistDetailRequested(mMusic);
                 }
             }
         }
+    }
+    
+    public interface IArtistCard {
+
+        /**
+         * user requested more details
+         *
+         * @param music
+         */
+        public void onArtistDetailRequested(Music music);
 
     }
 }

@@ -1,21 +1,20 @@
 package fr.utc.lo23.sharutc.ui;
 
 import fr.utc.lo23.sharutc.model.domain.Music;
-import fr.utc.lo23.sharutc.ui.custom.AlbumCard;
 import fr.utc.lo23.sharutc.ui.custom.ArtistCard;
 import javafx.fxml.Initializable;
 
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;
 import javafx.scene.layout.FlowPane;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ArtistsDetailController implements Initializable{
+public class ArtistsDetailController implements Initializable, ArtistCard.IArtistCard{
     
     private static final Logger log = LoggerFactory.getLogger(PeopleHomeController.class);
+    private IArtistsDetailController mInterface;
     
     @FXML
     public FlowPane artistsContainer;
@@ -25,10 +24,14 @@ public class ArtistsDetailController implements Initializable{
         createCards();
     }
     
+    public void setInterface(IArtistsDetailController i) {
+        mInterface = i;
+    }
+    
     private void createCards() {
         for(Music m : MainController.population) {
             if(!existsAlready(m)) {
-                ArtistCard card = new ArtistCard(m);
+                ArtistCard card = new ArtistCard(m, this);
                 artistsContainer.getChildren().add(card);
             }
         } 
@@ -42,6 +45,22 @@ public class ArtistsDetailController implements Initializable{
             }
         }      
         return false;
+    }
+
+    @Override
+    public void onArtistDetailRequested(Music music) {
+        log.info("onArtistDetailRequested " + music.getArtist());
+        mInterface.onArtistDetailRequested(music);
+    }
+    
+    public interface IArtistsDetailController {
+
+        /**
+         * display user details
+         *
+         * @param music
+         */
+        public void onArtistDetailRequested(Music music);
     }
 
 }

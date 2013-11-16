@@ -28,7 +28,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 
-public class MainController implements Initializable, PeopleHomeController.IPeopleHomeController, SearchResultController.ISearchResultController {
+public class MainController implements Initializable, PeopleHomeController.IPeopleHomeController, SearchResultController.ISearchResultController, ArtistsDetailController.IArtistsDetailController {
 
     private static final Logger log = LoggerFactory.getLogger(MainController.class);
     @Inject
@@ -103,8 +103,10 @@ public class MainController implements Initializable, PeopleHomeController.IPeop
             ((DragPreviewDrawer) mCurrentLoadedRighpaneResult.getController()).init(mDragPreview);
         } else if (event.getSource() == artistsbutton) {
             mCurrentLoadedRighpaneResult = mFxmlLoader.load(getClass().getResource("/fr/utc/lo23/sharutc/ui/fxml/artists_detail.fxml"));
+            ((ArtistsDetailController) mCurrentLoadedRighpaneResult.getController()).setInterface(this);
         } else if (event.getSource() == albumsbutton) {
             mCurrentLoadedRighpaneResult = mFxmlLoader.load(getClass().getResource("/fr/utc/lo23/sharutc/ui/fxml/albums_detail.fxml"));
+            ((AlbumsDetailController) mCurrentLoadedRighpaneResult.getController()).createCards();
         }
 
         if (mCurrentLoadedRighpaneResult != null) {
@@ -190,6 +192,22 @@ public class MainController implements Initializable, PeopleHomeController.IPeop
     public void onGroupDetailRequested() {
     }
 
+    @Override
+    public void onArtistDetailRequested(Music music) {
+        ObservableList<Node> children = rightpane.getChildren();
+        children.clear();
+        log.info("Artist detail requested : " + music.getArtist());
+        try {
+            mCurrentLoadedRighpaneResult = mFxmlLoader.load(getClass().getResource("/fr/utc/lo23/sharutc/ui/fxml/albums_detail.fxml"));
+            ((AlbumsDetailController) mCurrentLoadedRighpaneResult.getController()).setArtistWanted(music.getArtist());
+            ((AlbumsDetailController) mCurrentLoadedRighpaneResult.getController()).createCards();
+            children.add((Node) mCurrentLoadedRighpaneResult.getRoot());
+        } catch (IOException e) {
+            log.error(e.getMessage());
+        }
+    }
+    
+    
     
     
      

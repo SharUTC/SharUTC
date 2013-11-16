@@ -14,7 +14,7 @@
 <VBox id="gridPane" prefWidth="-1.0" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS" 
       xmlns:fx="http://javafx.com/fxml" fx:controller="fr.utc.lo23.sharutc.ui.AlbumsDetailController" >
 
-    <Label xmlns:fx="http://javafx.com/fxml" text="Discover new albums" styleClass="panetitle"/>
+    <Label fx:id="titlePage" styleClass="panetitle"/>
 
     <ScrollPane xmlns:fx="http://javafx.com/fxml" styleClass="myScrollPane" VBox.vgrow="ALWAYS" fitToWidth="true" fitToHeight="true">
 

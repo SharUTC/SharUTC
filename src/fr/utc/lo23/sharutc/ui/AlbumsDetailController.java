@@ -15,24 +15,29 @@ import org.slf4j.LoggerFactory;
 public class AlbumsDetailController implements Initializable {
     
     private static final Logger log = LoggerFactory.getLogger(PeopleHomeController.class);
-    
+    private String artistWanted;
+    public Label titlePage;
+            
     @FXML
     public FlowPane albumsContainer;
     
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-
-        createCards();
-        
+        artistWanted = "";
+        titlePage.setText("Discover new albums");
     }
     
-    private void createCards() {
+    public void createCards() {
+        System.out.println("artistWanted = "+artistWanted);
         for(Music m : MainController.population) {
             if(!existsAlready(m)) {
-                AlbumCard card = new AlbumCard(m);
-                albumsContainer.getChildren().add(card);
+                if(m.getArtist().equals(artistWanted) || artistWanted.equals("")) {
+                    AlbumCard card = new AlbumCard(m);
+                    albumsContainer.getChildren().add(card);
+                }              
             }
-        } 
+        }
+        resetAlbumWanted();
     }
     
     private boolean existsAlready(Music m) {
@@ -43,5 +48,18 @@ public class AlbumsDetailController implements Initializable {
             }
         }      
         return false;
+    }
+    
+    public void resetAlbumWanted() {
+        artistWanted = "";
+    }
+    
+    public String getArtistWanted() {
+        return artistWanted;
+    }
+    
+    public void setArtistWanted(String artistName) {
+        artistWanted = artistName;
+        titlePage.setText("Discover "+artistName+"'s albums");
     }
 }
