@@ -64,12 +64,17 @@ public class SongSelectorController extends DragPreviewDrawer implements SongCar
     }
 
     @Override
-    public void onAddToPlayListRequested(Music music) {
+    public void onSongRemoveFromMusicRequested(Music music) {
         //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
     public void onSongDetailsRequested(Music music) {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public void onSongAddToMusicRequested(Music music) {
         //To change body of implemented methods use File | Settings | File Templates.
     }
 

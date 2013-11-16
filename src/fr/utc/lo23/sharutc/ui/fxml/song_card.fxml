@@ -1,10 +1,54 @@
-<?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
 <fx:root type="fr.utc.lo23.sharutc.ui.custom.SongCard"
          xmlns:fx="http://javafx.com/fxml">
-    <Label fx:id="songTitle" text="New York New York"  />
-    <Label fx:id="songArtist" text=" Frank Sinatra" />
+    <HBox>
+        <VBox alignment="CENTER_LEFT">
+            <Label fx:id="songTitle" text="New York New York" styleClass="largeTextGreyBold"/>
+            <Label fx:id="songArtist" text="Frank Sinatra" styleClass="largeTextGrey"/>
+        </VBox>
+        <VBox fx:id="buttonContainer" alignment="CENTER_RIGHT" HBox.hgrow="ALWAYS">
+            <Button fx:id="deleteButton" styleClass="imageButton" visible="false"
+                    onAction="#handleSongCardButtonAction">
+                <graphic>
+                    <ImageView fitWidth="30" fitHeight="30">
+                        <image>
+                            <Image url="@../drawable/ic_delete.png"/>
+                        </image>
+                    </ImageView>
+                </graphic>
+            </Button>
+            <Button fx:id="addButton" styleClass="imageButton" visible="false" onAction="#handleSongCardButtonAction">
+                <graphic>
+                    <ImageView fitWidth="30" fitHeight="30">
+                        <image>
+                            <Image url="@../drawable/ic_add.png"/>
+                        </image>
+                    </ImageView>
+                </graphic>
+            </Button>
+            <Button fx:id="playButton" styleClass="imageButton" visible="false" onAction="#handleSongCardButtonAction">
+                <graphic>
+                    <ImageView fitWidth="30" fitHeight="30">
+                        <image>
+                            <Image url="@../drawable/ic_play.png"/>
+                        </image>
+                    </ImageView>
+                </graphic>
+            </Button>
+            <Button fx:id="detailButton" styleClass="imageButton" visible="false"
+                    onAction="#handleSongCardButtonAction">
+                <graphic>
+                    <ImageView fitWidth="30" fitHeight="30">
+                        <image>
+                            <Image url="@../drawable/ic_details.png"/>
+                        </image>
+                    </ImageView>
+                </graphic>
+            </Button>
+        </VBox>
+    </HBox>
 </fx:root>
 
