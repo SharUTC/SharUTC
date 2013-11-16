@@ -60,4 +60,9 @@ public interface MessageParser {
      * @return the parsed JSON String
      */
     public String toJSON(Message string);
+
+    /**
+     * Reset message and content, used after processing a Message
+     */
+    public void resetParser();
 }

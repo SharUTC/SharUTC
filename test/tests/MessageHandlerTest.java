@@ -13,6 +13,7 @@ import fr.utc.lo23.sharutc.controler.service.UserService;
 import fr.utc.lo23.sharutc.model.AppModel;
 import fr.utc.lo23.sharutc.model.AppModelBuilder;
 import fr.utc.lo23.sharutc.model.domain.TagMap;
+import fr.utc.lo23.sharutc.model.userdata.Peer;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -70,6 +71,12 @@ public class MessageHandlerTest {
         TagMap tagMap = musicService.getLocalTagMap();
         Message m = messageParser.write(MessageType.TAG_MAP, new Object[][]{{Message.TAG_MAP, tagMap}, {Message.CONVERSATION_ID, appModel.getCurrentConversationId()}});
         messageHandler.handleMessage(messageParser.toJSON(m));
-        Assert.assertTrue(false); // NOT FINISHED
+        messageParser.read(m);
+        Assert.assertTrue(true);
+        Long convId = (Long) messageParser.getValue(Message.CONVERSATION_ID);
+        Peer peer = messageParser.getSource();
+        Assert.assertEquals("ConvID is not good",appModel.getCurrentConversationId(), convId);
+        Assert.assertEquals("SourcePeer is not good",appModel.getProfile().getUserInfo().toPeer(), peer);
+        System.out.println("peer = " + peer);
     }
 }

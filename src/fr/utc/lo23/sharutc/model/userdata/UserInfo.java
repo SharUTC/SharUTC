@@ -138,10 +138,9 @@ public class UserInfo implements Serializable {
         this.mAvatarFile = avatarFile;
     }
 
-    
-     /**
+    /**
      * @param obj
-     * 
+     *
      * @return
      */
     @Override
@@ -177,9 +176,8 @@ public class UserInfo implements Serializable {
         return true;
     }
 
-    
-     /**
-     * 
+    /**
+     *
      * @return
      */
     @Override
@@ -195,15 +193,16 @@ public class UserInfo implements Serializable {
         return hash;
     }
 
-    
-     /**
-     * 
+    /**
+     *
      * @return
      */
     @Override
     public String toString() {
         return "UserInfo{" + "mPeerId=" + mPeerId + ", mLogin=" + mLogin + ", mPassword=" + mPassword + ", mFirstName=" + mFirstName + ", mLastName=" + mLastName + ", mAge=" + mAge + ", mAvatarFile=" + mAvatarFile + '}';
     }
-    
 
+    public Peer toPeer() {
+        return new Peer(mPeerId, mLogin);
+    }
 }

@@ -236,7 +236,7 @@ public class UserServiceImpl implements UserService {
     public void updateConnectedPeers(UserInfo userInfo) {
         ActivePeerList activePeerList = appModel.getActivePeerList();
         KnownPeerList knownPeerList = appModel.getProfile().getKnownPeerList();
-        Peer newPeer = new Peer(userInfo.getPeerId(), userInfo.getLogin());
+        Peer newPeer = userInfo.toPeer();
         activePeerList.update(newPeer);
         knownPeerList.update(newPeer);
         //TODO: also update contact.userInfo if peer is a contact for offline access

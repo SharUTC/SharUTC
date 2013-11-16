@@ -42,7 +42,7 @@ public class MusicServiceImpl implements MusicService {
     private final UserService userService;
     private final FileService fileService;
     private TagMap localTagMap = null;
-    private boolean localTagMapDirty = true;
+    protected boolean localTagMapDirty = true;
 
     /**
      * {@inheritDoc}
