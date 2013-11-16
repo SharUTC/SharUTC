@@ -89,8 +89,27 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public void createCategory(String categoryName) {
-        Category c = new Category(getProfile().getNewCategoryId(), categoryName);
-        getProfile().getCategories().add(c);
+        /*
+         * check that the name of the category does not exist
+         * Indeed, even if it will be possible to have two categories with the same name
+         * (since there are IDs), we consider that a user can't create two categories
+         *  with the same name.
+         */
+        boolean present = false;
+        for (Category c : getProfile().getCategories().getCategories()) {
+            if (c.getName().equals(categoryName)) {
+                present = true;
+                break;
+            }
+        }
+        if (!present) {
+            Category c = new Category(getProfile().getNewCategoryId(), categoryName);
+            getProfile().getCategories().add(c);
+        } else {
+            log.warn("This category name already exists");
+            ErrorMessage nErrorMessage = new ErrorMessage("This category name already exists");
+            appModel.getErrorBus().pushErrorMessage(nErrorMessage);
+        }
     }
 
     /**

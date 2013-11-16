@@ -22,7 +22,7 @@ public class DeleteContactCommandImpl implements DeleteContactCommand {
     final private UserService mUserService;
 
      /**
-     * {@inheritDoc}
+     * @param userService
      */
     @Inject
     public DeleteContactCommandImpl(UserService userService) {

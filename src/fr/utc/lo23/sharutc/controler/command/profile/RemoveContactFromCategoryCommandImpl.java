@@ -24,11 +24,11 @@ public class RemoveContactFromCategoryCommandImpl implements RemoveContactFromCa
     final private UserService mUserService;
 
      /**
-     * {@inheritDoc}
+     * @param userService
      */
     @Inject
-    public RemoveContactFromCategoryCommandImpl(UserService mUserService) {
-        this.mUserService = mUserService;
+    public RemoveContactFromCategoryCommandImpl(UserService userService) {
+        this.mUserService = userService;
     }
 
     /**

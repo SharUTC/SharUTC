@@ -24,11 +24,11 @@ public class AddContactToCategoryCommandImpl implements AddContactToCategoryComm
     final private UserService mUserService;
 
      /**
-     * {@inheritDoc}
+     * @param userService
      */
     @Inject
-    public AddContactToCategoryCommandImpl(UserService mUserService) {
-        this.mUserService = mUserService;
+    public AddContactToCategoryCommandImpl(UserService userService) {
+        this.mUserService = userService;
     }
     
      /**
