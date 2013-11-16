@@ -88,4 +88,38 @@ public class Contact implements Serializable {
         }
         return isInPublic;
     }
+
+    
+     /**
+     * @param obj
+     * 
+     * @return
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Contact other = (Contact) obj;
+        if (this.mUserInfo != other.mUserInfo && (this.mUserInfo == null || !this.mUserInfo.equals(other.mUserInfo))) {
+            return false;
+        }
+        if (this.mCategoryIds != other.mCategoryIds && (this.mCategoryIds == null || !this.mCategoryIds.equals(other.mCategoryIds))) {
+            return false;
+        }
+        return true;
+    }
+    
+    
+     /**
+     * 
+     * @return
+     */
+    @Override
+    public String toString() {
+        return "Contact{" + "mUserInfo=" + mUserInfo + ", mCategoryIds=" + mCategoryIds + '}';
+    }
 }

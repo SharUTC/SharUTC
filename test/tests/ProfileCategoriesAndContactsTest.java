@@ -17,6 +17,8 @@ import fr.utc.lo23.sharutc.controler.service.MusicService;
 import fr.utc.lo23.sharutc.controler.service.UserService;
 import fr.utc.lo23.sharutc.model.AppModel;
 import fr.utc.lo23.sharutc.model.AppModelBuilder;
+import fr.utc.lo23.sharutc.model.userdata.Contact;
+import fr.utc.lo23.sharutc.model.userdata.UserInfo;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -72,17 +74,33 @@ public class ProfileCategoriesAndContactsTest {
 
     @Test
     public void addContactCommand() {
-        //TODO test
-        /**
-         * un truc du genre Contact c = new contact(....);
-         * addContactCommand.setContact(c); addContactCommand.execute();
-         *
-         * ensuite du recherche le contact un petit find et tu mets l'assert qui
-         * va bien sur le résultat de la recherche
-         * Assert.assertNotNull("addContact failed", resultat); Si resultat vaut
-         * null ça affiche l'assert.
-         */
-        Assert.assertTrue(false);
+
+        UserInfo u = new UserInfo();
+        u.setAge(22);
+        u.setFirstName("Mathilde");
+        u.setLastName("ALL");
+        u.setLogin("mathilde");
+        u.setPassword("ccc");
+        u.setPeerId(1L);
+
+        Contact cCree = new Contact(u);
+        
+        addContactCommand.setContact(cCree);
+        addContactCommand.execute();
+        
+        Contact cTest = new Contact(u);
+        // the command automatically add the default category to the contact
+        cTest.addCategoryId(0);
+
+        Contact resultat = null;
+        for (Contact c : appModel.getProfile().getContacts().getContacts()) {
+            if (c.getUserInfo().getPeerId().equals(cCree.getUserInfo().getPeerId())) {
+                resultat = c;
+                break;
+            }
+        }
+
+        Assert.assertEquals("addContactCommand failed",cTest,resultat);
     }
 
     @Test

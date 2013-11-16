@@ -137,4 +137,55 @@ public class UserInfo implements Serializable {
     public void setAvatarFile(File avatarFile) {
         this.mAvatarFile = avatarFile;
     }
+
+    
+     /**
+     * @param obj
+     * 
+     * @return
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final UserInfo other = (UserInfo) obj;
+        if (this.mPeerId != other.mPeerId && (this.mPeerId == null || !this.mPeerId.equals(other.mPeerId))) {
+            return false;
+        }
+        if ((this.mLogin == null) ? (other.mLogin != null) : !this.mLogin.equals(other.mLogin)) {
+            return false;
+        }
+        if ((this.mPassword == null) ? (other.mPassword != null) : !this.mPassword.equals(other.mPassword)) {
+            return false;
+        }
+        if ((this.mFirstName == null) ? (other.mFirstName != null) : !this.mFirstName.equals(other.mFirstName)) {
+            return false;
+        }
+        if ((this.mLastName == null) ? (other.mLastName != null) : !this.mLastName.equals(other.mLastName)) {
+            return false;
+        }
+        if (this.mAge != other.mAge && (this.mAge == null || !this.mAge.equals(other.mAge))) {
+            return false;
+        }
+        if (this.mAvatarFile != other.mAvatarFile && (this.mAvatarFile == null || !this.mAvatarFile.equals(other.mAvatarFile))) {
+            return false;
+        }
+        return true;
+    }
+
+    
+     /**
+     * 
+     * @return
+     */
+    @Override
+    public String toString() {
+        return "UserInfo{" + "mPeerId=" + mPeerId + ", mLogin=" + mLogin + ", mPassword=" + mPassword + ", mFirstName=" + mFirstName + ", mLastName=" + mLastName + ", mAge=" + mAge + ", mAvatarFile=" + mAvatarFile + '}';
+    }
+    
+
 }
