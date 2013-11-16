@@ -183,6 +183,24 @@ public class UserInfo implements Serializable {
      * @return
      */
     @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 61 * hash + (this.mPeerId != null ? this.mPeerId.hashCode() : 0);
+        hash = 61 * hash + (this.mLogin != null ? this.mLogin.hashCode() : 0);
+        hash = 61 * hash + (this.mPassword != null ? this.mPassword.hashCode() : 0);
+        hash = 61 * hash + (this.mFirstName != null ? this.mFirstName.hashCode() : 0);
+        hash = 61 * hash + (this.mLastName != null ? this.mLastName.hashCode() : 0);
+        hash = 61 * hash + (this.mAge != null ? this.mAge.hashCode() : 0);
+        hash = 61 * hash + (this.mAvatarFile != null ? this.mAvatarFile.hashCode() : 0);
+        return hash;
+    }
+
+    
+     /**
+     * 
+     * @return
+     */
+    @Override
     public String toString() {
         return "UserInfo{" + "mPeerId=" + mPeerId + ", mLogin=" + mLogin + ", mPassword=" + mPassword + ", mFirstName=" + mFirstName + ", mLastName=" + mLastName + ", mAge=" + mAge + ", mAvatarFile=" + mAvatarFile + '}';
     }

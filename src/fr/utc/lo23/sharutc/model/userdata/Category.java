@@ -92,6 +92,19 @@ public class Category implements Serializable {
      * @return
      */
     @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 59 * hash + (this.mId != null ? this.mId.hashCode() : 0);
+        hash = 59 * hash + (this.mName != null ? this.mName.hashCode() : 0);
+        return hash;
+    }
+
+    
+     /**
+     * 
+     * @return
+     */
+    @Override
     public String toString() {
         return "Category{" + "mId=" + mId + ", mName=" + mName + '}';
     }
