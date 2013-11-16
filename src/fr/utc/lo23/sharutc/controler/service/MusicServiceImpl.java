@@ -646,7 +646,7 @@ public class MusicServiceImpl implements MusicService {
         if (catalog == null) {
             throwMissingParameter();
         } else {
-            //TODO integrateMusicSearch
+            appModel.getSearchResults().merge(catalog);
         }
     }
 
