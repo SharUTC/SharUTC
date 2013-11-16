@@ -3,6 +3,14 @@ package fr.utc.lo23.sharutc.injection;
 import com.google.inject.AbstractModule;
 import fr.utc.lo23.sharutc.controler.command.account.AccountCreationCommand;
 import fr.utc.lo23.sharutc.controler.command.account.AccountCreationCommandImpl;
+import fr.utc.lo23.sharutc.controler.command.account.ConnectionRequestCommand;
+import fr.utc.lo23.sharutc.controler.command.account.ConnectionRequestCommandImpl;
+import fr.utc.lo23.sharutc.controler.command.account.DisconnectionCommand;
+import fr.utc.lo23.sharutc.controler.command.account.DisconnectionCommandImpl;
+import fr.utc.lo23.sharutc.controler.command.account.ExportProfileCommand;
+import fr.utc.lo23.sharutc.controler.command.account.ExportProfileCommandImpl;
+import fr.utc.lo23.sharutc.controler.command.account.ImportProfileCommand;
+import fr.utc.lo23.sharutc.controler.command.account.ImportProfileCommandImpl;
 import fr.utc.lo23.sharutc.controler.command.account.IntegrateBroadcastConnectionCommand;
 import fr.utc.lo23.sharutc.controler.command.account.IntegrateBroadcastConnectionCommandImpl;
 import fr.utc.lo23.sharutc.controler.command.account.IntegrateConnectionCommand;
@@ -11,49 +19,34 @@ import fr.utc.lo23.sharutc.controler.command.account.IntegrateDisconnectionComma
 import fr.utc.lo23.sharutc.controler.command.account.IntegrateDisconnectionCommandImpl;
 import fr.utc.lo23.sharutc.controler.command.music.AddCommentCommand;
 import fr.utc.lo23.sharutc.controler.command.music.AddCommentCommandImpl;
-import fr.utc.lo23.sharutc.controler.command.music.AddCommentCommandMock;
 import fr.utc.lo23.sharutc.controler.command.music.AddTagCommand;
 import fr.utc.lo23.sharutc.controler.command.music.AddTagCommandImpl;
-import fr.utc.lo23.sharutc.controler.command.music.AddTagCommandMock;
 import fr.utc.lo23.sharutc.controler.command.music.AddToLocalCatalogCommand;
 import fr.utc.lo23.sharutc.controler.command.music.AddToLocalCatalogCommandImpl;
-import fr.utc.lo23.sharutc.controler.command.music.AddToLocalCatalogCommandMock;
 import fr.utc.lo23.sharutc.controler.command.music.EditCommentCommand;
 import fr.utc.lo23.sharutc.controler.command.music.EditCommentCommandImpl;
-import fr.utc.lo23.sharutc.controler.command.music.EditCommentCommandMock;
 import fr.utc.lo23.sharutc.controler.command.music.FetchRemoteCatalogCommand;
 import fr.utc.lo23.sharutc.controler.command.music.FetchRemoteCatalogCommandImpl;
-import fr.utc.lo23.sharutc.controler.command.music.FetchRemoteCatalogCommandMock;
 import fr.utc.lo23.sharutc.controler.command.music.IntegrateRemoteCatalogCommand;
 import fr.utc.lo23.sharutc.controler.command.music.IntegrateRemoteCatalogCommandImpl;
-import fr.utc.lo23.sharutc.controler.command.music.IntegrateRemoteCatalogCommandMock;
 import fr.utc.lo23.sharutc.controler.command.music.IntegrateRemoteTagMapCommand;
 import fr.utc.lo23.sharutc.controler.command.music.IntegrateRemoteTagMapCommandImpl;
-import fr.utc.lo23.sharutc.controler.command.music.IntegrateRemoteTagMapCommandMock;
 import fr.utc.lo23.sharutc.controler.command.music.RemoveCommentCommand;
 import fr.utc.lo23.sharutc.controler.command.music.RemoveCommentCommandImpl;
-import fr.utc.lo23.sharutc.controler.command.music.RemoveCommentCommandMock;
 import fr.utc.lo23.sharutc.controler.command.music.RemoveFromLocalCatalogCommand;
 import fr.utc.lo23.sharutc.controler.command.music.RemoveFromLocalCatalogCommandImpl;
-import fr.utc.lo23.sharutc.controler.command.music.RemoveFromLocalCatalogCommandMock;
 import fr.utc.lo23.sharutc.controler.command.music.RemoveTagCommand;
 import fr.utc.lo23.sharutc.controler.command.music.RemoveTagCommandImpl;
-import fr.utc.lo23.sharutc.controler.command.music.RemoveTagCommandMock;
 import fr.utc.lo23.sharutc.controler.command.music.SendCatalogCommand;
 import fr.utc.lo23.sharutc.controler.command.music.SendCatalogCommandImpl;
-import fr.utc.lo23.sharutc.controler.command.music.SendCatalogCommandMock;
 import fr.utc.lo23.sharutc.controler.command.music.SendTagMapCommand;
 import fr.utc.lo23.sharutc.controler.command.music.SendTagMapCommandImpl;
-import fr.utc.lo23.sharutc.controler.command.music.SendTagMapCommandMock;
 import fr.utc.lo23.sharutc.controler.command.music.SetScoreCommand;
 import fr.utc.lo23.sharutc.controler.command.music.SetScoreCommandImpl;
-import fr.utc.lo23.sharutc.controler.command.music.SetScoreCommandMock;
 import fr.utc.lo23.sharutc.controler.command.music.ShowTagMapCommand;
 import fr.utc.lo23.sharutc.controler.command.music.ShowTagMapCommandImpl;
-import fr.utc.lo23.sharutc.controler.command.music.ShowTagMapCommandMock;
 import fr.utc.lo23.sharutc.controler.command.music.UnsetScoreCommand;
 import fr.utc.lo23.sharutc.controler.command.music.UnsetScoreCommandImpl;
-import fr.utc.lo23.sharutc.controler.command.music.UnsetScoreCommandMock;
 import fr.utc.lo23.sharutc.controler.command.player.PlayIncomingMusicCommand;
 import fr.utc.lo23.sharutc.controler.command.player.PlayIncomingMusicCommandImpl;
 import fr.utc.lo23.sharutc.controler.command.player.PlayMusicCommand;
@@ -62,6 +55,18 @@ import fr.utc.lo23.sharutc.controler.command.player.SendMusicToPlayCommand;
 import fr.utc.lo23.sharutc.controler.command.player.SendMusicToPlayCommandImpl;
 import fr.utc.lo23.sharutc.controler.command.profile.AddContactCommand;
 import fr.utc.lo23.sharutc.controler.command.profile.AddContactCommandImpl;
+import fr.utc.lo23.sharutc.controler.command.profile.AddContactToCategoryCommand;
+import fr.utc.lo23.sharutc.controler.command.profile.AddContactToCategoryCommandImpl;
+import fr.utc.lo23.sharutc.controler.command.profile.AddUserCommand;
+import fr.utc.lo23.sharutc.controler.command.profile.AddUserCommandImpl;
+import fr.utc.lo23.sharutc.controler.command.profile.CreateCategoryCommand;
+import fr.utc.lo23.sharutc.controler.command.profile.CreateCategoryCommandImpl;
+import fr.utc.lo23.sharutc.controler.command.profile.DeleteCategoryCommand;
+import fr.utc.lo23.sharutc.controler.command.profile.DeleteCategoryCommandImpl;
+import fr.utc.lo23.sharutc.controler.command.profile.DeleteContactCommand;
+import fr.utc.lo23.sharutc.controler.command.profile.DeleteContactCommandImpl;
+import fr.utc.lo23.sharutc.controler.command.profile.RemoveContactFromCategoryCommand;
+import fr.utc.lo23.sharutc.controler.command.profile.RemoveContactFromCategoryCommandImpl;
 import fr.utc.lo23.sharutc.controler.command.search.DownloadMusicsCommand;
 import fr.utc.lo23.sharutc.controler.command.search.DownloadMusicsCommandImpl;
 import fr.utc.lo23.sharutc.controler.command.search.InstallRemoteMusicsCommand;
@@ -87,7 +92,10 @@ public class CommandTestModule extends AbstractModule {
     protected void configure() {
         //account
         bind(AccountCreationCommand.class).to(AccountCreationCommandImpl.class);
-        bind(IntegrateConnectionCommand.class).to(IntegrateConnectionCommandImpl.class);
+        bind(ConnectionRequestCommand.class).to(ConnectionRequestCommandImpl.class);
+        bind(DisconnectionCommand.class).to(DisconnectionCommandImpl.class);
+        bind(ExportProfileCommand.class).to(ExportProfileCommandImpl.class);
+        bind(ImportProfileCommand.class).to(ImportProfileCommandImpl.class);
         // more...
 
         //music
@@ -121,6 +129,12 @@ public class CommandTestModule extends AbstractModule {
 
         //profile
         bind(AddContactCommand.class).to(AddContactCommandImpl.class);
+        bind(AddContactToCategoryCommand.class).to(AddContactToCategoryCommandImpl.class);
+        bind(AddUserCommand.class).to(AddUserCommandImpl.class);
+        bind(CreateCategoryCommand.class).to(CreateCategoryCommandImpl.class);
+        bind(DeleteCategoryCommand.class).to(DeleteCategoryCommandImpl.class);
+        bind(DeleteContactCommand.class).to(DeleteContactCommandImpl.class);
+        bind(RemoveContactFromCategoryCommand.class).to(RemoveContactFromCategoryCommandImpl.class);
         // more...
 
         //search
@@ -134,6 +148,7 @@ public class CommandTestModule extends AbstractModule {
 
         //network ??
         bind(IntegrateBroadcastConnectionCommand.class).to(IntegrateBroadcastConnectionCommandImpl.class);
+        bind(IntegrateConnectionCommand.class).to(IntegrateConnectionCommandImpl.class);
         bind(IntegrateDisconnectionCommand.class).to(IntegrateDisconnectionCommandImpl.class);
     }
 }

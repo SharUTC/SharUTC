@@ -3,6 +3,14 @@ package fr.utc.lo23.sharutc.injection;
 import com.google.inject.AbstractModule;
 import fr.utc.lo23.sharutc.controler.command.account.AccountCreationCommand;
 import fr.utc.lo23.sharutc.controler.command.account.AccountCreationCommandImpl;
+import fr.utc.lo23.sharutc.controler.command.account.ConnectionRequestCommand;
+import fr.utc.lo23.sharutc.controler.command.account.ConnectionRequestCommandImpl;
+import fr.utc.lo23.sharutc.controler.command.account.DisconnectionCommand;
+import fr.utc.lo23.sharutc.controler.command.account.DisconnectionCommandImpl;
+import fr.utc.lo23.sharutc.controler.command.account.ExportProfileCommand;
+import fr.utc.lo23.sharutc.controler.command.account.ExportProfileCommandImpl;
+import fr.utc.lo23.sharutc.controler.command.account.ImportProfileCommand;
+import fr.utc.lo23.sharutc.controler.command.account.ImportProfileCommandImpl;
 import fr.utc.lo23.sharutc.controler.command.account.IntegrateBroadcastConnectionCommand;
 import fr.utc.lo23.sharutc.controler.command.account.IntegrateBroadcastConnectionCommandImpl;
 import fr.utc.lo23.sharutc.controler.command.account.IntegrateConnectionCommand;
@@ -47,6 +55,18 @@ import fr.utc.lo23.sharutc.controler.command.player.SendMusicToPlayCommand;
 import fr.utc.lo23.sharutc.controler.command.player.SendMusicToPlayCommandImpl;
 import fr.utc.lo23.sharutc.controler.command.profile.AddContactCommand;
 import fr.utc.lo23.sharutc.controler.command.profile.AddContactCommandImpl;
+import fr.utc.lo23.sharutc.controler.command.profile.AddContactToCategoryCommand;
+import fr.utc.lo23.sharutc.controler.command.profile.AddContactToCategoryCommandImpl;
+import fr.utc.lo23.sharutc.controler.command.profile.AddUserCommand;
+import fr.utc.lo23.sharutc.controler.command.profile.AddUserCommandImpl;
+import fr.utc.lo23.sharutc.controler.command.profile.CreateCategoryCommand;
+import fr.utc.lo23.sharutc.controler.command.profile.CreateCategoryCommandImpl;
+import fr.utc.lo23.sharutc.controler.command.profile.DeleteCategoryCommand;
+import fr.utc.lo23.sharutc.controler.command.profile.DeleteCategoryCommandImpl;
+import fr.utc.lo23.sharutc.controler.command.profile.DeleteContactCommand;
+import fr.utc.lo23.sharutc.controler.command.profile.DeleteContactCommandImpl;
+import fr.utc.lo23.sharutc.controler.command.profile.RemoveContactFromCategoryCommand;
+import fr.utc.lo23.sharutc.controler.command.profile.RemoveContactFromCategoryCommandImpl;
 import fr.utc.lo23.sharutc.controler.command.search.DownloadMusicsCommand;
 import fr.utc.lo23.sharutc.controler.command.search.DownloadMusicsCommandImpl;
 import fr.utc.lo23.sharutc.controler.command.search.InstallRemoteMusicsCommand;
@@ -72,7 +92,10 @@ public class CommandModule extends AbstractModule {
     protected void configure() {
         //account
         bind(AccountCreationCommand.class).to(AccountCreationCommandImpl.class);
-        bind(IntegrateConnectionCommand.class).to(IntegrateConnectionCommandImpl.class);
+        bind(ConnectionRequestCommand.class).to(ConnectionRequestCommandImpl.class);
+        bind(DisconnectionCommand.class).to(DisconnectionCommandImpl.class);
+        bind(ExportProfileCommand.class).to(ExportProfileCommandImpl.class);
+        bind(ImportProfileCommand.class).to(ImportProfileCommandImpl.class);
         // more...
 
         //music
@@ -106,6 +129,12 @@ public class CommandModule extends AbstractModule {
 
         //profile
         bind(AddContactCommand.class).to(AddContactCommandImpl.class);
+        bind(AddContactToCategoryCommand.class).to(AddContactToCategoryCommandImpl.class);
+        bind(AddUserCommand.class).to(AddUserCommandImpl.class);
+        bind(CreateCategoryCommand.class).to(CreateCategoryCommandImpl.class);
+        bind(DeleteCategoryCommand.class).to(DeleteCategoryCommandImpl.class);
+        bind(DeleteContactCommand.class).to(DeleteContactCommandImpl.class);
+        bind(RemoveContactFromCategoryCommand.class).to(RemoveContactFromCategoryCommandImpl.class);
         // more...
 
         //search
@@ -119,6 +148,7 @@ public class CommandModule extends AbstractModule {
 
         //network ??
         bind(IntegrateBroadcastConnectionCommand.class).to(IntegrateBroadcastConnectionCommandImpl.class);
+        bind(IntegrateConnectionCommand.class).to(IntegrateConnectionCommandImpl.class);
         bind(IntegrateDisconnectionCommand.class).to(IntegrateDisconnectionCommandImpl.class);
 
     }
