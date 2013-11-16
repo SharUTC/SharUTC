@@ -64,7 +64,7 @@ public class MainController implements Initializable, PeopleHomeController.IPeop
         mDragPreview.toFront();
         
         //TODO Remove once we get a real list of Musics
-        population = new ArrayList<>();
+        population = new ArrayList();
         populateMusics();
     }
 
