@@ -50,50 +50,15 @@ public class PeopleHomeController extends DragPreviewDrawer implements Initializ
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         groupScrollPane.getStyleClass().add("myScrollPaneWithTopBorder");
-        populate();
         mPeopleCardSelected = new ArrayList<PeopleCard>();
         mAppModel.addPropertyChangeListener(this);
+
+        displayActivePeers();
+        displayUserGroup();
     }
 
     public void setInterface(IPeopleHomeController i) {
         mInterface = i;
-    }
-
-    //TODO Remove once we get a real list of user
-    private void populate() {
-        for (int i = 0; i < 50; i++) {
-            final UserInfo userInfo = new UserInfo();
-            userInfo.setLogin("Login " + String.valueOf(i));
-            userInfo.setLastName("LastName");
-            userInfo.setFirstName("FirstName");
-            PeopleCard newCard = new PeopleCard(userInfo, this);
-            peopleContainer.getChildren().add(newCard);
-        }
-
-        for (int i = 0; i < 10; i++) {
-            //TODO add GroupCard with color attribute
-            final Category category = new Category();
-            category.setName("Category " + i);
-            GroupCard newCard = new GroupCard(category, this);
-            groupContainer.getChildren().add(newCard);
-        }
-
-        //Add the + card for create a new group
-        SimpleCard createNewGroup = new SimpleCard("/fr/utc/lo23/sharutc/ui/fxml/simple_card.fxml",
-                180, 108, Pos.CENTER);
-        final Label plusText = new Label("+");
-        plusText.getStyleClass().addAll("plusText");
-        createNewGroup.getChildren().add(plusText);
-        createNewGroup.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent mouseEvent) {
-                if (mouseEvent.getEventType() == MouseEvent.MOUSE_CLICKED) {
-                    //create a new group
-                    log.info("group creation requested");
-                }
-            }
-        });
-        groupContainer.getChildren().add(createNewGroup);
     }
 
     @Override
@@ -193,6 +158,62 @@ public class PeopleHomeController extends DragPreviewDrawer implements Initializ
             mPeopleCardSelected.clear();
             hideDragPreview();
         }
+    }
+
+    /**
+     * call at the beginning and each time propertyChange ACTIVE_PEERS
+     */
+    private void displayActivePeers() {
+        //TODO Remove once we get the real peersList
+        for (int i = 0; i < 50; i++) {
+            final UserInfo userInfo = new UserInfo();
+            userInfo.setLogin("Login " + String.valueOf(i));
+            userInfo.setLastName("LastName");
+            userInfo.setFirstName("FirstName");
+            PeopleCard newCard = new PeopleCard(userInfo, this);
+            peopleContainer.getChildren().add(newCard);
+        }
+    }
+
+    /**
+     * call at the beginning and each time a group change
+     */
+    private void displayUserGroup() {
+
+        //Display the virtual category for find connected people
+        final Category virtualConnected = new Category();
+        virtualConnected.setName("Connected ");
+        GroupCard virtualConnectedCard = new GroupCard(virtualConnected, this);
+        //disable deletion, edit and rights for this virtual groupCard, needs improvement
+        virtualConnectedCard.setOnMouseEntered(null);
+        groupContainer.getChildren().add(virtualConnectedCard);
+
+
+        //TODO Remove once we get the groupList
+        for (int i = 0; i < 10; i++) {
+            //TODO add GroupCard with color attribute
+            final Category category = new Category();
+            category.setName("Category " + i);
+            GroupCard newCard = new GroupCard(category, this);
+            groupContainer.getChildren().add(newCard);
+        }
+
+        //Add the + card for create a new group
+        SimpleCard createNewGroup = new SimpleCard("/fr/utc/lo23/sharutc/ui/fxml/simple_card.fxml",
+                180, 108, Pos.CENTER);
+        final Label plusText = new Label("+");
+        plusText.getStyleClass().addAll("plusText");
+        createNewGroup.getChildren().add(plusText);
+        createNewGroup.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                if (mouseEvent.getEventType() == MouseEvent.MOUSE_CLICKED) {
+                    //create a new group
+                    log.info("group creation requested");
+                }
+            }
+        });
+        groupContainer.getChildren().add(createNewGroup);
     }
 
     @Override
