@@ -100,13 +100,10 @@ public class PeerDiscoverySocket implements Runnable {
      * @param msg the Hello Message
      */
     private void addPeer(DatagramPacket p, Message msg) {
-        PeerSocket peerSocket = null;
         try {
             Socket socket = new Socket(p.getAddress(), p.getPort());
-            // obtain sender peerId
             Long peerId = msg.getFromPeerId();
-            // add new peer
-            peerSocket = new PeerSocket(socket, peerId, messageHandler, messageParser, networkService);
+            PeerSocket peerSocket = new PeerSocket(socket, peerId, messageHandler, messageParser, networkService);
             peerSocket.start();
         } catch (IOException ex) {
             log.error(ex.toString());
@@ -126,31 +123,23 @@ public class PeerDiscoverySocket implements Runnable {
             final int SIZE = 1000;
             byte[] buf = new byte[SIZE];
             DatagramPacket p = new DatagramPacket(buf, buf.length);
-            Message msgReceived = null;
             try {
-                // receiving UDP packet
                 mSocket.receive(p);
                 // print information about the sender
                 log.info("<broadcast from " + p.getAddress().toString() + " : " + p.getPort() + " >");
                 log.info("Got packet " + Arrays.toString(p.getData()));
-                // get json string
                 String json = new String(p.getData());
-                // get message object
-                msgReceived = messageParser.fromJSON(json);
+                Message msgReceived = messageParser.fromJSON(json);
                 if (msgReceived.getFromPeerId() == appModel.getProfile().getUserInfo().getPeerId()) {
                     continue;
                 }
-                // CONNECTION type required
                 if (msgReceived.getType() == MessageType.CONNECTION) {
-                    // print more info
                     if (msgReceived.getFromPeerId() != null) {
                         log.info("Message received from peerId " + msgReceived.getFromPeerId() + ", message type = " + msgReceived.getType());
                     } else {
                         log.error("Received message with peerId = null !");
                     }
-                    // add a new
                     addPeer(p, msgReceived);
-                    // handle message
                     messageHandler.handleMessage(json);
                 } else {
                     log.warn("Message type must be CONNECTION !");
@@ -159,7 +148,6 @@ public class PeerDiscoverySocket implements Runnable {
                 log.error(e.toString());
             }
         }
-        // close everything
         mSocket.close();
     }
 }
