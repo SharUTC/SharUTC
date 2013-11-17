@@ -27,7 +27,7 @@ public class PeopleDetailController extends SongSelectorController implements In
     public void initialize(URL url, ResourceBundle resourceBundle) {
         for (int i = 0; i < 3; i++) {
             final Music m = new Music();
-            m.setFileName("Music " + i);
+            m.setTitle("Music " + i);
             SongCard newCard = new SongCard(m, this, false);
             songsContainer.getChildren().add(newCard);
         }
