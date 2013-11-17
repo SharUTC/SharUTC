@@ -47,14 +47,19 @@ public class PeopleHomeController extends DragPreviewDrawer implements Initializ
     @Inject
     private AppModel mAppModel;
 
+    private Category mCurrentCategory;
+    private final Category mVirtualConnectedCategory = new Category();
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         groupScrollPane.getStyleClass().add("myScrollPaneWithTopBorder");
         mPeopleCardSelected = new ArrayList<PeopleCard>();
         mAppModel.addPropertyChangeListener(this);
 
-        displayActivePeers();
         displayUserGroup();
+        displayActivePeers();
+
+        mCurrentCategory = null;
     }
 
     public void setInterface(IPeopleHomeController i) {
@@ -99,6 +104,12 @@ public class PeopleHomeController extends DragPreviewDrawer implements Initializ
     public void onGroupRightsRequested(Category category) {
         log.info("onGroupRightsRequested " + category.getName());
         //TODO create Rights Edition View
+    }
+
+    @Override
+    public void onGroupSelected(Category category) {
+        log.info("onGroupSelected " + category.getName());
+        mCurrentCategory = category;
     }
 
     @Override
@@ -164,6 +175,7 @@ public class PeopleHomeController extends DragPreviewDrawer implements Initializ
      * call at the beginning and each time propertyChange ACTIVE_PEERS
      */
     private void displayActivePeers() {
+        peopleContainer.getChildren().clear();
         //TODO Remove once we get the real peersList
         for (int i = 0; i < 50; i++) {
             final UserInfo userInfo = new UserInfo();
@@ -173,20 +185,32 @@ public class PeopleHomeController extends DragPreviewDrawer implements Initializ
             PeopleCard newCard = new PeopleCard(userInfo, this);
             peopleContainer.getChildren().add(newCard);
         }
+
+
+        if (mCurrentCategory == mVirtualConnectedCategory) {
+            //display all user
+        } else {
+            //check if user are in mCurrentCategory
+//            Contact c = new Contact();
+//            if(c.getCategoryIds().contains(mCurrentCategory.getId())){
+//                peopleContainer.getChildren().add()   ;
+//            }
+        }
     }
 
     /**
      * call at the beginning and each time a group change
      */
     private void displayUserGroup() {
+        groupContainer.getChildren().clear();
 
         //Display the virtual category for find connected people
-        final Category virtualConnected = new Category();
-        virtualConnected.setName("Connected ");
-        GroupCard virtualConnectedCard = new GroupCard(virtualConnected, this);
+        mVirtualConnectedCategory.setName("Connected ");
+        GroupCard virtualConnectedCard = new GroupCard(mVirtualConnectedCategory, this);
         //disable deletion, edit and rights for this virtual groupCard, needs improvement
         virtualConnectedCard.setOnMouseEntered(null);
         groupContainer.getChildren().add(virtualConnectedCard);
+        mCurrentCategory = mVirtualConnectedCategory;
 
 
         //TODO Remove once we get the groupList

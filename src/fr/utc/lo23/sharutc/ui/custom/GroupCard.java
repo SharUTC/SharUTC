@@ -55,6 +55,7 @@ public class GroupCard extends SimpleCard implements EventHandler<Event> {
 
         setOnMouseEntered(this);
         setOnMouseExited(this);
+        setOnMouseClicked(this);
         setOnDragEntered(this);
         setOnDragOver(this);
         setOnDragExited(this);
@@ -99,6 +100,8 @@ public class GroupCard extends SimpleCard implements EventHandler<Event> {
                 mInterface.onGroupEditionRequested(mModel);
             } else if (source.equals(rightsButton)) {
                 mInterface.onGroupRightsRequested(mModel);
+            } else {
+                mInterface.onGroupSelected(mModel);
             }
         }
     }
@@ -198,6 +201,13 @@ public class GroupCard extends SimpleCard implements EventHandler<Event> {
          * @param category
          */
         public void onGroupRightsRequested(Category category);
+
+        /**
+         * user selects this category
+         *
+         * @param category
+         */
+        public void onGroupSelected(Category category);
 
         /**
          * user added people
