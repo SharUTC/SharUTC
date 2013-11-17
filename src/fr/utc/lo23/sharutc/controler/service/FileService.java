@@ -2,6 +2,7 @@ package fr.utc.lo23.sharutc.controler.service;
 
 import fr.utc.lo23.sharutc.model.domain.Catalog;
 import fr.utc.lo23.sharutc.model.domain.Music;
+import fr.utc.lo23.sharutc.model.userdata.Profile;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
@@ -106,6 +107,8 @@ public interface FileService {
     public void saveToFile(SharUTCFile sharUTCFile, Object objectToSave);
 
     public <T> T readFile(SharUTCFile sharUTCFile, Class<T> clazz);
+
+    public Profile readProfileFile(String login);
 
     public void createFile(byte[] bytes, String fileName);
 

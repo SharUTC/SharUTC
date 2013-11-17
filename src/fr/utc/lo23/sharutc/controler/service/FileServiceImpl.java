@@ -31,6 +31,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import static fr.utc.lo23.sharutc.controler.service.FileService.ROOT_FOLDER_USERS;
 import fr.utc.lo23.sharutc.model.domain.Catalog;
+import fr.utc.lo23.sharutc.model.userdata.Profile;
 import javax.swing.JFileChooser;
 
 /**
@@ -554,6 +555,20 @@ public class FileServiceImpl implements FileService {
         }
         log.debug("readFile ({}) DONE", sharUTCFile.getFilename());
         return object;
+    }
+
+    @Override
+    public Profile readProfileFile(String login) {
+        log.debug("readProfileFile ({}) ...", login);
+        StringBuilder builder = new StringBuilder(appFolder).append(ROOT_FOLDER_USERS).append(File.separator).append(login).append(File.separator).append(SharUTCFile.PROFILE.getFilename());
+        Profile profile = null;
+        try {
+            profile = mapper.readValue(new File(builder.toString()), Profile.class);
+        } catch (Exception ex) {
+            log.error(ex.toString());
+        }
+        log.debug("readProfileFile ({}) DONE", login);
+        return profile;
     }
 
     @Override
