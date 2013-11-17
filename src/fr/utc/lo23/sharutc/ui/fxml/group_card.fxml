@@ -4,7 +4,7 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import java.net.URL?>
-<fx:root type="fr.utc.lo23.sharutc.ui.custom.GroupCard"
+<fx:root type="fr.utc.lo23.sharutc.ui.custom.card.GroupCard"
          xmlns:fx="http://javafx.com/fxml">
     <StackPane>
         <stylesheets>

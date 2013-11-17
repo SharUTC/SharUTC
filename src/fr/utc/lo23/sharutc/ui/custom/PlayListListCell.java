@@ -2,6 +2,7 @@
 package fr.utc.lo23.sharutc.ui.custom;
 
 import fr.utc.lo23.sharutc.model.domain.Music;
+import fr.utc.lo23.sharutc.ui.custom.card.PlayListCard;
 import javafx.scene.control.ListCell;
 
 

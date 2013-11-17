@@ -2,7 +2,7 @@
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-<fx:root type="fr.utc.lo23.sharutc.ui.custom.SongCard"
+<fx:root type="fr.utc.lo23.sharutc.ui.custom.card.SongCard"
          xmlns:fx="http://javafx.com/fxml">
     <HBox>
         <VBox alignment="CENTER_LEFT">

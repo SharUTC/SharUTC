@@ -1,4 +1,4 @@
-package fr.utc.lo23.sharutc.ui.custom;
+package fr.utc.lo23.sharutc.ui.custom.card;
 
 import fr.utc.lo23.sharutc.model.domain.Music;
 import javafx.event.Event;

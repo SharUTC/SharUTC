@@ -6,7 +6,7 @@ import com.google.inject.Inject;
 import fr.utc.lo23.sharutc.model.domain.Music;
 import fr.utc.lo23.sharutc.model.userdata.UserInfo;
 import fr.utc.lo23.sharutc.ui.custom.PlayListListCell;
-import fr.utc.lo23.sharutc.ui.custom.SongCard;
+import fr.utc.lo23.sharutc.ui.custom.card.SongCard;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
