@@ -11,6 +11,8 @@ public class SimpleCard extends VBox {
     protected final int STATE_NORMAL = 0;
     protected final int STATE_CLICKED = 1;
 
+    public final static int WIDTH = 180;
+    
     protected int mState;
 
     public SimpleCard(String resourceFXML) {
@@ -28,7 +30,7 @@ public class SimpleCard extends VBox {
 
         //set style
         this.setAlignment(Pos.CENTER_LEFT);
-        this.setPrefWidth(180);
+        this.setPrefWidth(WIDTH);
         this.setPrefHeight(70);
         this.getStyleClass().addAll("simpleCard");
 
