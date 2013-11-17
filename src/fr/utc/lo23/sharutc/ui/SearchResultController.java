@@ -93,8 +93,14 @@ public class SearchResultController implements Initializable, UserCard.IUserCard
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+  
+     @Override
+    public void onSongAddToPlayList(Music music) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
     @Override
-    public void onSongRemoveFromMusicRequested(Music music) {
+    public void onTagEditionRequested(Music music) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
@@ -103,10 +109,6 @@ public class SearchResultController implements Initializable, UserCard.IUserCard
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    @Override
-    public void onSongAddToMusicRequested(Music music) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
 
     @Override
     public void onSongCardSelected(SongCard songCard) {
@@ -127,6 +129,8 @@ public class SearchResultController implements Initializable, UserCard.IUserCard
     public void onArtistDetailRequested(Music music) {
         mInterface.onArtistDetailRequested(music);
     }
+
+   
     
     public interface ISearchResultController{
          /**
