@@ -5,6 +5,7 @@
  */
 package fr.utc.lo23.sharutc.ui.custom;
 
+import fr.utc.lo23.sharutc.ui.custom.card.SimpleCard;
 import javafx.scene.layout.FlowPane;
 
 import java.io.IOException;

@@ -2,7 +2,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<fx:root type="fr.utc.lo23.sharutc.ui.custom.ArtistCard"
+<fx:root type="fr.utc.lo23.sharutc.ui.custom.card.ArtistCard"
          xmlns:fx="http://javafx.com/fxml">
     <Label fx:id="artistName" text=" Frank Sinatra" styleClass="artistCard" />
 </fx:root>

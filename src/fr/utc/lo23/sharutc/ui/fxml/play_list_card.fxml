@@ -7,7 +7,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.image.*?>
 
-<fx:root type="fr.utc.lo23.sharutc.ui.custom.PlayListCard"
+<fx:root type="fr.utc.lo23.sharutc.ui.custom.card.PlayListCard"
          xmlns:fx="http://javafx.com/fxml">
     <ImageView fx:id="cdCover">
         <image>

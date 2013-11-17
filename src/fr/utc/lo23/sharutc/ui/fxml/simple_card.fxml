@@ -1,5 +1,5 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.layout.StackPane?>
-<fx:root type="fr.utc.lo23.sharutc.ui.custom.SimpleCard"
+<fx:root type="fr.utc.lo23.sharutc.ui.custom.card.SimpleCard"
          xmlns:fx="http://javafx.com/fxml" fx:id="simpleCardRoot" alignment="CENTER">
 </fx:root>

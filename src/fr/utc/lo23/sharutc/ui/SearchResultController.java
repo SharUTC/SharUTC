@@ -1,10 +1,9 @@
 package fr.utc.lo23.sharutc.ui;
 
 import fr.utc.lo23.sharutc.model.userdata.UserInfo;
-import fr.utc.lo23.sharutc.ui.custom.PeopleCard;
-import fr.utc.lo23.sharutc.ui.custom.SimpleCard;
+import fr.utc.lo23.sharutc.ui.custom.card.SimpleCard;
 import fr.utc.lo23.sharutc.ui.custom.CardList;
-import fr.utc.lo23.sharutc.ui.custom.UserCard;
+import fr.utc.lo23.sharutc.ui.custom.card.UserCard;
 import javafx.fxml.Initializable;
 
 import java.net.URL;

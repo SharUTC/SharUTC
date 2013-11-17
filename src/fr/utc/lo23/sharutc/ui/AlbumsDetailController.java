@@ -1,7 +1,7 @@
 package fr.utc.lo23.sharutc.ui;
 
 import fr.utc.lo23.sharutc.model.domain.Music;
-import fr.utc.lo23.sharutc.ui.custom.AlbumCard;
+import fr.utc.lo23.sharutc.ui.custom.card.AlbumCard;
 import javafx.fxml.Initializable;
 
 import java.net.URL;
