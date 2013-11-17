@@ -33,7 +33,7 @@ public class HorizontalScrollHandler implements EventHandler<Event> {
         super();
         mScrollPane = s;
         mLastEventX = mScrollPane.getWidth() / 2;
-       // mScrollPane.setOnDragOver(this);
+        mScrollPane.setOnDragOver(this);
         mScrollPane.setOnScroll(this);
     }
 
