@@ -21,6 +21,7 @@
     
         <stylesheets>
             <URL value="@../css/login.css"/>
+            <URL value="@../css/drop.css"/>
         </stylesheets>
     
         <BorderPane StackPane.alignment="TOP_CENTER" >
