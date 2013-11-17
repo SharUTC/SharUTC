@@ -130,9 +130,9 @@
 }
 
 .cardDragged {
-	-fx-border-width: 4px 4px 4px 4px;
-	-fx-border-style : dashed;
-	-fx-opacity: 0.4;
+    -fx-border-width: 4px 4px 4px 4px;
+    -fx-border-style : dashed;
+    -fx-opacity: 0.4;
 }
 
 .groupCard {
@@ -222,42 +222,124 @@
 }
 .largeTextGrey ,
 .largeTextGreyBold{
-	-fx-font-size : 18px;
-  	-fx-text-fill: #BDC3C7;
+    -fx-font-size : 18px;
+    -fx-text-fill: #BDC3C7;
 }
 
 .largeTextGreyBold{
-      -fx-font-weight: bold;
- }
+    -fx-font-weight: bold;
+}
 
- #boxtitle{
+#boxtitle{
     -fx-border-color: #BDC3C7;
     -fx-border-width: 0px 0px 2px 0px;
-     
- }
- 
- .rectButton {
+
+}
+
+.rectButton {
     -fx-border-radius: 0;
     -fx-background-radius: 0;
     -fx-background-insets: 0;
- }
- 
- .rectButton:hover {
-     -fx-opacity: 0.7;
- }
- 
- .bgBlue{
-     -fx-background-color: #33B5E5;
- }
- 
- .bgGreen{
-     -fx-background-color: #99CC00;     
- }
- 
- .bgRed{
-     -fx-background-color: #FF4444;
- }
- 
- .bgOrange{
-     -fx-background-color: #FFBB33;
- }
+}
+
+.rectButton:hover {
+    -fx-opacity: 0.7;
+}
+
+.bgBlue{
+    -fx-background-color: #33B5E5;
+}
+
+.bgGreen{
+    -fx-background-color: #99CC00;     
+}
+
+.bgRed{
+    -fx-background-color: #FF4444;
+}
+
+.bgOrange{
+    -fx-background-color: #FFBB33;
+}
+
+
+/*
+*  PlayList
+*/
+
+#playList {
+    -fx-background-color: transparent;
+}
+
+#playList .list-cell {
+    -fx-background-color: transparent;
+    -fx-padding: 0px 7px 0px 7px;
+}
+
+#playList .scroll-bar:horizontal,
+#playList .scroll-bar:vertical {
+    -fx-background-color:transparent;
+    -fx-padding : 10px 0px 3px 0px;
+}
+
+#playList .increment-button,
+#playList .decrement-button {
+    -fx-background-color:#BDC3C7;
+    -fx-border-color: #BDC3C7;
+}
+
+#playList .increment-button .increment-arrow,
+#playList .decrement-button .decrement-arrow {
+    -fx-background-color : #BDC3C7;
+}
+
+#playList .scroll-bar:horizontal .track ,
+#playList .scroll-bar:vertical .track{
+    -fx-background-color: #BDC3C7;
+    -fx-border-color: #BDC3C7;
+    -fx-background-radius: 0em;
+}
+
+#playList .scroll-bar:horizontal .thumb,
+#playList .scroll-bar:vertical .thumb {
+    -fx-background-color: #ECF0F1;
+    -fx-background-insets: 0, 0, 0;
+    -fx-background-radius: 0em;
+
+}
+
+#playList .scroll-bar .thumb:hover,
+#playList .scroll-bar .thumb:pressed{
+    -fx-background-color: #A6A6A6;
+}
+
+/* 
+*   Play List Card
+*/
+
+.playListCard {
+    -fx-padding: 0px;
+    -fx-border-color: #7f8c8d;
+}
+
+#playList .list-cell:selected .playListCard {
+    -fx-background-color: rgba(51,181,229,0.5);
+}
+
+.playListCardMusicTitle {
+    -fx-font-size : 14px;
+    -fx-text-fill: #7f8c8d;
+    -fx-font-weight: bold;
+}
+
+#playList .list-cell:selected .playListCardMusicTitle {
+    -fx-text-fill: #FFFFFF;
+}
+.playListCardMusicArtist {
+    -fx-font-size : 12px;
+    -fx-text-fill: #7f8c8d;
+}
+
+#playList .list-cell:selected .playListCardMusicArtist {
+    -fx-text-fill: #ECF0F1;
+}

@@ -65,12 +65,11 @@
             </GridPane>
         </GridPane>
 
-        <HBox fx:id="bottombar" minHeight="100" onDragOver="#handleBottomBarDragOver"
+        <HBox fx:id="bottombar" minHeight="150" maxHeight="200"  onDragOver="#handleBottomBarDragOver"
               onDragDropped="#handleBottomBarDragDropped" onDragExited="#handleBottomBarDragExited"
               onDragEntered="#handleBottomBarDragEntered">
             <padding>
-                <Insets bottom="5" left="5" right="5" top="5"/>
-
+                <Insets bottom="5" left="5" right="5" top="5"/>                    
             </padding>
         </HBox>
 

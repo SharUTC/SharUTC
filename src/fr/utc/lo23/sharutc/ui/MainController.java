@@ -6,6 +6,7 @@ import com.google.inject.Inject;
 import fr.utc.lo23.sharutc.model.domain.Music;
 import fr.utc.lo23.sharutc.model.userdata.UserInfo;
 import fr.utc.lo23.sharutc.ui.custom.SongCard;
+import fr.utc.lo23.sharutc.ui.custom.PlayListListCell;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -27,6 +28,15 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
+import javafx.collections.FXCollections;
+import javafx.event.EventHandler;
+import javafx.geometry.Orientation;
+import javafx.scene.control.ListCell;
+import javafx.scene.control.ListView;
+import javafx.scene.control.SelectionMode;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Priority;
+import javafx.util.Callback;
 
 public class MainController implements Initializable, PeopleHomeController.IPeopleHomeController, SearchResultController.ISearchResultController, ArtistsDetailController.IArtistsDetailController {
 
@@ -51,10 +61,18 @@ public class MainController implements Initializable, PeopleHomeController.IPeop
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        //TODO Remove once we get a real list of Musics
+        population = new ArrayList();
+        populateMusics();
+
+
         try {
             final Result loadingResult = mFxmlLoader.load(getClass().getResource("/fr/utc/lo23/sharutc/ui/fxml/player.fxml"));
             mPlayerController = loadingResult.getController();
             bottombar.getChildren().add((Node) loadingResult.getRoot());
+            
+            initializePlayList();
+            
         } catch (IOException exception) {
         }
 
@@ -62,10 +80,7 @@ public class MainController implements Initializable, PeopleHomeController.IPeop
         mDragPreview.setOpacity(0.6);
         mDragPreview.setMouseTransparent(true);
         mDragPreview.toFront();
-        
-        //TODO Remove once we get a real list of Musics
-        population = new ArrayList();
-        populateMusics();
+
     }
 
     /**
@@ -206,18 +221,40 @@ public class MainController implements Initializable, PeopleHomeController.IPeop
             log.error(e.getMessage());
         }
     }
-    
-    
-    
-    
-     
+
+    //Need some improvements
+    private void initializePlayList() {
+        final ListView listView = new ListView();
+        listView.setOrientation(Orientation.HORIZONTAL);
+        listView.setId("playList");
+        HBox.setHgrow(listView, Priority.ALWAYS);
+        bottombar.getChildren().add(listView);
+
+        final ObservableList<Music> listData = FXCollections.observableArrayList();
+        listData.addAll(population);
+        
+
+        listView.setItems(listData);
+        listView.setCellFactory(new Callback<ListView<Music>, ListCell<Music>>() {
+            @Override
+            public ListCell<Music> call(ListView<Music> p) {
+                return new PlayListListCell();
+            }
+        });                
+        
+        listView.getSelectionModel().select(1);
+    }
+
     //TODO Remove once we get a real list of Musics
     private void populateMusics() {
-        for (int i=0; i<5; i++) {
-            for(int j=0; j<5; j++) {
+        for (int i = 0; i < 5; i++) {
+            for (int j = 0; j < 5; j++) {
                 Music m = new Music();
                 m.setArtist("Artist " + String.valueOf(i));
                 m.setAlbum("Album " + String.valueOf(j));
+                m.setId(0l);
+                m.setOwnerPeerId(0l);
+                m.setHash(0);
                 population.add(m);
             }
         }
