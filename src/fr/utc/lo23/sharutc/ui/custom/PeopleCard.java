@@ -1,7 +1,6 @@
 package fr.utc.lo23.sharutc.ui.custom;
 
 import fr.utc.lo23.sharutc.model.userdata.UserInfo;
-import javafx.collections.ObservableList;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.scene.control.Button;
@@ -13,10 +12,13 @@ public class PeopleCard extends DraggableCard implements EventHandler<Event> {
     /**
      * key used for the drag event to identify the content
      */
-    public static final String DROP_KEY = PeopleCard.class+"DropKey";
+    public static final String DROP_KEY = PeopleCard.class + "DropKey";
+    public static final int USAGE_CATEGORY = 0x00000001;
+    public static final int USAGE_CONNECTED = 0x00000002;
 
     private IPeopleCard mInterface;
     private UserInfo mUserInfo;
+    private int mUsage;
 
     public Label userLogin;
     public Label userName;
@@ -25,20 +27,31 @@ public class PeopleCard extends DraggableCard implements EventHandler<Event> {
     public Button detailButton;
 
 
-    public PeopleCard(UserInfo userInfo, IPeopleCard i) {
+    public PeopleCard(UserInfo userInfo, IPeopleCard i, int usage) {
         super("/fr/utc/lo23/sharutc/ui/fxml/people_card.fxml", DROP_KEY, i);
         initModel(userInfo);
         getStyleClass().add("peopleCard");
         mInterface = i;
-        deleteButton.setOnMouseClicked(this);
         detailButton.setOnMouseClicked(this);
         setOnMouseClicked(this);
         setOnMouseEntered(this);
         setOnMouseExited(this);
+        mUsage = usage;
+        switch (usage) {
+            case USAGE_CATEGORY:
+                deleteButton.setOnMouseClicked(this);
+                break;
+            case USAGE_CONNECTED:
+                break;
+        }
     }
 
     public void onHover(boolean isHover) {
-        deleteButton.setVisible(isHover);
+        switch (mUsage) {
+            case USAGE_CATEGORY:
+                deleteButton.setVisible(isHover);
+                break;
+        }
         detailButton.setVisible(isHover);
     }
 

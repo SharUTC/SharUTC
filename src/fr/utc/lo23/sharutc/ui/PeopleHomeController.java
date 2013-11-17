@@ -56,10 +56,10 @@ public class PeopleHomeController extends DragPreviewDrawer implements Initializ
         mPeopleCardSelected = new ArrayList<PeopleCard>();
         mAppModel.addPropertyChangeListener(this);
 
+        //initialize the connected category
+        mVirtualConnectedCategory.setName("Connected ");
         displayUserGroup();
-        displayActivePeers();
-
-        mCurrentCategory = null;
+        displayActivePeers(mVirtualConnectedCategory);
     }
 
     public void setInterface(IPeopleHomeController i) {
@@ -109,7 +109,10 @@ public class PeopleHomeController extends DragPreviewDrawer implements Initializ
     @Override
     public void onGroupSelected(Category category) {
         log.info("onGroupSelected " + category.getName());
-        mCurrentCategory = category;
+        if (!mCurrentCategory.equals(category)) {
+            mCurrentCategory = category;
+            displayActivePeers(category);
+        }
     }
 
     @Override
@@ -174,22 +177,36 @@ public class PeopleHomeController extends DragPreviewDrawer implements Initializ
     /**
      * call at the beginning and each time propertyChange ACTIVE_PEERS
      */
-    private void displayActivePeers() {
+    private void displayActivePeers(Category c) {
         peopleContainer.getChildren().clear();
-        //TODO Remove once we get the real peersList
-        for (int i = 0; i < 50; i++) {
-            final UserInfo userInfo = new UserInfo();
-            userInfo.setLogin("Login " + String.valueOf(i));
-            userInfo.setLastName("LastName");
-            userInfo.setFirstName("FirstName");
-            PeopleCard newCard = new PeopleCard(userInfo, this);
-            peopleContainer.getChildren().add(newCard);
-        }
 
 
-        if (mCurrentCategory == mVirtualConnectedCategory) {
+        if (c.equals(mVirtualConnectedCategory)) {
             //display all user
+
+            //TODO Remove once we get the real peersList
+            for (int i = 0; i < 50; i++) {
+                final UserInfo userInfo = new UserInfo();
+                userInfo.setLogin("Login " + String.valueOf(i));
+                userInfo.setLastName("LastName");
+                userInfo.setFirstName("FirstName");
+                PeopleCard newCard = new PeopleCard(userInfo, this, PeopleCard.USAGE_CONNECTED);
+                peopleContainer.getChildren().add(newCard);
+            }
+
         } else {
+
+
+            //TODO Remove once we get the real peersList
+            for (int i = 10; i < 25; i++) {
+                final UserInfo userInfo = new UserInfo();
+                userInfo.setLogin("Login " + String.valueOf(i));
+                userInfo.setLastName("LastName");
+                userInfo.setFirstName("FirstName");
+                PeopleCard newCard = new PeopleCard(userInfo, this, PeopleCard.USAGE_CATEGORY);
+                peopleContainer.getChildren().add(newCard);
+            }
+
             //check if user are in mCurrentCategory
 //            Contact c = new Contact();
 //            if(c.getCategoryIds().contains(mCurrentCategory.getId())){
@@ -205,10 +222,12 @@ public class PeopleHomeController extends DragPreviewDrawer implements Initializ
         groupContainer.getChildren().clear();
 
         //Display the virtual category for find connected people
-        mVirtualConnectedCategory.setName("Connected ");
         GroupCard virtualConnectedCard = new GroupCard(mVirtualConnectedCategory, this);
         //disable deletion, edit and rights for this virtual groupCard, needs improvement
         virtualConnectedCard.setOnMouseEntered(null);
+        //disable drop behavior for this virtual groupCard, needs improvement
+        virtualConnectedCard.setOnDragEntered(null);
+        virtualConnectedCard.setOnDragOver(null);
         groupContainer.getChildren().add(virtualConnectedCard);
         mCurrentCategory = mVirtualConnectedCategory;
 
