@@ -13,7 +13,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  *
- * @author Mathilde
+ * {@inheritDoc}
  */
 public class RemoveContactFromCategoryCommandImpl implements RemoveContactFromCategoryCommand {
     
@@ -24,11 +24,11 @@ public class RemoveContactFromCategoryCommandImpl implements RemoveContactFromCa
     final private UserService mUserService;
 
      /**
-     * {@inheritDoc}
+     * @param userService
      */
     @Inject
-    public RemoveContactFromCategoryCommandImpl(UserService mUserService) {
-        this.mUserService = mUserService;
+    public RemoveContactFromCategoryCommandImpl(UserService userService) {
+        this.mUserService = userService;
     }
 
     /**

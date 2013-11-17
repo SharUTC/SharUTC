@@ -18,7 +18,7 @@ public class Contact implements Serializable {
 
     /**
      *
-     * @param peerId
+     * @param userInfo
      */
     public Contact(UserInfo userInfo) {
         this.mUserInfo = userInfo;
@@ -51,20 +51,33 @@ public class Contact implements Serializable {
 
     /**
      *
-     * @param categories
+     * @param categoryIds
      */
     public void setCategoryId(Set<Integer> categoryIds) {
         this.mCategoryIds = categoryIds;
     }
 
+     /**
+     *
+     * @param categoryId
+     */
     public void addCategoryId(Integer categoryId) {
         mCategoryIds.add(categoryId);
     }
 
+    /**
+     *
+     * @param categoryId
+     */
     public void removeCategoryId(Integer categoryId) {
         mCategoryIds.remove(categoryId);
     }
 
+     /**
+     * Check if a contact is in the Public category
+     * 
+     * @return
+     */
     public boolean isInPublic() {
         boolean isInPublic = false;
         for (Integer c : mCategoryIds) {
@@ -74,5 +87,52 @@ public class Contact implements Serializable {
             }
         }
         return isInPublic;
+    }
+
+    
+     /**
+     * @param obj
+     * 
+     * @return
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Contact other = (Contact) obj;
+        if (this.mUserInfo != other.mUserInfo && (this.mUserInfo == null || !this.mUserInfo.equals(other.mUserInfo))) {
+            return false;
+        }
+        if (this.mCategoryIds != other.mCategoryIds && (this.mCategoryIds == null || !this.mCategoryIds.equals(other.mCategoryIds))) {
+            return false;
+        }
+        return true;
+    }
+
+    
+     /**
+     * 
+     * @return
+     */
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 23 * hash + (this.mUserInfo != null ? this.mUserInfo.hashCode() : 0);
+        hash = 23 * hash + (this.mCategoryIds != null ? this.mCategoryIds.hashCode() : 0);
+        return hash;
+    }
+    
+    
+     /**
+     * 
+     * @return
+     */
+    @Override
+    public String toString() {
+        return "Contact{" + "mUserInfo=" + mUserInfo + ", mCategoryIds=" + mCategoryIds + '}';
     }
 }

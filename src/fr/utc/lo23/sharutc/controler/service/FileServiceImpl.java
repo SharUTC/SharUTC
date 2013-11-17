@@ -3,6 +3,7 @@ package fr.utc.lo23.sharutc.controler.service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import static fr.utc.lo23.sharutc.controler.service.FileService.ROOT_FOLDER_TMP;
 import fr.utc.lo23.sharutc.model.AppModel;
 import fr.utc.lo23.sharutc.model.domain.Music;
 import java.io.BufferedInputStream;
@@ -29,6 +30,8 @@ import org.jaudiotagger.tag.Tag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import static fr.utc.lo23.sharutc.controler.service.FileService.ROOT_FOLDER_USERS;
+import fr.utc.lo23.sharutc.model.domain.Catalog;
+import javax.swing.JFileChooser;
 
 /**
  *
@@ -39,6 +42,7 @@ public class FileServiceImpl implements FileService {
     protected static String appFolder;
     private static final int BUFFER_SIZE = 2048;
     private static final int COMPRESSION_LEVEL = 9;
+    private static final String ZIP_FORMAT = "zip";
     private static final Logger log = LoggerFactory
             .getLogger(FileServiceImpl.class);
     private final AppModel appModel;
@@ -49,12 +53,7 @@ public class FileServiceImpl implements FileService {
     public FileServiceImpl(AppModel appModel) {
         this.appModel = appModel;
 
-        try {
-            appFolder = new File(".").getCanonicalPath();
-        } catch (IOException ex) {
-            log.error("Can't run application in this folder : \n{}", ex.toString());
-            throw new RuntimeException("Can't run application in this folder", ex);
-        }
+        appFolder = new JFileChooser().getFileSystemView().getDefaultDirectory().toString();
         appFolder += File.separator + APP_NAME + File.separator;
 
         if (!new File(appFolder).exists()) {
@@ -67,18 +66,40 @@ public class FileServiceImpl implements FileService {
 
     @Override
     public String getAppFolder() {
+        log.debug("getAppFolder ({})", appFolder);
         return appFolder;
     }
 
+    /**
+     *
+     * {@inheritDoc}
+     */
     @Override
-    public void importWholeProfile(String srcPath) throws Exception {
+    public void importWholeProfile(String srcPath, boolean force) throws Exception {
+        log.debug("importWholeProfile ...");
+        //check the format
+        int lastP = srcPath.lastIndexOf('.');
+        if (lastP == -1 || srcPath.lastIndexOf(File.separator) == -1
+                || (lastP != -1 && lastP + 1 < srcPath.length() && !srcPath.substring(lastP + 1).equals(ZIP_FORMAT))) {
+            throw new Exception("File format is not supported");
+        }
 
-        // FIXME: prevent import if account already exists
-        // TODO : check if following line is still valid, use File.separator instead of \\
-        String userName = srcPath.substring(srcPath.lastIndexOf("\\"), srcPath.lastIndexOf('.'));
+        String userName = srcPath.substring(srcPath.lastIndexOf(File.separator), lastP);
+        //check if the user already exists
+        if (new File(appFolder + ROOT_FOLDER_USERS).exists()) {
+            if (!force) {
+                throw new Exception("This user already exists");
+            } else {
+                File userFolder = new File(appFolder + ROOT_FOLDER_USERS);
+                deleteFolderRecursively(userFolder.getAbsolutePath());
+                userFolder.delete();
+            }
+        }
 
         //chech the structure of the file
-        boolean profileFolderExists = false;
+        boolean musicJsonExists = false;
+        boolean profileJsonExists = false;
+        boolean rightsJsonExists = false;
         boolean musicFolderExists = false;
 
         ZipFile zf = new ZipFile(srcPath);
@@ -87,29 +108,24 @@ public class FileServiceImpl implements FileService {
         while (entries.hasMoreElements()) {
             ZipEntry ze = (ZipEntry) entries.nextElement();
             String entryName = ze.getName();
-            if (entryName.indexOf("\\") != -1) {
-                //TODO: update validation following unified save() methods, folder is unique, files differs
-                // ./SharUTC/users/_login_/musics.json
-                // ./SharUTC/users/_login_/profile.json
-                // ./SharUTC/users/_login_/rights.json
-                // ./SharUTC/users/_login_/musics/xxx.mp3
-                // ./SharUTC/users/_login_/musics/yyy.mp3
-                // ./SharUTC/users/_login_/musics/zzz.mp3
-               /* if (entryName.substring(0, entryName.indexOf("\\")).equals(FOLDER_PROFILE)) {
-                 profileFolderExists = true;
-                 } else if (entryName.substring(0, entryName.indexOf("\\")).equals(FOLDER_MUSICS)) {
-                 musicFolderExists = true;
-                 }*/
-                profileFolderExists = true;
+            if (entryName.equals(JSON_MUSICS)) {
+                musicJsonExists = true;
+            } else if (entryName.equals(JSON_PROFILE)) {
+                profileJsonExists = true;
+            } else if (entryName.equals(JSON_RIGHTS)) {
+                rightsJsonExists = true;
+            } else if (entryName.indexOf(File.separator) != -1
+                    && entryName.substring(0, entryName.indexOf(File.separator)).equals(FOLDER_MUSICS)) {
                 musicFolderExists = true;
             }
         }
 
-        if (!profileFolderExists || !musicFolderExists) {
+        if (!musicJsonExists || !profileJsonExists
+                || !rightsJsonExists || !musicFolderExists) {
             throw new Exception("Corrupted zip file");
         }
 
-        //Create user folder and sub folders
+        //Create user folder and musics folder
         new File(appFolder + ROOT_FOLDER_USERS + File.separator + userName).mkdirs();
         new File(appFolder + ROOT_FOLDER_USERS + File.separator + userName + File.separator + FOLDER_MUSICS).mkdirs();
 
@@ -133,6 +149,7 @@ public class FileServiceImpl implements FileService {
             outBuffer.close();
         }
         zipInStream.close();
+        log.debug("importWholeProfile DONE");
     }
 
     /**
@@ -140,6 +157,7 @@ public class FileServiceImpl implements FileService {
      */
     @Override
     public void exportFile(String srcPath, String destPath) throws IOException {
+        log.debug("exportFile ...");
         List<String> fileList = new ArrayList<String>();
         byte data[] = new byte[BUFFER_SIZE];
 
@@ -168,6 +186,7 @@ public class FileServiceImpl implements FileService {
             outStream.closeEntry();
         }
         outStream.close();
+        log.debug("exportFile DONE");
     }
 
     /**
@@ -193,10 +212,31 @@ public class FileServiceImpl implements FileService {
     }
 
     /**
+     * Delete every file and forlder under <i>pathname</i>
+     *
+     * @param pathname
+     */
+    public void deleteFolderRecursively(String pathname) {
+        log.debug("deleteFolderRecursively ({})...", pathname);
+        File file = new File(pathname);
+        if (file.exists()) {
+            File[] children = file.listFiles();
+            for (int i = 0; i < children.length; ++i) {
+                if (children[i].isDirectory()) {
+                    deleteFolderRecursively(children[i].getAbsolutePath());
+                }
+                children[i].delete();
+            }
+        }
+        log.debug("deleteFolderRecursively DONE");
+    }
+
+    /**
      * {@inheritDoc}
      */
     @Override
     public Music createMusicFromFile(File file) throws Exception {
+        log.debug("createMusicFromFile ...");
         if (file == null) {
             log.error("File is null");
             throw new Exception("File is null");
@@ -241,16 +281,20 @@ public class FileServiceImpl implements FileService {
         for (int i = 0; i < byteArray.length; i++) {
             bytes[i] = byteArray[i];
         }
-        return new Music(appModel.getProfile().getNewMusicId(),
+        Music music = new Music(appModel.getProfile().getNewMusicId(),
                 appModel.getProfile().getUserInfo().getPeerId(), bytes,
                 file.getName(), file.getName(), file.hashCode(), title, artist, album, year, track,
                 trackLength, frames);
+        log.debug("createMusicFromFile DONE");
+        return music;
     }
 
     @Override
     public Music fakeMusicFromFile(File file) throws Exception {
+        log.debug("fakeMusicFromFile ...");
         Music music = createMusicFromFile(file);
         appModel.getProfile().decrementMusicId();
+        log.debug("fakeMusicFromFile DONE");
         return music;
     }
 
@@ -277,6 +321,7 @@ public class FileServiceImpl implements FileService {
      */
     @Override
     public byte[] getFileAsByteArray(File file) throws IOException {
+        log.debug("getFileAsByteArray ...");
         byte[] bytes;
         ByteArrayOutputStream baos = null;
         InputStream inputStream = null;
@@ -336,6 +381,7 @@ public class FileServiceImpl implements FileService {
      */
     @Override
     public File buildTmpMusicFile(Byte[] musicBytes) throws Exception {
+        log.debug("buildTmpMusicFile ...");
         resetTmpFile();
 
         // then we copy mp3 bytes into it
@@ -346,11 +392,62 @@ public class FileServiceImpl implements FileService {
         FileOutputStream fileOuputStream = new FileOutputStream(tmpFile);
         fileOuputStream.write(bytes);
         fileOuputStream.close();
+        log.debug("buildTmpMusicFile DONE");
         return tmpFile;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<File> buildTmpMusicFilesForInstall(Catalog catalog) throws Exception {
+        log.debug("buildTmpMusicFilesForInstall ...");
+        if (!new File(appFolder + ROOT_FOLDER_TMP).exists()) {
+            new File(appFolder + ROOT_FOLDER_TMP).mkdirs();
+        } else {
+            deleteRecursive(appFolder + ROOT_FOLDER_TMP);
+            new File(appFolder + ROOT_FOLDER_TMP).mkdirs();
+        }
+        List<File> files = new ArrayList<File>(catalog.size());
+        for (Music music : catalog.getMusics()) {
+            Byte[] musicBytes = music.getFileBytes();
+            if (musicBytes != null && musicBytes.length != 0) {
+                File file = new File(appFolder + ROOT_FOLDER_TMP + File.separator + music.getFileName());
+                byte[] bytes = new byte[musicBytes.length];
+                for (int i = 0; i < musicBytes.length; i++) {
+                    bytes[i] = musicBytes[i];
+                }
+                FileOutputStream fileOuputStream = new FileOutputStream(file);
+                fileOuputStream.write(bytes);
+                fileOuputStream.close();
+                file.deleteOnExit();
+                files.add(file);
+            }
+        }
+        log.debug("buildTmpMusicFilesForInstall DONE");
+        return files;
+    }
+
+    private void deleteRecursive(String path) {
+        log.trace("deleteRecursive : {} ...", path);
+        File fileOrDir = new File(path);
+        if (fileOrDir.isFile()) {
+            fileOrDir.delete();
+        } else if (fileOrDir.isDirectory()) {
+            for (File file : fileOrDir.listFiles()) {
+                try {
+                    deleteRecursive(file.getCanonicalPath());
+                } catch (IOException ex) {
+                    log.error("deleteRecursive failed");
+                }
+            }
+        }
+        log.trace("deleteRecursive : {} DONE", path);
     }
 
     @Override
     public File getFileOfLocalMusic(Music localMusic) {
+        log.debug("getFileOfLocalMusic ...");
         File file = null;
         if (localMusic != null) {
             String ownerLogin = appModel.getProfile().getUserInfo().getLogin();
@@ -358,19 +455,23 @@ public class FileServiceImpl implements FileService {
                 file = new File(appFolder + File.separator + ROOT_FOLDER_USERS + File.separator + ownerLogin + File.separator + localMusic.getFileName());
             }
         }
+        log.debug("getFileOfLocalMusic DONE");
         return file;
     }
 
     @Override
     public String computeRealName(String name) {
+        log.trace("computeRealName ...");
         if (name != null && !name.endsWith(DOT_MP3)) {
             name = name + DOT_MP3;
         }
+        log.trace("computeRealName DONE ({})", name);
         return name;
     }
 
     @Override
     public String computeFileName(String musicActualRealName, String realname) {
+        log.trace("computeFileName ...");
         String filename = null;
         if (realname != null && musicActualRealName != null) {
             if (!realname.endsWith(DOT_MP3)) {
@@ -393,6 +494,7 @@ public class FileServiceImpl implements FileService {
                 }
             }
         }
+        log.trace("computeFileName DONE ({})", filename);
         return filename;
     }
 
@@ -425,20 +527,24 @@ public class FileServiceImpl implements FileService {
 
     @Override
     public void saveToFile(SharUTCFile sharUTCFile, Object localCatalog) {
+        log.debug("saveToFile ({}) ...", sharUTCFile.getFilename());
         StringBuilder builder = new StringBuilder(appFolder).append(ROOT_FOLDER_USERS).append(File.separator).append(getCurrentUserLogin()).append(File.separator).append(sharUTCFile.getFilename());
         try {
             mapper.writeValue(new File(builder.toString()), localCatalog);
         } catch (Exception ex) {
             log.error(ex.toString());
         }
+        log.debug("saveToFile ({}) DONE", sharUTCFile.getFilename());
     }
 
     protected final String getCurrentUserLogin() {
+        log.trace("getCurrentUserLogin ({})", appModel.getProfile().getUserInfo().getLogin());
         return appModel.getProfile().getUserInfo().getLogin();
     }
 
     @Override
     public <T> T readFile(SharUTCFile sharUTCFile, Class<T> clazz) {
+        log.debug("readFile ({}) ...", sharUTCFile.getFilename());
         StringBuilder builder = new StringBuilder(appFolder).append(ROOT_FOLDER_USERS).append(File.separator).append(getCurrentUserLogin()).append(File.separator).append(sharUTCFile.getFilename());
         T object = null;
         try {
@@ -446,11 +552,13 @@ public class FileServiceImpl implements FileService {
         } catch (Exception ex) {
             log.error(ex.toString());
         }
+        log.debug("readFile ({}) DONE", sharUTCFile.getFilename());
         return object;
     }
 
     @Override
     public void createFile(byte[] bytes, String fileName) {
+        log.debug("createFile ({}) ...", fileName);
         try {
             //convert array of bytes into file
             FileOutputStream fileOuputStream =
@@ -461,11 +569,14 @@ public class FileServiceImpl implements FileService {
             log.error("Error while creating file '{}' from bytes", fileName, ex.toString());
             throw new RuntimeException("Error while creating file '" + fileName + "' from bytes", ex);
         }
+        log.debug("createFile ({}) DONE", fileName);
     }
 
     @Override
     public void createAccountFolder(String login) {
+        log.debug("createAccountFolder ({}) ...", login);
         if (!new File(appFolder + ROOT_FOLDER_USERS + File.separator + login).exists()) {
+            log.debug("createAccountFolder ({}) : directory doesn't exist, making it", login);
             new File(appFolder + ROOT_FOLDER_USERS + File.separator + login).mkdir();
         }
     }

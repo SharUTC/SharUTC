@@ -13,12 +13,14 @@ public class Profile implements Serializable {
     private Contacts mContacts;
     private UserInfo mUserInfo;
     private Long musicCounter;
+    private Integer categoryIdSequence;
 
     /**
      * keep no args constructor for parsing purpose
      */
     public Profile() {
         this.musicCounter = 0L;
+        this.categoryIdSequence = 0;
     }
 
     /**
@@ -28,6 +30,7 @@ public class Profile implements Serializable {
      */
     public Profile(UserInfo userInfo) {
         this.musicCounter = 0L;
+        this.categoryIdSequence = 0;
         this.mKnownPeerList = new KnownPeerList();
         this.mCategories = new Categories();
         mCategories.add(new Category(Category.PUBLIC_CATEGORY_ID, Category.PUBLIC_CATEGORY_NAME));
@@ -45,6 +48,14 @@ public class Profile implements Serializable {
 
     public void decrementMusicId() {
         musicCounter--;
+    }
+    
+     /**
+     *
+     * @return
+     */
+    public Integer getNewCategoryId() {
+        return ++categoryIdSequence;
     }
 
     /**
@@ -81,10 +92,18 @@ public class Profile implements Serializable {
         this.mCategories = categories;
     }
 
+    /**
+     *
+     * @return
+     */    
     public Contacts getContacts() {
         return mContacts;
     }
 
+    /**
+     *
+     * @param mContacts
+     */    
     public void setContacts(Contacts mContacts) {
         this.mContacts = mContacts;
     }

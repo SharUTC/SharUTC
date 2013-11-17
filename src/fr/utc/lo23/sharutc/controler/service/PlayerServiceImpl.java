@@ -49,8 +49,12 @@ public class PlayerServiceImpl implements PlayerService, PropertyChangeListener,
      */
     @Override
     public void addToPlaylist(Music music) {
+        log.info("addToPlaylist");
         if (music != null && !music.getFileMissing() && music.getFileBytes() != null) {
             mPlaylist.add(music);
+            log.debug("addToPlaylist : music added");
+        } else {
+            log.error("addToPlaylist : music NOT added, null or missing music file");
         }
     }
 
@@ -60,7 +64,11 @@ public class PlayerServiceImpl implements PlayerService, PropertyChangeListener,
     @Override
     public void removeFromPlaylist(Music music) {
         if (music != null) {
-            mPlaylist.remove(music);
+            if (mPlaylist.remove(music)) {
+                log.debug("removeFromPlaylist : music removed");
+            } else {
+                log.error("removeFromPlaylist : music NOT removed, not found");
+            }
         }
     }
 
@@ -153,6 +161,7 @@ public class PlayerServiceImpl implements PlayerService, PropertyChangeListener,
      */
     @Override
     public boolean isPause() {
+        log.trace("isPause ({})", this.pause);
         return this.pause;
     }
 
@@ -201,7 +210,7 @@ public class PlayerServiceImpl implements PlayerService, PropertyChangeListener,
             setCurrentMusic(mPlaylist.get(nextIndex));
         } else {
             // no effect
-            log.debug("playerNext on empty list");
+            log.trace("playerNext on empty list");
         }
         // play current
         playerPlay();
@@ -226,7 +235,7 @@ public class PlayerServiceImpl implements PlayerService, PropertyChangeListener,
             setCurrentMusic(mPlaylist.get(previousIndex));
         } else {
             // no effect
-            log.debug("playerPrevious on empty list");
+            log.trace("playerPrevious on empty list");
         }
         // play current
         playerPlay();
@@ -237,10 +246,12 @@ public class PlayerServiceImpl implements PlayerService, PropertyChangeListener,
      */
     @Override
     public Long getCurrentTimeSec() {
+        log.trace("getCurrentTimeSec ...");
         Long currentTime = null;
         if (player != null && mCurrentMusic != null) {
             currentTime = mCurrentTimeSec;
         }
+        log.trace("getCurrentTimeSec DONE ({} s)", currentTime);
         return currentTime;
     }
 
@@ -249,6 +260,7 @@ public class PlayerServiceImpl implements PlayerService, PropertyChangeListener,
      */
     @Override
     public void setCurrentTimeSec(Long timeInSec) {
+        log.debug("setCurrentTimeSec ({}) ...", timeInSec);
         if (mCurrentMusic != null && timeInSec != null) {
             if (timeInSec <= 0L) {
                 timeInSec = 0L;
@@ -261,6 +273,7 @@ public class PlayerServiceImpl implements PlayerService, PropertyChangeListener,
             }
             propertyChangeSupport.firePropertyChange(Property.CURRENT_TIME.name(), null, timeInSec);
         }
+        log.debug("setCurrentTimeSec ({}) DONE", timeInSec);
     }
 
     /**
@@ -268,10 +281,12 @@ public class PlayerServiceImpl implements PlayerService, PropertyChangeListener,
      */
     @Override
     public Long getTotalTimeSec() {
+        log.trace("getTotalTimeSec ...");
         Long totalTime = null;
         if (mCurrentMusic != null) {
             totalTime = new Long(mCurrentMusic.getTrackLength());
         }
+        log.trace("getTotalTimeSec DONE ({})", totalTime);
         return totalTime;
     }
 
@@ -279,6 +294,7 @@ public class PlayerServiceImpl implements PlayerService, PropertyChangeListener,
      * {@inheritDoc}
      */
     private void setCurrentMusic(Music music) {
+        log.trace("setCurrentMusic ...");
         Music oldMusic = this.mCurrentMusic;
         this.mCurrentMusic = music;
         propertyChangeSupport.firePropertyChange(Property.SELECTED_MUSIC.name(), oldMusic, mCurrentMusic);
@@ -363,10 +379,10 @@ public class PlayerServiceImpl implements PlayerService, PropertyChangeListener,
      */
     @Override
     public void setVolume(int volume) {
+        log.debug("setVolume ({}) ...", volume);
         if (volume < VOLUME_MIN) {
             volume = VOLUME_MIN;
-        }
-        if (volume > VOLUME_MAX) {
+        } else if (volume > VOLUME_MAX) {
             volume = VOLUME_MAX;
         }
         if (this.volume == null || this.volume != volume) {
@@ -377,6 +393,7 @@ public class PlayerServiceImpl implements PlayerService, PropertyChangeListener,
             }
             propertyChangeSupport.firePropertyChange(Property.VOLUME.name(), oldVolume, this.volume);
         }
+        log.debug("setVolume ({}) DONE", volume);
     }
 
     /**
@@ -392,6 +409,7 @@ public class PlayerServiceImpl implements PlayerService, PropertyChangeListener,
      */
     @Override
     public void setMute(boolean mute) {
+        log.debug("setMute ({}) ...", mute);
         if (this.mute != mute) {
             this.mute = mute;
             if (player != null) {
@@ -399,6 +417,7 @@ public class PlayerServiceImpl implements PlayerService, PropertyChangeListener,
             }
             propertyChangeSupport.firePropertyChange(Property.MUTE.name(), !this.mute, this.mute);
         }
+        log.debug("setMute ({}) DONE", mute);
     }
 
     /**

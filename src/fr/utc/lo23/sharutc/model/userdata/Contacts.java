@@ -42,6 +42,14 @@ public class Contacts implements Serializable {
         return contact;
     }
 
+     /**
+     *
+     * @return
+     */
+    public HashSet<Contact> getContacts() {
+        return mContacts;
+    }
+    
     /**
      *
      * @param contact
@@ -57,7 +65,7 @@ public class Contacts implements Serializable {
 
     /**
      *
-     * @param peers
+     * @param contacts
      */
     public void addAll(Collection<Contact> contacts) {
         if (contacts != null && !contacts.isEmpty()) {
@@ -100,7 +108,7 @@ public class Contacts implements Serializable {
 
     /**
      *
-     * @param peer
+     * @param contact
      * @return
      */
     public boolean contains(Contact contact) {

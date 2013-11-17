@@ -32,4 +32,8 @@ public interface SendMusicToPlayCommand extends Command {
      * @param music
      */
     public void setMusic(Music music);
+
+    public Long getConversationId();
+
+    public void setConversationId(Long nextConversationId);
 }

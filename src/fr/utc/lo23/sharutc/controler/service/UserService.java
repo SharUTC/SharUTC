@@ -16,16 +16,16 @@ public interface UserService {
     public void saveProfileFiles();
 
     /**
-     * Add a new contact represented by one's id in the category
+     * Add a new contact in the category
      *
-     * @param peer
+     * @param contact
      */
     public void addContact(Contact contact);
 
     /**
-     * Remove the contact represented by one's peer from every category
+     * Remove a contact from every category
      *
-     * @param peer
+     * @param contact
      */
     public void deleteContact(Contact contact);
 
@@ -44,17 +44,17 @@ public interface UserService {
     public void deleteCategory(Category category);
 
     /**
-     * Add a contact represented by one's peer to a specified category
+     * Add a contact to a specified category
      *
-     * @param peer
+     * @param contact
      * @param category
      */
     public void addContactToCategory(Contact contact, Category category);
 
     /**
-     * Remove a contact represented by one's peer from a specified category
+     * Remove a contact from a specified category
      *
-     * @param peer
+     * @param contact
      * @param category
      */
     public void removeContactFromCategory(Contact contact, Category category);

@@ -12,7 +12,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  *
- * @author Mathilde
+ * {@inheritDoc}
  */
 public class DeleteCategoryCommandImpl implements DeleteCategoryCommand {
 
@@ -22,11 +22,11 @@ public class DeleteCategoryCommandImpl implements DeleteCategoryCommand {
     final private UserService mUserService;
 
      /**
-     * {@inheritDoc}
+     * @param userService
      */
     @Inject
-    public DeleteCategoryCommandImpl(UserService mUserService) {
-        this.mUserService = mUserService;
+    public DeleteCategoryCommandImpl(UserService userService) {
+        this.mUserService = userService;
     }
     
      /**

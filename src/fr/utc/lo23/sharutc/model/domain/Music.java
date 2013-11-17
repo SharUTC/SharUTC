@@ -3,6 +3,7 @@ package fr.utc.lo23.sharutc.model.domain;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import fr.utc.lo23.sharutc.model.userdata.Category;
 import fr.utc.lo23.sharutc.model.userdata.Peer;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
@@ -66,6 +67,9 @@ public class Music implements Serializable {
     public Music() {
         this.mComments = new ArrayList<Comment>();
         this.mScores = new HashSet<Score>();
+        this.mCategoryIds = new HashSet<Integer>();
+        this.mCategoryIds.add(Category.PUBLIC_CATEGORY_ID);
+        this.mTags = new HashSet<String>();
     }
 
     /**
@@ -135,6 +139,7 @@ public class Music implements Serializable {
         this.mOwnerPeerId = ownerPeerId;
         this.mHash = hashcode;
         this.mCategoryIds = new HashSet<Integer>();
+        this.mCategoryIds.add(Category.PUBLIC_CATEGORY_ID);
         this.mFile = file;
         this.mFrames = frames;
         this.mComments = new ArrayList<Comment>();
@@ -287,7 +292,7 @@ public class Music implements Serializable {
      * @return
      */
     public Set<Integer> getCategoryIds() {
-        return mCategoryIds;
+        return Collections.unmodifiableSet(mCategoryIds);
     }
 
     /**
@@ -296,6 +301,32 @@ public class Music implements Serializable {
      */
     public void setCategoryIds(Set<Integer> categoryIds) {
         this.mCategoryIds = categoryIds;
+    }
+
+    /**
+     *
+     * @param categoryId
+     */
+    public void addCategoryId(Integer categoryId) {
+        Set<Integer> oldCategoryIds = this.mCategoryIds;
+        Set<Integer> categoryIds = new HashSet<Integer>(this.mCategoryIds);
+        if (categoryIds.add(categoryId)) {
+            this.mCategoryIds = categoryIds;
+            propertyChangeSupport.firePropertyChange(Property.CATEGORY_IDS.name(), oldCategoryIds, this.mCategoryIds);
+        }
+    }
+
+    /**
+     *
+     * @param categoryId
+     */
+    public void removeCategoryId(Integer categoryId) {
+        Set<Integer> oldCategoryIds = this.mCategoryIds;
+        Set<Integer> categoryIds = new HashSet<Integer>(this.mCategoryIds);
+        if (categoryIds.remove(categoryId)) {
+            this.mCategoryIds = categoryIds;
+            propertyChangeSupport.firePropertyChange(Property.CATEGORY_IDS.name(), oldCategoryIds, this.mCategoryIds);
+        }
     }
 
     /**
@@ -681,7 +712,11 @@ public class Music implements Serializable {
         /**
          *
          */
-        TAGS
+        TAGS,
+        /**
+         *
+         */
+        CATEGORY_IDS
     }
 
     @Override

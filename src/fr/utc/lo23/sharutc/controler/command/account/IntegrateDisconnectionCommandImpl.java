@@ -19,9 +19,8 @@ public class IntegrateDisconnectionCommandImpl implements IntegrateDisconnection
      * {@inheritDoc}
      */
     @Inject
-    public IntegrateDisconnectionCommandImpl(UserService mUserService, long peerId) {
+    public IntegrateDisconnectionCommandImpl(UserService mUserService) {
         this.mUserService = mUserService;
-        this.mPeerId = peerId;
     }
     
     /**
@@ -47,7 +46,7 @@ public class IntegrateDisconnectionCommandImpl implements IntegrateDisconnection
     public void execute() {
         log.info("Remove Peer...");
         this.mUserService.removeFromConnectedPeers(mPeerId);
-        log.info("Peer removed..");  
+        log.info("Peer removed.");  
     }
 
     

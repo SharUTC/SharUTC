@@ -5,8 +5,8 @@ import fr.utc.lo23.sharutc.controler.command.music.AddToLocalCatalogCommand;
 import fr.utc.lo23.sharutc.controler.command.music.AddToLocalCatalogCommandImpl;
 import fr.utc.lo23.sharutc.controler.service.FileService;
 import fr.utc.lo23.sharutc.controler.service.MusicService;
+import fr.utc.lo23.sharutc.controler.service.UserService;
 import fr.utc.lo23.sharutc.model.domain.Catalog;
-import fr.utc.lo23.sharutc.model.domain.Music;
 import fr.utc.lo23.sharutc.model.domain.RightsList;
 import fr.utc.lo23.sharutc.model.userdata.ActivePeerList;
 import fr.utc.lo23.sharutc.model.userdata.Categories;
@@ -18,8 +18,6 @@ import fr.utc.lo23.sharutc.model.userdata.UserInfo;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Level;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,22 +26,24 @@ public class AppModelBuilder {
     private static final Logger log = LoggerFactory
             .getLogger(AppModelBuilder.class);
     private static String TEST_MP3_FOLDER;
-    private static final String[] TEST_MP3_FILENAMES = {"Sting & The Police - The Very Best Of Sting & The Police - 17 - Roxanne.mp3","14 - End Credit Score.mp3","Air - Moon Safari - Sexy Boy.mp3"};
-    public static final String LOCAL_ACCOUNT_LOGIN = "test login";
+    private static final String[] TEST_MP3_FILENAMES = {"Sting & The Police - The Very Best Of Sting & The Police - 17 - Roxanne.mp3", "14 - End Credit Score.mp3", "Air - Moon Safari - Sexy Boy.mp3"};
+    public static final String LOCAL_ACCOUNT_LOGIN = "LocalPeer Mock (id=0)";
     public static final String LOCAL_ACCOUNT_PASSWORD = "pwd";
     public static final String LOCAL_ACCOUNT_FIRSTNAME = "test";
     public static final String LOCAL_ACCOUNT_LASTNAME = "login";
     public static final int LOCAL_ACCOUNT_AGE = 23;
     public static final long LOCAL_ACCOUNT_PEER_ID = 0L;
     private final AppModel appModel;
-    private Peer[] activePeers = {new Peer(1L, "Peer Mock (id=1)"), new Peer(2L, "Peer Mock (id=2)"), new Peer(3L, "Peer Mock (id=3)")};
+    private Peer[] activePeers = {new Peer(0L, LOCAL_ACCOUNT_LOGIN), new Peer(1L, "Peer Mock (id=1)"), new Peer(2L, "Peer Mock (id=2)"), new Peer(3L, "Peer Mock (id=3)")};
     private AddToLocalCatalogCommand addToLocalCatalogCommand;
     private final MusicService musicService;
+    private final UserService userService;
 
     @Inject
-    public AppModelBuilder(AppModel appModel, MusicService musicService) {
+    public AppModelBuilder(AppModel appModel, MusicService musicService, UserService userService) {
         this.appModel = appModel;
         this.musicService = musicService;
+        this.userService = userService;
         try {
             TEST_MP3_FOLDER = new File(".").getCanonicalPath() + "\\test\\mp3\\";
         } catch (Exception ex) {

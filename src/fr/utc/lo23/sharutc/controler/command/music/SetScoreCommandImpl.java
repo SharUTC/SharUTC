@@ -81,6 +81,12 @@ public class SetScoreCommandImpl implements SetScoreCommand {
     @Override
     public void execute() {
         log.info("SetScoreCommandImpl ...");
+        
+        // FIXME: use music service if music is local (peerId = appModel.profile.userInfo.peerId)
+        // else, music comes from network, send message to update score value
+        // then also change local value to simulate accepted changes without sending more message
+        // @See MessageHandlerImpl.java, two switch values are waiting for you !
+        // note that if score value is null, score is to be deleted rather than set to null
         musicService.setScore(mPeer, mMusic, mScore);
         log.info("SetScoreCommandImpl DONE");
     }

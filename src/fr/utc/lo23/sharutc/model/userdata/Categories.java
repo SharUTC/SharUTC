@@ -44,7 +44,7 @@ public class Categories implements Serializable {
 
     /**
      *
-     * @param name
+     * @param id
      * @return
      */
     public Category findCategoryById(Integer id) {

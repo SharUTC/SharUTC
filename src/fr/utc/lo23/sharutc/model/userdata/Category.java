@@ -10,30 +10,20 @@ public class Category implements Serializable {
     private static final long serialVersionUID = 3790688676428360970L;
     public static final Integer PUBLIC_CATEGORY_ID = new Integer(0);
     public static final String PUBLIC_CATEGORY_NAME = "Public";
-    /**
-     * Undeletable category ID
-     */
-    //FIXME ca ne fonctionnera pas comme ça, la valeur sera perdue.
-    public static Integer IDS_SEQUENCE = new Integer(0);
+
     private Integer mId;
     private String mName;
 
     /**
-     *
+     * Default constructor
      */
     public Category() {
     }
 
     /**
      *
-     */
-    public Category(String name) {
-        this.mId = IDS_SEQUENCE++;
-        this.mName = name;
-    }
-
-    /**
-     *
+     * @param mId
+     * @param mName
      */
     public Category(Integer mId, String mName) {
         this.mId = mId;
@@ -71,4 +61,53 @@ public class Category implements Serializable {
     public void setName(String name) {
         this.mName = name;
     }
+
+    
+     /**
+     * @param obj
+     * 
+     * @return
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Category other = (Category) obj;
+        if (this.mId != other.mId && (this.mId == null || !this.mId.equals(other.mId))) {
+            return false;
+        }
+        if ((this.mName == null) ? (other.mName != null) : !this.mName.equals(other.mName)) {
+            return false;
+        }
+        return true;
+    }
+
+    
+     /**
+     * 
+     * @return
+     */
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 59 * hash + (this.mId != null ? this.mId.hashCode() : 0);
+        hash = 59 * hash + (this.mName != null ? this.mName.hashCode() : 0);
+        return hash;
+    }
+
+    
+     /**
+     * 
+     * @return
+     */
+    @Override
+    public String toString() {
+        return "Category{" + "mId=" + mId + ", mName=" + mName + '}';
+    }
+    
+    
 }

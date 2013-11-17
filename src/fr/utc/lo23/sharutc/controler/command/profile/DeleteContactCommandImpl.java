@@ -12,7 +12,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  *
- * @author Mathilde
+ * {@inheritDoc}
  */
 public class DeleteContactCommandImpl implements DeleteContactCommand {
 
@@ -22,7 +22,7 @@ public class DeleteContactCommandImpl implements DeleteContactCommand {
     final private UserService mUserService;
 
      /**
-     * {@inheritDoc}
+     * @param userService
      */
     @Inject
     public DeleteContactCommandImpl(UserService userService) {

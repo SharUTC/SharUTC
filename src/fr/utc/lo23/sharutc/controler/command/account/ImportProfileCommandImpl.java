@@ -19,11 +19,13 @@ public class ImportProfileCommandImpl implements ImportProfileCommand{
     private final FileService fs;
     private final AppModel appModel;
     private String mPath;
+    private boolean mForce;
     
     @Inject
     public ImportProfileCommandImpl(FileService fs, AppModel appModel) {
         this.fs = fs;
         this.appModel = appModel;
+        mForce = false;
     }
 
     @Override
@@ -36,10 +38,18 @@ public class ImportProfileCommandImpl implements ImportProfileCommand{
         mPath = path;
     }
 
+    public boolean isForce() {
+        return mForce;
+    }
+
+    public void setForce(boolean Force) {
+        this.mForce = Force;
+    }
+
     @Override
     public void execute() {
         try {
-            fs.importWholeProfile(mPath);
+            fs.importWholeProfile(mPath, mForce);
         } catch (Exception ex) {
             appModel.getErrorBus().pushErrorMessage(new ErrorMessage(ex.getMessage()));
         }
