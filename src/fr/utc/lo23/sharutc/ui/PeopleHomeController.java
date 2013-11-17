@@ -5,10 +5,11 @@ import fr.utc.lo23.sharutc.model.AppModel;
 import fr.utc.lo23.sharutc.model.AppModelImpl;
 import fr.utc.lo23.sharutc.model.userdata.Category;
 import fr.utc.lo23.sharutc.model.userdata.UserInfo;
-import fr.utc.lo23.sharutc.ui.custom.DraggableCard;
-import fr.utc.lo23.sharutc.ui.custom.GroupCard;
-import fr.utc.lo23.sharutc.ui.custom.PeopleCard;
-import fr.utc.lo23.sharutc.ui.custom.SimpleCard;
+import fr.utc.lo23.sharutc.ui.custom.HorizontalScrollHandler;
+import fr.utc.lo23.sharutc.ui.custom.card.DraggableCard;
+import fr.utc.lo23.sharutc.ui.custom.card.GroupCard;
+import fr.utc.lo23.sharutc.ui.custom.card.PeopleCard;
+import fr.utc.lo23.sharutc.ui.custom.card.SimpleCard;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -17,6 +18,7 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.DragEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.StackPane;
@@ -53,6 +55,8 @@ public class PeopleHomeController extends DragPreviewDrawer implements Initializ
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         groupScrollPane.getStyleClass().add("myScrollPaneWithTopBorder");
+        groupScrollPane.setOnDragOver(new HorizontalScrollHandler(groupScrollPane));
+
         mPeopleCardSelected = new ArrayList<PeopleCard>();
         mAppModel.addPropertyChangeListener(this);
 
