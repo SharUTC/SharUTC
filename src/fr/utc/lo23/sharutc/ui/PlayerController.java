@@ -2,6 +2,7 @@ package fr.utc.lo23.sharutc.ui;
 
 import fr.utc.lo23.sharutc.model.domain.Music;
 import fr.utc.lo23.sharutc.ui.custom.RatingStar;
+
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.Initializable;
@@ -14,12 +15,19 @@ import org.slf4j.LoggerFactory;
 
 import java.net.URL;
 import java.util.ResourceBundle;
+import javafx.event.ActionEvent;
+import javafx.scene.control.Button;
+import javafx.scene.image.ImageView;
+import javafx.scene.shape.Polygon;
 
 /**
  * FXML Controller class
  */
 public class PlayerController implements Initializable {
 
+    //Images for the speaker
+    private static final ImageView IC_SPEAKER = new ImageView("/fr/utc/lo23/sharutc/ui/drawable/ic_speaker.png");
+    private static final ImageView IC_SPEAKER_MUTED = new ImageView("/fr/utc/lo23/sharutc/ui/drawable/ic_speaker_muted.png");
     //TODO remove once we get a real song
     private static final int SONG_TIME_IN_SECONDS = 206;
     private static final Logger log = LoggerFactory
@@ -33,6 +41,9 @@ public class PlayerController implements Initializable {
     public RatingStar ratingStar3;
     public RatingStar ratingStar4;
     public RatingStar ratingStar5;
+    public Slider speakerSlider;
+    public Polygon speakerLevel;
+    public Button speakerButton;
     private int mCurrentTimeInSeconds;
     private RatingStar[] mRatingStars;
     //TODO Remove once we get a real rating
@@ -51,10 +62,20 @@ public class PlayerController implements Initializable {
         playerTimeSlider.valueProperty().addListener(new ChangeListener<Number>() {
             @Override
             public void changed(ObservableValue<? extends Number> ov, Number t, Number t1) {
-                log.info("sliderValueChanged: " + String.valueOf(t1));
+                log.info("Player Time Slider Value Changed: " + String.valueOf(t1));
                 updateCurrentSongTime((Double) t1);
             }
         });
+             
+        speakerSlider.valueProperty().addListener(new ChangeListener<Number>() {
+            @Override
+            public void changed(ObservableValue<? extends Number> ov, Number oldValue, Number newValue) {
+                log.info("Speaker Slider Value Change: " + String.valueOf(newValue));
+                updateSpeakerLevel((Double) oldValue, (Double) newValue);
+            }
+        });
+        
+        speakerSlider.setValue(0.5);
 
         mRatingStars = new RatingStar[]{
                 ratingStar1,
@@ -76,7 +97,18 @@ public class PlayerController implements Initializable {
     public void addSong(Music music) {
         log.info("new music added to the player " + music.getFileName());
     }
-
+    
+    private void updateSpeakerLevel(double oldValue, double newValue) {
+        speakerLevel.getPoints().clear();
+        speakerLevel.getPoints().addAll(new Double[]{0.0, 20.0, 25 + 60.0 * newValue, 20.0, 25 + 60.0 * newValue,  15.0 * ( 1 - newValue) });
+        
+        if(newValue == 0.0) {
+            speakerButton.setGraphic(IC_SPEAKER_MUTED);
+        } else if(oldValue == 0.0) {
+            speakerButton.setGraphic(IC_SPEAKER);
+        }
+    }
+    
     private void updateCurrentSongTime(double percent) {
         mCurrentTimeInSeconds = (int) (SONG_TIME_IN_SECONDS * percent);
         playerCurrentTime.setText(timeInSecondsToString(mCurrentTimeInSeconds));
@@ -87,6 +119,13 @@ public class PlayerController implements Initializable {
         final int minutes = timeInSeconds / 60;
         return String.format("%02d:%02d", minutes, timeInSeconds - minutes * 60);
     }
+    
+    public void handleSpeakerAction(ActionEvent actionEvent) {
+        if(speakerSlider.getValue() != 0.0) {
+            speakerSlider.setValue(0.0);
+        }
+    }
+    
 
     //******************
     //*  Rating system

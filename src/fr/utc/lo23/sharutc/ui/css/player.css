@@ -37,3 +37,41 @@
     -fx-background-color: transparent;
     -fx-background-radius: 0em;
 }
+
+#currentMusicTitle {
+    -fx-font-size : 18px;
+    -fx-text-fill: #6E7879;
+    -fx-font-weight: bold;
+}
+
+#currentMusicAlbum{
+    -fx-font-size : 14px;
+    -fx-text-fill: #6E7879;   
+}
+
+#currentMusicArtist {
+    -fx-font-size : 14px;
+    -fx-text-fill: #6E7879;   
+}
+
+#speakerSlider .thumb {
+    -fx-border-color: transparent;
+    -fx-background-color: transparent;
+    -fx-background-radius: 0em;
+    -fx-padding: 12px 4px 12px 4px;
+}
+
+#speakerSlider .track {
+    -fx-border-color: transparent;
+    -fx-background-color: transparent;
+    -fx-background-radius: 0em;
+    -fx-padding: 12px 5px 12px 5px;
+}
+
+#speakerLevel {
+    -fx-fill: #6E7879;
+}
+
+#speakerLevelBackground {
+    -fx-fill: #95A5A6
+}
