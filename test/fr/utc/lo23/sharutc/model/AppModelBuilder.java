@@ -45,6 +45,7 @@ public class AppModelBuilder {
         this.musicService = musicService;
         this.userService = userService;
         try {
+            //for UNIX users, set //test//mp3// instead of \\test\\mp3\\
             TEST_MP3_FOLDER = new File(".").getCanonicalPath() + "\\test\\mp3\\";
         } catch (Exception ex) {
             log.error(ex.toString());

@@ -50,10 +50,10 @@ public class FileServiceImpl implements FileService {
     protected final ObjectMapper mapper = new ObjectMapper();
 
     @Inject
-    public FileServiceImpl(AppModel appModel) {
+    public FileServiceImpl(AppModel appModel) throws IOException {
         this.appModel = appModel;
 
-        appFolder = new JFileChooser().getFileSystemView().getDefaultDirectory().toString();
+        appFolder = new File(".").getCanonicalPath();  //JFileChooser().getFileSystemView().getDefaultDirectory().toString();
         appFolder += File.separator + APP_NAME + File.separator;
 
         if (!new File(appFolder).exists()) {
