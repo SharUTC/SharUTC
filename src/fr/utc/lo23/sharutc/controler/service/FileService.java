@@ -43,6 +43,14 @@ public interface FileService {
     public void exportFile(String srcPath, String destPath) throws IOException;
 
     /**
+     * Delete every file and forlder under <i>pathname</i>
+     * 
+     * @param pathname
+     */
+    public void deleteFolderRecursively(String pathname);
+    
+    
+    /**
      * Used for reading a local mp3 file and creating a new Music, increments
      * profile's counter. If reading id3tag fails, then tag values are set to
      * null
@@ -58,6 +66,7 @@ public interface FileService {
      *
      * @param file the file to read
      * @return the content of the file as an array of Bytes
+     * @throws java.io.IOException
      */
     public byte[] getFileAsByteArray(File file) throws IOException;
 
@@ -65,8 +74,9 @@ public interface FileService {
      * Give access to a temporary file automatically deleted when application
      * stops, used by musicPlayer
      *
-     * @param currentMusic
+     * @param musicBytes
      * @return the temporary file
+     * @throws java.lang.Exception
      */
     public File buildTmpMusicFile(Byte[] musicBytes) throws Exception;
 
