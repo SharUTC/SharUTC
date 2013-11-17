@@ -118,6 +118,7 @@ public class NetworkServiceImpl implements NetworkService {
     /**
      * {inheritDoc}
      */
+    @Override
     public void sendBroadcastHeartbeat(){
         Message message = messageParser.write(MessageType.HEARTBEAT,new Object[][]{{}});
         sendBroadcast(message);
@@ -253,7 +254,7 @@ public class NetworkServiceImpl implements NetworkService {
      * {inheritDoc}
      */
     @Override
-    public void sendMusicToPlay(Peer peer, Long conversationId, Music music) {;
+    public void sendMusicToPlay(Peer peer, Long conversationId, Music music) {
         Message message = messageParser.write(MessageType.MUSIC_SEND_TO_PLAY, new Object[][]{{Message.MUSIC, music}, {Message.CONVERSATION_ID, conversationId}});
         sendUnicast(message, peer);
     }
