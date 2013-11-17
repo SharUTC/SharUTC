@@ -7,7 +7,7 @@ import javafx.scene.layout.VBox;
 
 import java.io.IOException;
 
-abstract public class SimpleCard extends VBox {
+public class SimpleCard extends VBox {
     protected final int STATE_NORMAL = 0;
     protected final int STATE_CLICKED = 1;
 
@@ -32,6 +32,15 @@ abstract public class SimpleCard extends VBox {
         this.setPrefHeight(70);
         this.getStyleClass().addAll("simpleCard");
 
+    }
+
+    public SimpleCard(String resourceFXML, double width, double height, Pos alignement) {
+        this(resourceFXML);
+
+        this.setPrefHeight(height);
+        this.setPrefWidth(width);
+
+        this.setAlignment(alignement);
     }
 
 
