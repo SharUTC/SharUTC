@@ -55,7 +55,8 @@ public class SongListController extends SongSelectorController implements Initia
 
         for (int i = 0; i < 3; i++) {
             final Music m = new Music();
-            m.setFileName("Music " + i);
+            m.setTitle("Music " + i);
+            m.setArtist("Artist" + i);
             SongCard newCard = new SongCard(m, this, true);
             songsContainer.getChildren().add(newCard);
         }

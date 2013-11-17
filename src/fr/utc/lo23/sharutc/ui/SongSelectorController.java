@@ -1,6 +1,5 @@
 package fr.utc.lo23.sharutc.ui;
 
-
 import fr.utc.lo23.sharutc.model.domain.Music;
 import fr.utc.lo23.sharutc.ui.custom.DraggableCard;
 import fr.utc.lo23.sharutc.ui.custom.SongCard;
@@ -10,9 +9,13 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
 
 import java.util.ArrayList;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class SongSelectorController extends DragPreviewDrawer implements SongCard.ISongCard {
 
+    private static final Logger log = LoggerFactory
+            .getLogger(SongSelectorController.class);
     /**
      * Song Card selected by the user
      */
@@ -59,27 +62,28 @@ public class SongSelectorController extends DragPreviewDrawer implements SongCar
     }
 
     @Override
-    public void onPlayRequested(Music music) {
-        //To change body of implemented methods use File | Settings | File Templates.
+    public void onTagEditionRequested(Music music) {
+        log.info("onTagEditionRequested: " + music.getTitle());
     }
 
     @Override
-    public void onSongRemoveFromMusicRequested(Music music) {
-        //To change body of implemented methods use File | Settings | File Templates.
+    public void onPlayRequested(Music music) {
+        log.info("onPlayRequested: " + music.getTitle());
     }
 
     @Override
     public void onSongDetailsRequested(Music music) {
-        //To change body of implemented methods use File | Settings | File Templates.
+        log.info("onSongDetailsRequested: " + music.getTitle());
     }
 
     @Override
-    public void onSongAddToMusicRequested(Music music) {
-        //To change body of implemented methods use File | Settings | File Templates.
+    public void onSongAddToPlayList(Music music) {
+        log.info("onSongAddToPlayList: " + music.getTitle());
     }
 
     @Override
     public void onSongCardSelected(SongCard songCard) {
+        log.info("onSongCardSelected: " + songCard.getModel().getTitle());
         if (mSongCardSelected.contains(songCard)) {
             mSongCardSelected.remove(songCard);
         } else {
@@ -102,6 +106,4 @@ public class SongSelectorController extends DragPreviewDrawer implements SongCar
             i++;
         }
     }
-
-
 }

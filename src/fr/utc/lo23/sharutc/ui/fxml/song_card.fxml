@@ -10,30 +10,21 @@
             <Label fx:id="songArtist" text="Frank Sinatra" styleClass="largeTextGrey"/>
         </VBox>
         <VBox fx:id="buttonContainer" alignment="CENTER_RIGHT" HBox.hgrow="ALWAYS">
-            <Button fx:id="deleteButton" styleClass="imageButton" visible="false"
+            <Button fx:id="addToPlayListButton" styleClass="imageButton" visible="false" onAction="#handleSongCardButtonAction">
+                <graphic>
+                    <ImageView fitWidth="30" fitHeight="30">
+                        <image>
+                            <Image url="@../drawable/ic_add_to_playlist.png"/>
+                        </image>
+                    </ImageView>
+                </graphic>
+            </Button>
+            <Button fx:id="tagEditionButton" styleClass="imageButton" visible="false"
                     onAction="#handleSongCardButtonAction">
                 <graphic>
                     <ImageView fitWidth="30" fitHeight="30">
                         <image>
-                            <Image url="@../drawable/ic_delete.png"/>
-                        </image>
-                    </ImageView>
-                </graphic>
-            </Button>
-            <Button fx:id="addButton" styleClass="imageButton" visible="false" onAction="#handleSongCardButtonAction">
-                <graphic>
-                    <ImageView fitWidth="30" fitHeight="30">
-                        <image>
-                            <Image url="@../drawable/ic_add.png"/>
-                        </image>
-                    </ImageView>
-                </graphic>
-            </Button>
-            <Button fx:id="playButton" styleClass="imageButton" visible="false" onAction="#handleSongCardButtonAction">
-                <graphic>
-                    <ImageView fitWidth="30" fitHeight="30">
-                        <image>
-                            <Image url="@../drawable/ic_play.png"/>
+                            <Image url="@../drawable/ic_tag.png"/>
                         </image>
                     </ImageView>
                 </graphic>

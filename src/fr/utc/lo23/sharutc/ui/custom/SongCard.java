@@ -23,19 +23,14 @@ public class SongCard extends DraggableCard implements EventHandler<Event> {
     public Label songTitle;
 
     @FXML
-    Button deleteOrAddButton;
-
-    @FXML
-    Button playButton;
-
-    @FXML
     Button detailButton;
 
     @FXML
-    Button deleteButton;
-
+    Button addToPlayListButton;
+    
     @FXML
-    Button addButton;
+    Button tagEditionButton;
+
 
     @FXML
     VBox buttonContainer;
@@ -44,16 +39,12 @@ public class SongCard extends DraggableCard implements EventHandler<Event> {
         super("/fr/utc/lo23/sharutc/ui/fxml/song_card.fxml", DROP_KEY, i);
         mInterface = i;
         mModel = m;
-        songTitle.setText(mModel.getFileName());
+        songTitle.setText(mModel.getTitle());
         setOnMouseClicked(this);
         setOnMouseEntered(this);
         setOnMouseExited(this);
         mIsOwned = isOwned;
-        if (mIsOwned) {
-            buttonContainer.getChildren().remove(addButton);
-        } else {
-            buttonContainer.getChildren().remove(deleteButton);
-        }
+        
     }
 
     public Music getModel() {
@@ -62,13 +53,8 @@ public class SongCard extends DraggableCard implements EventHandler<Event> {
 
     public void onHover(boolean isHover) {
         detailButton.setVisible(isHover);
-        playButton.setVisible(isHover);
-        if (mIsOwned) {
-            deleteButton.setVisible(isHover);
-        } else {
-            addButton.setVisible(isHover);
-        }
-
+        addToPlayListButton.setVisible(isHover);
+        tagEditionButton.setVisible(isHover);
     }
 
     @Override
@@ -78,7 +64,10 @@ public class SongCard extends DraggableCard implements EventHandler<Event> {
             if (source.equals(this)) {
                 mInterface.onSongCardSelected(SongCard.this);
                 this.adaptStyle((MouseEvent) event);
-            }
+                if(((MouseEvent)event).getClickCount() == 2) {
+                    mInterface.onPlayRequested(mModel);
+                }
+            }            
         } else if (event.getEventType() == MouseEvent.MOUSE_ENTERED) {
             if (source.equals(this)) {
                 this.onHover(true);
@@ -93,18 +82,12 @@ public class SongCard extends DraggableCard implements EventHandler<Event> {
     @FXML
     private void handleSongCardButtonAction(ActionEvent event) throws IOException {
         final Object source = event.getSource();
-        if (source.equals(deleteOrAddButton)) {
-            if (mIsOwned) {
-                //music already owned
-                mInterface.onSongRemoveFromMusicRequested(getModel());
-            } else {
-                //music not owned, want to add it
-                mInterface.onSongAddToMusicRequested(getModel());
-            }
-        } else if (source.equals(playButton)) {
-            mInterface.onPlayRequested(getModel());
+        if (source.equals(addToPlayListButton)) {
+            mInterface.onSongAddToPlayList(mModel);
         } else if (source.equals(detailButton)) {
-            mInterface.onSongDetailsRequested(getModel());
+            mInterface.onSongDetailsRequested(mModel);
+        } else if (source.equals(tagEditionButton)) {
+            mInterface.onTagEditionRequested(mModel);
         }
 
     }
@@ -117,12 +100,6 @@ public class SongCard extends DraggableCard implements EventHandler<Event> {
          */
         public void onPlayRequested(Music music);
 
-        /**
-         * user requested to remove this song from his musics
-         *
-         * @param music clicked card's model
-         */
-        public void onSongRemoveFromMusicRequested(Music music);
 
         /**
          * user requested more details
@@ -132,17 +109,24 @@ public class SongCard extends DraggableCard implements EventHandler<Event> {
         public void onSongDetailsRequested(Music music);
 
         /**
-         * user requested to add this song to his music
-         *
-         * @param music clicked card's model
-         */
-        public void onSongAddToMusicRequested(Music music);
-
-        /**
          * card has been selected
          *
          * @param songCard
          */
         public void onSongCardSelected(SongCard songCard);
+        
+        /**
+         * user requested to add this song to his play list
+         * 
+         * @param music 
+         */
+        public void onSongAddToPlayList(Music music);
+        
+        /**
+         * user wants edit the tag of the music
+         * 
+         * @param music 
+         */
+        public void onTagEditionRequested(Music music);
     }
 }
