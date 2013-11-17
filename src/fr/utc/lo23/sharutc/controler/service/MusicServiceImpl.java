@@ -878,12 +878,6 @@ public class MusicServiceImpl implements MusicService {
 
         //Check that the music does not exist in this category
         if (!categoriesIdsList.contains(category.getId())) {
-            /* Check if the contact is in the public category
-             * If it is the case, we remove the PUBLIC_CATEGORY_ID
-             */
-            if (categoriesIdsList.contains(Category.PUBLIC_CATEGORY_ID)) {
-                appModel.getLocalCatalog().findMusicById(musicID).removeCategoryId(Category.PUBLIC_CATEGORY_ID);
-            }
             appModel.getLocalCatalog().findMusicById(musicID).addCategoryId(category.getId());
         } else {
             log.warn("This music already exists in this category");
@@ -894,18 +888,12 @@ public class MusicServiceImpl implements MusicService {
     }
 
     public void removeMusicFromCategory(Music music, Category category) {
-        //Check that the category is not the public one because it is the default category
-        if (!category.getId().equals(Category.PUBLIC_CATEGORY_ID)) {
-            Music m = appModel.getLocalCatalog().findMusicById(music.getId());
-            m.removeCategoryId(category.getId());
+        Music m = appModel.getLocalCatalog().findMusicById(music.getId());
+        m.removeCategoryId(category.getId());
             // if this category was the only one, we put the music in the public one
-            if (m.getCategoryIds().isEmpty()) {
-                m.addCategoryId(Category.PUBLIC_CATEGORY_ID);
-            }
-        } else {
-            log.warn("Can't remove music from Public category");
-            ErrorMessage nErrorMessage = new ErrorMessage("Can't remove msuic from Public category");
-            appModel.getErrorBus().pushErrorMessage(nErrorMessage);
+        if (m.getCategoryIds().isEmpty()) {
+             m.addCategoryId(Category.PUBLIC_CATEGORY_ID);
         }
+        
     }
 }
