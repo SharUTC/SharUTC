@@ -887,13 +887,16 @@ public class MusicServiceImpl implements MusicService {
 
     }
 
+    @Override
     public void removeMusicFromCategory(Music music, Category category) {
         Music m = appModel.getLocalCatalog().findMusicById(music.getId());
         m.removeCategoryId(category.getId());
-            // if this category was the only one, we put the music in the public one
-     /*   if (m.getCategoryIds().isEmpty()) {
-             m.addCategoryId(Category.PUBLIC_CATEGORY_ID);
-        }*/
-        
+        // if this category was the only one, we put the music in the public one
+        /*
+         * if (m.getCategoryIds().isEmpty()) {
+         *  m.addCategoryId(Category.PUBLIC_CATEGORY_ID);
+         * }
+         */
+
     }
 }
