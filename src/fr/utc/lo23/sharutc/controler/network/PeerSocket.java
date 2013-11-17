@@ -17,12 +17,10 @@ public class PeerSocket implements Runnable {
     private final NetworkService networkService;
 
     private final Socket mSocket;
-    private BufferedReader mBr;
-    private PrintWriter mPw;
-    private ObjectInputStream mObjectInputStream;
-    private ObjectOutputStream mObjectOutputStream;
     private Thread mThread;
     private boolean mThreadShouldStop = false;
+    private ObjectInputStream mIn;
+    private ObjectOutputStream mOut;
 
     /**
      * Construct a PeerSocket.
@@ -40,6 +38,13 @@ public class PeerSocket implements Runnable {
         this.messageHandler = messageHandler;
         this.messageParser = messageParser;
         this.networkService = networkService;
+
+        try {
+            mOut = new ObjectOutputStream(mSocket.getOutputStream());
+            mIn = new ObjectInputStream(mSocket.getInputStream());
+        } catch (IOException e) {
+            log.error(e.toString());
+        }
 
         // add this new PeerSocket to the PeerSocket list
         networkService.addPeer(peerId, this);
@@ -71,17 +76,12 @@ public class PeerSocket implements Runnable {
      * @param msg a Message to send
      */
     public void send(Message msg) {
-        try {
-                mObjectOutputStream = new ObjectOutputStream(mSocket.getOutputStream());
-            } catch (IOException e) {
-                log.error(e.toString());
-            }
         String json = messageParser.toJSON(msg);
         try {
-                mObjectOutputStream.writeObject(json);
-            } catch (IOException e) {
-                log.error(e.toString());
-            }
+            mOut.writeObject(json);
+        } catch (IOException e) {
+            log.error(e.toString());
+        }
     }
 
     /**
@@ -98,18 +98,11 @@ public class PeerSocket implements Runnable {
         // il faudrait qu'il lise les objets messages, instancie la bonne Commande pour le traiter,
         // set tous les paramètres de cette commandes avec les valeurs contenues dans le message et lance a commande dans un nouveau thread
         while (!mThreadShouldStop) {
-            try {
-                mObjectInputStream = new ObjectInputStream(mSocket.getInputStream());
-            } catch (IOException e) {
-                log.error(e.toString());
-            }
             String msg = null;
             try {
-                msg = (String) mObjectInputStream.readObject();
-            } catch (IOException ex) {
+                msg = (String) mIn.readObject();
+            } catch (IOException | ClassNotFoundException ex) {
                 log.error(ex.toString());
-            } catch(ClassNotFoundException e) {
-                log.error(e.toString());
             }
             messageHandler.handleMessage(msg);
         }
