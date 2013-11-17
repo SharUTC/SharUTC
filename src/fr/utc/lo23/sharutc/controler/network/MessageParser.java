@@ -7,7 +7,6 @@ import fr.utc.lo23.sharutc.model.userdata.Peer;
  * its values. A Message must be read before using any other methods
  */
 public interface MessageParser {
-
     /**
      * Read and parse an incoming message
      *
@@ -59,7 +58,7 @@ public interface MessageParser {
      * @param string the Message to transfom into a JSON String
      * @return the parsed JSON String
      */
-    public String toJSON(Message string);
+    public String toJSON(Message message);
 
     /**
      * Reset message and content, used after processing a Message

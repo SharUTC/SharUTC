@@ -17,7 +17,6 @@ import java.net.UnknownHostException;
  * connected peers and instantiate the right command to handle it.
  */
 public interface NetworkService {
-
     /**
      * Setup the NetworkService and start it.
      *
@@ -68,7 +67,7 @@ public interface NetworkService {
      * @param conversationID
      * @param catalog the local catalog to send
      */
-    public void sendUnicastCatalog(Peer peer, Long conversationID, Catalog catalog);
+    public void sendUnicastCatalog(Peer peer, Long conversationId, Catalog catalog);
 
     /**
      * Request the tag map of all connected peers.
@@ -82,7 +81,7 @@ public interface NetworkService {
      * @param conversationId the current conversation id
      * @param tagMap the local tag map to send
      */
-    public void sendUnicastTagMap(Peer peer, Long conversationID, TagMap tagMap);
+    public void sendUnicastTagMap(Peer peer, Long conversationId, TagMap tagMap);
 
     /**
      * Add a comment on a music owned by another peer.
@@ -142,7 +141,7 @@ public interface NetworkService {
      * @param peer the requesting peer
      * @param catalog a Catalog containing the matching musics
      */
-    public void sendMusicSearchResults(Peer peer, Long conversationID, Catalog catalog);
+    public void sendMusicSearchResults(Peer peer, Long conversationId, Catalog catalog);
 
     /**
      * Request a list of music.
@@ -179,7 +178,7 @@ public interface NetworkService {
      * @param peer the peer playing the music
      * @param music the Music to send
      */
-    public void sendMusicToPlay(Peer peer, Long conversationID, Music music);
+    public void sendMusicToPlay(Peer peer, Long conversationId, Music music);
 
     /**
      * Notify all user of the client's connection.

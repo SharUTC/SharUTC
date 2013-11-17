@@ -39,59 +39,62 @@ import org.slf4j.LoggerFactory;
  */
 @Singleton
 public class MessageHandlerImpl implements MessageHandler {
-
     private static final Logger log = LoggerFactory
             .getLogger(MessageHandlerImpl.class);
+
     private final AppModel appModel;
     private final MessageParser messageParser;
     private final MusicService musicService;
     private final UserService userService;
+
     private Command command = null;
 
     @Inject
-    public MessageHandlerImpl(AppModel appModel, MusicService musicService, UserService userService, MessageParser messageParser) {
+    public MessageHandlerImpl(AppModel appModel, MessageParser messageParser,
+            MusicService musicService, UserService userService) {
         this.appModel = appModel;
-        this.userService = userService;
-        this.musicService = musicService;
         this.messageParser = messageParser;
+        this.musicService = musicService;
+        this.userService = userService;
     }
+
     // all command interfaces used by network service
-    @Inject
-    private SendTagMapCommand sendTagMapCommand;
-    @Inject
-    private IntegrateRemoteTagMapCommand integrateRemoteTagMapCommand;
-    @Inject
-    private SendMusicsCommand sendMusicsCommand;
-    @Inject
-    private InstallRemoteMusicsCommand installRemoteMusicsCommand;
-    @Inject
-    private SendCatalogCommand sendCatalogCommand;
-    @Inject
-    private IntegrateRemoteCatalogCommand integrateRemoteCatalogCommand;
-    @Inject
-    private SendMusicToPlayCommand sendMusicToPlayCommand;
-    @Inject
-    private PlayIncomingMusicCommand playIncomingMusicCommand;
-    @Inject
-    private IntegrateBroadcastConnectionCommand integrateBroadcastConnectionCommand;
-    @Inject
-    private IntegrateConnectionCommand integrateConnectionCommand;
-    @Inject
-    private PerformMusicSearchCommand performMusicSearchCommand;
-    @Inject
-    private IntegrateMusicSearchCommand integrateMusicSearchCommand;
     @Inject
     private AddCommentCommand addCommentCommand;
     @Inject
     private EditCommentCommand editCommentCommand;
     @Inject
+    private InstallRemoteMusicsCommand installRemoteMusicsCommand;
+    @Inject
+    private IntegrateBroadcastConnectionCommand integrateBroadcastConnectionCommand;
+    @Inject
+    private IntegrateConnectionCommand integrateConnectionCommand;
+    @Inject
+    private IntegrateDisconnectionCommand integrateDisconnectionCommand;
+    @Inject
+    private IntegrateMusicSearchCommand integrateMusicSearchCommand;
+    @Inject
+    private IntegrateRemoteCatalogCommand integrateRemoteCatalogCommand;
+    @Inject
+    private IntegrateRemoteTagMapCommand integrateRemoteTagMapCommand;
+    @Inject
+    private PerformMusicSearchCommand performMusicSearchCommand;
+    @Inject
+    private PlayIncomingMusicCommand playIncomingMusicCommand;
+    @Inject
     private RemoveCommentCommand removeCommentCommand;
+    @Inject
+    private SendCatalogCommand sendCatalogCommand;
+    @Inject
+    private SendMusicsCommand sendMusicsCommand;
+    @Inject
+    private SendMusicToPlayCommand sendMusicToPlayCommand;
+    @Inject
+    private SendTagMapCommand sendTagMapCommand;
     @Inject
     private SetScoreCommand setScoreCommand;
     @Inject
     private UnsetScoreCommand unsetScoreCommand;
-    @Inject
-    private IntegrateDisconnectionCommand integrateDisconnectionCommand;
     // more...
 
     /**

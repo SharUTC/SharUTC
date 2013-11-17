@@ -5,7 +5,6 @@ package fr.utc.lo23.sharutc.controler.network;
  * to execute the command relative to this message
  */
 public interface MessageHandler {
-
     /**
      * Read and parse a Json String to a Message object, find and run the
      * appropriate command in a new thread

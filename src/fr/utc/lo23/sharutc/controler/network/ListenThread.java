@@ -15,13 +15,15 @@ import java.net.ServerSocket;
  */
 public class ListenThread implements Runnable {
     private static final Logger log = LoggerFactory.getLogger(PeerDiscoverySocket.class);
-    private final int mPort;
-    private final NetworkService mNetworkService;
-    private Thread thread;
-    private boolean threadShouldStop = false;
-    private final AppModel mAppModel;
-    private final MessageParser messageParser;
+
+    private final AppModel appModel;
+    private final NetworkService networkService;
     private final MessageHandler messageHandler;
+    private final MessageParser messageParser;
+
+    private Thread mThread;
+    private final int mPort;
+    private boolean mThreadShouldStop = false;
 
     /**
      *
@@ -29,27 +31,29 @@ public class ListenThread implements Runnable {
      * @param ns the network service
      * @param appModel the model of the global application
      */
-    public ListenThread(int p, NetworkService ns, AppModel appModel, MessageParser messageParser, MessageHandler messageHandler) {
-        this.mPort = p;
-        mNetworkService = ns;
-        mAppModel = appModel;
-        this.messageParser = messageParser;
+    public ListenThread(int port, AppModel appModel, MessageHandler
+            messageHandler, MessageParser messageParser, NetworkService
+            networkService) {
+        this.mPort = port;
+        this.appModel = appModel;
         this.messageHandler = messageHandler;
+        this.messageParser = messageParser;
+        this.networkService = networkService;
     }
 
     /**
      * Starts the listenThread
      */
     public void start() {
-        thread = new Thread(this);
-        thread.start();
+        mThread = new Thread(this);
+        mThread.start();
     }
 
     /**
      * Stops the listenThread
      */
     public void stop() {
-        threadShouldStop = true;
+        mThreadShouldStop = true;
     }
 
     /**
@@ -57,14 +61,14 @@ public class ListenThread implements Runnable {
      */
     @Override
     public void run() {
-        long peerID = mAppModel.getProfile().getUserInfo().getPeerId();
+        long peerID = appModel.getProfile().getUserInfo().getPeerId();
         try {
-            ServerSocket socketServeur = new ServerSocket(mPort);
+            ServerSocket socketServer = new ServerSocket(mPort);
             System.out.println("Lancement du serveur");
 
-            while (socketServeur.isBound()) {
-                Socket socketClient = socketServeur.accept();
-                PeerSocket ps = new PeerSocket(socketClient, mNetworkService, peerID, messageParser, messageHandler);
+            while (socketServer.isBound()) {
+                Socket socketClient = socketServer.accept();
+                PeerSocket ps = new PeerSocket(socketClient, peerID, messageHandler, messageParser, networkService);
                 ps.start();
             }
         } catch (IOException e) {

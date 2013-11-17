@@ -11,47 +11,19 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class PeerDiscoverySocket implements Runnable {
+    private static final Logger log = LoggerFactory
+        .getLogger(PeerDiscoverySocket.class);
 
-    /**
-     *
-     */
     private final AppModel appModel;
-    /**
-     *
-     */
-    private final MessageParser messageParser;
-    /**
-     *
-     */
     private final MessageHandler messageHandler;
-    /**
-     *
-     */
-    private static final Logger log = LoggerFactory.getLogger(PeerDiscoverySocket.class);
-    /**
-     *
-     */
-    private Thread thread;
-    /**
-     *
-     */
-    private boolean threadShouldStop = false;
-    /**
-     *
-     */
-    private int mPort;
-    /**
-     *
-     */
+    private final MessageParser messageParser;
+    private final NetworkService networkService;
+
+    private final InetAddress mGroup;
+    private final int mPort;
     private MulticastSocket mSocket;
-    /**
-     *
-     */
-    private InetAddress mGroup;
-    /**
-     *
-     */
-    private final NetworkService mNs;
+    private Thread mThread;
+    private boolean mThreadShouldStop = false;
 
     /**
      * Construct a PeerDiscoverySocket
@@ -63,31 +35,33 @@ public class PeerDiscoverySocket implements Runnable {
      * @param messageParser
      * @param messageHandler
      */
-    public PeerDiscoverySocket(int port, InetAddress group, NetworkService ns, AppModel appModel, MessageParser messageParser, MessageHandler messageHandler) {
-        // preparation
+    public PeerDiscoverySocket(int port, InetAddress group, AppModel appModel,
+            MessageHandler messageHandler, MessageParser messageParser,
+            NetworkService networkService) {
         this.mPort = port;
         this.mGroup = group;
-        this.mNs = ns;
-        this.threadShouldStop = false;
-        this.thread = null;
         this.appModel = appModel;
+        this.messageHandler = messageHandler;
+        this.messageParser = messageParser;
+        this.networkService = networkService;
+
+        this.mThreadShouldStop = false;
+        this.mThread = null;
         try {
             mSocket = new MulticastSocket(mPort);
             mSocket.joinGroup(mGroup);
         } catch (IOException e) {
             log.error(e.toString());
         }
-        this.messageParser = messageParser;
-        this.messageHandler = messageHandler;
     }
 
     /**
      * Start the thread
      */
     public void start() {
-        if (thread == null) {
-            thread = new Thread(this);
-            thread.start();
+        if (mThread == null) {
+            mThread = new Thread(this);
+            mThread.start();
         } else {
             log.warn("Can't start PeerDiscoverySocket: already running.");
         }
@@ -97,7 +71,7 @@ public class PeerDiscoverySocket implements Runnable {
      * Stop the thread
      */
     public void stop() {
-        threadShouldStop = true;
+        mThreadShouldStop = true;
     }
 
     /**
@@ -142,7 +116,7 @@ public class PeerDiscoverySocket implements Runnable {
             // obtain sender peerId
             Long peerId = msg.getFromPeerId();
             // add new peer
-            peerSocket = new PeerSocket(socket, mNs, peerId, messageParser, messageHandler);
+            peerSocket = new PeerSocket(socket, peerId, messageHandler, messageParser, networkService);
             peerSocket.start();
         } catch (IOException ex) {
             log.error(ex.toString());
@@ -154,7 +128,7 @@ public class PeerDiscoverySocket implements Runnable {
      */
     @Override
     public void run() {
-        while (!threadShouldStop) {
+        while (!mThreadShouldStop) {
             final int SIZE = 1000;
             byte[] buf = new byte[SIZE];
             DatagramPacket p = new DatagramPacket(buf, buf.length);

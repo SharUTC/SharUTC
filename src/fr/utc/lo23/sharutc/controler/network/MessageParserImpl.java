@@ -18,11 +18,12 @@ import org.slf4j.LoggerFactory;
  */
 @Singleton
 public class MessageParserImpl implements MessageParser {
-
     private static final Logger log = LoggerFactory
             .getLogger(MessageParserImpl.class);
-    private final ObjectMapper mapper = new ObjectMapper();
+
     private final AppModel appModel;
+    private final ObjectMapper mapper = new ObjectMapper();
+
     private Message message;
     private Map<String, Object> messageContent = null;
 
@@ -36,8 +37,8 @@ public class MessageParserImpl implements MessageParser {
      * {@inheritDoc}
      */
     @Override
-    public void read(Message message) {
-        this.message = message;
+    public void read(Message incomingMessage) {
+        this.message = incomingMessage;
         /*  Map<String, Object> parsedContent = null;
          try {
          log.debug("Reading Message : content = {}", message.getContent());
@@ -95,11 +96,10 @@ public class MessageParserImpl implements MessageParser {
             map.put((String) o[0], o[1]);
         }
 
-
-
         if (messageType == null) {
             log.error("Missing messageType");
         }
+
         Message newMessage = null;
         try {
             String contentAsString = content != null ? mapper.writeValueAsString(content) : "";

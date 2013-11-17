@@ -10,18 +10,19 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class PeerSocket implements Runnable {
-
     private static final Logger log = LoggerFactory.getLogger(PeerDiscoverySocket.class);
+
+    private final MessageHandler messageHandler;
     private final MessageParser messageParser;
-    private Thread thread;
-    private boolean threadShouldStop = false;
+    private final NetworkService networkService;
+
     private final Socket mSocket;
     private BufferedReader mBr;
     private PrintWriter mPw;
-    private final NetworkService mNs;
-    private final MessageHandler messageHandler;
     private ObjectInputStream mObjectInputStream;
     private ObjectOutputStream mObjectOutputStream;
+    private Thread mThread;
+    private boolean mThreadShouldStop = false;
 
     /**
      * Construct a PeerSocket
@@ -32,12 +33,14 @@ public class PeerSocket implements Runnable {
      * @param messageParser
      * @param messageHandler
      */
-    public PeerSocket(Socket sock, NetworkService ns, Long peerId, MessageParser messageParser, MessageHandler messageHandler) {
-        log.info("* new TCP connection from " + sock.getInetAddress() + " *");
-        this.mSocket = sock;
-        this.mNs = ns;
-        this.messageParser = messageParser;
+    public PeerSocket(Socket socket, Long peerId, MessageHandler messageHandler,
+            MessageParser messageParser, NetworkService networkService) {
+        log.info("* new TCP connection from " + socket.getInetAddress() + " *");
+        this.mSocket = socket;
         this.messageHandler = messageHandler;
+        this.messageParser = messageParser;
+        this.networkService = networkService;
+
         // add this new PeerSocket to the PeerSocket list
         addMe(peerId);
     }
@@ -47,9 +50,9 @@ public class PeerSocket implements Runnable {
      */
     public void start() {
         // start thread
-        if (thread == null) {
-            thread = new Thread(this);
-            thread.start();
+        if (mThread == null) {
+            mThread = new Thread(this);
+            mThread.start();
         } else {
             log.warn("Can't start PeerSocket: already running.");
         }
@@ -59,7 +62,7 @@ public class PeerSocket implements Runnable {
      * Stop the thread
      */
     public void stop() {
-        threadShouldStop = true;
+        mThreadShouldStop = true;
     }
 
     /**
@@ -68,7 +71,7 @@ public class PeerSocket implements Runnable {
      * @param peerId
      */
     public void addMe(Long peerId) {
-        this.mNs.addPeer(peerId, this);
+        networkService.addPeer(peerId, this);
     }
 
     /**
@@ -108,7 +111,7 @@ public class PeerSocket implements Runnable {
         // TODO en gros là le run log juste les messages qu'il reçoit,
         // il faudrait qu'il lise les objets messages, instancie la bonne Commande pour le traiter,
         // set tous les paramètres de cette commandes avec les valeurs contenues dans le message et lance a commande dans un nouveau thread
-        while (!threadShouldStop) {
+        while (!mThreadShouldStop) {
             try {
                 mObjectInputStream = new ObjectInputStream(mSocket.getInputStream());
             } catch (IOException e) {

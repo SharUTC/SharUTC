@@ -20,24 +20,26 @@ import org.slf4j.LoggerFactory;
  */
 @Singleton
 public class NetworkServiceImpl implements NetworkService {
-
     private static final Logger log = LoggerFactory
             .getLogger(NetworkServiceImpl.class);
+
     private final AppModel appModel;
-    private final MessageParser messageParser;
     private final MessageHandler messageHandler;
-    private final HashMap<Long, PeerSocket> mPeers;
+    private final MessageParser messageParser;
+
     private ListenThread mListenThread;
     private PeerDiscoverySocket mPeerDiscoverySocket;
+    private final HashMap<Long, PeerSocket> mPeers;
 
     @Inject
-    public NetworkServiceImpl(AppModel appModel, MessageParser messageParser, MessageHandler messageHandler) {
+    public NetworkServiceImpl(AppModel appModel, MessageHandler messageHandler,
+            MessageParser messageParser) {
         this.appModel = appModel;
-        this.messageParser = messageParser;
         this.messageHandler = messageHandler;
-        mPeers = new HashMap();
-        mListenThread = null;
-        mPeerDiscoverySocket = null;
+        this.messageParser = messageParser;
+        this.mListenThread = null;
+        this.mPeerDiscoverySocket = null;
+        this.mPeers = new HashMap();
     }
 
     /**
@@ -46,9 +48,11 @@ public class NetworkServiceImpl implements NetworkService {
     @Override
     public void start(int port, String group) throws UnknownHostException {
         InetAddress g = InetAddress.getByName(group);
-        mListenThread = new ListenThread(port, this, appModel, messageParser, messageHandler);
+        mListenThread = new ListenThread(port, appModel, messageHandler,
+                messageParser, this);
         mListenThread.start();
-        mPeerDiscoverySocket = new PeerDiscoverySocket(port, g, this, appModel, messageParser, messageHandler);
+        mPeerDiscoverySocket = new PeerDiscoverySocket(port, g, appModel,
+                messageHandler, messageParser, this);
         mPeerDiscoverySocket.start();
     }
 

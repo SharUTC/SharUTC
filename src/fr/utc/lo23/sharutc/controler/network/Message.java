@@ -8,7 +8,6 @@ import java.util.Map;
  * be set in a message to find it at reading
  */
 public class Message {
-
     /**
      *
      */
@@ -90,9 +89,9 @@ public class Message {
      * @param conversationId
      */
     public Message(long fromPeerId, MessageType messageType, Map<String, Object> content) {
+        this.fromPeerId = fromPeerId;
         this.type = messageType;
         this.content = content;
-        this.fromPeerId = fromPeerId;
     }
 
     /**
