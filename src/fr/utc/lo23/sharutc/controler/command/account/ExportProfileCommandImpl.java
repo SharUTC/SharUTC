@@ -5,11 +5,10 @@ import fr.utc.lo23.sharutc.controler.service.FileService;
 import fr.utc.lo23.sharutc.model.AppModel;
 import fr.utc.lo23.sharutc.model.ErrorMessage;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
- * implementation of export profile command {@inheritDoc}
+ * implementation of export profile command
+ * {@inheritDoc}
  */
 public class ExportProfileCommandImpl implements ExportProfileCommand {
     private final FileService fs;
@@ -21,8 +20,6 @@ public class ExportProfileCommandImpl implements ExportProfileCommand {
      * Constructor
      * @param fs
      * @param appModel
-     * @param srcPath
-     * @param destPath
      */
     @Inject
     public ExportProfileCommandImpl(FileService fs, AppModel appModel) {

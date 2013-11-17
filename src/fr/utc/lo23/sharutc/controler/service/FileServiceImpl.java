@@ -96,7 +96,7 @@ public class FileServiceImpl implements FileService {
 
         String userName = srcPath.substring(srcPath.lastIndexOf(File.separator), lastP);
         //check if the user already exists
-        if (new File(appFolder + ROOT_FOLDER_USERS).exists()) {
+        if (new File(appFolder + ROOT_FOLDER_USERS + userName).exists()) {
             if (!force) {
                 throw new Exception("This user already exists");
             } else {
@@ -136,7 +136,6 @@ public class FileServiceImpl implements FileService {
         }
 
         //Create user folder and musics folder
-        new File(appFolder + ROOT_FOLDER_USERS + File.separator + userName).mkdirs();
         new File(appFolder + ROOT_FOLDER_USERS + File.separator + userName + File.separator + FOLDER_MUSICS).mkdirs();
 
         //Unzip
@@ -223,9 +222,10 @@ public class FileServiceImpl implements FileService {
 
     /**
      * Delete every file and forlder under <i>pathname</i>
-     *
+     * {@inheritDoc}
      * @param pathname
      */
+    @Override
     public void deleteFolderRecursively(String pathname) {
         log.debug("deleteFolderRecursively ({})...", pathname);
         File file = new File(pathname);
