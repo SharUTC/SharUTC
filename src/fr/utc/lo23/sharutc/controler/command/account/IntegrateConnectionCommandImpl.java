@@ -55,7 +55,6 @@ public class IntegrateConnectionCommandImpl implements IntegrateConnectionComman
         log.info("IntegrateConnectionCommandImpl ...");
         // add user info to model
         userService.integrateConnection(mUserInfo);
-        // TODO ip adresse ?
         // update active peer list
         Peer peer = mUserInfo.toPeer();
         appModel.getActivePeerList().update(peer);
