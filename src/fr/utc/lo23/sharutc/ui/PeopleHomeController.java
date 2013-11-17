@@ -20,6 +20,7 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.StackPane;
 import org.slf4j.Logger;
@@ -55,7 +56,7 @@ public class PeopleHomeController extends DragPreviewDrawer implements Initializ
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         groupScrollPane.getStyleClass().add("myScrollPaneWithTopBorder");
-        groupScrollPane.setOnDragOver(new HorizontalScrollHandler(groupScrollPane));
+        HorizontalScrollHandler scrollHandler = new HorizontalScrollHandler(groupScrollPane);
 
         mPeopleCardSelected = new ArrayList<PeopleCard>();
         mAppModel.addPropertyChangeListener(this);
@@ -64,6 +65,7 @@ public class PeopleHomeController extends DragPreviewDrawer implements Initializ
         mVirtualConnectedCategory.setName("Connected ");
         displayUserGroup();
         displayActivePeers(mVirtualConnectedCategory);
+
     }
 
     public void setInterface(IPeopleHomeController i) {

@@ -5,6 +5,7 @@ import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.input.DragEvent;
+import javafx.scene.input.ScrollEvent;
 
 public class HorizontalScrollHandler implements EventHandler<Event> {
 
@@ -23,6 +24,8 @@ public class HorizontalScrollHandler implements EventHandler<Event> {
      */
     private static final double SCROLL_BOUNDARY_IN_PERCENT = 10;
 
+    private static final int DIRECTION = -1;
+
     private double mLastEventX;
     private ScrollPane mScrollPane;
 
@@ -30,6 +33,8 @@ public class HorizontalScrollHandler implements EventHandler<Event> {
         super();
         mScrollPane = s;
         mLastEventX = mScrollPane.getWidth() / 2;
+       // mScrollPane.setOnDragOver(this);
+        mScrollPane.setOnScroll(this);
     }
 
     @Override
@@ -49,7 +54,12 @@ public class HorizontalScrollHandler implements EventHandler<Event> {
             }
 
             mLastEventX = eventX;
+        } else if (event.getEventType().equals(ScrollEvent.SCROLL)) {
+
+            final ScrollEvent scrollEvent = (ScrollEvent) event;
+            mScrollPane.setHvalue(mScrollPane.getHvalue() + scrollEvent.getDeltaY() * DIRECTION * SPEED);
         }
+
 
     }
 }
