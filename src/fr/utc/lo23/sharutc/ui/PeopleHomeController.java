@@ -5,9 +5,13 @@ import fr.utc.lo23.sharutc.model.userdata.UserInfo;
 import fr.utc.lo23.sharutc.ui.custom.DraggableCard;
 import fr.utc.lo23.sharutc.ui.custom.GroupCard;
 import fr.utc.lo23.sharutc.ui.custom.PeopleCard;
+import fr.utc.lo23.sharutc.ui.custom.SimpleCard;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -65,6 +69,23 @@ public class PeopleHomeController extends DragPreviewDrawer implements Initializ
             GroupCard newCard = new GroupCard(category, this);
             groupContainer.getChildren().add(newCard);
         }
+
+        //Add the + card for create a new group
+        SimpleCard createNewGroup = new SimpleCard("/fr/utc/lo23/sharutc/ui/fxml/simple_card.fxml",
+                180, 108, Pos.CENTER);
+        final Label plusText = new Label("+");
+        plusText.getStyleClass().addAll("plusText");
+        createNewGroup.getChildren().add(plusText);
+        createNewGroup.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                if (mouseEvent.getEventType() == MouseEvent.MOUSE_CLICKED) {
+                    //create a new group
+                    log.info("group creation requested");
+                }
+            }
+        });
+        groupContainer.getChildren().add(createNewGroup);
     }
 
     @Override
@@ -162,7 +183,6 @@ public class PeopleHomeController extends DragPreviewDrawer implements Initializ
             hideDragPreview();
         }
     }
-
 
     public interface IPeopleHomeController {
 

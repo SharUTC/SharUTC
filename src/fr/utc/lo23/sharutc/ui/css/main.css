@@ -230,10 +230,15 @@
     -fx-font-weight: bold;
 }
 
+.plusText{
+ 	-fx-font-size : 60px;
+   	-fx-text-fill: #BDC3C7;
+   	-fx-font-weight: bold;
+}
+
 #boxtitle{
     -fx-border-color: #BDC3C7;
     -fx-border-width: 0px 0px 2px 0px;
-
 }
 
 .rectButton {
