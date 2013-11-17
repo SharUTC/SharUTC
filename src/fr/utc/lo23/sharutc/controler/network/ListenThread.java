@@ -76,7 +76,7 @@ public class ListenThread implements Runnable {
         long peerID = appModel.getProfile().getUserInfo().getPeerId();
         try {
             ServerSocket socketServer = new ServerSocket(mPort);
-            System.out.println("Lancement du serveur");
+            log.info("[ListenThread - run()] - Started listening on port " + mPort);
 
             while (socketServer.isBound()) {
                 Socket socketClient = socketServer.accept();
