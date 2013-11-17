@@ -240,6 +240,7 @@
 #boxtitle{
     -fx-border-color: #BDC3C7;
     -fx-border-width: 0px 0px 2px 0px;
+    
 }
 
 .rectButton {
@@ -247,7 +248,9 @@
     -fx-background-radius: 0;
     -fx-background-insets: 0;
 }
-
+#content{
+    -fx-padding : 5px 3px 5px 3px;
+}
 .rectButton:hover {
     -fx-opacity: 0.7;
 }
