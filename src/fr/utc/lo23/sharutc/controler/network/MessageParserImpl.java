@@ -53,7 +53,7 @@ public class MessageParserImpl implements MessageParser {
          }*/
         Map<String, Object> parsedContent = message.getContent();
         if (parsedContent != null) {
-            messageContent = new HashMap<String, Object>();
+            messageContent = new HashMap<>();
             messageContent.putAll(parsedContent);
         }
     }
@@ -103,7 +103,7 @@ public class MessageParserImpl implements MessageParser {
      */
     @Override
     public Message write(MessageType messageType, Object[][] content) {
-        Map<String, Object> map = new HashMap<String, Object>();
+        Map<String, Object> map = new HashMap<>();
         for (Object[] o : content) {
             map.put((String) o[0], o[1]);
         }
