@@ -1,5 +1,8 @@
 package fr.utc.lo23.sharutc.ui;
 
+import com.google.inject.Inject;
+import fr.utc.lo23.sharutc.model.AppModel;
+import fr.utc.lo23.sharutc.model.AppModelImpl;
 import fr.utc.lo23.sharutc.model.userdata.Category;
 import fr.utc.lo23.sharutc.model.userdata.UserInfo;
 import fr.utc.lo23.sharutc.ui.custom.DraggableCard;
@@ -20,11 +23,13 @@ import javafx.scene.layout.StackPane;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 
-public class PeopleHomeController extends DragPreviewDrawer implements Initializable, PeopleCard.IPeopleCard, GroupCard.IGroupCard {
+public class PeopleHomeController extends DragPreviewDrawer implements Initializable, PeopleCard.IPeopleCard, GroupCard.IGroupCard, PropertyChangeListener {
 
     private static final Logger log = LoggerFactory.getLogger(PeopleHomeController.class);
     private IPeopleHomeController mInterface;
@@ -39,12 +44,15 @@ public class PeopleHomeController extends DragPreviewDrawer implements Initializ
     public FlowPane groupContainer;
     @FXML
     public ScrollPane groupScrollPane;
+    @Inject
+    private AppModel mAppModel;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         groupScrollPane.getStyleClass().add("myScrollPaneWithTopBorder");
         populate();
         mPeopleCardSelected = new ArrayList<PeopleCard>();
+        mAppModel.addPropertyChangeListener(this);
     }
 
     public void setInterface(IPeopleHomeController i) {
@@ -97,6 +105,7 @@ public class PeopleHomeController extends DragPreviewDrawer implements Initializ
     @Override
     public void onPeopleDetailsRequested(UserInfo userInfo) {
         log.info("onPeopleDetailsRequested " + userInfo.getLogin());
+        mAppModel.removePropertyChangeListener(this);
         mInterface.onPeopleDetailRequested(userInfo);
     }
 
@@ -117,11 +126,13 @@ public class PeopleHomeController extends DragPreviewDrawer implements Initializ
 
     @Override
     public void onGroupEditionRequested(Category category) {
+        log.info("onGroupEditionRequested " + category.getName());
         //TODO create Group Edition View
     }
 
     @Override
     public void onGroupRightsRequested(Category category) {
+        log.info("onGroupRightsRequested " + category.getName());
         //TODO create Rights Edition View
     }
 
@@ -181,6 +192,14 @@ public class PeopleHomeController extends DragPreviewDrawer implements Initializ
             //clean the selection
             mPeopleCardSelected.clear();
             hideDragPreview();
+        }
+    }
+
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) {
+        final String propertyName = evt.getPropertyName();
+        if (AppModelImpl.Property.ACTIVE_PEERS.name().equals(propertyName)) {
+            //retrieve the ACTIVE_PEERS list
         }
     }
 
