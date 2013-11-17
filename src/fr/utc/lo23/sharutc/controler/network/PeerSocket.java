@@ -42,7 +42,7 @@ public class PeerSocket implements Runnable {
         this.networkService = networkService;
 
         // add this new PeerSocket to the PeerSocket list
-        addMe(peerId);
+        networkService.addPeer(peerId, this);
     }
 
     /**
@@ -63,25 +63,6 @@ public class PeerSocket implements Runnable {
      */
     public void stop() {
         mThreadShouldStop = true;
-    }
-
-    /**
-     * Add this new PeerSocket to the PeerSocket list
-     *
-     * @param peerId
-     */
-    public void addMe(Long peerId) {
-        networkService.addPeer(peerId, this);
-    }
-
-    /**
-     * Send a general information message - string
-     *
-     * @param msg
-     */
-    public void send(String msg) {
-        mPw.print(msg);
-        mPw.flush();
     }
 
     /**

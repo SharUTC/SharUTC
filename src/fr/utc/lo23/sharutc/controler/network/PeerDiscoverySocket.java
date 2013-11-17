@@ -80,20 +80,6 @@ public class PeerDiscoverySocket implements Runnable {
     /**
      * Send a message to the multicast group.
      *
-     * @param msg
-     */
-    public void send(String msg) {
-        DatagramPacket p = new DatagramPacket(msg.getBytes(), msg.length(), mGroup, mPort);
-        try {
-            mSocket.send(p);
-        } catch (IOException e) {
-            log.error(e.toString());
-        }
-    }
-
-    /**
-     * Send a connection informative message
-     *
      * @param msg a Message to send
      */
     public void send(Message msg) {
