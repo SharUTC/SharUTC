@@ -10,7 +10,7 @@ import java.net.ServerSocket;
  * This class is a server socket. It waits ans listens to new connexions.
  * It also accepts the new connexions.
  * For each new connexion, it creates a new peer.
- * 
+ *
  * @author Arselle
  */
 public class ListenThread implements Runnable {
@@ -22,7 +22,7 @@ public class ListenThread implements Runnable {
     private final AppModel mAppModel;
     private final MessageParser messageParser;
     private final MessageHandler messageHandler;
-    
+
     /**
      *
      * @param p the binding port of the socket
@@ -61,15 +61,14 @@ public class ListenThread implements Runnable {
         try {
             ServerSocket socketServeur = new ServerSocket(mPort);
             System.out.println("Lancement du serveur");
-            
+
             while (socketServeur.isBound()) {
                 Socket socketClient = socketServeur.accept();
                 PeerSocket ps = new PeerSocket(socketClient, mNetworkService, peerID, messageParser, messageHandler);
                 ps.start();
             }
-            
         } catch (IOException e) {
             log.error(e.toString());
         }
     }
-  }
+}

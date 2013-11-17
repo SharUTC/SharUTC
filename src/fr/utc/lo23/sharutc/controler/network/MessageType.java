@@ -66,11 +66,11 @@ public enum MessageType {
      */
     MUSIC_SEND_TO_PLAY,
     /**
-     * Send a disconnection message to the network 
+     * Send a disconnection message to the network
      */
     DISCONNECT,
     /**
-     * Send a connection message to the network 
+     * Send a connection message to the network
      */
     CONNECTION,
     /**

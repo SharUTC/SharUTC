@@ -38,7 +38,7 @@ public class PeerSocket implements Runnable {
         this.mNs = ns;
         this.messageParser = messageParser;
         this.messageHandler = messageHandler;
-        // add this new PeerSocket to the PeerSocket list 
+        // add this new PeerSocket to the PeerSocket list
         addMe(peerId);
     }
 
@@ -105,8 +105,8 @@ public class PeerSocket implements Runnable {
      */
     @Override
     public void run() {
-        // TODO en gros là le run log juste les messages qu'il reçoit, 
-        // il faudrait qu'il lise les objets messages, instancie la bonne Commande pour le traiter, 
+        // TODO en gros là le run log juste les messages qu'il reçoit,
+        // il faudrait qu'il lise les objets messages, instancie la bonne Commande pour le traiter,
         // set tous les paramètres de cette commandes avec les valeurs contenues dans le message et lance a commande dans un nouveau thread
         while (!threadShouldStop) {
             try {

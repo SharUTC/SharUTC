@@ -180,7 +180,7 @@ public class PeerDiscoverySocket implements Runnable {
                     } else {
                         log.error("Received message with peerId = null !");
                     }
-                    // add a new 
+                    // add a new
                     addPeer(p, msgReceived);
                     // handle message
                     messageHandler.handleMessage(json);

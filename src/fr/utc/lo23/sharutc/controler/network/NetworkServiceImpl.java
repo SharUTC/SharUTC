@@ -85,7 +85,7 @@ public class NetworkServiceImpl implements NetworkService {
 
     /**
      * Send a message to all the peers connected to the network
-     * 
+     *
      * @param message : message to send
      */
     protected void sendBroadcast(Message message) {
@@ -96,7 +96,7 @@ public class NetworkServiceImpl implements NetworkService {
 
     /**
      * Send a message to a peer
-     * 
+     *
      * @param message : message to send
      * @param peer : receiver
      */
@@ -107,7 +107,7 @@ public class NetworkServiceImpl implements NetworkService {
             log.error("[NetworkService - sendUnicast()] - object Peer is null");
         }
     }
-    
+
     /**
      * {inheritDoc}
      */
@@ -167,7 +167,7 @@ public class NetworkServiceImpl implements NetworkService {
     public void editComment(Peer peer, Music music, String comment, Integer commentIndex) {
         Message message = messageParser.write(MessageType.EDIT_COMMENT, new Object[][]{{Message.OWNER_PEER, peer}, {Message.MUSIC, music}, {Message.COMMENT,comment}});
         sendUnicast(message, peer);
-      
+
     }
 
     /**
