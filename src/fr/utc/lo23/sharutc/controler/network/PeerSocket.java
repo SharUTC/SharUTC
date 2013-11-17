@@ -96,7 +96,7 @@ public class PeerSocket implements Runnable {
             String msg = null;
             try {
                 msg = (String) mIn.readObject();
-            } catch (IOException | ClassNotFoundException ex) {
+            } catch (Exception ex) {
                 log.error(ex.toString());
             }
             messageHandler.handleMessage(msg);

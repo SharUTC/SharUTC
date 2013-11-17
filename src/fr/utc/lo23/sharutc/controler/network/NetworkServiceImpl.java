@@ -42,7 +42,7 @@ public class NetworkServiceImpl implements NetworkService {
         this.messageParser = messageParser;
         this.mListenThread = null;
         this.mPeerDiscoverySocket = null;
-        this.mPeers = new HashMap<>();
+        this.mPeers = new HashMap<Long, PeerSocket>();
     }
 
     /**
