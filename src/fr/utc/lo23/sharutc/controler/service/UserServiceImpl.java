@@ -207,7 +207,7 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public void connectionRequest(String login, String password) {
-        Profile profileToConnect = fileService.readFile(SharUTCFile.PROFILE, Profile.class);
+        Profile profileToConnect = fileService.readProfileFile(login);
         if (profileToConnect != null && profileToConnect.getUserInfo() != null) {
             UserInfo userInfo = profileToConnect.getUserInfo();
             boolean success = userInfo.getLogin().equals(login)
