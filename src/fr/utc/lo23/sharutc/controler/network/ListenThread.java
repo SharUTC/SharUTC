@@ -1,11 +1,12 @@
 package fr.utc.lo23.sharutc.controler.network;
 
 import fr.utc.lo23.sharutc.model.AppModel;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import java.net.Socket;
 import java.io.IOException;
 import java.net.ServerSocket;
+import java.net.Socket;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * Listen to new TCP connection and instanciate new PeerSocket to handle them.
  * <p>
