@@ -11,6 +11,7 @@ import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.TransferMode;
+import javafx.scene.layout.Region;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,6 +35,12 @@ public class GroupCard extends SimpleCard implements EventHandler<Event> {
     @FXML
     public Label groupMembers;
 
+    @FXML
+    public Region dropOverlay;
+
+    @FXML
+    public Label dropOverlayLabel;
+
     private Category mModel;
     private IGroupCard mInterface;
 
@@ -56,6 +63,8 @@ public class GroupCard extends SimpleCard implements EventHandler<Event> {
         deleteButton.setOnMouseClicked(this);
         editButton.setOnMouseClicked(this);
         rightsButton.setOnMouseClicked(this);
+
+        displayDropOverlay(false);
     }
 
     public void onHover(boolean isHover) {
@@ -99,6 +108,16 @@ public class GroupCard extends SimpleCard implements EventHandler<Event> {
     }
 
     /**
+     * display drop overlay
+     *
+     * @param isShow true set drop overlay Visible, false will hide it
+     */
+    private void displayDropOverlay(boolean isShow) {
+        dropOverlay.setVisible(isShow);
+        dropOverlayLabel.setVisible(isShow);
+    }
+
+    /**
      * Accept PeopleCard as Droppable
      *
      * @param dragEvent
@@ -121,8 +140,7 @@ public class GroupCard extends SimpleCard implements EventHandler<Event> {
         final Object gestureSource = dragEvent.getGestureSource();
         if (gestureSource instanceof PeopleCard) {
             dragEvent.acceptTransferModes(TransferMode.COPY_OR_MOVE);
-            groupName.setText("ADD");
-            groupMembers.setText("a new contact");
+            displayDropOverlay(true);
         }
         dragEvent.consume();
     }
@@ -135,8 +153,7 @@ public class GroupCard extends SimpleCard implements EventHandler<Event> {
     private void onDragExited(DragEvent dragEvent) {
         final Object gestureSource = dragEvent.getGestureSource();
         if (gestureSource instanceof PeopleCard) {
-            groupName.setText(mModel.getName());
-            groupMembers.setText("34");
+            displayDropOverlay(false);
         }
         dragEvent.consume();
     }
