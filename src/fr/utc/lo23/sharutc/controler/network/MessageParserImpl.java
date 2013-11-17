@@ -27,6 +27,11 @@ public class MessageParserImpl implements MessageParser {
     private Message message;
     private Map<String, Object> messageContent = null;
 
+    /**
+     * Initialize the Message parser
+     *
+     * @param appModel the model of the application
+     */
     @Inject
     public MessageParserImpl(AppModel appModel) {
         this.appModel = appModel;
@@ -53,6 +58,13 @@ public class MessageParserImpl implements MessageParser {
         }
     }
 
+    /**
+     * Check that the parser read a message before being used.
+     *
+     * @see read()
+     * @throws RuntimeException throw this exception if the parser is used
+     * before having read a Message first.
+     */
     private void checkMessageRead() throws RuntimeException {
         if (message == null || messageContent == null) {
             log.warn("The parser must read a Message first");
@@ -139,6 +151,9 @@ public class MessageParserImpl implements MessageParser {
         return incomingMessage;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void resetParser() {
         message = null;

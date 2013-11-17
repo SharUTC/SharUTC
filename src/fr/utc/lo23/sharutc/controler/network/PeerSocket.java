@@ -25,13 +25,13 @@ public class PeerSocket implements Runnable {
     private boolean mThreadShouldStop = false;
 
     /**
-     * Construct a PeerSocket
+     * Construct a PeerSocket.
      *
-     * @param sock
-     * @param ns
-     * @param peerId
-     * @param messageParser
-     * @param messageHandler
+     * @param socket a Socket connected to the peer
+     * @param peerId the peerId of the new peer
+     * @param messageHandler the injected message handler
+     * @param messageParser the injected message parser
+     * @param networkService the instance of NetworkService
      */
     public PeerSocket(Socket socket, Long peerId, MessageHandler messageHandler,
             MessageParser messageParser, NetworkService networkService) {
@@ -46,7 +46,7 @@ public class PeerSocket implements Runnable {
     }
 
     /**
-     * Start the thread
+     * Start the thread.
      */
     public void start() {
         // start thread
@@ -59,7 +59,7 @@ public class PeerSocket implements Runnable {
     }
 
     /**
-     * Stop the thread
+     * Stop the thread.
      */
     public void stop() {
         mThreadShouldStop = true;
@@ -85,9 +85,9 @@ public class PeerSocket implements Runnable {
     }
 
     /**
-     * Send a general information message - message
+     * Send a message to the peer.
      *
-     * @param msg
+     * @param msg a Message to send
      */
     public void send(Message msg) {
         try {
@@ -104,7 +104,12 @@ public class PeerSocket implements Runnable {
     }
 
     /**
-     * Peer listening and writing received messages
+     * Listen to incoming message from the peer and handles them.
+     * <p>
+     * The message receive are given to messageHandler to instanciate the right
+     * command to treat them.
+     *
+     * @see MessageHandler
      */
     @Override
     public void run() {

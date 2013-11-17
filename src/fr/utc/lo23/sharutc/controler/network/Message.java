@@ -4,8 +4,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * List of constants used in all the messages, describes each value that is to
- * be set in a message to find it at reading
+ * List of constants used in all the messages.
+ * <p>
+ * It describes each value that can be set in a message to find it at reading.
  */
 public class Message {
     /**
@@ -78,15 +79,23 @@ public class Message {
      */
     private Long fromPeerId;
 
+    /**
+     * Dummy constructor.
+     * <p>
+     * This constructor is used by the jackson library when deserializing.
+     * It is recommended the other constructor for any other use.
+     */
     public Message() {
     }
 
     /**
+     * Create a new message and set its attributes.
      *
-     * @param fromPeerId
-     * @param messageType
-     * @param content
-     * @param conversationId
+     * @see MessageType
+     * @param fromPeerId the sender's peerId
+     * @param messageType the message type
+     * @param content a Map<String, Object> where the String is taken from the
+     * static String defined on Message and Object is the associated value.
      */
     public Message(long fromPeerId, MessageType messageType, Map<String, Object> content) {
         this.fromPeerId = fromPeerId;
@@ -95,53 +104,64 @@ public class Message {
     }
 
     /**
+     * Return the message's type.
      *
-     * @return
+     * @return the type of the message
      */
     public MessageType getType() {
         return type;
     }
 
     /**
+     * Change the message's type.
      *
-     * @param type
+     * @param type the new type of the message
      */
     public void setType(MessageType type) {
         this.type = type;
     }
 
     /**
+     * Return the content of the message
      *
-     * @return
+     * @return the content of the message as a Map<String, Object>.
      */
     public Map<String, Object> getContent() {
         return content;
     }
 
     /**
+     * Change the message's content map.
      *
-     * @param content
+     * @param content a HashMap<String, Object> with the new content.
      */
     public void setContent(HashMap<String, Object> content) {
         this.content = content;
     }
 
     /**
+     * The peerId of the message's sender.
      *
-     * @return
+     * @return a Long containing the sender's peerId.
      */
     public Long getFromPeerId() {
         return fromPeerId;
     }
 
     /**
+     * Change the peerId of the sender.
      *
-     * @param fromPeerId
+     * @param fromPeerId the new sender's peerId.
      */
     public void setFromPeerId(Long fromPeerId) {
         this.fromPeerId = fromPeerId;
     }
 
+    /**
+     * Give a displayable String representation of the message.
+     *
+     * @return a String representing the message
+     */
     @Override
     public String toString() {
         return "Message{" + "type=" + type + ", content=" + content + ", fromPeerId=" + fromPeerId + "}";

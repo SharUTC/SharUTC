@@ -7,11 +7,13 @@ import java.net.Socket;
 import java.io.IOException;
 import java.net.ServerSocket;
 /**
- * This class is a server socket. It waits ans listens to new connexions.
- * It also accepts the new connexions.
- * For each new connexion, it creates a new peer.
+ * Listen to new TCP connection and instanciate new PeerSocket to handle them.
+ * <p>
+ * This class bind a ServerSocket to the given port and listen on it.
+ * Each new TCP connection is handled separately in a new instance of PeerSocket
+ * running in a separate thread.
  *
- * @author Arselle
+ * @see PeerSocket
  */
 public class ListenThread implements Runnable {
     private static final Logger log = LoggerFactory.getLogger(PeerDiscoverySocket.class);
@@ -26,10 +28,13 @@ public class ListenThread implements Runnable {
     private boolean mThreadShouldStop = false;
 
     /**
+     * Set the different service provider we'll need and the port to listen.
      *
-     * @param p the binding port of the socket
-     * @param ns the network service
-     * @param appModel the model of the global application
+     * @param port the port to bind the listening socket to
+     * @param appModel the model of the application
+     * @param messageHandler the injected MessageHandler instance
+     * @param messageParser the injected MessageParser instance
+     * @param networkService the injected NetworkService instance
      */
     public ListenThread(int port, AppModel appModel, MessageHandler
             messageHandler, MessageParser messageParser, NetworkService
@@ -42,7 +47,7 @@ public class ListenThread implements Runnable {
     }
 
     /**
-     * Starts the listenThread
+     * Starts the listenThread.
      */
     public void start() {
         mThread = new Thread(this);
@@ -50,14 +55,21 @@ public class ListenThread implements Runnable {
     }
 
     /**
-     * Stops the listenThread
+     * Stops the listenThread.
      */
     public void stop() {
         mThreadShouldStop = true;
     }
 
     /**
-     * Traitement executed by the listenThread
+     * Main listening loop.
+     * <p>
+     * Loop on the ServerSocket accept() method and instanciate a new PeerSocket
+     * for each new connection.
+     * The newly created PeerSocket is then started in a new thread with
+     * start().
+     *
+     * @see PeerSocket
      */
     @Override
     public void run() {

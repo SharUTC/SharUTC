@@ -17,6 +17,9 @@ import org.slf4j.LoggerFactory;
 
 /**
  * {@inheritDoc}
+ *
+ * @see ListenThread
+ * @see PeerDiscoverySocket
  */
 @Singleton
 public class NetworkServiceImpl implements NetworkService {
@@ -88,9 +91,9 @@ public class NetworkServiceImpl implements NetworkService {
     }
 
     /**
-     * Send a message to all the peers connected to the network
+     * Send a message to all the peers connected to the network.
      *
-     * @param message : message to send
+     * @param message the message to send
      */
     protected void sendBroadcast(Message message) {
         for (PeerSocket peer : mPeers.values()) {
@@ -99,10 +102,10 @@ public class NetworkServiceImpl implements NetworkService {
     }
 
     /**
-     * Send a message to a peer
+     * Send a message to a peer.
      *
-     * @param message : message to send
-     * @param peer : receiver
+     * @param message the message to send
+     * @param peer the receiver
      */
     protected void sendUnicast(Message message, Peer peer) {
         if (peer != null) {

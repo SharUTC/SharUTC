@@ -10,6 +10,9 @@ import java.util.Arrays;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Listen to incoming UDP multicast and provide methods to send some.
+ */
 public class PeerDiscoverySocket implements Runnable {
     private static final Logger log = LoggerFactory
         .getLogger(PeerDiscoverySocket.class);
@@ -26,14 +29,14 @@ public class PeerDiscoverySocket implements Runnable {
     private boolean mThreadShouldStop = false;
 
     /**
-     * Construct a PeerDiscoverySocket
+     * Construct a PeerDiscoverySocket.
      *
-     * @param port
-     * @param group
-     * @param ns
-     * @param appModel
-     * @param messageParser
-     * @param messageHandler
+     * @param port the port to use for UDP multicast
+     * @param group the Class D address of the multicast group to join
+     * @param appModel the model of the application
+     * @param messageHandler the injected message handler
+     * @param messageParser the injected message parser
+     * @param networkService the instance of the networkService
      */
     public PeerDiscoverySocket(int port, InetAddress group, AppModel appModel,
             MessageHandler messageHandler, MessageParser messageParser,
@@ -56,7 +59,7 @@ public class PeerDiscoverySocket implements Runnable {
     }
 
     /**
-     * Start the thread
+     * Start the listening thread.
      */
     public void start() {
         if (mThread == null) {
@@ -68,14 +71,14 @@ public class PeerDiscoverySocket implements Runnable {
     }
 
     /**
-     * Stop the thread
+     * Stop the listening thread.
      */
     public void stop() {
         mThreadShouldStop = true;
     }
 
     /**
-     * Send a general information message
+     * Send a message to the multicast group.
      *
      * @param msg
      */
@@ -91,7 +94,7 @@ public class PeerDiscoverySocket implements Runnable {
     /**
      * Send a connection informative message
      *
-     * @param msg
+     * @param msg a Message to send
      */
     public void send(Message msg) {
         byte[] bytes = messageParser.toJSON(msg).getBytes();
@@ -104,10 +107,11 @@ public class PeerDiscoverySocket implements Runnable {
     }
 
     /**
-     * Add a new peer (with its peerId) to the peerSocket existing list and start peerSocket thread
+     * Create a new PeerSocket and start it.
      *
-     * @param p
-     * @param msg
+     * @see PeerSocket
+     * @param p the Hello UDP packet
+     * @param msg the Hello Message
      */
     public void addPeer(DatagramPacket p, Message msg) {
         PeerSocket peerSocket = null;
@@ -124,7 +128,11 @@ public class PeerDiscoverySocket implements Runnable {
     }
 
     /**
-     * Thread which receives a UDP packet, adds a new peer, and send personal information in order to establish the connection with the new peer
+     * Listen to multicast packet and create new PeerSocket when receiving Hello
+     * message.
+     * <p>
+     * When receiving a Hello message, this creates a new PeerSocket, start it
+     * and use it to send a reply.
      */
     @Override
     public void run() {
