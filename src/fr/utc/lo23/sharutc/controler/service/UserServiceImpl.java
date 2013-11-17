@@ -199,7 +199,6 @@ public class UserServiceImpl implements UserService {
         log.debug("createAndSetProfile ...");
         Profile nProfile = new Profile(userInfo);
         appModel.setProfile(nProfile);
-        this.saveProfileFiles();
         log.debug("createAndSetProfile DONE");
     }
 
