@@ -220,6 +220,7 @@ public class Catalog implements Serializable, PropertyChangeListener {
      *
      * @return true if the catalog has no musics, else false
      */
+    @JsonIgnore
     public boolean isEmpty() {
         return mMusics.isEmpty();
     }

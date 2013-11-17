@@ -119,6 +119,7 @@ public class Contacts implements Serializable {
      *
      * @return
      */
+    @JsonIgnore
     public boolean isEmpty() {
         return mContacts.isEmpty();
     }

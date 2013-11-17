@@ -48,12 +48,13 @@ public class Categories implements Serializable {
      * @return
      */
     public Category findCategoryById(Integer id) {
-        for (Category category : mCategories) {
-            if (category.getId() == id) {
-                return category;
+        Category category = null;
+        for (Category c : mCategories) {
+            if (c.getId() == id) {
+                category = c;
             }
         }
-        return null;
+        return category;
     }
 
     /**
@@ -125,6 +126,7 @@ public class Categories implements Serializable {
      *
      * @return
      */
+    @JsonIgnore
     public boolean isEmpty() {
         return mCategories.isEmpty();
     }

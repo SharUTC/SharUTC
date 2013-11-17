@@ -25,7 +25,9 @@ public class DisconnectionCommandImpl implements DisconnectionCommand {
     private final MusicService musicService;
 
     /**
-     * {@inheritDoc}
+     * @param userService
+     * @param musicService
+     * @param networkService
      */
     @Inject
     public DisconnectionCommandImpl(UserService userService, MusicService musicService, NetworkService networkService) {
@@ -34,6 +36,9 @@ public class DisconnectionCommandImpl implements DisconnectionCommand {
         this.networkService = networkService;
     }
 
+    /**
+     * {@inheritDoc }
+     */
     @Override
     public void execute() {
         log.info("DisconnectionCommand ...");

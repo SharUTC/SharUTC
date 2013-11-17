@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 
 package fr.utc.lo23.sharutc.controler.command.account;
 
@@ -21,6 +16,11 @@ public class ImportProfileCommandImpl implements ImportProfileCommand{
     private String mPath;
     private boolean mForce;
     
+    /**
+     * 
+     * @param fs
+     * @param appModel 
+     */
     @Inject
     public ImportProfileCommandImpl(FileService fs, AppModel appModel) {
         this.fs = fs;
@@ -28,24 +28,41 @@ public class ImportProfileCommandImpl implements ImportProfileCommand{
         mForce = false;
     }
 
+    /**
+     * {@inheritDoc }
+     */
     @Override
     public String getPath() {
         return mPath;
     }
 
+    /**
+     * {@inheritDoc }
+     */
     @Override
     public void setPath(String path) {
         mPath = path;
     }
 
+    /**
+     * {@inheritDoc }
+     */
+    @Override
     public boolean isForce() {
         return mForce;
     }
 
-    public void setForce(boolean Force) {
-        this.mForce = Force;
+    /**
+     * {@inheritDoc }
+     */
+    @Override
+    public void setForce(boolean force) {
+        this.mForce = force;
     }
 
+    /**
+     * {@inheritDoc }
+     */
     @Override
     public void execute() {
         try {

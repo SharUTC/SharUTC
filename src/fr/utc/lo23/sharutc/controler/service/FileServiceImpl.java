@@ -1,6 +1,8 @@
 package fr.utc.lo23.sharutc.controler.service;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import static fr.utc.lo23.sharutc.controler.service.FileService.ROOT_FOLDER_TMP;
@@ -31,6 +33,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import static fr.utc.lo23.sharutc.controler.service.FileService.ROOT_FOLDER_USERS;
 import fr.utc.lo23.sharutc.model.domain.Catalog;
+import fr.utc.lo23.sharutc.model.userdata.Profile;
 import javax.swing.JFileChooser;
 
 /**
@@ -54,6 +57,13 @@ public class FileServiceImpl implements FileService {
         this.appModel = appModel;
 
         appFolder = new File(".").getCanonicalPath();  //JFileChooser().getFileSystemView().getDefaultDirectory().toString();
+     /*   mapper.enable(SerializationFeature.WRITE_NULL_MAP_VALUES);
+        mapper.enable(SerializationFeature.WRITE_EMPTY_JSON_ARRAYS);
+        mapper.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
+       
+        mapper.enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY);*/
+     //   mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+
         appFolder += File.separator + APP_NAME + File.separator;
 
         if (!new File(appFolder).exists()) {
@@ -86,7 +96,7 @@ public class FileServiceImpl implements FileService {
 
         String userName = srcPath.substring(srcPath.lastIndexOf(File.separator), lastP);
         //check if the user already exists
-        if (new File(appFolder + ROOT_FOLDER_USERS).exists()) {
+        if (new File(appFolder + ROOT_FOLDER_USERS + userName).exists()) {
             if (!force) {
                 throw new Exception("This user already exists");
             } else {
@@ -126,7 +136,6 @@ public class FileServiceImpl implements FileService {
         }
 
         //Create user folder and musics folder
-        new File(appFolder + ROOT_FOLDER_USERS + File.separator + userName).mkdirs();
         new File(appFolder + ROOT_FOLDER_USERS + File.separator + userName + File.separator + FOLDER_MUSICS).mkdirs();
 
         //Unzip
@@ -213,9 +222,10 @@ public class FileServiceImpl implements FileService {
 
     /**
      * Delete every file and forlder under <i>pathname</i>
-     *
+     * {@inheritDoc}
      * @param pathname
      */
+    @Override
     public void deleteFolderRecursively(String pathname) {
         log.debug("deleteFolderRecursively ({})...", pathname);
         File file = new File(pathname);
@@ -554,6 +564,20 @@ public class FileServiceImpl implements FileService {
         }
         log.debug("readFile ({}) DONE", sharUTCFile.getFilename());
         return object;
+    }
+
+    @Override
+    public Profile readProfileFile(String login) {
+        log.debug("readProfileFile ({}) ...", login);
+        StringBuilder builder = new StringBuilder(appFolder).append(ROOT_FOLDER_USERS).append(File.separator).append(login).append(File.separator).append(SharUTCFile.PROFILE.getFilename());
+        Profile profile = null;
+        try {
+            profile = mapper.readValue(new File(builder.toString()), Profile.class);
+        } catch (Exception ex) {
+            log.error(ex.toString());
+        }
+        log.debug("readProfileFile ({}) DONE", login);
+        return profile;
     }
 
     @Override

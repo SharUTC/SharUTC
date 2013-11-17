@@ -17,7 +17,7 @@ public interface AddUserCommand extends Command{
     /**
      * Set the contact
      *
-     * @param contact
+     * @param userInfo
      */
-    public void setContact(UserInfo userInfo) ;
+    public void setContact(UserInfo userInfo);
 }

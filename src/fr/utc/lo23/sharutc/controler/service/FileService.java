@@ -2,6 +2,7 @@ package fr.utc.lo23.sharutc.controler.service;
 
 import fr.utc.lo23.sharutc.model.domain.Catalog;
 import fr.utc.lo23.sharutc.model.domain.Music;
+import fr.utc.lo23.sharutc.model.userdata.Profile;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
@@ -43,6 +44,14 @@ public interface FileService {
     public void exportFile(String srcPath, String destPath) throws IOException;
 
     /**
+     * Delete every file and forlder under <i>pathname</i>
+     * 
+     * @param pathname
+     */
+    public void deleteFolderRecursively(String pathname);
+    
+    
+    /**
      * Used for reading a local mp3 file and creating a new Music, increments
      * profile's counter. If reading id3tag fails, then tag values are set to
      * null
@@ -58,6 +67,7 @@ public interface FileService {
      *
      * @param file the file to read
      * @return the content of the file as an array of Bytes
+     * @throws java.io.IOException
      */
     public byte[] getFileAsByteArray(File file) throws IOException;
 
@@ -65,8 +75,9 @@ public interface FileService {
      * Give access to a temporary file automatically deleted when application
      * stops, used by musicPlayer
      *
-     * @param currentMusic
+     * @param musicBytes
      * @return the temporary file
+     * @throws java.lang.Exception
      */
     public File buildTmpMusicFile(Byte[] musicBytes) throws Exception;
 
@@ -96,6 +107,8 @@ public interface FileService {
     public void saveToFile(SharUTCFile sharUTCFile, Object objectToSave);
 
     public <T> T readFile(SharUTCFile sharUTCFile, Class<T> clazz);
+
+    public Profile readProfileFile(String login);
 
     public void createFile(byte[] bytes, String fileName);
 
