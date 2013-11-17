@@ -31,18 +31,6 @@ root {
     -fx-text-fill: #ECF0F1;       
 }
 
-#dropOverlay{
-    -fx-background-color: #669900;
-    -fx-opacity: 0.5;
-}
-
-#dropOverlayLabel{
-    -fx-font-family: Tahoma;
-    -fx-font-size: 65px;
-    -fx-font-weight: bold;
-    -fx-text-fill: #ECF0F1;
-}
-
 .errorMessageContainer > .label {
     -fx-text-fill: #CC0000;
 }
