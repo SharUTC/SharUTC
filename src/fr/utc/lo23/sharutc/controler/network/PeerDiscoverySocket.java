@@ -99,7 +99,7 @@ public class PeerDiscoverySocket implements Runnable {
      * @param p the Hello UDP packet
      * @param msg the Hello Message
      */
-    public void addPeer(DatagramPacket p, Message msg) {
+    private void addPeer(DatagramPacket p, Message msg) {
         PeerSocket peerSocket = null;
         try {
             Socket socket = new Socket(p.getAddress(), p.getPort());
