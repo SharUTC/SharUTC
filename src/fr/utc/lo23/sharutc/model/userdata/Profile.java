@@ -1,5 +1,7 @@
 package fr.utc.lo23.sharutc.model.userdata;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import java.io.Serializable;
 
 /**
@@ -42,6 +44,7 @@ public class Profile implements Serializable {
      *
      * @return
      */
+    @JsonIgnore
     public Long getNewMusicId() {
         return ++musicCounter;
     }
@@ -49,11 +52,12 @@ public class Profile implements Serializable {
     public void decrementMusicId() {
         musicCounter--;
     }
-    
-     /**
+
+    /**
      *
      * @return
      */
+    @JsonIgnore
     public Integer getNewCategoryId() {
         return ++categoryIdSequence;
     }
@@ -95,7 +99,7 @@ public class Profile implements Serializable {
     /**
      *
      * @return
-     */    
+     */
     public Contacts getContacts() {
         return mContacts;
     }
@@ -103,7 +107,7 @@ public class Profile implements Serializable {
     /**
      *
      * @param mContacts
-     */    
+     */
     public void setContacts(Contacts mContacts) {
         this.mContacts = mContacts;
     }
@@ -122,5 +126,37 @@ public class Profile implements Serializable {
      */
     public void setUserInfo(UserInfo userInfo) {
         this.mUserInfo = userInfo;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public Long getMusicCounter() {
+        return musicCounter;
+    }
+
+    /**
+     *
+     * @param musicCounter
+     */
+    public void setMusicCounter(Long musicCounter) {
+        this.musicCounter = musicCounter;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public Integer getCategoryIdSequence() {
+        return categoryIdSequence;
+    }
+
+    /**
+     *
+     * @param categoryIdSequence
+     */
+    public void setCategoryIdSequence(Integer categoryIdSequence) {
+        this.categoryIdSequence = categoryIdSequence;
     }
 }

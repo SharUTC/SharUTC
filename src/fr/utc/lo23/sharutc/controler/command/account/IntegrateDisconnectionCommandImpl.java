@@ -15,8 +15,10 @@ public class IntegrateDisconnectionCommandImpl implements IntegrateDisconnection
     final private UserService mUserService;
     private long mPeerId;
     
+
     /**
-     * {@inheritDoc}
+     * 
+     * @param mUserService 
      */
     @Inject
     public IntegrateDisconnectionCommandImpl(UserService mUserService) {

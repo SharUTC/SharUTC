@@ -128,7 +128,7 @@ public class AppModelBuilder {
         log.trace("createFolders DONE");
     }
 
-    private void deleteFolders() {
+    public void deleteFolders() {
         log.trace("deleteFolders ...");
         String path = getSharUTCTestRootFolder();
         log.debug("deleteFolders : {}", path);

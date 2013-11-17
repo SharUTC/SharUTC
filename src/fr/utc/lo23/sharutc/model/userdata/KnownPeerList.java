@@ -1,5 +1,7 @@
 package fr.utc.lo23.sharutc.model.userdata;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import java.io.Serializable;
 import java.util.HashMap;
 
@@ -71,6 +73,7 @@ public class KnownPeerList implements Serializable {
      *
      * @return
      */
+    @JsonIgnore
     public boolean isEmpty() {
         return mKnownPeers.isEmpty();
     }
