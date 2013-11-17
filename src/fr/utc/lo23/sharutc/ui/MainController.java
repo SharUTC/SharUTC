@@ -5,22 +5,25 @@ import com.cathive.fx.guice.GuiceFXMLLoader.Result;
 import com.google.inject.Inject;
 import fr.utc.lo23.sharutc.model.domain.Music;
 import fr.utc.lo23.sharutc.model.userdata.UserInfo;
-import fr.utc.lo23.sharutc.ui.custom.SongCard;
 import fr.utc.lo23.sharutc.ui.custom.PlayListListCell;
+import fr.utc.lo23.sharutc.ui.custom.SongCard;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Orientation;
 import javafx.geometry.Point2D;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.ListCell;
+import javafx.scene.control.ListView;
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.StackPane;
+import javafx.scene.layout.*;
+import javafx.util.Callback;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,15 +31,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
-import javafx.collections.FXCollections;
-import javafx.event.EventHandler;
-import javafx.geometry.Orientation;
-import javafx.scene.control.ListCell;
-import javafx.scene.control.ListView;
-import javafx.scene.control.SelectionMode;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.Priority;
-import javafx.util.Callback;
 
 public class MainController implements Initializable, PeopleHomeController.IPeopleHomeController, SearchResultController.ISearchResultController, ArtistsDetailController.IArtistsDetailController {
 
@@ -55,7 +49,9 @@ public class MainController implements Initializable, PeopleHomeController.IPeop
     public Button albumsbutton;
     public Pane rightpane;
     public HBox bottombar;
-    
+    public Region dropOverlay;
+    public Label dropOverlayLabel;
+
     //TODO Remove once we get a real list of Musics
     static public ArrayList<Music> population;
 
@@ -70,9 +66,9 @@ public class MainController implements Initializable, PeopleHomeController.IPeop
             final Result loadingResult = mFxmlLoader.load(getClass().getResource("/fr/utc/lo23/sharutc/ui/fxml/player.fxml"));
             mPlayerController = loadingResult.getController();
             bottombar.getChildren().add((Node) loadingResult.getRoot());
-            
+
             initializePlayList();
-            
+
         } catch (IOException exception) {
         }
 
@@ -101,6 +97,16 @@ public class MainController implements Initializable, PeopleHomeController.IPeop
         });
 
         root.getChildren().add(mDragPreview);
+    }
+
+    /**
+     * display the overlay on the player to inform that the song can be dropped here
+     *
+     * @param visible
+     */
+    public void displayBottomBarOverlay(boolean visible) {
+        dropOverlay.setVisible(visible);
+        dropOverlayLabel.setVisible(visible);
     }
 
     @FXML
@@ -144,6 +150,7 @@ public class MainController implements Initializable, PeopleHomeController.IPeop
         final String dragKey = dragEvent.getDragboard().getString();
         if (dragKey.equals(SongCard.DROP_KEY)) {
             //display drag overlay
+            displayBottomBarOverlay(true);
             dragEvent.consume();
         }
     }
@@ -186,6 +193,7 @@ public class MainController implements Initializable, PeopleHomeController.IPeop
     @FXML
     public void handleBottomBarDragExited(DragEvent dragEvent) throws IOException {
         //hide drag overlay
+        displayBottomBarOverlay(false);
     }
 
     @Override
@@ -232,7 +240,7 @@ public class MainController implements Initializable, PeopleHomeController.IPeop
 
         final ObservableList<Music> listData = FXCollections.observableArrayList();
         listData.addAll(population);
-        
+
 
         listView.setItems(listData);
         listView.setCellFactory(new Callback<ListView<Music>, ListCell<Music>>() {
@@ -240,8 +248,8 @@ public class MainController implements Initializable, PeopleHomeController.IPeop
             public ListCell<Music> call(ListView<Music> p) {
                 return new PlayListListCell();
             }
-        });                
-        
+        });
+
         listView.getSelectionModel().select(1);
     }
 

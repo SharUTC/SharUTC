@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
+<?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
+<?import java.net.URL?>
 <AnchorPane xmlns:fx="http://javafx.com/fxml" fx:controller="fr.utc.lo23.sharutc.ui.MainController" prefWidth="800"
             prefHeight="600">
     <VBox id="gridPane" AnchorPane.topAnchor="0" AnchorPane.bottomAnchor="0" AnchorPane.rightAnchor="0"
@@ -65,13 +66,22 @@
             </GridPane>
         </GridPane>
 
-        <HBox fx:id="bottombar" minHeight="150" maxHeight="200"  onDragOver="#handleBottomBarDragOver"
-              onDragDropped="#handleBottomBarDragDropped" onDragExited="#handleBottomBarDragExited"
-              onDragEntered="#handleBottomBarDragEntered">
-            <padding>
-                <Insets bottom="5" left="5" right="5" top="5"/>                    
-            </padding>
-        </HBox>
+        <StackPane onDragOver="#handleBottomBarDragOver"
+                   onDragDropped="#handleBottomBarDragDropped" onDragExited="#handleBottomBarDragExited"
+                   onDragEntered="#handleBottomBarDragEntered">
+            <stylesheets>
+                <URL value="@../css/drop.css"/>
+            </stylesheets>
+
+            <HBox fx:id="bottombar" minHeight="150" maxHeight="200" >
+                <padding>
+                    <Insets bottom="5" left="5" right="5" top="5"/>
+                </padding>
+            </HBox>
+            <Region fx:id="dropOverlay" visible="false"/>
+            <Label fx:id="dropOverlayLabel" text="Add To The PlayList" visible="false"
+                   StackPane.alignment="CENTER"/>
+        </StackPane>
 
     </VBox>
 </AnchorPane>
