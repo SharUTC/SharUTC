@@ -159,6 +159,7 @@ public class RightsList implements Serializable {
      *
      * @return true if the rightsList has no rights instances, else false
      */
+    @JsonIgnore
     public boolean isEmpty() {
         return mRightsList.isEmpty();
     }

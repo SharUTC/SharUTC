@@ -1,6 +1,8 @@
 package fr.utc.lo23.sharutc.controler.service;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import static fr.utc.lo23.sharutc.controler.service.FileService.ROOT_FOLDER_TMP;
@@ -53,6 +55,13 @@ public class FileServiceImpl implements FileService {
     @Inject
     public FileServiceImpl(AppModel appModel) {
         this.appModel = appModel;
+
+     /*   mapper.enable(SerializationFeature.WRITE_NULL_MAP_VALUES);
+        mapper.enable(SerializationFeature.WRITE_EMPTY_JSON_ARRAYS);
+        mapper.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
+       
+        mapper.enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY);*/
+     //   mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
 
         appFolder = new JFileChooser().getFileSystemView().getDefaultDirectory().toString();
         appFolder += File.separator + APP_NAME + File.separator;

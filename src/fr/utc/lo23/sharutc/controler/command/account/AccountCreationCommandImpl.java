@@ -64,6 +64,7 @@ public class AccountCreationCommandImpl implements AccountCreationCommand {
         fileService.createAccountFolder(mUserInfo.getLogin());
         userService.saveProfileFiles();
         musicService.saveUserMusicFile();
+        musicService.saveUserRightsListFile();
         log.info("AccountCreationCommand DONE");
     }
 }
