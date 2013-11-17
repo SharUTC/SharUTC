@@ -78,7 +78,7 @@ public class NetworkServiceImpl implements NetworkService {
             log.error("[NetworkService - addPeer()] - null object");
         } else {
             this.mPeers.put(peerId, peerSocket);
-            log.info("[NetworkService - addPeer()] - peer " + peerId + " had been adding succesfully");
+            log.info("[NetworkService - addPeer()] - peer " + peerId + " had been added succesfully");
         }
     }
 
