@@ -63,6 +63,17 @@ public class ProfileConnectionDisconnectionTest {
     public void disconnectionCommand() {
         //Call disconnection command
         disconnectionCommand.execute();
-        Assert.assertTrue(false); // TODO check content with code (list size, id values, not null and null values)
+
+        Assert.assertNull(appModel.getProfile());
+        Assert.assertNull(appModel.getLocalCatalog());
+        Assert.assertNull(appModel.getRightsList());
+
+        Assert.assertEquals("ActivePeerList not empty", 0, appModel.getActivePeerList().size());
+        Assert.assertEquals("RemoteUserCatalog not empty", 0, appModel.getRemoteUserCatalog().size());
+        Assert.assertEquals("SearchResults not empty", 0, appModel.getSearchResults().size());
+        Assert.assertEquals("TmpCatalog not empty", 0, appModel.getTmpCatalog().size());
+
+        Assert.assertTrue(false);// disconnectionCommand is not finished, 
+        // TODO check content with code (list size, id values, not null and null values)
     }
 }

@@ -10,12 +10,18 @@ import fr.utc.lo23.sharutc.controler.service.MusicService;
 import fr.utc.lo23.sharutc.controler.service.UserService;
 import fr.utc.lo23.sharutc.model.AppModel;
 import fr.utc.lo23.sharutc.model.AppModelBuilder;
+import fr.utc.lo23.sharutc.model.domain.Catalog;
+import fr.utc.lo23.sharutc.model.domain.Comment;
 import fr.utc.lo23.sharutc.model.domain.Music;
+import fr.utc.lo23.sharutc.model.domain.Score;
+import fr.utc.lo23.sharutc.model.userdata.Peer;
 import java.io.File;
 import java.io.IOException;
 import static java.lang.System.out;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
+import java.util.List;
 import java.util.logging.Level;
 import org.junit.After;
 import org.junit.Assert;
@@ -73,7 +79,7 @@ public class MusicServiceTest {
         String TEST_MP3_FOLDER = "";
 
         try {
-            TEST_MP3_FOLDER = new File(".").getCanonicalPath() + "\\test\\mp3\\";
+            TEST_MP3_FOLDER = new File(".").getCanonicalPath() + File.separator + "test" + File.separator + "mp3" + File.separator;
         } catch (IOException ex) {
             System.err.println(ex.toString());
         }
@@ -107,7 +113,7 @@ public class MusicServiceTest {
 
         String TEST_MP3_FOLDER = "";
         try {
-            TEST_MP3_FOLDER = new File(".").getCanonicalPath() + "\\test\\mp3\\";
+            TEST_MP3_FOLDER = new File(".").getCanonicalPath() + File.separator + "test" + File.separator + "mp3" + File.separator;
         } catch (Exception ex) {
             System.err.println(ex.toString());
         }
@@ -128,5 +134,34 @@ public class MusicServiceTest {
 
         int finalLocalCatalogSize = appModel.getLocalCatalog().size();
         Assert.assertEquals("3 music files have been successfully removed from Local Catalog", 0, finalLocalCatalogSize);
+    }
+    
+    @Test
+    public void saveAndLoadUserMusicFile(){
+        Catalog catalogTest = appModel.getLocalCatalog();
+        log.debug("catalogue chargé" + catalogTest.getMusics().size());
+        catalogTest.getMusics().get(0).addComment(new Comment(2, "0 - Stylée", Long.MIN_VALUE, new Date()));
+        catalogTest.getMusics().get(2).addComment(new Comment(3, "2 - Boarf", Long.MAX_VALUE, new Date()));
+        catalogTest.getMusics().get(1).addScore(new Score(4, Long.MIN_VALUE));
+        catalogTest.getMusics().get(2).addScore(new Score(2, Long.MAX_VALUE-1));
+        
+        musicService.saveUserMusicFile();
+        musicService.loadUserMusicFile();
+        Catalog catalogToTest = appModel.getLocalCatalog();
+        int nbMusic = catalogToTest.getMusics().size();
+        Assert.assertEquals("3 music files have been successfully saved and loaded from a user music file", 3, nbMusic);
+        
+        int nbComments = catalogToTest.getMusics().get(2).getComments().size() + catalogToTest.getMusics().get(0).getComments().size();
+        Assert.assertEquals("2 comments have been successfully saved and loaded from a user music file", 2, nbComments);
+        
+        int nbScores = catalogToTest.getMusics().get(2).getScores().size() + catalogToTest.getMusics().get(1).getScores().size();
+        Assert.assertEquals("2 scores have been successfully saved and loaded from a user music file", 2, nbScores);
+        
+        int scoreTest = catalogToTest.getMusics().get(2).getScore(Long.MAX_VALUE-1).getValue(); 
+        Assert.assertEquals("good score value has been successfully saved and loaded from a user music file", 2, scoreTest);
+        
+        Long peerIdComment = catalogToTest.getMusics().get(0).getComment(Long.MIN_VALUE, 2).getAuthorPeerId();
+        Assert.assertEquals("good peerId has been successfully saved and loaded from a user music file", (Long)Long.MIN_VALUE, peerIdComment);
+        
     }
 }
