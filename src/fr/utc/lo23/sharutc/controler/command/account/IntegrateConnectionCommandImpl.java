@@ -49,21 +49,15 @@ public class IntegrateConnectionCommandImpl implements IntegrateConnectionComman
     }
 
     /**
-     * Add user info to model and update active peer list
+     * Add user info to model and update active peer list & contact
      */
     @Override
     public void execute() {
         log.info("IntegrateConnectionCommandImpl ...");
         // add user info to model
         userService.integrateConnection(mUserInfo);
-        // update active peer list
-        Peer peer = mUserInfo.toPeer();
-        appModel.getActivePeerList().update(peer);
-        // update contacts
-        Contact c = appModel.getProfile().getContacts().findById(mUserInfo.getPeerId());
-        if (c != null) {
-            c.setUserInfo(mUserInfo);
-        }
+        // update contacts & active peers
+        userService.updateConnectedPeers(mUserInfo);
         log.info("IntegrateConnectionCommandImpl DONE");
     }
 }
