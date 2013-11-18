@@ -73,7 +73,7 @@ public class MusicServiceTest {
         String TEST_MP3_FOLDER = "";
 
         try {
-            TEST_MP3_FOLDER = new File(".").getCanonicalPath() + "\\test\\mp3\\";
+            TEST_MP3_FOLDER = new File(".").getCanonicalPath() + File.separator + "test" + File.separator + "mp3" + File.separator;
         } catch (IOException ex) {
             System.err.println(ex.toString());
         }
@@ -107,7 +107,7 @@ public class MusicServiceTest {
 
         String TEST_MP3_FOLDER = "";
         try {
-            TEST_MP3_FOLDER = new File(".").getCanonicalPath() + "\\test\\mp3\\";
+            TEST_MP3_FOLDER = new File(".").getCanonicalPath() + File.separator + "test" + File.separator + "mp3" + File.separator;
         } catch (Exception ex) {
             System.err.println(ex.toString());
         }

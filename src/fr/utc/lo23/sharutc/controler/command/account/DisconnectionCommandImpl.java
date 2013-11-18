@@ -8,6 +8,7 @@ import com.google.inject.Inject;
 import fr.utc.lo23.sharutc.controler.network.NetworkService;
 import fr.utc.lo23.sharutc.controler.service.MusicService;
 import fr.utc.lo23.sharutc.controler.service.UserService;
+import fr.utc.lo23.sharutc.model.AppModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,11 +19,12 @@ import org.slf4j.LoggerFactory;
  */
 public class DisconnectionCommandImpl implements DisconnectionCommand {
 
-    private static final Logger log = LoggerFactory
-            .getLogger(IntegrateDisconnectionCommandImpl.class);
-    final private UserService userService;
-    final private NetworkService networkService;
+    private final static Logger log = LoggerFactory
+            .getLogger(DisconnectionCommandImpl.class);
+    private final UserService userService;
+    private final NetworkService networkService;
     private final MusicService musicService;
+    private final AppModel appModel;
 
     /**
      * @param userService
@@ -30,7 +32,8 @@ public class DisconnectionCommandImpl implements DisconnectionCommand {
      * @param networkService
      */
     @Inject
-    public DisconnectionCommandImpl(UserService userService, MusicService musicService, NetworkService networkService) {
+    public DisconnectionCommandImpl(AppModel appModel, UserService userService, MusicService musicService, NetworkService networkService) {
+        this.appModel = appModel;
         this.userService = userService;
         this.musicService = musicService;
         this.networkService = networkService;
@@ -47,7 +50,13 @@ public class DisconnectionCommandImpl implements DisconnectionCommand {
         userService.disconnectionRequest();
         // Notify network
         networkService.disconnectionBroadcast();
-
+        
+        // FIXME : create a new method on appModel to set to null instances attached to appModel (not appModel itself)
+        // call setProfile(null) in this new method instead of here
+        appModel.setProfile(null);
+        
+        //FIXME : turn down network threads
+        
         log.info("DisconnectionCommand DONE");
     }
 }
