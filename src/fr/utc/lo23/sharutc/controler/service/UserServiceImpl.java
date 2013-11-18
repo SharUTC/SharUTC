@@ -13,7 +13,6 @@ import fr.utc.lo23.sharutc.model.userdata.UserInfo;
 import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import fr.utc.lo23.sharutc.controler.command.account.IntegrateConnectionCommandImpl;
 import fr.utc.lo23.sharutc.model.userdata.KnownPeerList;
 
 /**
@@ -238,8 +237,11 @@ public class UserServiceImpl implements UserService {
         Peer newPeer = userInfo.toPeer();
         activePeerList.update(newPeer);
         knownPeerList.update(newPeer);
-        //TODO: also update contact.userInfo if peer is a contact for offline access
 
+        Contact contact = appModel.getProfile().getContacts().findById(userInfo.getPeerId());
+        if (contact != null) {
+            contact.setUserInfo(userInfo);
+        }
     }
 
     /**
