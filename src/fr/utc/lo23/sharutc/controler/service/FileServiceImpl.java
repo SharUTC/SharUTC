@@ -35,6 +35,7 @@ import org.slf4j.LoggerFactory;
 import static fr.utc.lo23.sharutc.controler.service.FileService.ROOT_FOLDER_USERS;
 import fr.utc.lo23.sharutc.model.domain.Catalog;
 import fr.utc.lo23.sharutc.model.userdata.Profile;
+import java.util.logging.Level;
 import javax.swing.JFileChooser;
 
 /**
@@ -54,17 +55,13 @@ public class FileServiceImpl implements FileService {
     protected final ObjectMapper mapper = new ObjectMapper();
 
     @Inject
-    public FileServiceImpl(AppModel appModel) throws IOException {
+    public FileServiceImpl(AppModel appModel) {
         this.appModel = appModel;
-
-        appFolder = new File(".").getCanonicalPath();  //JFileChooser().getFileSystemView().getDefaultDirectory().toString();
-     /*   mapper.enable(SerializationFeature.WRITE_NULL_MAP_VALUES);
-        mapper.enable(SerializationFeature.WRITE_EMPTY_JSON_ARRAYS);
-        mapper.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
-       
-        mapper.enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY);*/
-     //   mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
-
+        try {
+            appFolder = new File(".").getCanonicalPath();
+        } catch (IOException ex) {
+            log.error(ex.toString());
+        }
         appFolder += File.separator + APP_NAME + File.separator;
 
         if (!new File(appFolder).exists()) {
