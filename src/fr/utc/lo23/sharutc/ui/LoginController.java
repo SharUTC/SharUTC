@@ -3,6 +3,7 @@ package fr.utc.lo23.sharutc.ui;
 import com.cathive.fx.guice.GuiceFXMLLoader;
 import com.google.inject.Inject;
 import fr.utc.lo23.sharutc.controler.command.account.ConnectionRequestCommand;
+import fr.utc.lo23.sharutc.controler.command.account.ImportProfileCommand;
 import fr.utc.lo23.sharutc.model.AppModel;
 import fr.utc.lo23.sharutc.model.AppModelImpl;
 import fr.utc.lo23.sharutc.model.ErrorBus;
@@ -66,6 +67,8 @@ public class LoginController implements Initializable, PropertyChangeListener {
     private AppModel mAppModel;
     @Inject
     private ConnectionRequestCommand mConnectionRequestCommand;
+    @Inject
+    private ImportProfileCommand mImportProfileCommand;
 
     /**
      * Initializes the controller class.
@@ -92,10 +95,10 @@ public class LoginController implements Initializable, PropertyChangeListener {
         //hide drop overlay
         hideDropOverlay();
 
-        //listen for change on the AppModel
+        //listen for changes on the AppModel
         mAppModel.addPropertyChangeListener(this);
 
-        //listen for change on the Error Bus
+        //listen for changes on the Error Bus
         mAppModel.getErrorBus().addPropertyChangeListener(this);
     }
 
@@ -121,6 +124,7 @@ public class LoginController implements Initializable, PropertyChangeListener {
             final File file = fileChooser.showOpenDialog(buttonImport.getScene().getWindow());
             if (file != null) {
                 log.info("import file, filePath: " + file.getAbsolutePath());
+                importProfile(file.getAbsolutePath());
             }
         }
     }
@@ -189,9 +193,9 @@ public class LoginController implements Initializable, PropertyChangeListener {
         boolean success = false;
         if (db.hasFiles()) {
             success = true;
-            for (File file : db.getFiles()) {
-                log.info("file dropped, filePath: " + file.getAbsolutePath());
-            }
+            final File file = db.getFiles().get(0);
+            log.info("file dropped, filePath: " + file.getAbsolutePath());
+            importProfile(file.getAbsolutePath());
         }
         hideDropOverlay();
         dragEvent.setDropCompleted(success);
@@ -315,5 +319,10 @@ public class LoginController implements Initializable, PropertyChangeListener {
         } catch (IOException ex) {
             log.error("can't load registration page");
         }
+    }
+
+    private void importProfile(String filePath) {
+        mImportProfileCommand.setPath(filePath);
+        mImportProfileCommand.execute();
     }
 }
