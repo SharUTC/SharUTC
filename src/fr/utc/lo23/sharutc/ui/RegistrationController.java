@@ -113,8 +113,7 @@ public class RegistrationController implements Initializable, PropertyChangeList
     @FXML
     public void handleCancelRegistration(ActionEvent actionEvent) throws IOException {
         log.info("Cancel Button Clicked");
-        Parent root = mFxmlLoader.load(getClass().getResource("/fr/utc/lo23/sharutc/ui/fxml/login.fxml")).getRoot();
-        buttonCancel.getScene().setRoot(root);
+        goToLoginPage();
     }
 
     /**
@@ -233,13 +232,17 @@ public class RegistrationController implements Initializable, PropertyChangeList
     public void propertyChange(PropertyChangeEvent evt) {
         final String propertyName = evt.getPropertyName();
         if (AppModelImpl.Property.PROFILE.name().equals(propertyName)) {
-            try {
-                mAppModel.removePropertyChangeListener(this);
-                final Parent root = mFxmlLoader.load(getClass().getResource("/fr/utc/lo23/sharutc/ui/fxml/login.fxml")).getRoot();
-                buttonCancel.getScene().setRoot(root);
-            } catch (IOException ex) {
-                log.error("can't load login page");
-            }
+            goToLoginPage();
+        }
+    }
+
+    private void goToLoginPage() {
+        try {
+            final Parent root = mFxmlLoader.load(getClass().getResource("/fr/utc/lo23/sharutc/ui/fxml/login.fxml")).getRoot();
+            mAppModel.removePropertyChangeListener(this);
+            buttonCancel.getScene().setRoot(root);
+        } catch (IOException ex) {
+            log.error("can't load login page");
         }
     }
 }
