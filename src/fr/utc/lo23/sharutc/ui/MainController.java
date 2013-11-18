@@ -31,6 +31,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
+import javafx.scene.Parent;
 
 public class MainController implements Initializable, PeopleHomeController.IPeopleHomeController, SearchResultController.ISearchResultController, ArtistsDetailController.IArtistsDetailController {
 
@@ -47,6 +48,7 @@ public class MainController implements Initializable, PeopleHomeController.IPeop
     public Button peoplebutton;
     public Button artistsbutton;
     public Button albumsbutton;
+    public Button logoutButton;
     public Pane rightpane;
     public HBox bottombar;
     public Region dropOverlay;
@@ -128,6 +130,9 @@ public class MainController implements Initializable, PeopleHomeController.IPeop
         } else if (event.getSource() == albumsbutton) {
             mCurrentLoadedRighpaneResult = mFxmlLoader.load(getClass().getResource("/fr/utc/lo23/sharutc/ui/fxml/albums_detail.fxml"));
             ((AlbumsDetailController) mCurrentLoadedRighpaneResult.getController()).createCards();
+        } else if (event.getSource() == logoutButton) {
+            final Parent loginRoot = mFxmlLoader.load(getClass().getResource("/fr/utc/lo23/sharutc/ui/fxml/login.fxml")).getRoot();
+            logoutButton.getScene().setRoot(loginRoot);
         }
 
         if (mCurrentLoadedRighpaneResult != null) {

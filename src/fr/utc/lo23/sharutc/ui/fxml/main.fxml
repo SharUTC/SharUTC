@@ -30,7 +30,7 @@
                         <Insets left="15" right="15"/>
                     </HBox.margin>
                 </Label>
-                <Button fx:id="logoutButton" styleClass="imageButton">
+                <Button fx:id="logoutButton" styleClass="imageButton" onAction="#handleMenuButtonAction" >
                     <graphic>
                         <ImageView fitWidth="25" fitHeight="25">
                             <image>
