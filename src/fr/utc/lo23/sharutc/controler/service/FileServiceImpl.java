@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import static fr.utc.lo23.sharutc.controler.service.FileService.DOT_MP3;
 import static fr.utc.lo23.sharutc.controler.service.FileService.ROOT_FOLDER_TMP;
 import fr.utc.lo23.sharutc.model.AppModel;
 import fr.utc.lo23.sharutc.model.domain.Music;
@@ -56,12 +57,12 @@ public class FileServiceImpl implements FileService {
     public FileServiceImpl(AppModel appModel) {
         this.appModel = appModel;
 
-     /*   mapper.enable(SerializationFeature.WRITE_NULL_MAP_VALUES);
-        mapper.enable(SerializationFeature.WRITE_EMPTY_JSON_ARRAYS);
-        mapper.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
+        /*   mapper.enable(SerializationFeature.WRITE_NULL_MAP_VALUES);
+         mapper.enable(SerializationFeature.WRITE_EMPTY_JSON_ARRAYS);
+         mapper.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
        
-        mapper.enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY);*/
-     //   mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+         mapper.enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY);*/
+        //   mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
 
         appFolder = new JFileChooser().getFileSystemView().getDefaultDirectory().toString();
         appFolder += File.separator + APP_NAME + File.separator;
@@ -221,8 +222,8 @@ public class FileServiceImpl implements FileService {
     }
 
     /**
-     * Delete every file and forlder under <i>pathname</i>
-     * {@inheritDoc}
+     * Delete every file and forlder under <i>pathname</i> {@inheritDoc}
+     *
      * @param pathname
      */
     @Override
@@ -373,14 +374,13 @@ public class FileServiceImpl implements FileService {
     }
 
     private void resetTmpFile() {
-        if (tmpFile == null) {
-            // .mp3 extendsion required by other libs
-            tmpFile = new File(appFolder + File.separator + "tmp" + DOT_MP3);
-            tmpFile.deleteOnExit();
+        if (tmpFile != null) {
+            tmpFile.delete();
         }
-        tmpFile.delete();
-        try {
+        try {  // .mp3 extendsion required by other libs
+            tmpFile = new File(appFolder + File.separator + "tmp" + DOT_MP3);
             tmpFile.createNewFile();
+            tmpFile.deleteOnExit();
         } catch (IOException ex) {
             log.error(ex.toString());
         }
@@ -412,12 +412,11 @@ public class FileServiceImpl implements FileService {
     @Override
     public List<File> buildTmpMusicFilesForInstall(Catalog catalog) throws Exception {
         log.debug("buildTmpMusicFilesForInstall ...");
-        if (!new File(appFolder + ROOT_FOLDER_TMP).exists()) {
-            new File(appFolder + ROOT_FOLDER_TMP).mkdirs();
-        } else {
+        if (new File(appFolder + ROOT_FOLDER_TMP).exists()) {
             deleteRecursive(appFolder + ROOT_FOLDER_TMP);
-            new File(appFolder + ROOT_FOLDER_TMP).mkdirs();
         }
+        new File(appFolder + ROOT_FOLDER_TMP).mkdirs();
+
         List<File> files = new ArrayList<File>(catalog.size());
         for (Music music : catalog.getMusics()) {
             Byte[] musicBytes = music.getFileBytes();
