@@ -53,23 +53,17 @@ public class IntegrateBroadcastConnectionCommandImpl implements IntegrateBroadca
     }
 
     /**
-     * Add user info to model, update active peer list and send personal information to broadcaster
+     * Add user info to model, update active peer list & contact and send personal information to broadcaster
      */
     @Override
     public void execute() {
         log.info("IntegrateBroadscastConnectionCommandImpl ...");
         // add new user to model
         userService.integrateConnection(mUserInfo);
-        // update active peers
-        Peer peer = mUserInfo.toPeer();
-        appModel.getActivePeerList().update(peer);
-        // update contacts
-        Contact c = appModel.getProfile().getContacts().findById(mUserInfo.getPeerId());
-        if (c != null) {
-            c.setUserInfo(mUserInfo);
-        }
+        // update contacts & active peers
+        userService.updateConnectedPeers(mUserInfo);
         // send my personal information to the broadcaster
-        networkService.sendConnectionResponse(peer, appModel.getProfile().getUserInfo());
+        networkService.sendConnectionResponse(mUserInfo.toPeer(), appModel.getProfile().getUserInfo());
         log.info("IntegrateBroadscastConnectionCommandImpl DONE");
     }
 }
