@@ -3,6 +3,7 @@ package fr.utc.lo23.sharutc.controler.command.account;
 import com.google.inject.Inject;
 import fr.utc.lo23.sharutc.controler.service.UserService;
 import fr.utc.lo23.sharutc.model.AppModel;
+import fr.utc.lo23.sharutc.model.userdata.Contact;
 import fr.utc.lo23.sharutc.model.userdata.Peer;
 import fr.utc.lo23.sharutc.model.userdata.UserInfo;
 import org.slf4j.Logger;
@@ -58,6 +59,11 @@ public class IntegrateConnectionCommandImpl implements IntegrateConnectionComman
         // update active peer list
         Peer peer = mUserInfo.toPeer();
         appModel.getActivePeerList().update(peer);
+        // update contacts
+        Contact c = appModel.getProfile().getContacts().findById(mUserInfo.getPeerId());
+        if (c != null) {
+            c.setUserInfo(mUserInfo);
+        }
         log.info("IntegrateConnectionCommandImpl DONE");
     }
 }
