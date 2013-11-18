@@ -36,7 +36,7 @@ public class PeopleDetailController extends SongSelectorController implements In
             artistsContainer.getChildren().add(newCard);
         }
         for (int i = 0; i < 3; i++) {
-            TagCard newCard = new TagCard();
+            TagCard newCard = new TagCard("Tag " + String.valueOf(i));
             tagsContainer.getChildren().add(newCard);
         }
 

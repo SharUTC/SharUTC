@@ -39,6 +39,24 @@
         </FlowPane>
 
     </ScrollPane>
+    
+    <ScrollPane styleClass="myScrollPane" fx:id="tagScrollPane"
+                VBox.vgrow="NEVER" prefHeight="135" fitToWidth="true" fitToHeight="true" vbarPolicy="NEVER"
+                hbarPolicy="AS_NEEDED">
+        <VBox.margin>
+            <Insets bottom="5" />
+        </VBox.margin>
+
+        <HBox GridPane.hgrow="ALWAYS"
+                  GridPane.vgrow="ALWAYS" fx:id="tagContainer"
+                  prefHeight="-1.0" prefWidth="-1.0" >
+            <padding>
+                <javafx.geometry.Insets bottom="5" left="5" right="5" top="10"/>
+            </padding>
+        </HBox>
+
+    </ScrollPane>
+    
 </VBox>
 
 
