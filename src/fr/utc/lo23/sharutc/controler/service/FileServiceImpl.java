@@ -56,14 +56,7 @@ public class FileServiceImpl implements FileService {
     @Inject
     public FileServiceImpl(AppModel appModel) {
         this.appModel = appModel;
-
-        /*   mapper.enable(SerializationFeature.WRITE_NULL_MAP_VALUES);
-         mapper.enable(SerializationFeature.WRITE_EMPTY_JSON_ARRAYS);
-         mapper.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
-       
-         mapper.enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY);*/
-        //   mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
-
+        
         appFolder = new JFileChooser().getFileSystemView().getDefaultDirectory().toString();
         appFolder += File.separator + APP_NAME + File.separator;
 
@@ -97,11 +90,11 @@ public class FileServiceImpl implements FileService {
 
         String userName = srcPath.substring(srcPath.lastIndexOf(File.separator), lastP);
         //check if the user already exists
-        if (new File(appFolder + ROOT_FOLDER_USERS + userName).exists()) {
+        if (new File(appFolder + ROOT_FOLDER_USERS + File.separator + userName).exists()) {
             if (!force) {
                 throw new Exception("This user already exists");
             } else {
-                File userFolder = new File(appFolder + ROOT_FOLDER_USERS);
+                File userFolder = new File(appFolder + ROOT_FOLDER_USERS + File.separator + userName);
                 deleteFolderRecursively(userFolder.getAbsolutePath());
                 userFolder.delete();
             }
