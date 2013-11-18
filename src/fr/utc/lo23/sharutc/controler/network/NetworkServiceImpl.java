@@ -59,6 +59,7 @@ public class NetworkServiceImpl implements NetworkService {
         mPeerDiscoverySocket = new PeerDiscoverySocket(port, g, appModel,
                 messageHandler, messageParser, this);
         mPeerDiscoverySocket.start();
+        mHeartbeatThread = new HeartbeatThread(this);
         mHeartbeatThread.start();
     }
 
