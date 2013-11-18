@@ -2,8 +2,14 @@ package fr.utc.lo23.sharutc.ui;
 
 import com.cathive.fx.guice.GuiceFXMLLoader;
 import com.google.inject.Inject;
+import fr.utc.lo23.sharutc.controler.command.account.ConnectionRequestCommand;
 import fr.utc.lo23.sharutc.model.AppModel;
+import fr.utc.lo23.sharutc.model.AppModelImpl;
+import fr.utc.lo23.sharutc.model.ErrorBus;
+import fr.utc.lo23.sharutc.model.ErrorMessage;
 import fr.utc.lo23.sharutc.ui.custom.SharutcLogo;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -32,7 +38,7 @@ import org.slf4j.LoggerFactory;
 /**
  * A FXML Controller that displays a login page.
  */
-public class LoginController implements Initializable {
+public class LoginController implements Initializable, PropertyChangeListener {
 
     private static final Logger log = LoggerFactory
             .getLogger(LoginController.class);
@@ -58,6 +64,8 @@ public class LoginController implements Initializable {
     private ArrayList<String> mErrorMessages;
     @Inject
     private AppModel mAppModel;
+    @Inject
+    private ConnectionRequestCommand mConnectionRequestCommand;
 
     /**
      * Initializes the controller class.
@@ -79,11 +87,16 @@ public class LoginController implements Initializable {
 
         if (mAppModel.getProfile() != null && mAppModel.getProfile().getUserInfo() != null) {
             userNameField.setText(mAppModel.getProfile().getUserInfo().getLogin());
-            passwordField.setText(mAppModel.getProfile().getUserInfo().getPassword());
         }
 
         //hide drop overlay
         hideDropOverlay();
+
+        //listen for change on the AppModel
+        mAppModel.addPropertyChangeListener(this);
+
+        //listen for change on the Error Bus
+        mAppModel.getErrorBus().addPropertyChangeListener(this);
     }
 
     /**
@@ -97,8 +110,7 @@ public class LoginController implements Initializable {
     private void handleLoginButtonAction(ActionEvent event) throws IOException {
         if (event.getSource() == buttonSignUp) {
             log.info("Sign Up Button Clicked");
-            Parent root = mFxmlLoader.load(getClass().getResource("/fr/utc/lo23/sharutc/ui/fxml/registration.fxml")).getRoot();
-            buttonSignUp.getScene().setRoot(root);
+            goToRegistrationPage();
         } else if (event.getSource() == buttonSignIn) {
             log.info("Sign In Button Clicked");
             signInRequest();
@@ -210,6 +222,10 @@ public class LoginController implements Initializable {
         errorContainer.getChildren().clear();
         if (!validateForm()) {
             displayErrorMessages();
+        } else {
+            mConnectionRequestCommand.setLogin(userNameField.getText());
+            mConnectionRequestCommand.setPassword(passwordField.getText());
+            mConnectionRequestCommand.execute();
         }
     }
 
@@ -262,5 +278,42 @@ public class LoginController implements Initializable {
         }
 
         return isFormValid;
+    }
+
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) {
+        final String propertyName = evt.getPropertyName();
+        if (AppModelImpl.Property.PROFILE.name().equals(propertyName)) {
+            log.info("Profile Changed");
+            goToMainPage();
+        } else if (ErrorBus.Property.APPLICATION_ERROR_MESSAGE.name().equals(propertyName)) {
+            log.info("Application Error Message Changed");
+            errorContainer.getChildren().clear();
+            errorContainer.getChildren().add(new Label(((ErrorMessage) evt.getNewValue()).getMessage()));
+        }
+    }
+
+    private void goToRegistrationPage() {
+        try {
+            Parent root = mFxmlLoader.load(getClass().getResource("/fr/utc/lo23/sharutc/ui/fxml/registration.fxml")).getRoot();
+            mAppModel.getErrorBus().removePropertyChangeListener(this);
+            mAppModel.removePropertyChangeListener(this);
+            buttonSignUp.getScene().setRoot(root);
+        } catch (IOException ex) {
+            log.error("can't load registration page");
+        }
+    }
+
+    private void goToMainPage() {
+        try {
+            final GuiceFXMLLoader.Result loadingResult = mFxmlLoader.load(getClass().getResource("/fr/utc/lo23/sharutc/ui/fxml/main.fxml"));
+            final Parent root = loadingResult.getRoot();
+            mAppModel.getErrorBus().removePropertyChangeListener(this);
+            mAppModel.removePropertyChangeListener(this);
+            buttonSignUp.getScene().setRoot(root);
+            ((MainController) loadingResult.getController()).sceneCreated();
+        } catch (IOException ex) {
+            log.error("can't load registration page");
+        }
     }
 }
