@@ -16,7 +16,6 @@ public class AlbumsDetailController implements RighpaneInterface, Initializable,
     
     private static final Logger log = LoggerFactory.getLogger(PeopleHomeController.class);
     public IAlbumsDetailController mInterface;
-    private String artistWanted;
     public Label titlePage;
             
     @FXML
@@ -24,7 +23,6 @@ public class AlbumsDetailController implements RighpaneInterface, Initializable,
     
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        artistWanted = "";
         titlePage.setText("Discover new albums");
     }
     
@@ -32,16 +30,19 @@ public class AlbumsDetailController implements RighpaneInterface, Initializable,
         mInterface = i;
     }
     
-    public void createCards() {
+    public void createCards(String artistName) {
         for(Music m : MainController.population) {
             if(!existsAlready(m)) {
-                if(m.getArtist().equals(artistWanted) || artistWanted.equals("")) {
+                if(m.getArtist().equals(artistName) || artistName.equals("")) {
                     AlbumCard card = new AlbumCard(m, this);
                     albumsContainer.getChildren().add(card);
                 }              
             }
         }
-        resetAlbumWanted();
+    }
+    
+    public void createCards() {
+        createCards("");
     }
     
     private boolean existsAlready(Music m) {
@@ -52,19 +53,6 @@ public class AlbumsDetailController implements RighpaneInterface, Initializable,
             }
         }      
         return false;
-    }
-    
-    public void resetAlbumWanted() {
-        artistWanted = "";
-    }
-    
-    public String getArtistWanted() {
-        return artistWanted;
-    }
-    
-    public void setArtistWanted(String artistName) {
-        artistWanted = artistName;
-        titlePage.setText("Discover "+artistName+"'s albums");
     }
 
     @Override
