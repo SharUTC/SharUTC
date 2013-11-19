@@ -77,7 +77,7 @@ public class NetworkServiceImpl implements NetworkService {
      * {inheritDoc}
      */
     @Override
-    public void addPeer(long peerId, PeerSocket peerSocket) {
+    public synchronized void addPeer(long peerId, PeerSocket peerSocket) {
         log.warn("addPeer - Not supported yet.");
         if (peerId == 0 || peerSocket == null) {
             log.error("[NetworkService - addPeer()] - null object");
@@ -91,7 +91,7 @@ public class NetworkServiceImpl implements NetworkService {
      * {inheritDoc}
      */
     @Override
-    public void removePeer(PeerSocket peerSocket) {
+    public synchronized void removePeer(PeerSocket peerSocket) {
         mPeers.values().remove(peerSocket);
     }
 
