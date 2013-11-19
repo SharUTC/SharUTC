@@ -3,7 +3,7 @@ package fr.utc.lo23.sharutc.controler.network;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import fr.utc.lo23.sharutc.controler.command.account.IntegrateBroadcastConnectionCommand;
-import fr.utc.lo23.sharutc.controler.command.account.IntegrateConnectionCommand;
+import fr.utc.lo23.sharutc.controler.command.account.IntegrateUserInfoCommand;
 import fr.utc.lo23.sharutc.controler.command.account.IntegrateDisconnectionCommand;
 import fr.utc.lo23.sharutc.controler.command.Command;
 import fr.utc.lo23.sharutc.controler.command.music.AddCommentCommand;
@@ -67,7 +67,7 @@ public class MessageHandlerImpl implements MessageHandler {
     @Inject
     private IntegrateBroadcastConnectionCommand integrateBroadcastConnectionCommand;
     @Inject
-    private IntegrateConnectionCommand integrateConnectionCommand;
+    private IntegrateUserInfoCommand integrateConnectionCommand;
     @Inject
     private IntegrateDisconnectionCommand integrateDisconnectionCommand;
     @Inject

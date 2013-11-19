@@ -78,8 +78,4 @@ public class UserServiceMock extends UserServiceImpl implements UserService {
         super.saveProfileFiles();
     }
 
-    @Override
-    public void integrateConnection(UserInfo userinfo) {
-        super.integrateConnection(userinfo);
-    }
 }

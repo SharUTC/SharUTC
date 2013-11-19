@@ -13,7 +13,6 @@ import fr.utc.lo23.sharutc.model.userdata.UserInfo;
 import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import fr.utc.lo23.sharutc.controler.command.account.IntegrateConnectionCommandImpl;
 import fr.utc.lo23.sharutc.model.userdata.KnownPeerList;
 
 /**
@@ -214,7 +213,6 @@ public class UserServiceImpl implements UserService {
                     && userInfo.getPassword().equals(password);
             if (success) {
                 appModel.setProfile(profileToConnect);
-                this.integrateConnection(appModel.getProfile().getUserInfo());
             } else {
                 String message = "Incorrect login or password";
                 log.warn(message);
@@ -238,8 +236,11 @@ public class UserServiceImpl implements UserService {
         Peer newPeer = userInfo.toPeer();
         activePeerList.update(newPeer);
         knownPeerList.update(newPeer);
-        //TODO: also update contact.userInfo if peer is a contact for offline access
 
+        Contact contact = appModel.getProfile().getContacts().findById(userInfo.getPeerId());
+        if (contact != null) {
+            contact.setUserInfo(userInfo);
+        }
     }
 
     /**
@@ -250,17 +251,6 @@ public class UserServiceImpl implements UserService {
         ActivePeerList activePeerList = appModel.getActivePeerList();
         Peer removePeer = activePeerList.getByPeerId(peerId);
         activePeerList.remove(removePeer);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void integrateConnection(UserInfo userinfo) {
-        // FIXME : pas de commande dans ce service, encore moins l'utilisation de xxxImpl à la main...
-        //IntegrateConnectionCommandImpl command = new IntegrateConnectionCommandImpl(appModel, this);
-        //command.setUserInfo(userinfo);
-        //command.execute();
     }
 
     @Override

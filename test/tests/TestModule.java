@@ -13,8 +13,8 @@ import fr.utc.lo23.sharutc.controler.command.account.ImportProfileCommand;
 import fr.utc.lo23.sharutc.controler.command.account.ImportProfileCommandImpl;
 import fr.utc.lo23.sharutc.controler.command.account.IntegrateBroadcastConnectionCommand;
 import fr.utc.lo23.sharutc.controler.command.account.IntegrateBroadcastConnectionCommandImpl;
-import fr.utc.lo23.sharutc.controler.command.account.IntegrateConnectionCommand;
-import fr.utc.lo23.sharutc.controler.command.account.IntegrateConnectionCommandImpl;
+import fr.utc.lo23.sharutc.controler.command.account.IntegrateUserInfoCommand;
+import fr.utc.lo23.sharutc.controler.command.account.IntegrateUserInfoCommandImpl;
 import fr.utc.lo23.sharutc.controler.command.account.IntegrateDisconnectionCommand;
 import fr.utc.lo23.sharutc.controler.command.account.IntegrateDisconnectionCommandImpl;
 import fr.utc.lo23.sharutc.controler.command.music.AddCommentCommand;
@@ -65,8 +65,6 @@ import fr.utc.lo23.sharutc.controler.command.profile.AddContactCommand;
 import fr.utc.lo23.sharutc.controler.command.profile.AddContactCommandImpl;
 import fr.utc.lo23.sharutc.controler.command.profile.AddContactToCategoryCommand;
 import fr.utc.lo23.sharutc.controler.command.profile.AddContactToCategoryCommandImpl;
-import fr.utc.lo23.sharutc.controler.command.profile.AddUserCommand;
-import fr.utc.lo23.sharutc.controler.command.profile.AddUserCommandImpl;
 import fr.utc.lo23.sharutc.controler.command.profile.CreateCategoryCommand;
 import fr.utc.lo23.sharutc.controler.command.profile.CreateCategoryCommandImpl;
 import fr.utc.lo23.sharutc.controler.command.profile.DeleteCategoryCommand;
@@ -125,7 +123,7 @@ class TestModule extends AbstractModule {
         bind(ExportProfileCommand.class).to(ExportProfileCommandImpl.class);
         bind(ImportProfileCommand.class).to(ImportProfileCommandImpl.class);
         bind(IntegrateBroadcastConnectionCommand.class).to(IntegrateBroadcastConnectionCommandImpl.class);
-        bind(IntegrateConnectionCommand.class).to(IntegrateConnectionCommandImpl.class);
+        bind(IntegrateUserInfoCommand.class).to(IntegrateUserInfoCommandImpl.class);
         bind(IntegrateDisconnectionCommand.class).to(IntegrateDisconnectionCommandImpl.class);
         //bind(BroadcastHeartbeatCommand.class).to(BroadcastHeartbeatCommandImpl.class);
         //bind(UnicastHeartbeatCommand.class).to(UnicastHeartbeatCommandImpl.class);
@@ -166,8 +164,6 @@ class TestModule extends AbstractModule {
         bind(PlayIncomingMusicCommand.class).to(PlayIncomingMusicCommandImpl.class);
 
         //profile
-        bind(AddUserCommand.class).to(AddUserCommandImpl.class);
-
         bind(AddContactCommand.class).to(AddContactCommandImpl.class);
         bind(DeleteContactCommand.class).to(DeleteContactCommandImpl.class);
 

@@ -1,8 +1,6 @@
 package fr.utc.lo23.sharutc.controler.service;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import static fr.utc.lo23.sharutc.controler.service.FileService.DOT_MP3;
@@ -35,8 +33,6 @@ import org.slf4j.LoggerFactory;
 import static fr.utc.lo23.sharutc.controler.service.FileService.ROOT_FOLDER_USERS;
 import fr.utc.lo23.sharutc.model.domain.Catalog;
 import fr.utc.lo23.sharutc.model.userdata.Profile;
-import java.util.logging.Level;
-import javax.swing.JFileChooser;
 
 /**
  *
@@ -165,6 +161,11 @@ public class FileServiceImpl implements FileService {
     @Override
     public void exportFile(String srcPath, String destPath) throws IOException {
         log.debug("exportFile ...");
+        /**TODO Dossier de conception P18
+         * S’il le souhaite, l’utilisateur peut éditer le contenu de l’archive 
+         * exportée pour en retirer les fichiers qu’il ne veut pas exporter.
+         * A voir avec l'IHM
+        * */
         List<String> fileList = new ArrayList<String>();
         byte data[] = new byte[BUFFER_SIZE];
 
@@ -241,6 +242,7 @@ public class FileServiceImpl implements FileService {
 
     /**
      * {@inheritDoc}
+     * @throws java.lang.Exception
      */
     @Override
     public Music createMusicFromFile(File file) throws Exception {
@@ -341,7 +343,7 @@ public class FileServiceImpl implements FileService {
             while ((read = inputStream.read(buffer)) != -1) {
                 baos.write(buffer, 0, read);
             }
-        } catch (Exception e) {
+        } catch (IOException e) {
             log.trace("getFileAsByteArray : reading file failed");
         } finally {
             try {
@@ -405,6 +407,7 @@ public class FileServiceImpl implements FileService {
 
     /**
      * {@inheritDoc}
+     * @throws java.lang.Exception
      */
     @Override
     public List<File> buildTmpMusicFilesForInstall(Catalog catalog) throws Exception {
@@ -537,7 +540,7 @@ public class FileServiceImpl implements FileService {
         StringBuilder builder = new StringBuilder(appFolder).append(ROOT_FOLDER_USERS).append(File.separator).append(getCurrentUserLogin()).append(File.separator).append(sharUTCFile.getFilename());
         try {
             mapper.writeValue(new File(builder.toString()), localCatalog);
-        } catch (Exception ex) {
+        } catch (IOException ex) {
             log.error(ex.toString());
         }
         log.debug("saveToFile ({}) DONE", sharUTCFile.getFilename());
@@ -555,7 +558,7 @@ public class FileServiceImpl implements FileService {
         T object = null;
         try {
             object = mapper.readValue(new File(builder.toString()), clazz);
-        } catch (Exception ex) {
+        } catch (IOException ex) {
             log.error(ex.toString());
         }
         log.debug("readFile ({}) DONE", sharUTCFile.getFilename());
@@ -569,7 +572,7 @@ public class FileServiceImpl implements FileService {
         Profile profile = null;
         try {
             profile = mapper.readValue(new File(builder.toString()), Profile.class);
-        } catch (Exception ex) {
+        } catch (IOException ex) {
             log.error(ex.toString());
         }
         log.debug("readProfileFile ({}) DONE", login);
@@ -585,7 +588,7 @@ public class FileServiceImpl implements FileService {
                     new FileOutputStream(fileName);
             fileOuputStream.write(bytes);
             fileOuputStream.close();
-        } catch (Exception ex) {
+        } catch (IOException ex) {
             log.error("Error while creating file '{}' from bytes", fileName, ex.toString());
             throw new RuntimeException("Error while creating file '" + fileName + "' from bytes", ex);
         }

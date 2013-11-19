@@ -32,6 +32,7 @@ public class NetworkServiceImpl implements NetworkService {
 
     private ListenThread mListenThread;
     private PeerDiscoverySocket mPeerDiscoverySocket;
+    private HeartbeatThread mHeartbeatThread;
     private final HashMap<Long, PeerSocket> mPeers;
 
     @Inject
@@ -42,6 +43,7 @@ public class NetworkServiceImpl implements NetworkService {
         this.messageParser = messageParser;
         this.mListenThread = null;
         this.mPeerDiscoverySocket = null;
+        this.mHeartbeatThread = null;
         this.mPeers = new HashMap<Long, PeerSocket>();
     }
 
@@ -57,6 +59,8 @@ public class NetworkServiceImpl implements NetworkService {
         mPeerDiscoverySocket = new PeerDiscoverySocket(port, g, appModel,
                 messageHandler, messageParser, this);
         mPeerDiscoverySocket.start();
+        mHeartbeatThread = new HeartbeatThread(this);
+        mHeartbeatThread.start();
     }
 
     /**
@@ -66,6 +70,7 @@ public class NetworkServiceImpl implements NetworkService {
     public void stop() {
         mListenThread.stop();
         mPeerDiscoverySocket.stop();
+        mHeartbeatThread.stop();
     }
 
     /**

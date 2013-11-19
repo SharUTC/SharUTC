@@ -42,11 +42,12 @@ public class IntegrateDisconnectionCommandImpl implements IntegrateDisconnection
     }
 
     /**
-     * {@inheritDoc}
+     * Remove peer from connected peer list
      */
     @Override
     public void execute() {
         log.info("Remove Peer...");
+        // remove peer from connected peer list
         this.mUserService.removeFromConnectedPeers(mPeerId);
         log.info("Peer removed.");  
     }

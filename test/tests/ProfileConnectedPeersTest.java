@@ -6,9 +6,8 @@ package tests;
 
 import com.google.inject.Inject;
 import fr.utc.lo23.sharutc.GuiceJUnitRunner;
-import fr.utc.lo23.sharutc.controler.command.account.IntegrateConnectionCommand;
+import fr.utc.lo23.sharutc.controler.command.account.IntegrateUserInfoCommand;
 import fr.utc.lo23.sharutc.controler.command.account.IntegrateDisconnectionCommand;
-import fr.utc.lo23.sharutc.controler.command.profile.AddUserCommand;
 import fr.utc.lo23.sharutc.controler.service.MusicService;
 import fr.utc.lo23.sharutc.controler.service.UserService;
 import fr.utc.lo23.sharutc.model.AppModel;
@@ -41,9 +40,7 @@ public class ProfileConnectedPeersTest {
     @Inject
     private MusicService musicService;
     @Inject
-    private AddUserCommand addUserCommand;
-    @Inject
-    private IntegrateConnectionCommand integrateConnectionCommand;
+    private IntegrateUserInfoCommand integrateConnectionCommand;
     @Inject
     private IntegrateDisconnectionCommand integrateDisconnectionCommand;
     
@@ -73,17 +70,15 @@ public class ProfileConnectedPeersTest {
         UserInfo newUserInfo1 = new UserInfo();
         newUserInfo1.setLogin("LocalPeer Mock (id=4)");
         newUserInfo1.setPeerId(4L);
-        
-        addUserCommand.setContact(newUserInfo1);
-        addUserCommand.execute();
+        integrateConnectionCommand.setUserInfo(newUserInfo1);
+        integrateConnectionCommand.execute();
         
         //Add second user
         UserInfo newUserInfo2 = new UserInfo();
         newUserInfo2.setLogin("LocalPeer Mock (id=5)");
         newUserInfo2.setPeerId(5L);
-        
-        addUserCommand.setContact(newUserInfo2);
-        addUserCommand.execute();     
+        integrateConnectionCommand.setUserInfo(newUserInfo2);
+        integrateConnectionCommand.execute();    
         
         int activePeerListSize = appModel.getActivePeerList().getActivePeers().size();
         

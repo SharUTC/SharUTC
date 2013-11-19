@@ -3,7 +3,6 @@ package fr.utc.lo23.sharutc.controler.command.account;
 import com.google.inject.Inject;
 import fr.utc.lo23.sharutc.controler.service.UserService;
 import fr.utc.lo23.sharutc.model.AppModel;
-import fr.utc.lo23.sharutc.model.userdata.Peer;
 import fr.utc.lo23.sharutc.model.userdata.UserInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,24 +10,17 @@ import org.slf4j.LoggerFactory;
 /**
  * {@inheritDoc}
  */
-public class IntegrateConnectionCommandImpl implements IntegrateConnectionCommand {
+public class IntegrateUserInfoCommandImpl implements IntegrateUserInfoCommand {
 
     private static final Logger log = LoggerFactory
-        .getLogger(IntegrateConnectionCommandImpl.class);
-    private final AppModel appModel;
+        .getLogger(IntegrateUserInfoCommandImpl.class);
     private final UserService userService;
     private UserInfo mUserInfo;
 
-    /**
-     * Construct IntegrateConnectionCommand
-     *
-     * @param appModel
-     * @param us
-     */
+    
     @Inject
-    public IntegrateConnectionCommandImpl(AppModel appModel, UserService us) {
-        this.appModel = appModel;
-        this.userService = us;
+    public IntegrateUserInfoCommandImpl(UserService userService) {
+        this.userService = userService;
     }
 
     /**
@@ -48,16 +40,15 @@ public class IntegrateConnectionCommandImpl implements IntegrateConnectionComman
     }
 
     /**
-     * Add user info to model and update active peer list
+     * Add user info to model and update active peer list & contact
      */
     @Override
     public void execute() {
         log.info("IntegrateConnectionCommandImpl ...");
-        // add user info to model
-        userService.integrateConnection(mUserInfo);
-        // update active peer list
-        Peer peer = mUserInfo.toPeer();
-        appModel.getActivePeerList().update(peer);
+        
+        // update contacts & active peers
+        userService.updateConnectedPeers(mUserInfo);
+        
         log.info("IntegrateConnectionCommandImpl DONE");
     }
 }

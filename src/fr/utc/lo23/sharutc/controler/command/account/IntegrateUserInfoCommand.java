@@ -3,7 +3,10 @@ package fr.utc.lo23.sharutc.controler.command.account;
 import fr.utc.lo23.sharutc.controler.command.Command;
 import fr.utc.lo23.sharutc.model.userdata.UserInfo;
 
-public interface IntegrateConnectionCommand extends Command {
+/**
+ * Add or update local data about a peer
+ */
+public interface IntegrateUserInfoCommand extends Command {
 
     /**
      * Return information about remote peer
