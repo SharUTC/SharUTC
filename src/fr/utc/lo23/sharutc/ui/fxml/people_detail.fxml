@@ -31,8 +31,7 @@
             </HBox>
             <FlowPane
                     fx:id="songsContainer"
-                    minHeight="100"
-                    prefHeight="100" prefWidth="-1.0"
+                    minHeight="150" prefWidth="-1.0"
                     orientation="VERTICAL"
                     prefWrapLength="230.0" vgap="10.0"
                     hgap="10.0">
