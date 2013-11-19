@@ -4,10 +4,13 @@ import com.google.inject.Inject;
 import fr.utc.lo23.sharutc.GuiceJUnitRunner;
 import fr.utc.lo23.sharutc.controler.command.account.IntegrateUserInfoAndReplyCommand;
 import fr.utc.lo23.sharutc.controler.command.account.IntegrateUserInfoCommand;
+import fr.utc.lo23.sharutc.controler.network.Message;
+import fr.utc.lo23.sharutc.controler.network.NetworkServiceMock;
 import fr.utc.lo23.sharutc.controler.service.MusicService;
 import fr.utc.lo23.sharutc.controler.service.UserService;
 import fr.utc.lo23.sharutc.model.AppModel;
 import fr.utc.lo23.sharutc.model.AppModelBuilder;
+import fr.utc.lo23.sharutc.model.userdata.Peer;
 import fr.utc.lo23.sharutc.model.userdata.UserInfo;
 import org.junit.After;
 import org.junit.Assert;
@@ -32,11 +35,13 @@ public class NetworkConnectionDisconnectionTest {
     @Inject
     private UserService userService;
     @Inject
-    private MusicService musicService;
+    private MusicService musicService;    
     @Inject
-    private IntegrateUserInfoAndReplyCommand integrateUserInfoAndReply;
+    private NetworkServiceMock networkService;    
     @Inject
     private IntegrateUserInfoCommand integrateUserInfo;
+    @Inject
+    private IntegrateUserInfoAndReplyCommand integrateUserInfoAndReply;
     private AppModelBuilder appModelBuilder = null;
 
     @Before
@@ -55,22 +60,47 @@ public class NetworkConnectionDisconnectionTest {
     }
 
     @Test
-    public void integrateConnectionCommand() {
+    public void integrateUserInfoCommand() {
         // add first user
         UserInfo userInfo = new UserInfo();
         userInfo.setLogin("tudorluchy (id=1)");
         userInfo.setPassword("password");
-        userInfo.setPeerId(4L);
+        userInfo.setPeerId(16L);
         userInfo.setFirstName("Tudor");
         userInfo.setLastName("Luchiancenco");
         userInfo.setAge(22);
+        
         // call command
         integrateUserInfo.setUserInfo(userInfo);
         integrateUserInfo.execute();
 
         // tests
-        Assert.assertNotEquals("Contact exists", null, appModel.getProfile().getContacts().findById(userInfo.getPeerId()));
-        Assert.assertNotEquals("Peer exists", null, appModel.getProfile().getKnownPeerList().getPeerNameById(userInfo.getPeerId()));
-        Assert.assertNotEquals("Peer exists", null, appModel.getActivePeerList().getByPeerId(userInfo.getPeerId()));
+        Assert.assertNotNull("Known doesn't peer exists", appModel.getProfile().getKnownPeerList().getPeerNameById(userInfo.getPeerId()));
+        Assert.assertNotNull("Active doesn't peer exists", appModel.getActivePeerList().getByPeerId(userInfo.getPeerId()));
+    }
+
+    @Test
+    public void integrateUserInfoAndReplyCommand() {
+        // add first user
+        UserInfo userInfo = new UserInfo();
+        userInfo.setLogin("tudorluchy (id=2)");
+        userInfo.setPassword("password");
+        userInfo.setPeerId(4L);
+        userInfo.setFirstName("Tudor");
+        userInfo.setLastName("Luchiancenco");
+        userInfo.setAge(22);
+        
+        // call command
+        integrateUserInfoAndReply.setUserInfo(userInfo);
+        integrateUserInfoAndReply.execute();
+
+        // tests
+        Assert.assertNotNull("Known doesn't peer exists", appModel.getProfile().getKnownPeerList().getPeerNameById(userInfo.getPeerId()));
+        Assert.assertNotNull("Active doesn't peer exists", appModel.getActivePeerList().getByPeerId(userInfo.getPeerId()));
+        
+        Message m = networkService.getSentMessage();
+        Peer p = networkService.getPeer();
+        Assert.assertNotNull("Message null", m);
+        Assert.assertNotNull("Peer null", p);
     }
 }
