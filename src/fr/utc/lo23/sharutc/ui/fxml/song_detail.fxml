@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.GridPane?>
+<?import java.lang.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<?import java.net.*?>
+
+
+<VBox id="gridPane" GridPane.hgrow="ALWAYS"
+      GridPane.vgrow="ALWAYS" xmlns:fx="http://javafx.com/fxml"
+      fx:controller="fr.utc.lo23.sharutc.ui.SongDetailController">
+        
+    <stylesheets>
+        <URL value="@../css/song_detail.css"/>
+    </stylesheets>
+    
+    <padding>
+        <javafx.geometry.Insets top="10" />
+    </padding>
+
+    <BorderPane >
+        <left>
+            <VBox fx:id="topLeftContainer">                 
+            </VBox>
+        </left>          
+            
+            
+        
+        <right>
+            <VBox alignment="TOP_RIGHT" >
+                <Button fx:id="addRemoveButton" text="Add" styleClass="bgBlue"  />
+                
+                
+                <GridPane >
+                    <Label text="My rank" styleClass="rankingSystemLabel" GridPane.rowIndex="0" GridPane.columnIndex="0" />
+                    <HBox GridPane.rowIndex="0" GridPane.columnIndex="1">
+                        <fr.utc.lo23.sharutc.ui.custom.RatingStar />
+                        <fr.utc.lo23.sharutc.ui.custom.RatingStar />
+                        <fr.utc.lo23.sharutc.ui.custom.RatingStar />
+                        <fr.utc.lo23.sharutc.ui.custom.RatingStar />
+                        <fr.utc.lo23.sharutc.ui.custom.RatingStar />
+                    </HBox>
+                    
+                    <Label text="Average"  styleClass="rankingSystemLabel" GridPane.rowIndex="1" GridPane.columnIndex="0"  />
+                    <HBox GridPane.rowIndex="1" GridPane.columnIndex="1">
+                        <fr.utc.lo23.sharutc.ui.custom.RatingStar />
+                        <fr.utc.lo23.sharutc.ui.custom.RatingStar />
+                        <fr.utc.lo23.sharutc.ui.custom.RatingStar />
+                        <fr.utc.lo23.sharutc.ui.custom.RatingStar />
+                        <fr.utc.lo23.sharutc.ui.custom.RatingStar />
+                    </HBox>
+                    
+                    <Label text="Owner"  styleClass="rankingSystemLabel" GridPane.rowIndex="2" GridPane.columnIndex="0" />
+                    <Label text="Matthieu Hanne" styleClass="ownerLabel" 
+                           GridPane.rowIndex="2" GridPane.columnIndex="1"
+                           GridPane.halignment="RIGHT"  />
+                    
+                </GridPane>
+            </VBox>            
+        </right>
+        
+        
+    </BorderPane>
+    
+    
+    <VBox VBox.vgrow="ALWAYS" >
+        <Label text="Comments" />
+        <ScrollPane styleClass="myScrollPane"
+                    fitToWidth="true" fitToHeight="true">
+            
+            <VBox>
+                <VBox >
+                    <Label text="Jake n°1" />
+                </VBox>
+                <Label text="Jake's comment." />
+            </VBox>
+                
+        </ScrollPane>
+                
+    </VBox>
+    
+    <HBox alignment="CENTER_LEFT" > 
+        <Button text="Comment" />
+        <TextArea promptText="type your comment" HBox.hgrow="ALWAYS" prefRowCount="3"/>
+    </HBox>
+
+
+</VBox>
+
+
+
+
+
+

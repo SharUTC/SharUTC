@@ -1,0 +1,21 @@
+.rankingSystemLabel {
+    -fx-font-size : 13px;
+    -fx-text-fill: #7F8C8D;
+}
+
+.ownerLabel {
+    -fx-font-size : 13px;
+    -fx-text-fill: #99CC00;
+}
+
+#addRemoveButton {
+    -fx-padding : 10px 30px 10px 30px; 
+    -fx-background-radius: 0;
+    -fx-font-size : 13px;
+    -fx-border-width : 0px 0px 2px 0px;
+    -fx-border-color : #0099CC;
+}
+
+#addRemoveButton:hover {
+    -fx-opacity: 0.6;
+}
