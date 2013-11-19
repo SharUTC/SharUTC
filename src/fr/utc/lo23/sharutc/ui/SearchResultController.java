@@ -173,7 +173,7 @@ public class SearchResultController extends SongSelectorController implements Ri
     
    
     
-    public interface ISearchResultController{
+    public interface ISearchResultController extends SongListController.ISongListController {
          /**
          * display user details
          *
