@@ -146,6 +146,7 @@ public class MainController implements Initializable, PeopleHomeController.IPeop
         children.clear();
         final Result loadingResult = mFxmlLoader.load(getClass().getResource("/fr/utc/lo23/sharutc/ui/fxml/searchresult_detail.fxml"));
         ((SearchResultController) loadingResult.getController()).setInterface(this);
+        ((SearchResultController) loadingResult.getController()).init(mDragPreview);
         children.add((Node) loadingResult.getRoot());
 
     }
@@ -178,7 +179,7 @@ public class MainController implements Initializable, PeopleHomeController.IPeop
         if (db.hasString() && db.getString().equals(SongCard.DROP_KEY)) {
             final SongCard droppedCard = (SongCard) dragEvent.getGestureSource();
             //if the card comes from SongSelectorController
-            if (mCurrentLoadedRighpaneResult.getController() instanceof SongSelectorController) {
+            if (mCurrentLoadedRighpaneResult.getController() instanceof SongSelectorController||mCurrentLoadedRighpaneResult.getController() instanceof SearchResultController) {
                 //Add all selected song to the player
                 final ArrayList<SongCard> songs =
                         ((SongSelectorController) mCurrentLoadedRighpaneResult.getController()).getSelectedSong();

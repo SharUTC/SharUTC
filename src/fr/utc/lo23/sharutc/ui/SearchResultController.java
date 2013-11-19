@@ -12,11 +12,13 @@ import fr.utc.lo23.sharutc.ui.custom.card.UserCard;
 import javafx.fxml.Initializable;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 
-public class SearchResultController implements Initializable, UserCard.IUserCard, SongCard.ISongCard, ArtistCard.IArtistCard {
+public class SearchResultController extends SongSelectorController implements Initializable, UserCard.IUserCard, ArtistCard.IArtistCard {
     public VBox gridpane;
     private String search;
     private CardList songList;
@@ -25,8 +27,12 @@ public class SearchResultController implements Initializable, UserCard.IUserCard
     private CardList albumList;
     private ISearchResultController mInterface;
 
+   
+        
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        mSongCardSelected = new ArrayList<SongCard>();
+    
         if (resourceBundle != null) {
             search = resourceBundle.getString("search");
         } else {
@@ -88,48 +94,15 @@ public class SearchResultController implements Initializable, UserCard.IUserCard
         mInterface.onPeopleDetailRequested(userInfo);
     }
 
-    @Override
-    public void onPlayRequested(Music music) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-  
-     @Override
-    public void onSongAddToPlayList(Music music) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void onTagEditionRequested(Music music) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void onSongDetailsRequested(Music music) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-
-    @Override
-    public void onSongCardSelected(SongCard songCard) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void onDragStart(MouseEvent event, DraggableCard draggableCard) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void onDragStop(DraggableCard draggableCard) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
+ 
 
     @Override
     public void onArtistDetailRequested(Music music) {
         mInterface.onArtistDetailRequested(music);
     }
 
+    
+    
    
     
     public interface ISearchResultController{
