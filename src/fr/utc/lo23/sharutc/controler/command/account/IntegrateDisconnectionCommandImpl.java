@@ -7,7 +7,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  *
- * @author Alexandre
+ *
  */
 public class IntegrateDisconnectionCommandImpl implements IntegrateDisconnectionCommand {
     private static final Logger log = LoggerFactory
