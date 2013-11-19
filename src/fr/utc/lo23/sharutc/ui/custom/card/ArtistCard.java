@@ -15,6 +15,7 @@ public class ArtistCard extends SimpleCard implements EventHandler<Event>{
     public Label artistName;
     
     //TODO Remove once we have a real library of songs
+    @Deprecated
     public ArtistCard() {
         super("/fr/utc/lo23/sharutc/ui/fxml/artist_card.fxml");
     }

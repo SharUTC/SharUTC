@@ -277,14 +277,17 @@ public class MainController implements Initializable, PeopleHomeController.IPeop
     //TODO Remove once we get a real list of Musics
     private void populateMusics() {
         for (int i = 0; i < 5; i++) {
-            for (int j = 0; j < 5; j++) {
-                Music m = new Music();
-                m.setArtist("Artist " + String.valueOf(i));
-                m.setAlbum("Album " + String.valueOf(j));
-                m.setId(0l);
-                m.setOwnerPeerId(0l);
-                m.setHash(0);
-                population.add(m);
+            for (int j = 0; j < 3; j++) {
+                for(int k = 0; k < 3; k++) {
+                    Music m = new Music();
+                    m.setTitle("Music " + String.valueOf(k));
+                    m.setArtist("Artist " + String.valueOf(i));
+                    m.setAlbum("Album " + String.valueOf(j));
+                    m.setId(0l);
+                    m.setOwnerPeerId(0l);
+                    m.setHash(0);
+                    population.add(m);
+                }
             }
         }
     }
