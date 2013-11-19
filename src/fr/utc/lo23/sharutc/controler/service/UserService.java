@@ -88,12 +88,6 @@ public interface UserService {
 
     /**
      *
-     * @param userinfo
-     */
-    public void integrateConnection(UserInfo userinfo);
-
-    /**
-     *
      * @param peerId
      * @return
      */

@@ -213,7 +213,6 @@ public class UserServiceImpl implements UserService {
                     && userInfo.getPassword().equals(password);
             if (success) {
                 appModel.setProfile(profileToConnect);
-                this.integrateConnection(appModel.getProfile().getUserInfo());
             } else {
                 String message = "Incorrect login or password";
                 log.warn(message);
@@ -252,17 +251,6 @@ public class UserServiceImpl implements UserService {
         ActivePeerList activePeerList = appModel.getActivePeerList();
         Peer removePeer = activePeerList.getByPeerId(peerId);
         activePeerList.remove(removePeer);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void integrateConnection(UserInfo userinfo) {
-        // FIXME : pas de commande dans ce service, encore moins l'utilisation de xxxImpl à la main...
-        //IntegrateConnectionCommandImpl command = new IntegrateConnectionCommandImpl(appModel, this);
-        //command.setUserInfo(userinfo);
-        //command.execute();
     }
 
     @Override
