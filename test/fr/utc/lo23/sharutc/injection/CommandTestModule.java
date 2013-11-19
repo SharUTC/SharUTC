@@ -11,8 +11,8 @@ import fr.utc.lo23.sharutc.controler.command.account.ExportProfileCommand;
 import fr.utc.lo23.sharutc.controler.command.account.ExportProfileCommandImpl;
 import fr.utc.lo23.sharutc.controler.command.account.ImportProfileCommand;
 import fr.utc.lo23.sharutc.controler.command.account.ImportProfileCommandImpl;
-import fr.utc.lo23.sharutc.controler.command.account.IntegrateBroadcastConnectionCommand;
-import fr.utc.lo23.sharutc.controler.command.account.IntegrateBroadcastConnectionCommandImpl;
+import fr.utc.lo23.sharutc.controler.command.account.IntegrateUserInfoAndReplyCommand;
+import fr.utc.lo23.sharutc.controler.command.account.IntegrateUserInfoAndReplyCommandImpl;
 import fr.utc.lo23.sharutc.controler.command.account.IntegrateUserInfoCommand;
 import fr.utc.lo23.sharutc.controler.command.account.IntegrateUserInfoCommandImpl;
 import fr.utc.lo23.sharutc.controler.command.account.IntegrateDisconnectionCommand;
@@ -144,7 +144,7 @@ public class CommandTestModule extends AbstractModule {
         bind(InstallRemoteMusicsCommand.class).to(InstallRemoteMusicsCommandImpl.class);
 
         //network ??
-        bind(IntegrateBroadcastConnectionCommand.class).to(IntegrateBroadcastConnectionCommandImpl.class);
+        bind(IntegrateUserInfoAndReplyCommand.class).to(IntegrateUserInfoAndReplyCommandImpl.class);
         bind(IntegrateUserInfoCommand.class).to(IntegrateUserInfoCommandImpl.class);
         bind(IntegrateDisconnectionCommand.class).to(IntegrateDisconnectionCommandImpl.class);
     }
