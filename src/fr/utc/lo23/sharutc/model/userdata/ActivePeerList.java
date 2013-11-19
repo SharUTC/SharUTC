@@ -46,8 +46,10 @@ public class ActivePeerList implements Serializable {
      * @param peer
      */
     public void update(Peer peer) {
-        mActivePeers.put(peer, new Date());
-        mCollectionChangeSupport.fireCollectionChanged(peer, -1, CollectionEvent.Type.ADD);
+        boolean update = mActivePeers.put(peer, new Date()) != null;
+        if (update) {
+            mCollectionChangeSupport.fireCollectionChanged(peer, -1, CollectionEvent.Type.ADD);
+        }
     }
 
     /**

@@ -3,7 +3,7 @@ package tests;
 import com.google.inject.Inject;
 import fr.utc.lo23.sharutc.GuiceJUnitRunner;
 import fr.utc.lo23.sharutc.controler.command.account.IntegrateBroadcastConnectionCommand;
-import fr.utc.lo23.sharutc.controler.command.account.IntegrateConnectionCommand;
+import fr.utc.lo23.sharutc.controler.command.account.IntegrateUserInfoCommand;
 import fr.utc.lo23.sharutc.controler.service.MusicService;
 import fr.utc.lo23.sharutc.controler.service.UserService;
 import fr.utc.lo23.sharutc.model.AppModel;
@@ -36,7 +36,7 @@ public class NetworkConnectionDisconnectionTest {
     @Inject
     private IntegrateBroadcastConnectionCommand integrateBroadcastConnection;
     @Inject
-    private IntegrateConnectionCommand integrateConnection;
+    private IntegrateUserInfoCommand integrateConnection;
     private AppModelBuilder appModelBuilder = null;
 
     @Before

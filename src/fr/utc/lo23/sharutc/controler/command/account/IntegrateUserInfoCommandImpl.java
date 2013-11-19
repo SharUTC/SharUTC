@@ -1,7 +1,6 @@
 package fr.utc.lo23.sharutc.controler.command.account;
 
 import com.google.inject.Inject;
-import fr.utc.lo23.sharutc.controler.command.profile.AddUserCommand;
 import fr.utc.lo23.sharutc.controler.service.UserService;
 import fr.utc.lo23.sharutc.model.AppModel;
 import fr.utc.lo23.sharutc.model.userdata.UserInfo;
@@ -11,27 +10,17 @@ import org.slf4j.LoggerFactory;
 /**
  * {@inheritDoc}
  */
-public class IntegrateConnectionCommandImpl implements IntegrateConnectionCommand {
+public class IntegrateUserInfoCommandImpl implements IntegrateUserInfoCommand {
 
     private static final Logger log = LoggerFactory
-        .getLogger(IntegrateConnectionCommandImpl.class);
-    private final AppModel appModel;
+        .getLogger(IntegrateUserInfoCommandImpl.class);
     private final UserService userService;
     private UserInfo mUserInfo;
 
+    
     @Inject
-    private AddUserCommand addUserCommand;
-
-    /**
-     * Construct IntegrateConnectionCommand
-     *
-     * @param appModel
-     * @param us
-     */
-    @Inject
-    public IntegrateConnectionCommandImpl(AppModel appModel, UserService us) {
-        this.appModel = appModel;
-        this.userService = us;
+    public IntegrateUserInfoCommandImpl(UserService userService) {
+        this.userService = userService;
     }
 
     /**
@@ -56,11 +45,10 @@ public class IntegrateConnectionCommandImpl implements IntegrateConnectionComman
     @Override
     public void execute() {
         log.info("IntegrateConnectionCommandImpl ...");
-        // add new user to model
-        addUserCommand.setContact(mUserInfo);
-        addUserCommand.execute();
+        
         // update contacts & active peers
         userService.updateConnectedPeers(mUserInfo);
+        
         log.info("IntegrateConnectionCommandImpl DONE");
     }
 }

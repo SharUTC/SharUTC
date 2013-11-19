@@ -34,6 +34,7 @@ public class AppModelBuilder {
     public static final int LOCAL_ACCOUNT_AGE = 23;
     public static final long LOCAL_ACCOUNT_PEER_ID = 0L;
     private final AppModel appModel;
+    // LOCAL_ACCOUNT_LOGIN as active peers only for test purpose, in order to be able to mock message for which we fake a Message reception
     private Peer[] activePeers = {new Peer(0L, LOCAL_ACCOUNT_LOGIN), new Peer(1L, "Peer Mock (id=1)"), new Peer(2L, "Peer Mock (id=2)"), new Peer(3L, "Peer Mock (id=3)")};
     private AddToLocalCatalogCommand addToLocalCatalogCommand;
     private final MusicService musicService;
