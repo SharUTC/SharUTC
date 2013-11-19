@@ -16,18 +16,24 @@ public interface MusicService {
 
     /**
      *
+     * Adding a collection of mp3 files to user's local catalog.
+     * 
      * @param mp3Files
      */
     public void addToLocalCatalog(Collection<File> mp3Files);
 
     /**
      *
+     * Removing a collection of musics from local catalog.
+     * 
      * @param musics
      */
     public void removeFromLocalCatalog(Collection<Music> musics);
 
     /**
      *
+     * Integrating music from catalog parameter to the remote catalog.
+     * 
      * @param peer
      * @param catalog
      */
