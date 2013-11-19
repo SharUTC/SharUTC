@@ -11,24 +11,24 @@ import org.slf4j.LoggerFactory;
 /**
  * {@inheritDoc}
  */
-public class IntegrateBroadcastConnectionCommandImpl implements IntegrateBroadcastConnectionCommand {
+public class IntegrateUserInfoAndReplyCommandImpl implements IntegrateUserInfoAndReplyCommand {
 
     private static final Logger log = LoggerFactory
-            .getLogger(IntegrateBroadcastConnectionCommandImpl.class);
+            .getLogger(IntegrateUserInfoAndReplyCommandImpl.class);
     private final AppModel appModel;
     private final UserService userService;
     private final NetworkService networkService;
     private UserInfo mUserInfo;
 
     /**
-     * Construct IntegrateBroadcastConnectionCommand
+     * Construct IntegrateUserInfoAndReplyCommand
      *
      * @param appModel
      * @param us
      * @param ns
      */
     @Inject
-    public IntegrateBroadcastConnectionCommandImpl(AppModel appModel, UserService us, NetworkService ns) {
+    public IntegrateUserInfoAndReplyCommandImpl(AppModel appModel, UserService us, NetworkService ns) {
         this.appModel = appModel;
         this.userService = us;
         this.networkService = ns;
@@ -56,11 +56,11 @@ public class IntegrateBroadcastConnectionCommandImpl implements IntegrateBroadca
      */
     @Override
     public void execute() {
-        log.info("IntegrateBroadscastConnectionCommandImpl ...");
+        log.info("IntegrateUserInfoAndReplyCommandImpl ...");
         // update contacts & active peers
         userService.updateConnectedPeers(mUserInfo);
         // send my personal information to the broadcaster
         networkService.sendConnectionResponse(mUserInfo.toPeer(), appModel.getProfile().getUserInfo());
-        log.info("IntegrateBroadscastConnectionCommandImpl DONE");
+        log.info("IntegrateUserInfoAndReplyCommandImpl DONE");
     }
 }

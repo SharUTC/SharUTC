@@ -73,7 +73,7 @@ public class PeerSocket implements Runnable {
      *
      * @param msg a Message to send
      */
-    public void send(Message msg) {
+    public synchronized void send(Message msg) {
         String json = messageParser.toJSON(msg);
         try {
             mOut.writeObject(json);
