@@ -14,7 +14,7 @@ import org.slf4j.LoggerFactory;
 public class ArtistsDetailController implements Initializable, ArtistCard.IArtistCard{
     
     private static final Logger log = LoggerFactory.getLogger(PeopleHomeController.class);
-    private IArtistsDetailController mInterface;
+    public IArtistsDetailController mInterface;
     
     @FXML
     public FlowPane artistsContainer;

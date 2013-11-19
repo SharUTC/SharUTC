@@ -67,7 +67,7 @@ public class SearchResultController extends SongSelectorController implements In
         SimpleCard card = new ArtistCard(m, this);
         this.addChild(card);
         
-        card = new AlbumCard(m);
+        card = new AlbumCard(m, this);
         this.addChild(card);
         
     }

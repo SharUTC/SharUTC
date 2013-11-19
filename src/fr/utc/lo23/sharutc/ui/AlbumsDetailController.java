@@ -12,9 +12,10 @@ import javafx.scene.layout.FlowPane;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class AlbumsDetailController implements Initializable {
+public class AlbumsDetailController implements Initializable, AlbumCard.IAlbumCard {
     
     private static final Logger log = LoggerFactory.getLogger(PeopleHomeController.class);
+    public IAlbumsDetailController mInterface;
     private String artistWanted;
     public Label titlePage;
             
@@ -27,12 +28,15 @@ public class AlbumsDetailController implements Initializable {
         titlePage.setText("Discover new albums");
     }
     
+    public void setInterface(IAlbumsDetailController i) {
+        mInterface = i;
+    }
+    
     public void createCards() {
-        System.out.println("artistWanted = "+artistWanted);
         for(Music m : MainController.population) {
             if(!existsAlready(m)) {
                 if(m.getArtist().equals(artistWanted) || artistWanted.equals("")) {
-                    AlbumCard card = new AlbumCard(m);
+                    AlbumCard card = new AlbumCard(m, this);
                     albumsContainer.getChildren().add(card);
                 }              
             }
@@ -61,5 +65,21 @@ public class AlbumsDetailController implements Initializable {
     public void setArtistWanted(String artistName) {
         artistWanted = artistName;
         titlePage.setText("Discover "+artistName+"'s albums");
+    }
+
+    @Override
+    public void onAlbumDetailRequested(Music music) {
+        log.info("onArtistDetailRequested " + music.getAlbum());
+        mInterface.onAlbumDetailRequested(music);
+    }
+    
+    public interface IAlbumsDetailController {
+
+        /**
+         * display user details
+         *
+         * @param music
+         */
+        public void onAlbumDetailRequested(Music music);
     }
 }
