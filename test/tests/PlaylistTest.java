@@ -51,12 +51,14 @@ public class PlaylistTest {
             appModelBuilder = new AppModelBuilder(appModel, musicService, userService);
         }
         appModelBuilder.mockAppModel();
+        playerService.getPlaylist().clear();
     }
 
     @After
     public void after() {
         log.trace("cleaning appModel");
         appModelBuilder.clearAppModel();
+        playerService.getPlaylist().clear();
     }
 
     /**
@@ -65,11 +67,11 @@ public class PlaylistTest {
     @Test
     public void addToPlaylist() {
         ArrayList<Music> dummyMusics = new ArrayList<Music>();
-        dummyMusics.addAll(appModel.getLocalCatalog().getMusics());       
-        
+        dummyMusics.addAll(appModel.getLocalCatalog().getMusics());
+
         addToPlaylistCommand.setMusics(dummyMusics);
         addToPlaylistCommand.execute();
-        
+
         Assert.assertNotNull("addToPlaylistCommand failed", playerService.getPlaylist().getMusics());
         Assert.assertEquals("addToPlaylistCommand failed", dummyMusics.size(), playerService.getPlaylist().getMusics().size());
     }
@@ -81,18 +83,18 @@ public class PlaylistTest {
     public void removeFromPlaylist() {
         ArrayList<Music> dummyMusics = new ArrayList<Music>();
         dummyMusics.addAll(appModel.getLocalCatalog().getMusics());
-        
+        // FIX ME
         addToPlaylistCommand.setMusics(dummyMusics);
         addToPlaylistCommand.execute();
 
-        removeFromPlaylistCommand.setMusic(dummyMusics.get(0));
+        removeFromPlaylistCommand.setMusic(playerService.getPlaylist().getMusics().get(0));
         removeFromPlaylistCommand.execute();
 
         Assert.assertNotNull("removeFromPlaylistCommand failed", playerService.getPlaylist().getMusics());
-        
+
         ArrayList<Music> testMusics = new ArrayList<Music>();
         testMusics.addAll(1, dummyMusics);
-        
+
         Assert.assertEquals("removeFromPlaylistCommand failed", playerService.getPlaylist().getMusics(), testMusics);
     }
 }

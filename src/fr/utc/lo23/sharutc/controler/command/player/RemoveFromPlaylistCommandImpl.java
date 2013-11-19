@@ -2,7 +2,6 @@ package fr.utc.lo23.sharutc.controler.command.player;
 
 import com.google.inject.Inject;
 import fr.utc.lo23.sharutc.controler.service.PlayerService;
-import fr.utc.lo23.sharutc.model.domain.Catalog;
 import fr.utc.lo23.sharutc.model.domain.Music;
 import java.util.ArrayList;
 import java.util.List;
@@ -57,6 +56,8 @@ public class RemoveFromPlaylistCommandImpl implements RemoveFromPlaylistCommand 
     @Override
     public void execute() {
         log.info("RemoveFromPlaylistCommand...");
+        
+        System.out.println(mPlaylist);
         
         if(mPlaylist != null){
             for (Music m : mPlaylist) {
