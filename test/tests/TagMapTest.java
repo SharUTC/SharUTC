@@ -152,9 +152,9 @@ public class TagMapTest {
         sendTagMapCommand.setConversationId(conversationId);
         sendTagMapCommand.setPeer(appModel.getActivePeerList().getByPeerId(1L));
         sendTagMapCommand.execute();
-        Assert.assertNotNull("No message sent", networkService.getSendMessage());
+        Assert.assertNotNull("No message sent", networkService.getSentMessage());
         // extract values from created message and validate them
-        messageParser.read(networkService.getSendMessage());
+        messageParser.read(networkService.getSentMessage());
         TagMap tm = (TagMap) messageParser.getValue(Message.TAG_MAP);
         Assert.assertNotNull("No tagMap in message", tm);
         Assert.assertEquals(musicService.getLocalTagMap(), tm);
