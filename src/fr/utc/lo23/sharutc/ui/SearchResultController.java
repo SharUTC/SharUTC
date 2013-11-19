@@ -15,6 +15,8 @@ import fr.utc.lo23.sharutc.ui.custom.card.AlbumCard;
 import fr.utc.lo23.sharutc.ui.custom.card.ArtistCard;
 import fr.utc.lo23.sharutc.ui.custom.card.SongCard;
 import fr.utc.lo23.sharutc.ui.custom.card.UserCard;
+import fr.utc.lo23.sharutc.util.CollectionChangeListener;
+import fr.utc.lo23.sharutc.util.CollectionEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import javafx.fxml.Initializable;
@@ -25,7 +27,7 @@ import javafx.scene.layout.VBox;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class SearchResultController extends SongSelectorController implements PropertyChangeListener ,Initializable,AlbumCard.IAlbumCard, UserCard.IUserCard, ArtistCard.IArtistCard {
+public class SearchResultController extends SongSelectorController implements CollectionChangeListener ,Initializable,AlbumCard.IAlbumCard, UserCard.IUserCard, ArtistCard.IArtistCard {
     
     private static final Logger log = LoggerFactory
             .getLogger(SearchResultController.class);
@@ -53,10 +55,9 @@ public class SearchResultController extends SongSelectorController implements Pr
         
         
         //listen for changes on the AppModel
-        mAppModel.addPropertyChangeListener(this);
+        mAppModel.getSearchResults().addPropertyChangeListener(this);
 
-        //listen for changes on the Error Bus
-        mAppModel.getErrorBus().addPropertyChangeListener(this);
+ 
         
         
     
@@ -92,6 +93,8 @@ public class SearchResultController extends SongSelectorController implements Pr
         
         final Music m = new Music();
             m.setFileName("Music ");
+            m.setAlbum("Album");
+            m.setArtist("Artist");
         SongCard newCard = new SongCard(m, this, true);
        
         addChild(newCard);
@@ -139,16 +142,26 @@ public class SearchResultController extends SongSelectorController implements Pr
     }
 
     @Override
-    public void propertyChange(PropertyChangeEvent evt) {
-        final String propertyName = evt.getPropertyName();
-        if (AppModelImpl.Property.NETWORK_TAG_MAP.name().equals(propertyName)) {
-            //log.info("Profile Changed");
-            //goToMainPage();
-        } else if (ErrorBus.Property.APPLICATION_ERROR_MESSAGE.name().equals(propertyName)) {
-            log.info("Application Error Message Changed");
-            //errorContainer.getChildren().clear();
-            //errorContainer.getChildren().add(new Label(((ErrorMessage) evt.getNewValue()).getMessage()));
+    public void collectionChanged(CollectionEvent ev) {
+        switch(ev.getType()){
+            case ADD:
+                Music m = ((Music)ev.getSource());
+                if(m.getAlbum().contains(search)){
+                    albumList.addChild(new AlbumCard(m, this));
+                }
+                if(m.getArtist().contains(search)){
+                    artistList.addChild(new ArtistCard(m, this));
+                }
+                if(m.getTitle().contains(search)){
+                    songList.addChild(new SongCard(m, this, mAppModel.getProfile().getUserInfo().getPeerId() == m.getOwnerPeerId()));
+                }
+                break;
+             case CLEAR:
+                 log.info("Search Clear");
+                 break;
+            
         }
+       
     }
 
    
