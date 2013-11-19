@@ -82,7 +82,7 @@ public class PeerDiscoverySocket implements Runnable {
      *
      * @param msg a Message to send
      */
-    public void send(Message msg) {
+    public synchronized void send(Message msg) {
         byte[] bytes = messageParser.toJSON(msg).getBytes();
         DatagramPacket p = new DatagramPacket(bytes, bytes.length, mGroup, mPort);
         try {

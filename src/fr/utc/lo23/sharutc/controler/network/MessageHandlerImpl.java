@@ -2,7 +2,7 @@ package fr.utc.lo23.sharutc.controler.network;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import fr.utc.lo23.sharutc.controler.command.account.IntegrateBroadcastConnectionCommand;
+import fr.utc.lo23.sharutc.controler.command.account.IntegrateUserInfoAndReplyCommand;
 import fr.utc.lo23.sharutc.controler.command.account.IntegrateUserInfoCommand;
 import fr.utc.lo23.sharutc.controler.command.account.IntegrateDisconnectionCommand;
 import fr.utc.lo23.sharutc.controler.command.Command;
@@ -65,9 +65,9 @@ public class MessageHandlerImpl implements MessageHandler {
     @Inject
     private InstallRemoteMusicsCommand installRemoteMusicsCommand;
     @Inject
-    private IntegrateBroadcastConnectionCommand integrateBroadcastConnectionCommand;
+    private IntegrateUserInfoAndReplyCommand integrateUserInfoAndReplyCommand;
     @Inject
-    private IntegrateUserInfoCommand integrateConnectionCommand;
+    private IntegrateUserInfoCommand integrateUserInfoCommand;
     @Inject
     private IntegrateDisconnectionCommand integrateDisconnectionCommand;
     @Inject
@@ -199,12 +199,12 @@ public class MessageHandlerImpl implements MessageHandler {
                         }
                         break;
                     case CONNECTION:
-                        integrateBroadcastConnectionCommand.setUserInfo((UserInfo) messageParser.getValue(Message.USER_INFO));
-                        command = integrateBroadcastConnectionCommand;
+                        integrateUserInfoAndReplyCommand.setUserInfo((UserInfo) messageParser.getValue(Message.USER_INFO));
+                        command = integrateUserInfoAndReplyCommand;
                         break;
                     case CONNECTION_RESPONSE:
-                        integrateConnectionCommand.setUserInfo((UserInfo) messageParser.getValue(Message.USER_INFO));
-                        command = integrateConnectionCommand;
+                        integrateUserInfoCommand.setUserInfo((UserInfo) messageParser.getValue(Message.USER_INFO));
+                        command = integrateUserInfoCommand;
                         break;
                     case DISCONNECT:
                         integrateDisconnectionCommand.setPeerId(messageParser.getSource().getId());

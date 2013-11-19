@@ -2,7 +2,7 @@ package tests;
 
 import com.google.inject.Inject;
 import fr.utc.lo23.sharutc.GuiceJUnitRunner;
-import fr.utc.lo23.sharutc.controler.command.account.IntegrateBroadcastConnectionCommand;
+import fr.utc.lo23.sharutc.controler.command.account.IntegrateUserInfoAndReplyCommand;
 import fr.utc.lo23.sharutc.controler.command.account.IntegrateUserInfoCommand;
 import fr.utc.lo23.sharutc.controler.service.MusicService;
 import fr.utc.lo23.sharutc.controler.service.UserService;
@@ -34,9 +34,9 @@ public class NetworkConnectionDisconnectionTest {
     @Inject
     private MusicService musicService;
     @Inject
-    private IntegrateBroadcastConnectionCommand integrateBroadcastConnection;
+    private IntegrateUserInfoAndReplyCommand integrateUserInfoAndReply;
     @Inject
-    private IntegrateUserInfoCommand integrateConnection;
+    private IntegrateUserInfoCommand integrateUserInfo;
     private AppModelBuilder appModelBuilder = null;
 
     @Before
@@ -65,8 +65,8 @@ public class NetworkConnectionDisconnectionTest {
         userInfo.setLastName("Luchiancenco");
         userInfo.setAge(22);
         // call command
-        integrateConnection.setUserInfo(userInfo);
-        integrateConnection.execute();
+        integrateUserInfo.setUserInfo(userInfo);
+        integrateUserInfo.execute();
 
         // tests
         Assert.assertNotEquals("Contact exists", null, appModel.getProfile().getContacts().findById(userInfo.getPeerId()));

@@ -2,7 +2,6 @@ package fr.utc.lo23.sharutc.controler.command.account;
 
 import com.google.inject.Inject;
 import fr.utc.lo23.sharutc.controler.service.UserService;
-import fr.utc.lo23.sharutc.model.AppModel;
 import fr.utc.lo23.sharutc.model.userdata.UserInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,11 +43,11 @@ public class IntegrateUserInfoCommandImpl implements IntegrateUserInfoCommand {
      */
     @Override
     public void execute() {
-        log.info("IntegrateConnectionCommandImpl ...");
+        log.info("IntegrateUserInfoCommandImpl ...");
         
         // update contacts & active peers
         userService.updateConnectedPeers(mUserInfo);
         
-        log.info("IntegrateConnectionCommandImpl DONE");
+        log.info("IntegrateUserInfoCommandImpl DONE");
     }
 }
