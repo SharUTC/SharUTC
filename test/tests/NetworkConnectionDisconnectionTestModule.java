@@ -8,7 +8,7 @@ package tests;
 
 /**
  *
- * @author Olivier
+ *
  */
 public class NetworkConnectionDisconnectionTestModule extends TestModule{
     
