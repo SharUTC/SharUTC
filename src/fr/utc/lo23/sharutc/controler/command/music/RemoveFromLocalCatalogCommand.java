@@ -6,6 +6,8 @@ import java.util.Collection;
 
 /**
  *
+ * Command for removing musics from user's local catalog.
+ * 
  */
 public interface RemoveFromLocalCatalogCommand extends Command {
 
