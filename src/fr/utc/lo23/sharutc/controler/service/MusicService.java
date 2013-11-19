@@ -39,7 +39,7 @@ public interface MusicService {
      * taking account of current user's rights regarding peer's music
      *
      * @param peer
-     * @param catalog
+     * @return 
      */
     public Catalog getCatalogForPeer(Peer peer);
 
@@ -136,6 +136,7 @@ public interface MusicService {
      *
      * @param peer
      * @param criteria
+     * @return
      */
     public Catalog searchMusic(Peer peer, SearchCriteria criteria);
 
@@ -155,7 +156,6 @@ public interface MusicService {
      * Load file into passed music, work with the instance in parameter
      *
      * @param music the music to load
-     * @return the instance of music with file inside
      */
     public void loadMusicFile(Music music);
 
@@ -164,7 +164,6 @@ public interface MusicService {
      * parameter
      *
      * @param catalog the catalog containing the music files to load
-     * @return the instance of catalog with modified musics inside
      */
     public void loadMusicFiles(Catalog catalog);
 

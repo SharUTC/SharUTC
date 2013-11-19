@@ -4,6 +4,7 @@ import ch.qos.logback.classic.util.ContextInitializer;
 import com.google.inject.Inject;
 import fr.utc.lo23.sharutc.GuiceJUnitRunner;
 import fr.utc.lo23.sharutc.controler.command.music.AddToLocalCatalogCommand;
+import fr.utc.lo23.sharutc.controler.command.music.IntegrateRemoteCatalogCommand;
 import fr.utc.lo23.sharutc.controler.command.music.RemoveFromLocalCatalogCommand;
 import fr.utc.lo23.sharutc.controler.service.FileService;
 import fr.utc.lo23.sharutc.controler.service.MusicService;
@@ -52,6 +53,8 @@ public class MusicServiceTest {
     private AddToLocalCatalogCommand addToLocalCatalogCommand;
     @Inject
     private RemoveFromLocalCatalogCommand removeFromLocalCatalogCommand;
+    @Inject
+    private IntegrateRemoteCatalogCommand integrateRemoteCatalogCommand;
     private AppModelBuilder appModelBuilder = null;
 
     @Before
@@ -163,5 +166,39 @@ public class MusicServiceTest {
         Long peerIdComment = catalogToTest.getMusics().get(0).getComment(Long.MIN_VALUE, 2).getAuthorPeerId();
         Assert.assertEquals("good peerId has been successfully saved and loaded from a user music file", (Long)Long.MIN_VALUE, peerIdComment);
         
+    }
+    
+    @Test
+    public void integrateRemoteCatalog(){
+        
+        int initialCatalogSize = appModel.getRemoteUserCatalog().size();
+        
+        Catalog testCatalog = new Catalog();
+        List<Music> musicsTestCollection = new ArrayList<Music>();
+
+        String TEST_MP3_FOLDER = "";
+        try {
+            TEST_MP3_FOLDER = new File(".").getCanonicalPath() + File.separator + "test" + File.separator + "mp3" + File.separator;
+        } catch (Exception ex) {
+            System.err.println(ex.toString());
+        }
+
+        String[] filenames = {"14 - End Credit Score.mp3", "Air - Moon Safari - Sexy Boy.mp3", "Sting & The Police - The Very Best Of Sting & The Police - 17 - Roxanne.mp3"};
+
+        for (String mp3File : filenames) {
+            try {
+                Music music = fileService.createMusicFromFile(new File(TEST_MP3_FOLDER + mp3File));
+                musicsTestCollection.add(music);
+            } catch (Exception ex) {
+                java.util.logging.Logger.getLogger(MusicServiceTest.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+
+        testCatalog.addAll(musicsTestCollection);
+        
+        integrateRemoteCatalogCommand.setCatalog(testCatalog); 
+        integrateRemoteCatalogCommand.execute();
+        
+        Assert.assertEquals("musics from testCatalog have been successfully integrated", initialCatalogSize + 3, appModel.getRemoteUserCatalog().size());
     }
 }
