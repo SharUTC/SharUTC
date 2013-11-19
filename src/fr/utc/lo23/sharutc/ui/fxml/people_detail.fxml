@@ -24,7 +24,7 @@
             </ImageView>
             <Button text="Add to friends" fx:id="addToFriendsButton" onAction="#handleAddToFriendsClicked" AnchorPane.rightAnchor="10" styleClass="rectButton"/>
         </AnchorPane>
-        <AnchorPane GridPane.rowIndex="2" GridPane.hgrow="ALWAYS" maxWidth="600">
+        <AnchorPane GridPane.rowIndex="2" GridPane.hgrow="ALWAYS" maxWidth="700">
             <Label text="Songs" styleClass="panesubtitle"/>
             <Button text="See more" fx:id="seeMoreSongs" onAction="#handleSeeMoreFriendsClicked" AnchorPane.rightAnchor="10" styleClass="rectButton" />
         </AnchorPane>
