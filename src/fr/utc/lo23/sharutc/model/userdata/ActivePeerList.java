@@ -46,8 +46,10 @@ public class ActivePeerList implements Serializable {
      * @param peer
      */
     public void update(Peer peer) {
-        mActivePeers.put(peer, new Date());
-        mCollectionChangeSupport.fireCollectionChanged(peer, -1, CollectionEvent.Type.ADD);
+        boolean update = mActivePeers.put(peer, new Date()) != null;
+        if (update) {
+            mCollectionChangeSupport.fireCollectionChanged(peer, -1, CollectionEvent.Type.ADD);
+        }
     }
 
     /**
@@ -118,13 +120,14 @@ public class ActivePeerList implements Serializable {
      * @return
      */
     public Peer getByPeerId(Long peerId) {
+        Peer peer = null;
         if (peerId != null) {
             for (Map.Entry<Peer, Date> activePeer : mActivePeers.entrySet()) {
                 if (activePeer.getKey().getId() == peerId.longValue()) {
-                    return activePeer.getKey();
+                    peer = activePeer.getKey();
                 }
             }
         }
-        return null;
+        return peer;
     }
 }

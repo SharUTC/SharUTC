@@ -32,4 +32,18 @@ public interface PerformMusicSearchCommand extends Command {
      * @param searchCriteria
      */
     public void setSearchCriteria(SearchCriteria searchCriteria);
+
+    /**
+     * Return conversation Id
+     *
+     * @return the conversation Id for this Command
+     */
+    public Long getConversationId();
+
+    /**
+     * Set the conversation Id for this Command
+     *
+     * @param nextConversationId set the conversation Id for this Command
+     */
+    public void setConversationId(Long nextConversationId);
 }

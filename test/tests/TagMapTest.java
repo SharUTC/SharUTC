@@ -5,9 +5,14 @@ import fr.utc.lo23.sharutc.GuiceJUnitRunner;
 import fr.utc.lo23.sharutc.GuiceJUnitRunner.GuiceModules;
 import fr.utc.lo23.sharutc.controler.command.music.IntegrateRemoteTagMapCommand;
 import fr.utc.lo23.sharutc.controler.command.music.SendTagMapCommand;
+import fr.utc.lo23.sharutc.controler.network.Message;
+import fr.utc.lo23.sharutc.controler.network.MessageParser;
+import fr.utc.lo23.sharutc.controler.network.MessageType;
 import fr.utc.lo23.sharutc.controler.network.NetworkServiceMock;
 import fr.utc.lo23.sharutc.controler.service.FileService;
 import fr.utc.lo23.sharutc.controler.service.MusicService;
+import fr.utc.lo23.sharutc.controler.service.MusicServiceMock;
+import fr.utc.lo23.sharutc.controler.service.UserService;
 import fr.utc.lo23.sharutc.model.AppModel;
 import fr.utc.lo23.sharutc.model.AppModelBuilder;
 import fr.utc.lo23.sharutc.model.domain.TagMap;
@@ -35,18 +40,22 @@ public class TagMapTest {
     @Inject
     private MusicService musicService;
     @Inject
+    private UserService userService;
+    @Inject
     private NetworkServiceMock networkService;
     @Inject
     private IntegrateRemoteTagMapCommand integrateRemoteTagMapCommand;
     @Inject
     private SendTagMapCommand sendTagMapCommand;
+    @Inject
+    private MessageParser messageParser;
     private AppModelBuilder appModelBuilder = null;
 
     @Before
     public void before() {
         log.trace("building appModel");
         if (appModelBuilder == null) {
-            appModelBuilder = new AppModelBuilder(appModel, musicService);
+            appModelBuilder = new AppModelBuilder(appModel, musicService, userService);
         }
         appModelBuilder.mockAppModel();
     }
@@ -134,12 +143,20 @@ public class TagMapTest {
 
     @Test
     public void sendTagMapCommand() {
+        appModel.getLocalCatalog().get(0).addTag("ROCK");
+        appModel.getLocalCatalog().get(1).addTag("TV");
+        appModel.getLocalCatalog().get(2).addTag("Rock");
+        appModel.getLocalCatalog().get(2).addTag("Rock Indé");
+        ((MusicServiceMock)musicService).setTagMapDirty();
         long conversationId = 0L;
         sendTagMapCommand.setConversationId(conversationId);
         sendTagMapCommand.setPeer(appModel.getActivePeerList().getByPeerId(1L));
         sendTagMapCommand.execute();
-        Assert.assertNotNull(networkService.getSendMessage());
-        log.info(networkService.getSendMessage().toString());
-        // TODO extract values from created message and validate them
+        Assert.assertNotNull("No message sent", networkService.getSentMessage());
+        // extract values from created message and validate them
+        messageParser.read(networkService.getSentMessage());
+        TagMap tm = (TagMap) messageParser.getValue(Message.TAG_MAP);
+        Assert.assertNotNull("No tagMap in message", tm);
+        Assert.assertEquals(musicService.getLocalTagMap(), tm);
     }
 }

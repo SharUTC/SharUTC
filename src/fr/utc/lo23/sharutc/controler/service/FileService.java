@@ -1,8 +1,11 @@
 package fr.utc.lo23.sharutc.controler.service;
 
+import fr.utc.lo23.sharutc.model.domain.Catalog;
 import fr.utc.lo23.sharutc.model.domain.Music;
+import fr.utc.lo23.sharutc.model.userdata.Profile;
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 /**
  * Used for import/export all data relative to an acocunt
@@ -12,17 +15,24 @@ public interface FileService {
 
     public static final String APP_NAME = "SharUTC";
     public static final String ROOT_FOLDER_USERS = "users";
+    public static final String ROOT_FOLDER_TMP = "tmp";
     public static final String FOLDER_MUSICS = "musics";
+    public static final String JSON_MUSICS = "musics.json";
+    public static final String JSON_PROFILE = "profile.json";
+    public static final String JSON_RIGHTS = "rights.json";
     public static final String DOT_MP3 = ".mp3";
     public static final String[] AUTHORIZED_MUSIC_FILE_TYPE = {"mp3"};
     public static final int MIN_FILENAME_LENGTH = 1;
 
+    public String getAppFolder();
+
     /**
      *
      * @param srcPath
+     * @param force
      * @throws java.lang.Exception
      */
-    public void importWholeProfile(String srcPath) throws Exception;
+    public void importWholeProfile(String srcPath, boolean force) throws Exception;
 
     /**
      * Compress the folder srcPath and write it at destPath
@@ -34,20 +44,30 @@ public interface FileService {
     public void exportFile(String srcPath, String destPath) throws IOException;
 
     /**
+     * Delete every file and forlder under <i>pathname</i>
+     * 
+     * @param pathname
+     */
+    public void deleteFolderRecursively(String pathname);
+    
+    
+    /**
      * Used for reading a local mp3 file and creating a new Music, increments
-     * profile's counter If reading id3tag fails, then values are set to null
+     * profile's counter. If reading id3tag fails, then tag values are set to
+     * null
      *
      * @param file a mp3 file
      * @return music whose filename equals realname
      * @throws Exception if file is null or not an mp3
      */
-    public Music readFile(File file) throws Exception;
+    public Music createMusicFromFile(File file) throws Exception;
 
     /**
      * Read a file and return its content as an array of Bytes
      *
      * @param file the file to read
      * @return the content of the file as an array of Bytes
+     * @throws java.io.IOException
      */
     public byte[] getFileAsByteArray(File file) throws IOException;
 
@@ -55,10 +75,22 @@ public interface FileService {
      * Give access to a temporary file automatically deleted when application
      * stops, used by musicPlayer
      *
-     * @param currentMusic
+     * @param musicBytes
      * @return the temporary file
+     * @throws java.lang.Exception
      */
     public File buildTmpMusicFile(Byte[] musicBytes) throws Exception;
+
+    /**
+     * Used to install music received as Byte[], create temporary files to then
+     * reuse methods that performs verifications on filename
+     *
+     * @param catalog the list of musics to install
+     * @return a list of files to copy in user's folder, these files are
+     * automatically deleted when application stops
+     * @throws Exception if an error occurs while write files
+     */
+    public List<File> buildTmpMusicFilesForInstall(Catalog catalog) throws Exception;
 
     /**
      * Return a file instance of a local music, null if the file doesn't exist
@@ -76,5 +108,11 @@ public interface FileService {
 
     public <T> T readFile(SharUTCFile sharUTCFile, Class<T> clazz);
 
+    public Profile readProfileFile(String login);
+
     public void createFile(byte[] bytes, String fileName);
+
+    public void createAccountFolder(String login);
+
+    public Music fakeMusicFromFile(File file) throws Exception;
 }

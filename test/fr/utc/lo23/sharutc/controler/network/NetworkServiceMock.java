@@ -3,13 +3,7 @@ package fr.utc.lo23.sharutc.controler.network;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import fr.utc.lo23.sharutc.model.AppModel;
-import fr.utc.lo23.sharutc.model.domain.Catalog;
-import fr.utc.lo23.sharutc.model.domain.Music;
-import fr.utc.lo23.sharutc.model.domain.SearchCriteria;
-import fr.utc.lo23.sharutc.model.domain.TagMap;
 import fr.utc.lo23.sharutc.model.userdata.Peer;
-import fr.utc.lo23.sharutc.model.userdata.UserInfo;
-import java.util.HashMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,8 +20,8 @@ public class NetworkServiceMock extends NetworkServiceImpl implements NetworkSer
     private Peer peer = null;
 
     @Inject
-    public NetworkServiceMock(AppModel appModel, MessageParser messageParser) {
-        super(appModel, messageParser);
+    public NetworkServiceMock(AppModel appModel, MessageParser messageParser, MessageHandler messageHandler) {
+        super(appModel, messageHandler, messageParser);
     }
 
     @Override
@@ -41,7 +35,7 @@ public class NetworkServiceMock extends NetworkServiceImpl implements NetworkSer
         this.peer = peer;
     }
 
-    public Message getSendMessage() {
+    public Message getSentMessage() {
         return sendMessage;
     }
 

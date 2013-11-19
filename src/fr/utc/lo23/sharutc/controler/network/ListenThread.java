@@ -1,71 +1,91 @@
 package fr.utc.lo23.sharutc.controler.network;
 
 import fr.utc.lo23.sharutc.model.AppModel;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import java.net.Socket;
 import java.io.IOException;
 import java.net.ServerSocket;
+import java.net.Socket;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
- * This class is a server socket. It waits ans listens to new connexions.
- * It also accepts the new connexions.
- * For each new connexion, it creates a new peer.
- * 
- * @author Arselle
+ * Listen to new TCP connection and instanciate new PeerSocket to handle them.
+ * <p>
+ * This class bind a ServerSocket to the given port and listen on it.
+ * Each new TCP connection is handled separately in a new instance of PeerSocket
+ * running in a separate thread.
+ *
+ * @see PeerSocket
  */
 public class ListenThread implements Runnable {
-    private static final Logger slog = LoggerFactory.getLogger(PeerDiscoverySocket.class);
+    private static final Logger log = LoggerFactory.getLogger(PeerDiscoverySocket.class);
+
+    private final AppModel appModel;
+    private final NetworkService networkService;
+    private final MessageHandler messageHandler;
+    private final MessageParser messageParser;
+
+    private Thread mThread;
     private final int mPort;
-    private final NetworkService mNetworkService;
-    private Thread thread;
-    private boolean threadShouldStop = false;
-    private final AppModel mAppModel;
-    
+    private boolean mThreadShouldStop = false;
+
     /**
+     * Set the different service provider we'll need and the port to listen.
      *
-     * @param p the binding port of the socket
-     * @param ns the network service
-     * @param appModel the model of the global application
+     * @param port the port to bind the listening socket to
+     * @param appModel the model of the application
+     * @param messageHandler the injected MessageHandler instance
+     * @param messageParser the injected MessageParser instance
+     * @param networkService the injected NetworkService instance
      */
-    public ListenThread(int p, NetworkService ns, AppModel appModel) {
-        this.mPort = p;
-        mNetworkService = ns;
-        mAppModel = appModel;
+    public ListenThread(int port, AppModel appModel, MessageHandler
+            messageHandler, MessageParser messageParser, NetworkService
+            networkService) {
+        this.mPort = port;
+        this.appModel = appModel;
+        this.messageHandler = messageHandler;
+        this.messageParser = messageParser;
+        this.networkService = networkService;
     }
 
     /**
-     * Starts the listenThread
+     * Starts the listenThread.
      */
     public void start() {
-        thread = new Thread(this);
-        thread.start();
+        mThread = new Thread(this);
+        mThread.start();
     }
 
     /**
-     * Stops the listenThread
+     * Stops the listenThread.
      */
     public void stop() {
-        threadShouldStop = true;
+        mThreadShouldStop = true;
     }
 
     /**
-     * Traitement executed by the listenThread
+     * Main listening loop.
+     * <p>
+     * Loop on the ServerSocket accept() method and instanciate a new PeerSocket
+     * for each new connection.
+     * The newly created PeerSocket is then started in a new thread with
+     * start().
+     *
+     * @see PeerSocket
      */
     @Override
     public void run() {
-        long peerID = mAppModel.getProfile().getUserInfo().getPeerId();
+        long peerID = appModel.getProfile().getUserInfo().getPeerId();
         try {
-            ServerSocket socketServeur = new ServerSocket(mPort);
-            System.out.println("Lancement du serveur");
-            
-            while (socketServeur.isBound()) {
-                Socket socketClient = socketServeur.accept();
-                PeerSocket ps = new PeerSocket(socketClient,mNetworkService,peerID);
+            ServerSocket socketServer = new ServerSocket(mPort);
+            log.info("[ListenThread - run()] - Started listening on port " + mPort);
+
+            while (socketServer.isBound()) {
+                Socket socketClient = socketServer.accept();
+                PeerSocket ps = new PeerSocket(socketClient, peerID, messageHandler, messageParser, networkService);
                 ps.start();
             }
-            
-        } catch (Exception e) {
-          e.printStackTrace();
+        } catch (IOException e) {
+            log.error(e.toString());
         }
     }
-  }
+}

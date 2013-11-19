@@ -1,5 +1,7 @@
 package fr.utc.lo23.sharutc.model.userdata;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import java.io.Serializable;
 
 /**
@@ -10,14 +12,17 @@ public class Profile implements Serializable {
     private static final long serialVersionUID = 4883249865688142273L;
     private KnownPeerList mKnownPeerList;
     private Categories mCategories;
+    private Contacts mContacts;
     private UserInfo mUserInfo;
     private Long musicCounter;
+    private Integer categoryIdSequence;
 
     /**
      * keep no args constructor for parsing purpose
      */
     public Profile() {
         this.musicCounter = 0L;
+        this.categoryIdSequence = 0;
     }
 
     /**
@@ -27,9 +32,11 @@ public class Profile implements Serializable {
      */
     public Profile(UserInfo userInfo) {
         this.musicCounter = 0L;
+        this.categoryIdSequence = 0;
         this.mKnownPeerList = new KnownPeerList();
         this.mCategories = new Categories();
         mCategories.add(new Category(Category.PUBLIC_CATEGORY_ID, Category.PUBLIC_CATEGORY_NAME));
+        this.mContacts = new Contacts();
         this.mUserInfo = userInfo;
     }
 
@@ -37,8 +44,22 @@ public class Profile implements Serializable {
      *
      * @return
      */
+    @JsonIgnore
     public Long getNewMusicId() {
         return ++musicCounter;
+    }
+
+    public void decrementMusicId() {
+        musicCounter--;
+    }
+
+    /**
+     *
+     * @return
+     */
+    @JsonIgnore
+    public Integer getNewCategoryId() {
+        return ++categoryIdSequence;
     }
 
     /**
@@ -79,6 +100,22 @@ public class Profile implements Serializable {
      *
      * @return
      */
+    public Contacts getContacts() {
+        return mContacts;
+    }
+
+    /**
+     *
+     * @param mContacts
+     */
+    public void setContacts(Contacts mContacts) {
+        this.mContacts = mContacts;
+    }
+
+    /**
+     *
+     * @return
+     */
     public UserInfo getUserInfo() {
         return mUserInfo;
     }
@@ -89,5 +126,37 @@ public class Profile implements Serializable {
      */
     public void setUserInfo(UserInfo userInfo) {
         this.mUserInfo = userInfo;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public Long getMusicCounter() {
+        return musicCounter;
+    }
+
+    /**
+     *
+     * @param musicCounter
+     */
+    public void setMusicCounter(Long musicCounter) {
+        this.musicCounter = musicCounter;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public Integer getCategoryIdSequence() {
+        return categoryIdSequence;
+    }
+
+    /**
+     *
+     * @param categoryIdSequence
+     */
+    public void setCategoryIdSequence(Integer categoryIdSequence) {
+        this.categoryIdSequence = categoryIdSequence;
     }
 }

@@ -11,111 +11,78 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- *
- * @author Tudor Luchiancenco <tudorluchy@gmail.com>
+ * Listen to incoming UDP multicast and provide methods to send some.
  */
 public class PeerDiscoverySocket implements Runnable {
+    private static final Logger log = LoggerFactory
+        .getLogger(PeerDiscoverySocket.class);
 
-    /**
-     *
-     */
+    private final AppModel appModel;
+    private final MessageHandler messageHandler;
     private final MessageParser messageParser;
-    /**
-     *
-     */
-    private static final Logger log = LoggerFactory.getLogger(PeerDiscoverySocket.class);
-    /**
-     *
-     */
-    private Thread thread;
-    /**
-     *
-     */
-    private boolean threadShouldStop = false;
-    /**
-     *
-     */
-    private int mPort;
-    /**
-     *
-     */
+    private final NetworkService networkService;
+
+    private final InetAddress mGroup;
+    private final int mPort;
     private MulticastSocket mSocket;
-    /**
-     *
-     */
-    private InetAddress mGroup;
-    /**
-     *
-     */
-    private final NetworkService mNs;
-    /**
-     *
-     */
-    private final AppModel mAppModel;
+    private Thread mThread;
+    private boolean mThreadShouldStop = false;
 
     /**
+     * Construct a PeerDiscoverySocket.
      *
-     * @param port
-     * @param group
-     * @param ns
-     * @param appModel
+     * @param port the port to use for UDP multicast
+     * @param group the Class D address of the multicast group to join
+     * @param appModel the model of the application
+     * @param messageHandler the injected message handler
+     * @param messageParser the injected message parser
+     * @param networkService the instance of the networkService
      */
-    public PeerDiscoverySocket(int port, InetAddress group, NetworkService ns, AppModel appModel, MessageParser messageParser) {
-        // preparation
+    public PeerDiscoverySocket(int port, InetAddress group, AppModel appModel,
+            MessageHandler messageHandler, MessageParser messageParser,
+            NetworkService networkService) {
         this.mPort = port;
         this.mGroup = group;
-        this.mNs = ns;
-        this.threadShouldStop = false;
-        this.thread = null;
-        this.mAppModel = appModel;
+        this.appModel = appModel;
+        this.messageHandler = messageHandler;
+        this.messageParser = messageParser;
+        this.networkService = networkService;
+
+        this.mThreadShouldStop = false;
+        this.mThread = null;
         try {
             mSocket = new MulticastSocket(mPort);
             mSocket.joinGroup(mGroup);
         } catch (IOException e) {
             log.error(e.toString());
         }
-        this.messageParser = messageParser;
     }
 
     /**
-     * Start the thread
+     * Start the listening thread.
      */
     public void start() {
-        if (thread == null) {
-            thread = new Thread(this);
-            thread.start();
+        if (mThread == null) {
+            mThread = new Thread(this);
+            mThread.start();
         } else {
             log.warn("Can't start PeerDiscoverySocket: already running.");
         }
     }
 
     /**
-     * Stop the thread
+     * Stop the listening thread.
      */
     public void stop() {
-        threadShouldStop = true;
+        mThreadShouldStop = true;
     }
 
     /**
-     * Send a general information message
+     * Send a message to the multicast group.
      *
-     * @param msg
+     * @param msg a Message to send
      */
-    public void send(String msg) {
-        DatagramPacket p = new DatagramPacket(msg.getBytes(), msg.length(), mGroup, mPort);
-        try {
-            mSocket.send(p);
-        } catch (IOException e) {
-            log.error(e.toString());
-        }
-    }
-
-    /**
-     * Send a connection informative message
-     *
-     * @param msg
-     */
-    public void send(Message msg) {
+    public synchronized void send(Message msg) {
         byte[] bytes = messageParser.toJSON(msg).getBytes();
         DatagramPacket p = new DatagramPacket(bytes, bytes.length, mGroup, mPort);
         try {
@@ -126,73 +93,54 @@ public class PeerDiscoverySocket implements Runnable {
     }
 
     /**
-     * Add a new peer (with its peerId) to the peerSocket existing list
+     * Create a new PeerSocket and start it.
      *
-     * @param p
-     * @param msg
-     * @return
+     * @see PeerSocket
+     * @param p the Hello UDP packet
+     * @param msg the Hello Message
      */
-    public PeerSocket addPeer(DatagramPacket p, Message msg) {
-        PeerSocket peerSocket = null;
+    private void addPeer(DatagramPacket p, Message msg) {
         try {
             Socket socket = new Socket(p.getAddress(), p.getPort());
-            // obtain sender peerId
             Long peerId = msg.getFromPeerId();
-            // add new peer
-            peerSocket = new PeerSocket(socket, mNs, peerId);
+            PeerSocket peerSocket = new PeerSocket(socket, peerId, messageHandler, messageParser, networkService);
             peerSocket.start();
         } catch (IOException ex) {
             log.error(ex.toString());
         }
-        return peerSocket;
     }
 
     /**
-     * Send personal information in order to establish the connection with the
-     * new peer
-     *
-     * @param pSocket
-     */
-    public void sendPersonalInformationToPeer(PeerSocket pSocket) {
-        Message msgInfo = null;
-        Long myPeerId = mAppModel.getProfile().getUserInfo().getPeerId();
-        msgInfo = new Message(myPeerId, MessageType.CONNECTION_RESPONSE, "I send you my personal information (peerId = " + myPeerId + ")", null);
-        pSocket.send(msgInfo);
-    }
-
-    /**
-     * Thread which receives a UDP packet, adds a new peer, and send personal
-     * information in order to establish the connection with the new peer
+     * Listen to multicast packet and create new PeerSocket when receiving Hello
+     * message.
+     * <p>
+     * When receiving a Hello message, this creates a new PeerSocket, start it
+     * and use it to send a reply.
      */
     @Override
     public void run() {
-        while (!threadShouldStop) {
+        while (!mThreadShouldStop) {
             final int SIZE = 1000;
             byte[] buf = new byte[SIZE];
             DatagramPacket p = new DatagramPacket(buf, buf.length);
-            Message msgReceived = null;
             try {
-                // receiving UDP packet
                 mSocket.receive(p);
                 // print information about the sender
                 log.info("<broadcast from " + p.getAddress().toString() + " : " + p.getPort() + " >");
                 log.info("Got packet " + Arrays.toString(p.getData()));
-                // get message object
                 String json = new String(p.getData());
-                msgReceived = messageParser.fromJSON(json);
+                Message msgReceived = messageParser.fromJSON(json);
+                if (msgReceived.getFromPeerId() == appModel.getProfile().getUserInfo().getPeerId()) {
+                    continue;
+                }
                 if (msgReceived.getType() == MessageType.CONNECTION) {
-                    // print more info
                     if (msgReceived.getFromPeerId() != null) {
                         log.info("Message received from peerId " + msgReceived.getFromPeerId() + ", message type = " + msgReceived.getType());
                     } else {
                         log.error("Received message with peerId = null !");
                     }
-                    // add a new peer 
-                    PeerSocket newPeer = addPeer(p, msgReceived);
-                    // call model
-                    // TODO recuperer mesage handler to execute command : AddUserCommand
-                    // send personal information to the new peer
-                    sendPersonalInformationToPeer(newPeer);
+                    addPeer(p, msgReceived);
+                    messageHandler.handleMessage(json);
                 } else {
                     log.warn("Message type must be CONNECTION !");
                 }
@@ -200,7 +148,6 @@ public class PeerDiscoverySocket implements Runnable {
                 log.error(e.toString());
             }
         }
-        // close everything
         mSocket.close();
     }
 }

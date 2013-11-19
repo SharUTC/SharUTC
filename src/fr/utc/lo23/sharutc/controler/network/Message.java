@@ -1,11 +1,14 @@
 package fr.utc.lo23.sharutc.controler.network;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
- * List of constants used in all the messages, describes each value that is to
- * be set in a message to find it at reading
+ * List of constants used in all the messages.
+ * <p>
+ * It describes each value that can be set in a message to find it at reading.
  */
 public class Message {
-
     /**
      *
      */
@@ -21,7 +24,19 @@ public class Message {
     /**
      *
      */
+    public final static String OWNER_PEER = "OWNER_PEER";
+    /**
+     *
+     */
+    public final static String AUTHOR_PEER = "AUTHOR_PEER";
+    /**
+     *
+     */
     public final static String COMMENT = "COMMENT";
+    /**
+     *
+     */
+    public final static String COMMENT_ID = "COMMENT_ID";
     /**
      *
      */
@@ -39,9 +54,17 @@ public class Message {
      */
     public final static String CATALOG = "CATALOG";
     /**
-     * User info send in the connection
+     * User info sent in the connection
      */
     public final static String USER_INFO = "USER_INFO";
+    /**
+     * Search criteria used for all searches
+     */
+    public final static String SEARCH = "SEARCH";
+    /**
+     *  a music score (integer)
+     */
+    public final static String SCORE = "SCORE";
     // more...
     /**
      * MessageType helps to read the content of the message
@@ -50,99 +73,97 @@ public class Message {
     /**
      * The content of the message in JSON format
      */
-    private String content;
+    private Map<String, Object> content;
     /**
      * Source of message
      */
     private Long fromPeerId;
-    /**
-     * used to filter messages coming too late, the view makes this value
-     * changes in the app., networkService has only to copy this value here
-     * before sending it (not in each message, answer must re-use the value
-     * contained in the message)
-     */
-    private Long conversationId;
 
     /**
-     *
-     * @param fromPeerId
-     * @param messageType
-     * @param content
-     * @param conversationId
+     * Dummy constructor.
+     * <p>
+     * This constructor is used by the jackson library when deserializing.
+     * It is recommended the other constructor for any other use.
      */
-    public Message(long fromPeerId, MessageType messageType, String content, Long conversationId) {
-        this.type = messageType;
-        this.content = content;
-        this.fromPeerId = fromPeerId;
-        this.conversationId = conversationId;
+    public Message() {
     }
 
     /**
+     * Create a new message and set its attributes.
      *
-     * @return
+     * @see MessageType
+     * @param fromPeerId the sender's peerId
+     * @param messageType the message type
+     * @param content a Map<String, Object> where the String is taken from the
+     * static String defined on Message and Object is the associated value.
+     */
+    public Message(long fromPeerId, MessageType messageType, Map<String, Object> content) {
+        this.fromPeerId = fromPeerId;
+        this.type = messageType;
+        this.content = content;
+    }
+
+    /**
+     * Return the message's type.
+     *
+     * @return the type of the message
      */
     public MessageType getType() {
         return type;
     }
 
     /**
+     * Change the message's type.
      *
-     * @param type
+     * @param type the new type of the message
      */
     public void setType(MessageType type) {
         this.type = type;
     }
 
     /**
+     * Return the content of the message
      *
-     * @return
+     * @return the content of the message as a Map<String, Object>.
      */
-    public String getContent() {
+    public Map<String, Object> getContent() {
         return content;
     }
 
     /**
+     * Change the message's content map.
      *
-     * @param content
+     * @param content a HashMap<String, Object> with the new content.
      */
-    public void setContent(String content) {
+    public void setContent(HashMap<String, Object> content) {
         this.content = content;
     }
 
     /**
+     * The peerId of the message's sender.
      *
-     * @return
+     * @return a Long containing the sender's peerId.
      */
     public Long getFromPeerId() {
         return fromPeerId;
     }
 
     /**
+     * Change the peerId of the sender.
      *
-     * @param fromPeerId
+     * @param fromPeerId the new sender's peerId.
      */
     public void setFromPeerId(Long fromPeerId) {
         this.fromPeerId = fromPeerId;
     }
 
     /**
+     * Give a displayable String representation of the message.
      *
-     * @return
+     * @return a String representing the message
      */
-    public Long getConversationId() {
-        return conversationId;
-    }
-
-    /**
-     *
-     * @param conversationId
-     */
-    public void setConversationId(Long conversationId) {
-        this.conversationId = conversationId;
-    }
-
     @Override
     public String toString() {
-        return "Message{" + "type=" + type + ", content=" + content + ", fromPeerId=" + fromPeerId + ", conversationId=" + conversationId + '}';
+        return "Message{" + "type=" + type + ", content=" + content + ", fromPeerId=" + fromPeerId + "}";
     }
 }

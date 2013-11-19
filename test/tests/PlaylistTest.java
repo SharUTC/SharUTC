@@ -10,6 +10,8 @@ import fr.utc.lo23.sharutc.GuiceJUnitRunner;
 import fr.utc.lo23.sharutc.controler.command.player.AddToPlaylistCommand;
 import fr.utc.lo23.sharutc.controler.command.player.RemoveFromPlaylistCommand;
 import fr.utc.lo23.sharutc.controler.service.MusicService;
+import fr.utc.lo23.sharutc.controler.service.UserService;
+import fr.utc.lo23.sharutc.controler.service.PlayerService;
 import fr.utc.lo23.sharutc.model.AppModel;
 import fr.utc.lo23.sharutc.model.AppModelBuilder;
 import fr.utc.lo23.sharutc.model.domain.Music;
@@ -33,6 +35,10 @@ public class PlaylistTest {
     @Inject
     private MusicService musicService;
     @Inject
+    private UserService userService;
+    @Inject
+    private PlayerService playerService;
+    @Inject
     private AddToPlaylistCommand addToPlaylistCommand;
     @Inject
     private RemoveFromPlaylistCommand removeFromPlaylistCommand;
@@ -42,7 +48,7 @@ public class PlaylistTest {
     public void before() {
         log.trace("building appModel");
         if (appModelBuilder == null) {
-            appModelBuilder = new AppModelBuilder(appModel, musicService);
+            appModelBuilder = new AppModelBuilder(appModel, musicService, userService);
         }
         appModelBuilder.mockAppModel();
     }
@@ -58,21 +64,14 @@ public class PlaylistTest {
      */
     @Test
     public void addToPlaylist() {
-        String dummyMusicName = "Dummy Music ";
         ArrayList<Music> dummyMusics = new ArrayList<Music>();
-        for (Integer i = 0; i < 10; i++) {
-            Music dummyMusic = new Music();
-            dummyMusic.setFileName(dummyMusicName.concat(i.toString()));
-            dummyMusic.setFileByte(new Byte[0]);
-            dummyMusic.setFileMissing(Boolean.FALSE);
-            dummyMusics.add(dummyMusic);
-        }
+        dummyMusics.addAll(appModel.getLocalCatalog().getMusics());       
         
         addToPlaylistCommand.setMusics(dummyMusics);
-        addToPlaylistCommand.execute();  
+        addToPlaylistCommand.execute();
         
-        Assert.assertNull("addToPlaylistCommand failed", addToPlaylistCommand.getMusics());
-        Assert.assertEquals("addToPlaylistCommand failed", addToPlaylistCommand.getMusics(), dummyMusics);
+        Assert.assertNotNull("addToPlaylistCommand failed", playerService.getPlaylist().getMusics());
+        Assert.assertEquals("addToPlaylistCommand failed", dummyMusics.size(), playerService.getPlaylist().getMusics().size());
     }
 
     /**
@@ -80,29 +79,20 @@ public class PlaylistTest {
      */
     @Test
     public void removeFromPlaylist() {
-        String dummyMusicName = "Dummy Music ";
         ArrayList<Music> dummyMusics = new ArrayList<Music>();
-        for (Integer i = 0; i < 10; i++) {
-            Music dummyMusic = new Music();
-            dummyMusic.setFileName(dummyMusicName.concat(i.toString()));
-            dummyMusic.setFileByte(new Byte[0]);
-            dummyMusic.setFileMissing(Boolean.FALSE);
-            dummyMusics.add(dummyMusic);
-        }
-
-        Music dummyAddedMusic = new Music();
-        dummyAddedMusic.setFileName("Dummy Added Music");
-        dummyAddedMusic.setFileByte(new Byte[3]);
-        dummyAddedMusic.setFileMissing(Boolean.FALSE);
+        dummyMusics.addAll(appModel.getLocalCatalog().getMusics());
         
         addToPlaylistCommand.setMusics(dummyMusics);
-        addToPlaylistCommand.setMusic(dummyAddedMusic);
         addToPlaylistCommand.execute();
 
-        removeFromPlaylistCommand.setMusics(dummyMusics);
+        removeFromPlaylistCommand.setMusic(dummyMusics.get(0));
         removeFromPlaylistCommand.execute();
 
-        Assert.assertEquals("removeFromPlaylistCommand failed", removeFromPlaylistCommand.getMusics().get(0), dummyAddedMusic);
-        Assert.assertNotNull("removeFromPlaylistCommand failed", removeFromPlaylistCommand.getMusics());
+        Assert.assertNotNull("removeFromPlaylistCommand failed", playerService.getPlaylist().getMusics());
+        
+        ArrayList<Music> testMusics = new ArrayList<Music>();
+        testMusics.addAll(1, dummyMusics);
+        
+        Assert.assertEquals("removeFromPlaylistCommand failed", playerService.getPlaylist().getMusics(), testMusics);
     }
 }

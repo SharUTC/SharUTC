@@ -17,25 +17,34 @@ import org.slf4j.LoggerFactory;
 
 /**
  * {@inheritDoc}
+ *
+ * @see ListenThread
+ * @see PeerDiscoverySocket
  */
 @Singleton
 public class NetworkServiceImpl implements NetworkService {
-
     private static final Logger log = LoggerFactory
             .getLogger(NetworkServiceImpl.class);
-    private final AppModel mAppModel;
-    private final MessageParser mMessageParser;
-    private final HashMap<Long, PeerSocket> mPeers;
+
+    private final AppModel appModel;
+    private final MessageHandler messageHandler;
+    private final MessageParser messageParser;
+
     private ListenThread mListenThread;
     private PeerDiscoverySocket mPeerDiscoverySocket;
+    private HeartbeatThread mHeartbeatThread;
+    private final HashMap<Long, PeerSocket> mPeers;
 
     @Inject
-    public NetworkServiceImpl(AppModel appModel, MessageParser messageParser) {
-        this.mAppModel = appModel;
-        this.mMessageParser = messageParser;
-        mPeers = new HashMap();
-        mListenThread = null;
-        mPeerDiscoverySocket = null;
+    public NetworkServiceImpl(AppModel appModel, MessageHandler messageHandler,
+            MessageParser messageParser) {
+        this.appModel = appModel;
+        this.messageHandler = messageHandler;
+        this.messageParser = messageParser;
+        this.mListenThread = null;
+        this.mPeerDiscoverySocket = null;
+        this.mHeartbeatThread = null;
+        this.mPeers = new HashMap<Long, PeerSocket>();
     }
 
     /**
@@ -44,10 +53,14 @@ public class NetworkServiceImpl implements NetworkService {
     @Override
     public void start(int port, String group) throws UnknownHostException {
         InetAddress g = InetAddress.getByName(group);
-        mListenThread = new ListenThread(port, this, mAppModel);
+        mListenThread = new ListenThread(port, appModel, messageHandler,
+                messageParser, this);
         mListenThread.start();
-        mPeerDiscoverySocket = new PeerDiscoverySocket(port, g, this, mAppModel, mMessageParser);
+        mPeerDiscoverySocket = new PeerDiscoverySocket(port, g, appModel,
+                messageHandler, messageParser, this);
         mPeerDiscoverySocket.start();
+        mHeartbeatThread = new HeartbeatThread(this);
+        mHeartbeatThread.start();
     }
 
     /**
@@ -57,19 +70,20 @@ public class NetworkServiceImpl implements NetworkService {
     public void stop() {
         mListenThread.stop();
         mPeerDiscoverySocket.stop();
+        mHeartbeatThread.stop();
     }
 
     /**
      * {inheritDoc}
      */
     @Override
-    public void addPeer(long peerId, PeerSocket peerSocket) {
+    public synchronized void addPeer(long peerId, PeerSocket peerSocket) {
         log.warn("addPeer - Not supported yet.");
         if (peerId == 0 || peerSocket == null) {
             log.error("[NetworkService - addPeer()] - null object");
         } else {
             this.mPeers.put(peerId, peerSocket);
-            log.info("[NetworkService - addPeer()] - peer " + peerId + " had been adding succesfully");
+            log.info("[NetworkService - addPeer()] - peer " + peerId + " had been added succesfully");
         }
     }
 
@@ -77,12 +91,14 @@ public class NetworkServiceImpl implements NetworkService {
      * {inheritDoc}
      */
     @Override
-    public void removePeer(PeerSocket peerSocket) {
+    public synchronized void removePeer(PeerSocket peerSocket) {
         mPeers.values().remove(peerSocket);
     }
 
     /**
-     * {inheritDoc}
+     * Send a message to all the peers connected to the network.
+     *
+     * @param message the message to send
      */
     protected void sendBroadcast(Message message) {
         for (PeerSocket peer : mPeers.values()) {
@@ -91,7 +107,10 @@ public class NetworkServiceImpl implements NetworkService {
     }
 
     /**
-     * {inheritDoc}
+     * Send a message to a peer.
+     *
+     * @param message the message to send
+     * @param peer the receiver
      */
     protected void sendUnicast(Message message, Peer peer) {
         if (peer != null) {
@@ -99,15 +118,22 @@ public class NetworkServiceImpl implements NetworkService {
         } else {
             log.error("[NetworkService - sendUnicast()] - object Peer is null");
         }
-
     }
 
     /**
      * {inheritDoc}
      */
     @Override
+    public void sendBroadcastHeartbeat(){
+        Message message = messageParser.write(MessageType.HEARTBEAT,new Object[][]{{}});
+        sendBroadcast(message);
+    }
+    /**
+     * {inheritDoc}
+     */
+    @Override
     public void sendUnicastGetCatalog(Peer peer) {
-        Message message = mMessageParser.write(MessageType.MUSIC_GET, new Object[][]{{Message.OWNER_PEER_ID, peer.getId()}}, mAppModel.getCurrentConversationId());
+        Message message = messageParser.write(MessageType.MUSIC_GET, new Object[][]{{Message.CONVERSATION_ID, appModel.getCurrentConversationId()}});
         sendUnicast(message, peer);
     }
 
@@ -115,8 +141,8 @@ public class NetworkServiceImpl implements NetworkService {
      * {inheritDoc}
      */
     @Override
-    public void sendUnicastCatalog(Peer peer, Long conversationID, Catalog catalog) {
-        Message message = mMessageParser.write(MessageType.MUSIC_CATALOG, new Object[][]{{Message.CATALOG, catalog}, {Message.OWNER_PEER_ID, peer.getId()}}, conversationID);
+    public void sendUnicastCatalog(Peer peer, Long conversationId, Catalog catalog) {
+        Message message = messageParser.write(MessageType.MUSIC_CATALOG, new Object[][]{{Message.CATALOG, catalog}, {Message.CONVERSATION_ID, conversationId}});
         sendUnicast(message, peer);
     }
 
@@ -125,7 +151,7 @@ public class NetworkServiceImpl implements NetworkService {
      */
     @Override
     public void sendBroadcastGetTagMap() {
-        Message message = mMessageParser.write(MessageType.TAG_GET_MAP, new Object[][]{}, mAppModel.getCurrentConversationId());
+        Message message = messageParser.write(MessageType.TAG_GET_MAP, new Object[][]{{Message.CONVERSATION_ID, appModel.getCurrentConversationId()}});
         sendBroadcast(message);
     }
 
@@ -134,7 +160,7 @@ public class NetworkServiceImpl implements NetworkService {
      */
     @Override
     public void sendUnicastTagMap(Peer peer, Long conversationId, TagMap tagMap) {
-        Message message = mMessageParser.write(MessageType.TAG_MAP, new Object[][]{{Message.TAG_MAP, tagMap}}, conversationId);
+        Message message = messageParser.write(MessageType.TAG_MAP, new Object[][]{{Message.TAG_MAP, tagMap}, {Message.CONVERSATION_ID, conversationId}});
         sendUnicast(message, peer);
     }
 
@@ -143,8 +169,8 @@ public class NetworkServiceImpl implements NetworkService {
      */
     @Override
     public void addComment(Peer peer, Music music, String comment) {
-        // Message message = messageParser.write(MessageType.COMMENT_ADD, new Object[][]{{Message.OWNER_PEER_ID, peer.getId()}, {Message.AUTHOR_PEER_ID, getLocalPeerId()}, {Message.MUSIC_ID, music.getId()}, {Message.COMMENT, comment}});
-        // sendUnicast(message, peer);
+       Message message = messageParser.write(MessageType.COMMENT_ADD, new Object[][]{{Message.OWNER_PEER, peer}, {Message.MUSIC_ID, music}, {Message.COMMENT, comment}});
+       sendUnicast(message, peer);
     }
 
     /**
@@ -152,7 +178,9 @@ public class NetworkServiceImpl implements NetworkService {
      */
     @Override
     public void editComment(Peer peer, Music music, String comment, Integer commentIndex) {
-        log.warn("Not supported yet.");
+        Message message = messageParser.write(MessageType.EDIT_COMMENT, new Object[][]{{Message.OWNER_PEER, peer}, {Message.MUSIC, music}, {Message.COMMENT,comment}});
+        sendUnicast(message, peer);
+
     }
 
     /**
@@ -160,7 +188,8 @@ public class NetworkServiceImpl implements NetworkService {
      */
     @Override
     public void removeComment(Peer peer, Music music, Integer commentIndex) {
-        log.warn("Not supported yet.");
+        Message message = messageParser.write(MessageType.COMMENT_REMOVE, new Object[][]{{Message.MUSIC,music},{Message.COMMENT_ID, commentIndex}});
+        sendUnicast(message, peer);
     }
 
     /**
@@ -168,7 +197,8 @@ public class NetworkServiceImpl implements NetworkService {
      */
     @Override
     public void setScore(Peer peer, Music music, Integer rating) {
-        log.warn("Not supported yet.");
+        Message message = messageParser.write(MessageType.SCORE_SET,new Object[][]{{Message.MUSIC, music}, {Message.SCORE, rating}});
+        sendUnicast(message, peer);
     }
 
     /**
@@ -176,7 +206,8 @@ public class NetworkServiceImpl implements NetworkService {
      */
     @Override
     public void unsetScore(Peer peer, Music music) {
-        log.warn("Not supported yet.");
+        Message message = messageParser.write(MessageType.SCORE_UNSET, new Object[][]{{Message.MUSIC, music}});
+        sendUnicast(message, peer);
     }
 
     /**
@@ -184,15 +215,17 @@ public class NetworkServiceImpl implements NetworkService {
      */
     @Override
     public void searchRequestBroadcast(SearchCriteria criteria) {
-        log.warn("Not supported yet.");
+        Message message = messageParser.write(MessageType.MUSIC_SEARCH, new Object[][]{{Message.SEARCH, criteria}, {Message.CONVERSATION_ID, appModel.getCurrentConversationId()}});
+        sendBroadcast(message);
     }
 
     /**
      * {inheritDoc}
      */
     @Override
-    public void sendMusicSearchResults(Peer peer, Catalog catalog) {
-        log.warn("Not supported yet.");
+    public void sendMusicSearchResults(Peer peer, Long conversationId, Catalog catalog) {
+        Message message = messageParser.write(MessageType.MUSIC_RESULTS, new Object[][]{{Message.CATALOG, catalog}, {Message.CONVERSATION_ID, conversationId}});
+        sendUnicast(message, peer);
     }
 
     /**
@@ -200,7 +233,7 @@ public class NetworkServiceImpl implements NetworkService {
      */
     @Override
     public void sendDownloadRequest(Peer peer, Catalog catalog) {
-        Message message = mMessageParser.write(MessageType.MUSIC_GET, new Object[][]{{Message.CATALOG, catalog}}, null);
+        Message message = messageParser.write(MessageType.MUSIC_GET, new Object[][]{{Message.CATALOG, catalog}});
         sendUnicast(message, peer);
     }
 
@@ -209,7 +242,7 @@ public class NetworkServiceImpl implements NetworkService {
      */
     @Override
     public void sendMusics(Peer peer, Catalog catalog) {
-        Message message = mMessageParser.write(MessageType.MUSIC_INSTALL, new Object[][]{{Message.CATALOG, catalog}}, null);
+        Message message = messageParser.write(MessageType.MUSIC_INSTALL, new Object[][]{{Message.CATALOG, catalog}});
         sendUnicast(message, peer);
     }
 
@@ -218,7 +251,7 @@ public class NetworkServiceImpl implements NetworkService {
      */
     @Override
     public void downloadMusicForPlaying(Peer peer, long musicId) {
-        Message message = mMessageParser.write(MessageType.MUSIC_GET_TO_PLAY, new Object[][]{{Message.MUSIC_ID, musicId}}, mAppModel.getCurrentConversationId());
+        Message message = messageParser.write(MessageType.MUSIC_GET_TO_PLAY, new Object[][]{{Message.MUSIC_ID, musicId}, {Message.CONVERSATION_ID, appModel.getCurrentConversationId()}});
         sendUnicast(message, peer);
     }
 
@@ -226,18 +259,18 @@ public class NetworkServiceImpl implements NetworkService {
      * {inheritDoc}
      */
     @Override
-    public void sendMusicToPlay(Peer peer, Long conversationID, Music music) {;
-        Message message = mMessageParser.write(MessageType.MUSIC_SEND_TO_PLAY, new Object[][]{{Message.MUSIC, music}}, conversationID);
+    public void sendMusicToPlay(Peer peer, Long conversationId, Music music) {
+        Message message = messageParser.write(MessageType.MUSIC_SEND_TO_PLAY, new Object[][]{{Message.MUSIC, music}, {Message.CONVERSATION_ID, conversationId}});
         sendUnicast(message, peer);
     }
 
     /**
      * {inheritDoc}
      */
-        @Override
+    @Override
     public void userInfoBroadcast(UserInfo userInfo) {
-        if(userInfo != null){
-            mPeerDiscoverySocket.send(mMessageParser.write(MessageType.USER_INFO, new Object[][]{{Message.USER_INFO, userInfo}}, mAppModel.getCurrentConversationId()));
+        if (userInfo != null) {
+            mPeerDiscoverySocket.send(messageParser.write(MessageType.USER_INFO, new Object[][]{{Message.USER_INFO, userInfo}}));
         } else {
             log.error("[NetworkService - userInfoBroadCast()] - userInfo is null");
         }
@@ -248,6 +281,15 @@ public class NetworkServiceImpl implements NetworkService {
      */
     @Override
     public void disconnectionBroadcast() {
-        sendBroadcast(mMessageParser.write(MessageType.DISCONNECT, null, null));
+        sendBroadcast(messageParser.write(MessageType.DISCONNECT, null));
+    }
+
+    /**
+     * {inheritDoc}
+     */
+    @Override
+    public void sendConnectionResponse(Peer peer, UserInfo userInfo) {
+        Message message = messageParser.write(MessageType.CONNECTION_RESPONSE, new Object[][]{{Message.USER_INFO, userInfo}});
+        sendUnicast(message, peer);
     }
 }

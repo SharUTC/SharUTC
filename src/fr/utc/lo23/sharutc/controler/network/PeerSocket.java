@@ -1,149 +1,106 @@
 package fr.utc.lo23.sharutc.controler.network;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.Socket;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- *
- * @author Tudor Luchiancenco <tudorluchy@gmail.com>
- */
 public class PeerSocket implements Runnable {
-
-    /**
-     *
-     */
     private static final Logger log = LoggerFactory.getLogger(PeerDiscoverySocket.class);
-    /**
-     *
-     */
-    private Thread thread;
-    /**
-     *
-     */
-    private boolean threadShouldStop = false;
-    /**
-     *
-     */
-    private Socket mSocket;
-    /**
-     *
-     */
-    private BufferedReader mBr;
-    /**
-     *
-     */
-    private PrintWriter mPw;
-    /**
-     *
-     */
-    private NetworkService mNs;
+
+    private final MessageHandler messageHandler;
+    private final MessageParser messageParser;
+    private final NetworkService networkService;
+
+    private final Socket mSocket;
+    private Thread mThread;
+    private boolean mThreadShouldStop = false;
+    private ObjectInputStream mIn;
+    private ObjectOutputStream mOut;
 
     /**
-     * Construct a PeerSocket
+     * Construct a PeerSocket.
      *
-     * @param sock
-     * @param ns
-     * @param peerId
+     * @param socket a Socket connected to the peer
+     * @param peerId the peerId of the new peer
+     * @param messageHandler the injected message handler
+     * @param messageParser the injected message parser
+     * @param networkService the instance of NetworkService
      */
-    public PeerSocket(Socket sock, NetworkService ns, Long peerId) {
-        log.info("* new TCP connection from " + sock.getInetAddress() + " *");
-        this.mSocket = sock;
-        this.mNs = ns;
+    public PeerSocket(Socket socket, Long peerId, MessageHandler messageHandler,
+            MessageParser messageParser, NetworkService networkService) {
+        log.info("* new TCP connection from " + socket.getInetAddress() + " *");
+        this.mSocket = socket;
+        this.messageHandler = messageHandler;
+        this.messageParser = messageParser;
+        this.networkService = networkService;
+
         try {
-            mPw = new PrintWriter(sock.getOutputStream());
+            mOut = new ObjectOutputStream(mSocket.getOutputStream());
+            mIn = new ObjectInputStream(mSocket.getInputStream());
         } catch (IOException e) {
             log.error(e.toString());
         }
-        // add this new PeerSocket to the PeerSocket list 
-        addMe(peerId);
+
+        // add this new PeerSocket to the PeerSocket list
+        networkService.addPeer(peerId, this);
     }
 
     /**
-     * Start the thread
+     * Start the thread.
      */
     public void start() {
         // start thread
-        if (thread == null) {
-            thread = new Thread(this);
-            thread.start();
+        if (mThread == null) {
+            mThread = new Thread(this);
+            mThread.start();
         } else {
             log.warn("Can't start PeerSocket: already running.");
         }
     }
 
     /**
-     * Stop the thread
+     * Stop the thread.
      */
     public void stop() {
-        threadShouldStop = true;
+        mThreadShouldStop = true;
     }
 
     /**
-     * Add this new PeerSocket to the PeerSocket list
+     * Send a message to the peer.
      *
-     * @param peerId
+     * @param msg a Message to send
      */
-    public void addMe(Long peerId) {
-        this.mNs.addPeer(peerId, this);
+    public synchronized void send(Message msg) {
+        String json = messageParser.toJSON(msg);
+        try {
+            mOut.writeObject(json);
+        } catch (IOException e) {
+            log.error(e.toString());
+        }
     }
 
     /**
-     * Send a general information message - string
+     * Listen to incoming message from the peer and handles them.
+     * <p>
+     * The message receive are given to messageHandler to instanciate the right
+     * command to treat them.
      *
-     * @param msg
-     */
-    public void send(String msg) {
-        mPw.print(msg);
-        mPw.flush();
-    }
-
-    /**
-     * Send a general information message - message
-     *
-     * @param msg
-     */
-    public void send(Message msg) {
-        mPw.print(msg);
-        mPw.flush();
-    }
-
-    /**
-     * Peer listening and writing received messages
+     * @see MessageHandler
      */
     @Override
     public void run() {
-        // TODO en gros là le run log juste les messages qu'il reçoit, 
-        // il faudrait qu'il lise les objets messages, instancie la bonne Commande pour le traiter, 
-        // set tous les paramètres de cette commandes avec les valeurs contenues dans le message et lance a commande dans un nouveau thread
-        while (!threadShouldStop) {
-            try {
-                mBr = new BufferedReader(new InputStreamReader(mSocket.getInputStream()));
-            } catch (IOException e) {
-                log.error(e.toString());
-            }
+        while (!mThreadShouldStop) {
             String msg = null;
             try {
-                while ((msg = mBr.readLine()) != null) {
-                    log.info(msg);
-                }
-            } catch (IOException ex) {
+                msg = (String) mIn.readObject();
+            } catch (Exception ex) {
                 log.error(ex.toString());
             }
-//            log.info("* TCP disconnect from " + mSocket.getInetAddress() + " *");
-//            mNs.removePeer(this);
+            messageHandler.handleMessage(msg);
         }
-        // close everything
-        try {
-            mBr.close();
-        } catch (IOException ex) {
-            log.error(ex.toString());
-        }
-        mPw.close();
         try {
             mSocket.close();
         } catch (IOException ex) {

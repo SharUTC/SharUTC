@@ -4,21 +4,21 @@ import fr.utc.lo23.sharutc.controler.command.Command;
 import fr.utc.lo23.sharutc.model.userdata.UserInfo;
 
 /**
- * TODO: add comments
+ * Add or update local data about a peer
  */
-public interface IntegrateConnectionCommand extends Command {
+public interface IntegrateUserInfoCommand extends Command {
 
     /**
-     * Return informations about remote peer
+     * Return information about remote peer
      *
-     * @return informations about remote peer
+     * @return information about remote peer
      */
     public UserInfo getUserInfo();
 
     /**
-     * Set informations about remote peer
+     * Set information about remote peer
      *
-     * @param userInfo informations about remote peer
+     * @param userInfo information about remote peer
      */
     public void setUserInfo(UserInfo userInfo);
 }

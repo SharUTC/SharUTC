@@ -4,6 +4,7 @@ import fr.utc.lo23.sharutc.model.domain.Catalog;
 import fr.utc.lo23.sharutc.model.domain.Music;
 import fr.utc.lo23.sharutc.model.domain.SearchCriteria;
 import fr.utc.lo23.sharutc.model.domain.TagMap;
+import fr.utc.lo23.sharutc.model.userdata.Category;
 import fr.utc.lo23.sharutc.model.userdata.Peer;
 import java.io.File;
 import java.util.Collection;
@@ -31,6 +32,16 @@ public interface MusicService {
      * @param catalog
      */
     public void integrateRemoteCatalog(Peer peer, Catalog catalog);
+
+    /**
+     *
+     * Getting available parts of current user's catalog for a given peer, while
+     * taking account of current user's rights regarding peer's music
+     *
+     * @param peer
+     * @param catalog
+     */
+    public Catalog getCatalogForPeer(Peer peer);
 
     /**
      *
@@ -108,7 +119,6 @@ public interface MusicService {
 
     /**
      *
-     * @param path
      */
     public void loadUserMusicFile();
 
@@ -191,4 +201,19 @@ public interface MusicService {
      * @param year the year to set, or null if not changed
      */
     public void saveMusicFieldChanges(Music music, String title, String artist, String album, String track, String year);
+    
+    /**
+     * Add a music to a category
+     * @param music
+     * @param category 
+     */
+    public void addMusicToCategory(Music music, Category category);
+    
+    /**
+     * Remove a music from a category
+     * @param music
+     * @param category 
+     */
+    public void removeMusicFromCategory(Music music, Category category);
+    
 }

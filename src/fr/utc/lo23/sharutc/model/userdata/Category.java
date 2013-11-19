@@ -8,37 +8,26 @@ import java.io.Serializable;
 public class Category implements Serializable {
 
     private static final long serialVersionUID = 3790688676428360970L;
-    /**
-     * Undeletable category ID
-     */
-    public static Integer IDS_SEQUENCE = new Integer(0);
     public static final Integer PUBLIC_CATEGORY_ID = new Integer(0);
     public static final String PUBLIC_CATEGORY_NAME = "Public";
+
     private Integer mId;
     private String mName;
-    private Contacts mContacts;
 
-    //keep no args constructor for parsing purpose
+    /**
+     * Default constructor
+     */
     public Category() {
     }
 
     /**
      *
-     * @param name
+     * @param mId
+     * @param mName
      */
-    public Category(String name) {
-        this.mId = IDS_SEQUENCE ++;
-        this.mName = name;
-        this.mContacts = new Contacts();
-    }
-
-    public Category(Integer id, String name) {
-        this.mId = id;
-        this.mName = name;
-        this.mContacts = new Contacts();
-        
-        if (this.mId >= IDS_SEQUENCE)
-            IDS_SEQUENCE = this.mId + 1;
+    public Category(Integer mId, String mName) {
+        this.mId = mId;
+        this.mName = mName;
     }
 
     /**
@@ -73,47 +62,52 @@ public class Category implements Serializable {
         this.mName = name;
     }
 
-    /**
-     *
-     * @return
-     */
-    public Contacts getContacts() {
-        return mContacts;
-    }
-
-    /**
-     *
-     * @param mContacts
-     */
-    public void setContacts(Contacts mContacts) {
-        this.mContacts = mContacts;
-    }
-
-    /**
-     * add a peer to the contacts list
-     *
-     * @param peer
-     */
-    public void addContact(Peer peer) {
-        mContacts.add(peer);
-    }
     
      /**
-     * remove a peer from the contacts list
-     *
-     * @param peer
-     */
-    public void removeContact(Peer peer) {
-        mContacts.remove(peer);
-    }
-
-
-    /**
-     *
-     * @param id
+     * @param obj
+     * 
      * @return
      */
-    public Peer findContactById(Long id) {
-        return mContacts.findById(id);
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Category other = (Category) obj;
+        if (this.mId != other.mId && (this.mId == null || !this.mId.equals(other.mId))) {
+            return false;
+        }
+        if ((this.mName == null) ? (other.mName != null) : !this.mName.equals(other.mName)) {
+            return false;
+        }
+        return true;
     }
+
+    
+     /**
+     * 
+     * @return
+     */
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 59 * hash + (this.mId != null ? this.mId.hashCode() : 0);
+        hash = 59 * hash + (this.mName != null ? this.mName.hashCode() : 0);
+        return hash;
+    }
+
+    
+     /**
+     * 
+     * @return
+     */
+    @Override
+    public String toString() {
+        return "Category{" + "mId=" + mId + ", mName=" + mName + '}';
+    }
+    
+    
 }

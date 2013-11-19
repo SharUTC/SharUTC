@@ -41,14 +41,14 @@ public class PlayerServiceManual implements PropertyChangeListener {
     private static void addMusicToPlaylist() {
         String TEST_MP3_FOLDER = "";
         try {
-            TEST_MP3_FOLDER = new File(".").getCanonicalPath() + "\\test\\mp3\\";
+            TEST_MP3_FOLDER = new File(".").getCanonicalPath() + File.separator + "test" + File.separator + "mp3" + File.separator;
         } catch (Exception ex) {
             System.err.println(ex.toString());
         }
         String[] filenames = {"14 - End Credit Score.mp3", "Air - Moon Safari - Sexy Boy.mp3", "Sting & The Police - The Very Best Of Sting & The Police - 17 - Roxanne.mp3"};
         try {
             for (String mp3File : filenames) {
-                Music music = fileService.readFile(new File(TEST_MP3_FOLDER + mp3File));
+                Music music = fileService.createMusicFromFile(new File(TEST_MP3_FOLDER + mp3File));
                 playerService.addToPlaylist(music);
                 System.out.println("Added : " + music.getTitle() + " from artist " + music.getArtist());
             }

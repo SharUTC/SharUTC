@@ -144,6 +144,19 @@ public class Catalog implements Serializable, PropertyChangeListener {
     }
 
     /**
+     * Copy all music from one catalog to another, don't use it on local catalog
+     *
+     * @param catalog
+     */
+    public void merge(Catalog catalog) {
+        if (catalog != null && !catalog.mMusics.isEmpty()) {
+            for (Music music : catalog.mMusics) {
+                this.add(music);
+            }
+        }
+    }
+
+    /**
      * Remove a given music from this catalog if it exists, send updates
      * (REMOVE)
      *
@@ -207,6 +220,7 @@ public class Catalog implements Serializable, PropertyChangeListener {
      *
      * @return true if the catalog has no musics, else false
      */
+    @JsonIgnore
     public boolean isEmpty() {
         return mMusics.isEmpty();
     }

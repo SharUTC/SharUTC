@@ -8,6 +8,7 @@ import fr.utc.lo23.sharutc.controler.command.music.EditCommentCommand;
 import fr.utc.lo23.sharutc.controler.command.music.RemoveCommentCommand;
 import fr.utc.lo23.sharutc.controler.service.FileService;
 import fr.utc.lo23.sharutc.controler.service.MusicService;
+import fr.utc.lo23.sharutc.controler.service.UserService;
 import fr.utc.lo23.sharutc.model.AppModel;
 import fr.utc.lo23.sharutc.model.AppModelBuilder;
 import fr.utc.lo23.sharutc.model.domain.Comment;
@@ -37,6 +38,8 @@ public class MusicCommentTest {
     @Inject
     private MusicService musicService;
     @Inject
+    private UserService userService;
+    @Inject
     private AddCommentCommand addCommentCommand;
     @Inject
     private EditCommentCommand editCommentCommand;
@@ -48,7 +51,7 @@ public class MusicCommentTest {
     public void before() {
         log.trace("building appModel");
         if (appModelBuilder == null) {
-            appModelBuilder = new AppModelBuilder(appModel, musicService);
+            appModelBuilder = new AppModelBuilder(appModel, musicService, userService);
         }
         appModelBuilder.mockAppModel();
     }
@@ -71,7 +74,7 @@ public class MusicCommentTest {
         Peer dummyPeer = new Peer();
         dummyPeer.setDisplayName("Dummy Peer");
         dummyPeer.setId(436907);
-        dummyPeer.setIpAddress("192.168.1.1");
+        // dummyPeer.setIpAddress("192.168.1.1");
         addCommentCommand.setAuthorPeer(dummyPeer);
 
         addCommentCommand.setComment("This is a comment");
@@ -100,7 +103,7 @@ public class MusicCommentTest {
         Peer dummyPeer = new Peer();
         dummyPeer.setDisplayName("Dummy Peer");
         dummyPeer.setId(436907);
-        dummyPeer.setIpAddress("192.168.1.1");
+        // dummyPeer.setIpAddress("192.168.1.1");
         addCommentCommand.setAuthorPeer(dummyPeer);
 
         addCommentCommand.setComment("This is a comment");
@@ -138,7 +141,7 @@ public class MusicCommentTest {
         Peer dummyPeer = new Peer();
         dummyPeer.setDisplayName("Dummy Peer");
         dummyPeer.setId(436907);
-        dummyPeer.setIpAddress("192.168.1.1");
+        // dummyPeer.setIpAddress("192.168.1.1");
         addCommentCommand.setAuthorPeer(dummyPeer);
 
         addCommentCommand.setComment("This is a comment");

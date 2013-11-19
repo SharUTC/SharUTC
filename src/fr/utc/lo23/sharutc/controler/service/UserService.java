@@ -1,8 +1,7 @@
 package fr.utc.lo23.sharutc.controler.service;
 
-import fr.utc.lo23.sharutc.controler.network.NetworkService;
 import fr.utc.lo23.sharutc.model.userdata.Category;
-import fr.utc.lo23.sharutc.model.userdata.Peer;
+import fr.utc.lo23.sharutc.model.userdata.Contact;
 import fr.utc.lo23.sharutc.model.userdata.UserInfo;
 
 /**
@@ -17,18 +16,18 @@ public interface UserService {
     public void saveProfileFiles();
 
     /**
-     * Add a new contact represented by one's id in the category
+     * Add a new contact in the category
      *
-     * @param peer
+     * @param contact
      */
-    public void addContact(Peer peer);
+    public void addContact(Contact contact);
 
     /**
-     * Remove the contact represented by one's peer from every category
+     * Remove a contact from every category
      *
-     * @param peer
+     * @param contact
      */
-    public void deleteContact(Peer peer);
+    public void deleteContact(Contact contact);
 
     /**
      * Create the category categoryName
@@ -45,20 +44,20 @@ public interface UserService {
     public void deleteCategory(Category category);
 
     /**
-     * Add a contact represented by one's peer to a specified category
+     * Add a contact to a specified category
      *
-     * @param peer
+     * @param contact
      * @param category
      */
-    public void addContactToCategory(Peer peer, Category category);
+    public void addContactToCategory(Contact contact, Category category);
 
     /**
-     * Remove a contact represented by one's peer from a specified category
+     * Remove a contact from a specified category
      *
-     * @param peer
+     * @param contact
      * @param category
      */
-    public void removeContactFromCategory(Peer peer, Category category);
+    public void removeContactFromCategory(Contact contact, Category category);
 
     /**
      *
@@ -89,20 +88,15 @@ public interface UserService {
 
     /**
      *
-     * @param userinfo
-     */
-    public void integrateConnection(UserInfo userinfo);
-
-    /**
-     *
      * @param peerId
      * @return
      */
-    public Long findContactIdByPeerId(Long peerId);
+    public Contact findContactByPeerId(Long peerId);
 
     /**
      * Send a disconnection request to the network and save profile
      *
      */
     public void disconnectionRequest();
+    
 }

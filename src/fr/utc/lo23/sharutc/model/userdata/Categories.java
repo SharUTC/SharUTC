@@ -44,31 +44,17 @@ public class Categories implements Serializable {
 
     /**
      *
-     * @param name
-     * @return
-     */
-    public Category findCategoryById(Integer id) {
-        for (Category category : mCategories) {
-            if (category.getId() == id) {
-                return category;
-            }
-        }
-        return null;
-    }
-
-    /**
-     *
      * @param id
      * @return
      */
-    public Set<Integer> getCategoriesIdsByContactId(Long id) {
-        Set<Integer> categoriesIds = new HashSet<Integer>();
-        for (Category category : mCategories) {
-            if (category.findContactById(id) != null) {
-                categoriesIds.add(category.getId());
+    public Category findCategoryById(Integer id) {
+        Category category = null;
+        for (Category c : mCategories) {
+            if (c.getId() == id) {
+                category = c;
             }
         }
-        return categoriesIds;
+        return category;
     }
 
     /**
@@ -140,6 +126,7 @@ public class Categories implements Serializable {
      *
      * @return
      */
+    @JsonIgnore
     public boolean isEmpty() {
         return mCategories.isEmpty();
     }

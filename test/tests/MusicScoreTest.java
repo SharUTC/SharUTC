@@ -7,6 +7,7 @@ import fr.utc.lo23.sharutc.controler.command.music.SetScoreCommand;
 import fr.utc.lo23.sharutc.controler.command.music.UnsetScoreCommand;
 import fr.utc.lo23.sharutc.controler.service.FileService;
 import fr.utc.lo23.sharutc.controler.service.MusicService;
+import fr.utc.lo23.sharutc.controler.service.UserService;
 import fr.utc.lo23.sharutc.model.AppModel;
 import fr.utc.lo23.sharutc.model.AppModelBuilder;
 import fr.utc.lo23.sharutc.model.domain.Music;
@@ -35,6 +36,8 @@ public class MusicScoreTest {
     @Inject
     private FileService fileService;
     @Inject
+    private UserService userService;
+    @Inject
     private MusicService musicService;
     @Inject
     private SetScoreCommand setScoreCommand;
@@ -46,7 +49,7 @@ public class MusicScoreTest {
     public void before() {
         log.trace("building appModel");
         if (appModelBuilder == null) {
-            appModelBuilder = new AppModelBuilder(appModel, musicService);
+            appModelBuilder = new AppModelBuilder(appModel, musicService, userService);
         }
         appModelBuilder.mockAppModel();
     }
@@ -69,7 +72,7 @@ public class MusicScoreTest {
         Peer dummyPeer = new Peer();
         dummyPeer.setDisplayName("Dummy Peer");
         dummyPeer.setId(436907);
-        dummyPeer.setIpAddress("192.168.1.1");
+        // dummyPeer.setIpAddress("192.168.1.1");
         setScoreCommand.setPeer(dummyPeer);
 
         Integer scoreValue = 4;
@@ -98,7 +101,7 @@ public class MusicScoreTest {
         Peer dummyPeer = new Peer();
         dummyPeer.setDisplayName("Dummy Peer");
         dummyPeer.setId(436907);
-        dummyPeer.setIpAddress("192.168.1.1");
+        // dummyPeer.setIpAddress("192.168.1.1");
         setScoreCommand.setPeer(dummyPeer);
 
         Integer scoreValue = 4;

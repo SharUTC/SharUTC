@@ -15,13 +15,14 @@ public class IntegrateDisconnectionCommandImpl implements IntegrateDisconnection
     final private UserService mUserService;
     private long mPeerId;
     
+
     /**
-     * {@inheritDoc}
+     * 
+     * @param mUserService 
      */
     @Inject
-    public IntegrateDisconnectionCommandImpl(UserService mUserService, long peerId) {
+    public IntegrateDisconnectionCommandImpl(UserService mUserService) {
         this.mUserService = mUserService;
-        this.mPeerId = peerId;
     }
     
     /**
@@ -41,13 +42,14 @@ public class IntegrateDisconnectionCommandImpl implements IntegrateDisconnection
     }
 
     /**
-     * {@inheritDoc}
+     * Remove peer from connected peer list
      */
     @Override
     public void execute() {
         log.info("Remove Peer...");
+        // remove peer from connected peer list
         this.mUserService.removeFromConnectedPeers(mPeerId);
-        log.info("Peer removed..");  
+        log.info("Peer removed.");  
     }
 
     

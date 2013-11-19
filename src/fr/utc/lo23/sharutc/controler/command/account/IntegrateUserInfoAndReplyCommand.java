@@ -3,20 +3,19 @@ package fr.utc.lo23.sharutc.controler.command.account;
 import fr.utc.lo23.sharutc.controler.command.Command;
 import fr.utc.lo23.sharutc.model.userdata.UserInfo;
 
-/**
- *
- */
-public interface BroadcastHeartbeatCommand extends Command {
+public interface IntegrateUserInfoAndReplyCommand extends Command {
 
     /**
+     * Return information about remote peer
      *
-     * @return
+     * @return information about remote peer
      */
     public UserInfo getUserInfo();
 
     /**
+     * Set informations about remote peer
      *
-     * @param userInfo
+     * @param userInfo information about remote peer
      */
     public void setUserInfo(UserInfo userInfo);
 }

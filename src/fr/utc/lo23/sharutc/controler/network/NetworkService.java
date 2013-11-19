@@ -17,14 +17,13 @@ import java.net.UnknownHostException;
  * connected peers and instantiate the right command to handle it.
  */
 public interface NetworkService {
-
     /**
      * Setup the NetworkService and start it.
      *
      * @param port the port to bind sockets to
      * @param group the UDP group to join (a class D IP address)
      * @throws java.net.UnknownHostException if the given group is not a valid
-     * class D IP address.
+     * class D IP address
      */
     public void start(int port, String group) throws UnknownHostException;
 
@@ -49,6 +48,12 @@ public interface NetworkService {
     public void removePeer(PeerSocket peerSocket);
 
     /**
+     * Send a heartbeat message to all the connected peer
+     * to verify if a peer is always connected
+     */
+    public void sendBroadcastHeartbeat();
+
+    /**
      * Request a peer for its music catalog.
      *
      * @param peer a Peer to send the request to
@@ -59,10 +64,10 @@ public interface NetworkService {
      * Send the local catalog to a peer.
      *
      * @param peer the target peer
-     * @param conversationID
+     * @param conversationId the current conversation id
      * @param catalog the local catalog to send
      */
-    public void sendUnicastCatalog(Peer peer, Long conversationID, Catalog catalog);
+    public void sendUnicastCatalog(Peer peer, Long conversationId, Catalog catalog);
 
     /**
      * Request the tag map of all connected peers.
@@ -134,14 +139,15 @@ public interface NetworkService {
      * Send back the result of a search to the requesting peer.
      *
      * @param peer the requesting peer
+     * @param conversationId the current conversation id
      * @param catalog a Catalog containing the matching musics
      */
-    public void sendMusicSearchResults(Peer peer, Catalog catalog);
+    public void sendMusicSearchResults(Peer peer, Long conversationId, Catalog catalog);
 
     /**
      * Request a list of music.
      * <p>
-     * Sends a Catalog containing a list of Music with no file attribut to be
+     * Sends a Catalog containing a list of Music with no file attribute to be
      * downloaded.
      *
      * @param peer the target peer
@@ -152,7 +158,7 @@ public interface NetworkService {
     /**
      * Send a complete Catalog to a peer.
      * <p>
-     * The Catalog sent contains Music object with a set file attribut.
+     * The Catalog sent contains Music object with a set file attribute.
      *
      * @param peer the requesting peer
      * @param catalog the Catalog to send
@@ -171,9 +177,10 @@ public interface NetworkService {
      * Send one Music to be played by the peer.
      *
      * @param peer the peer playing the music
+     * @param conversationId the current conversation id
      * @param music the Music to send
      */
-    public void sendMusicToPlay(Peer peer, Long conversationID, Music music);
+    public void sendMusicToPlay(Peer peer, Long conversationId, Music music);
 
     /**
      * Notify all user of the client's connection.
@@ -188,4 +195,12 @@ public interface NetworkService {
      * Notify all user of the client's disconnection.
      */
     public void disconnectionBroadcast();
+
+    /**
+     * Reply to a connection broadcast notification from another peer.
+     *
+     * @param peer the peer to reply to
+     * @param userInfo the userInfo to include in the reply
+     */
+    public void sendConnectionResponse(Peer peer, UserInfo userInfo);
 }

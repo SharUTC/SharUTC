@@ -7,28 +7,28 @@ package fr.utc.lo23.sharutc.controler.command.profile;
 import com.google.inject.Inject;
 import fr.utc.lo23.sharutc.controler.service.UserService;
 import fr.utc.lo23.sharutc.model.userdata.Category;
-import fr.utc.lo23.sharutc.model.userdata.Peer;
+import fr.utc.lo23.sharutc.model.userdata.Contact;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  *
- * @author Mathilde
+ * {@inheritDoc}
  */
 public class RemoveContactFromCategoryCommandImpl implements RemoveContactFromCategoryCommand {
     
     private static final Logger log = LoggerFactory
             .getLogger(AddContactCommandImpl.class);
-    private Peer mPeer;
+    private Contact mContact;
     private Category mCategory;
     final private UserService mUserService;
 
      /**
-     * {@inheritDoc}
+     * @param userService
      */
     @Inject
-    public RemoveContactFromCategoryCommandImpl(UserService mUserService) {
-        this.mUserService = mUserService;
+    public RemoveContactFromCategoryCommandImpl(UserService userService) {
+        this.mUserService = userService;
     }
 
     /**
@@ -51,16 +51,16 @@ public class RemoveContactFromCategoryCommandImpl implements RemoveContactFromCa
      * {@inheritDoc}
      */
     @Override
-    public Peer getPeer() {
-        return mPeer;
+    public Contact getContact() {
+        return mContact;
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void setPeer(Peer peer) {
-        this.mPeer = peer;
+    public void setContact(Contact contact) {
+        this.mContact = contact;
     }
 
     /**
@@ -69,7 +69,7 @@ public class RemoveContactFromCategoryCommandImpl implements RemoveContactFromCa
     @Override
     public void execute() {
         log.info("RemoveContactFromCategoryCommand ...");
-        mUserService.removeContactFromCategory(mPeer,mCategory);
+        mUserService.removeContactFromCategory(mContact,mCategory);
         log.info("RemoveContactFromCategoryCommand DONE");
     }
     

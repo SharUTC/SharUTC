@@ -3,6 +3,7 @@ package fr.utc.lo23.sharutc.controler.service;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import fr.utc.lo23.sharutc.model.AppModel;
+import fr.utc.lo23.sharutc.model.ErrorMessage;
 import fr.utc.lo23.sharutc.model.domain.Catalog;
 import fr.utc.lo23.sharutc.model.domain.Comment;
 import fr.utc.lo23.sharutc.model.domain.Music;
@@ -11,13 +12,16 @@ import fr.utc.lo23.sharutc.model.domain.RightsList;
 import fr.utc.lo23.sharutc.model.domain.Score;
 import fr.utc.lo23.sharutc.model.domain.SearchCriteria;
 import fr.utc.lo23.sharutc.model.domain.TagMap;
+import fr.utc.lo23.sharutc.model.userdata.Category;
+import fr.utc.lo23.sharutc.model.userdata.Contact;
+import fr.utc.lo23.sharutc.model.userdata.Profile;
 import fr.utc.lo23.sharutc.model.userdata.Peer;
 import fr.utc.lo23.sharutc.util.Utils;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.jaudiotagger.audio.AudioFile;
@@ -38,7 +42,7 @@ public class MusicServiceImpl implements MusicService {
     private final UserService userService;
     private final FileService fileService;
     private TagMap localTagMap = null;
-    private boolean localTagMapDirty = true;
+    protected boolean localTagMapDirty = true;
 
     /**
      * {@inheritDoc}
@@ -55,7 +59,7 @@ public class MusicServiceImpl implements MusicService {
      */
     @Override
     public void addToLocalCatalog(Collection<File> mp3Files) {
-        log.trace("addToLocalCatalog ...");
+        log.debug("addToLocalCatalog ...");
         if (mp3Files == null) {
             throwMissingParameter();
         } else {
@@ -64,7 +68,7 @@ public class MusicServiceImpl implements MusicService {
             for (File currentFile : mp3Files) {
                 Music musicFromFile = null;
                 try {
-                    musicFromFile = fileService.readFile(currentFile);
+                    musicFromFile = fileService.createMusicFromFile(currentFile);
                     String filename = fileService.computeFileName("", currentFile.getName());
                     musicFromFile.setFileName(filename);
                 } catch (Exception ex) {
@@ -79,12 +83,15 @@ public class MusicServiceImpl implements MusicService {
                         throw new RuntimeException("Error while copying music file to user folder", ex);
                     }
                     musicFromFile.setFileByte(null);
+                    appModel.getRightsList().setRights(new Rights(Category.PUBLIC_CATEGORY_ID, musicFromFile.getId(),
+                            Rights.DEFAULT_MAY_READ_INFO,
+                            Rights.DEFAULT_LISTEN,
+                            Rights.DEFAULT_MAY_NOTE_AND_COMMENT));
                     localCatalog.add(musicFromFile);
-
                 }
             }
         }
-        log.trace("addToLocalCatalog DONE");
+        log.debug("addToLocalCatalog DONE");
     }
 
     /**
@@ -92,7 +99,7 @@ public class MusicServiceImpl implements MusicService {
      */
     @Override
     public void removeFromLocalCatalog(Collection<Music> musics) {
-        log.trace("removeFromLocalCatalog ...");
+        log.debug("removeFromLocalCatalog ...");
         if (musics == null) {
             throwMissingParameter();
         } else {
@@ -106,7 +113,7 @@ public class MusicServiceImpl implements MusicService {
                 }
             }
         }
-        log.trace("removeFromLocalCatalog DONE");
+        log.debug("removeFromLocalCatalog DONE");
     }
 
     /**
@@ -114,33 +121,84 @@ public class MusicServiceImpl implements MusicService {
      */
     @Override
     public void integrateRemoteCatalog(Peer peer, Catalog catalog) {
+        log.debug("integrateRemoteCatalog ...");
+        // TODO: check if peeer parameter is really needed here (for UI purposes?) refactor by deleting it if it's not the case
+        appModel.getRemoteUserCatalog().addAll(catalog.getMusics());
+        log.debug("integrateRemoteCatalog DONE");
+    }
 
-        appModel.getRemoteUserCatalog().clear();
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Catalog getCatalogForPeer(Peer peer) {
+        // TODO : refactor method to avoid redundant parts with searchMusic
+        log.debug("getCatalogForPeer ...");
 
-        // 2 modes : when peer is a contact and when peer isn't a contact
-        Long contactId = userService.findContactIdByPeerId(peer.getId());
-        if (contactId != null) {
-            Set<Integer> contactCategoryIds = appModel.getProfile().getCategories().getCategoriesIdsByContactId(contactId);
+        Catalog userFilteredCatalog = new Catalog();
 
+        if (peer == null) {
+            throwMissingParameter();
+        } else {
+            Contact contact = userService.findContactByPeerId(peer.getId());
+            if (contact != null) {
+                Set<Integer> contactCategoryIds = contact.getCategoryIds();
 
-            // looping on whole catalog, searching for matching music informations
-            for (Music music : appModel.getLocalCatalog().getMusics()) {
-                // only deal with needed musics
-                List<Integer> matchingCategoryIds = getAllMatchingCategoryIds(music, contactCategoryIds);
+                for (Music music : appModel.getLocalCatalog().getMusics()) {
+                    Set<Integer> matchingCategoryIds = getAllMatchingCategoryIds(music, contactCategoryIds);
 
-                // searching Rights values to be set directly on a copy of music instance if added to the results
-                boolean mayReadInfo = false;
-                boolean mayListen = false;
-                boolean mayNoteAndComment = false;
-                if (matchingCategoryIds.isEmpty()) {
-                    for (Integer categoryId : matchingCategoryIds) {
-                        // avoid useless loop
-                        if (mayReadInfo && mayListen && mayNoteAndComment) {
-                            break; //true > false, then skip the remaining ids since all is already set to true
+                    boolean mayReadInfo = false;
+                    boolean mayListen = false;
+                    boolean mayNoteAndComment = false;
+                    if (!matchingCategoryIds.isEmpty()) {
+                        if (matchingCategoryIds.size() == 1 && matchingCategoryIds.iterator().next().equals(Category.PUBLIC_CATEGORY_ID)) {
+                            Rights rights = appModel.getRightsList().getByMusicIdAndCategoryId(music.getId(), Category.PUBLIC_CATEGORY_ID);
+                            if (rights.getMayReadInfo()) {
+                                mayReadInfo = true;
+                            }
+                            if (rights.getMayListen()) {
+                                mayListen = true;
+                            }
+                            if (rights.getMayNoteAndComment()) {
+                                mayNoteAndComment = true;
+                            }
+                        } else {
+                            for (Integer categoryId : matchingCategoryIds) {
+                                if (mayReadInfo && mayListen && mayNoteAndComment) {
+                                    break;
+                                }
+                                Rights rights = appModel.getRightsList().getByMusicIdAndCategoryId(music.getId(), categoryId);
+                                if (rights.getMayReadInfo()) {
+                                    mayReadInfo = true;
+                                }
+                                if (rights.getMayListen()) {
+                                    mayListen = true;
+                                }
+                                if (rights.getMayNoteAndComment()) {
+                                    mayNoteAndComment = true;
+                                }
+                            }
                         }
-                        // get the unique Rights instance for this music and category from RightsList
-                        // set tmp boolean values to true if rights values are set to true
-                        Rights rights = appModel.getRightsList().getByMusicIdAndCategoryId(music.getId(), categoryId);
+                    }
+                    if (mayReadInfo) {
+                        Music musicToReturn = music.clone();
+                        musicToReturn.setMayReadInfo(true);
+                        musicToReturn.setMayListen(mayListen);
+                        musicToReturn.setMayCommentAndNote(mayNoteAndComment);
+                        fillCommentAuthorNames(musicToReturn);
+
+                        userFilteredCatalog.add(musicToReturn);
+                    }
+                }
+            } else {
+                // peer isn't a contact, only check PUBLIC category and associated rights values, as they may change like others
+                for (Music music : appModel.getLocalCatalog().getMusics()) {
+                    Rights rights = appModel.getRightsList().getByMusicIdAndCategoryId(music.getId(), Category.PUBLIC_CATEGORY_ID);
+                    if (rights != null) {
+                        boolean mayReadInfo = false;
+                        boolean mayListen = false;
+                        boolean mayNoteAndComment = false;
+
                         if (rights.getMayReadInfo()) {
                             mayReadInfo = true;
                         }
@@ -150,30 +208,23 @@ public class MusicServiceImpl implements MusicService {
                         if (rights.getMayNoteAndComment()) {
                             mayNoteAndComment = true;
                         }
+                        if (mayReadInfo) {
+                            Music musicToReturn = music.clone();
+                            musicToReturn.setMayReadInfo(true);
+                            musicToReturn.setMayListen(mayListen);
+                            musicToReturn.setMayCommentAndNote(mayNoteAndComment);
+                            fillCommentAuthorNames(musicToReturn);
+
+                            userFilteredCatalog.add(musicToReturn);
+                        }
+                    } else {
+                        log.warn("Wrong state of categories, peer isn't a contact and there should be a Rights for music ({}) and PUBLIC category", music.getRealName());
                     }
                 }
-                // if the peer is autorized to get the music
-                if (mayReadInfo) {
-                    // using a new instance to set specific attributes
-                    Music musicToReturn = music.clone();
-                    // copying rights values
-                    musicToReturn.setMayReadInfo(true); // useless... not used by other peers
-                    musicToReturn.setMayListen(mayListen);
-                    musicToReturn.setMayCommentAndNote(mayNoteAndComment);
-                    // loading last used and known peer name
-                    fillCommentAuthorNames(musicToReturn);
-                    // add the music to the returned set of music
-                    appModel.getRemoteUserCatalog().add(musicToReturn);
-                }
             }
-        } else {
-            // peer isn't a contact, check PUBLIC category only and associated rights values, as they may change like others
-                /*
-             * 
-             * TODO : complete method
-             * 
-             */
         }
+        log.debug("getCatalogForPeer DONE");
+        return userFilteredCatalog;
     }
 
     /**
@@ -181,10 +232,11 @@ public class MusicServiceImpl implements MusicService {
      */
     @Override
     public TagMap getLocalTagMap() {
-        log.trace("getLocalTagMap ...");
+        log.debug("getLocalTagMap ...");
         if (localTagMap == null || isLocalTagMapDirty()) {
             buildLocalTagMap();
         }
+        log.debug("getLocalTagMap DONE");
         return localTagMap;
     }
 
@@ -193,13 +245,13 @@ public class MusicServiceImpl implements MusicService {
      */
     @Override
     public void integrateRemoteTagMap(TagMap tagMap) {
-        log.trace("integrateRemoteTagMap ...");
+        log.debug("integrateRemoteTagMap ...");
         if (tagMap == null) {
             throwMissingParameter();
         } else {
             appModel.getNetworkTagMap().merge(tagMap);
         }
-        log.trace("integrateRemoteTagMap DONE");
+        log.debug("integrateRemoteTagMap DONE");
     }
 
     /**
@@ -207,7 +259,7 @@ public class MusicServiceImpl implements MusicService {
      */
     @Override
     public void addTag(Music music, String tag) {
-        log.trace("addTag ...");
+        log.debug("addTag ...");
         if (music == null || tag == null || tag.trim().isEmpty()) {
             throwMissingParameter();
         } else {
@@ -215,7 +267,7 @@ public class MusicServiceImpl implements MusicService {
                 localTagMapDirty = true;
             }
         }
-        log.trace("addTag DONE");
+        log.debug("addTag DONE");
     }
 
     /**
@@ -223,7 +275,7 @@ public class MusicServiceImpl implements MusicService {
      */
     @Override
     public void removeTag(Music music, String tag) {
-        log.trace("removeTag ...");
+        log.debug("removeTag ...");
         if (music == null || tag == null || tag.trim().isEmpty()) {
             throwMissingParameter();
         } else {
@@ -231,7 +283,7 @@ public class MusicServiceImpl implements MusicService {
                 localTagMapDirty = true;
             }
         }
-        log.trace("removeTag DONE");
+        log.debug("removeTag DONE");
     }
 
     /**
@@ -239,7 +291,7 @@ public class MusicServiceImpl implements MusicService {
      */
     @Override
     public void addComment(Peer peer, Music music, String comment) {
-        log.trace("addComment ...");
+        log.debug("addComment ...");
         if (peer == null || music == null || comment == null || comment.trim().isEmpty()) {
             throwMissingParameter();
         } else {
@@ -261,7 +313,7 @@ public class MusicServiceImpl implements MusicService {
                 music.addComment(myComment);
             }
         }
-        log.trace("addComment DONE");
+        log.debug("addComment DONE");
     }
 
     /**
@@ -269,7 +321,7 @@ public class MusicServiceImpl implements MusicService {
      */
     @Override
     public void editComment(Peer peer, Music music, String commentText, Integer commentIndex) {
-        log.trace("editComment ...");
+        log.debug("editComment ...");
         if (peer == null || music == null || commentText == null || commentText.trim().isEmpty() || commentIndex == null) {
             throwMissingParameter();
         } else {
@@ -280,7 +332,7 @@ public class MusicServiceImpl implements MusicService {
                 log.warn("editComment : Comment to edit not found");
             }
         }
-        log.trace("editComment DONE");
+        log.debug("editComment DONE");
     }
 
     /**
@@ -288,7 +340,7 @@ public class MusicServiceImpl implements MusicService {
      */
     @Override
     public void removeComment(Peer peer, Music music, Integer commentIndex) {
-        log.trace("removeComment ...");
+        log.debug("removeComment ...");
         if (peer == null || music == null || commentIndex == null) {
             throwMissingParameter();
         } else {
@@ -299,7 +351,7 @@ public class MusicServiceImpl implements MusicService {
                 log.warn("removeComment : Comment to remove not found");
             }
         }
-        log.trace("removeComment DONE");
+        log.debug("removeComment DONE");
     }
 
     /**
@@ -307,13 +359,13 @@ public class MusicServiceImpl implements MusicService {
      */
     @Override
     public void setScore(Peer peer, Music music, Integer score) {
-        log.trace("setScore ...");
+        log.debug("setScore ...");
         if (peer == null || music == null) {
             throwMissingParameter();
         } else {
-            if (score == null || score.intValue() == Score.MIN_VALUE) {
+            if (score == null) {
                 unsetScore(peer, music);
-            } else if (score > Score.MIN_VALUE && score <= Score.MAX_VALUE) {
+            } else if (score >= Score.MIN_VALUE && score <= Score.MAX_VALUE) {
                 Score musicScore = music.getScore(peer);
                 if (musicScore != null) {
                     // peer already scored the music
@@ -326,7 +378,7 @@ public class MusicServiceImpl implements MusicService {
                 }
             }
         }
-        log.trace("setScore DONE");
+        log.debug("setScore DONE");
     }
 
     /**
@@ -334,7 +386,7 @@ public class MusicServiceImpl implements MusicService {
      */
     @Override
     public void unsetScore(Peer peer, Music music) {
-        log.trace("unsetScore ...");
+        log.debug("unsetScore ...");
         if (peer == null || music == null) {
             throwMissingParameter();
         } else {
@@ -343,7 +395,7 @@ public class MusicServiceImpl implements MusicService {
                 music.removeScore(musicScore);
             }
         }
-        log.trace("unsetScore DONE");
+        log.debug("unsetScore DONE");
     }
 
     /**
@@ -351,14 +403,14 @@ public class MusicServiceImpl implements MusicService {
      */
     @Override
     public void saveUserMusicFile() {
-        log.trace("saveUserMusicFiles ...");
+        log.debug("saveUserMusicFiles ...");
         Catalog localCatalog = appModel.getLocalCatalog();
         if (localCatalog != null) {
             fileService.saveToFile(SharUTCFile.CATALOG, localCatalog);
         } else {
             log.warn("Can't save current music Catalog(null)");
         }
-        log.trace("saveUserMusicFiles DONE");
+        log.debug("saveUserMusicFiles DONE");
     }
 
     /**
@@ -381,14 +433,14 @@ public class MusicServiceImpl implements MusicService {
      */
     @Override
     public void loadUserRightsListFile() {
-        log.trace("loadUserRightsListFiles ...");
+        log.debug("loadUserRightsListFiles ...");
         RightsList rightsList = fileService.readFile(SharUTCFile.RIGHTSLIST, RightsList.class);
         if (rightsList != null) {
             appModel.setRightsList(rightsList);
         } else {
             log.warn("loadUserRightsListFiles : no rightsList loaded");
         }
-        log.trace("loadUserRightsListFiles DONE");
+        log.debug("loadUserRightsListFiles DONE");
     }
 
     /**
@@ -396,7 +448,7 @@ public class MusicServiceImpl implements MusicService {
      */
     @Override
     public void loadUserMusicFile() {
-        log.trace("loadUserMusicFiles ...");
+        log.debug("loadUserMusicFiles ...");
 
         Catalog catalog = fileService.readFile(SharUTCFile.CATALOG, Catalog.class);
         if (catalog != null) {
@@ -405,7 +457,7 @@ public class MusicServiceImpl implements MusicService {
             log.warn("loadUserMusicFiles : no catalog loaded");
         }
 
-        log.trace("loadUserMusicFiles DONE");
+        log.debug("loadUserMusicFiles DONE");
     }
 
     /**
@@ -413,18 +465,29 @@ public class MusicServiceImpl implements MusicService {
      */
     @Override
     public Catalog searchMusic(Peer peer, SearchCriteria criteria) {
-        log.trace("searchMusic ... ({} : {})",
+        log.debug("searchMusic ... ({} : {})",
                 peer != null ? peer.getDisplayName() : "",
                 criteria != null ? criteria.getSearch() : "");
         Catalog catalogResult = null;
         if (peer == null || criteria == null) {
             throwMissingParameter();
         } else {
+            /*
+             * Algorithme de recherche :
+             * # Récupération des catégories associées aux contact qui demande
+             * # Pour chaque musique du catalogue
+             * #    Récupération des catégories associées à cette musique
+             * #    Filtrage des deux ensembles d'ids
+             * #        Pour chaque catégorie restante :
+             * #            Si public (0, exclusif) : vérification des droits pour cette musique et cette catégorie dans RightsList
+             * #            Si autre(s) : chargement de l'ensemble des droits dispos pour cette musique et cette catégorie via RightsList, on recherche les différents objets Rights tant qu'on ne trouve pas de valeur à *true*.
+             */
+
             catalogResult = new Catalog();
             if (criteria.getSearch() != null && criteria.getSearch().trim().length() > 0) {
-                Long contactId = userService.findContactIdByPeerId(peer.getId());
-                if (contactId != null) {
-                    Set<Integer> contactCategoryIds = appModel.getProfile().getCategories().getCategoriesIdsByContactId(contactId);
+                Contact contact = userService.findContactByPeerId(peer.getId());
+                if (contact != null) {
+                    Set<Integer> contactCategoryIds = contact.getCategoryIds();
 
                     // looping on whole catalog, searching for matching music informations
                     for (Music music : appModel.getLocalCatalog().getMusics()) {
@@ -432,21 +495,15 @@ public class MusicServiceImpl implements MusicService {
                         if (musicMatchesSearchCriteria(music, criteria)) {
 
                             // searching for useful categories only
-                            List<Integer> matchingCategoryIds = getAllMatchingCategoryIds(music, contactCategoryIds);
+                            Set<Integer> matchingCategoryIds = getAllMatchingCategoryIds(music, contactCategoryIds);
 
                             // searching Rights values to be set directly on a copy of music instance if added to the results
                             boolean mayReadInfo = false;
                             boolean mayListen = false;
                             boolean mayNoteAndComment = false;
                             if (!matchingCategoryIds.isEmpty()) {
-                                for (Integer categoryId : matchingCategoryIds) {
-                                    // avoid useless loop
-                                    if (mayReadInfo && mayListen && mayNoteAndComment) {
-                                        break; //true > false, then skip the remaining ids since all is already set to true
-                                    }
-                                    // get the unique Rights instance for this music and category from RightsList
-                                    // set tmp boolean values to true if rights values are set to true
-                                    Rights rights = appModel.getRightsList().getByMusicIdAndCategoryId(music.getId(), categoryId);
+                                if (matchingCategoryIds.size() == 1 && matchingCategoryIds.iterator().next().equals(Category.PUBLIC_CATEGORY_ID)) {
+                                    Rights rights = appModel.getRightsList().getByMusicIdAndCategoryId(music.getId(), Category.PUBLIC_CATEGORY_ID);
                                     if (rights.getMayReadInfo()) {
                                         mayReadInfo = true;
                                     }
@@ -455,6 +512,25 @@ public class MusicServiceImpl implements MusicService {
                                     }
                                     if (rights.getMayNoteAndComment()) {
                                         mayNoteAndComment = true;
+                                    }
+                                } else {
+                                    for (Integer categoryId : matchingCategoryIds) {
+                                        // avoid useless loop
+                                        if (mayReadInfo && mayListen && mayNoteAndComment) {
+                                            break; //true > false, then skip the remaining ids since all is already set to true
+                                        }
+                                        // get the unique Rights instance for this music and category from RightsList
+                                        // set tmp boolean values to true if rights values are set to true
+                                        Rights rights = appModel.getRightsList().getByMusicIdAndCategoryId(music.getId(), categoryId);
+                                        if (rights.getMayReadInfo()) {
+                                            mayReadInfo = true;
+                                        }
+                                        if (rights.getMayListen()) {
+                                            mayListen = true;
+                                        }
+                                        if (rights.getMayNoteAndComment()) {
+                                            mayNoteAndComment = true;
+                                        }
                                     }
                                 }
                             }
@@ -474,16 +550,48 @@ public class MusicServiceImpl implements MusicService {
                         }
                     }
                 } else {
-                    // peer isn't a contact, check PUBLIC category only and associated rights values, as they may change like others
-                /*
-                     * 
-                     * TODO : complete method
-                     * 
-                     */
+                    // peer isn't a contact, only check PUBLIC category and associated rights values, as they may change like others
+                    for (Music music : appModel.getLocalCatalog().getMusics()) {
+                        Rights rights = appModel.getRightsList().getByMusicIdAndCategoryId(music.getId(), Category.PUBLIC_CATEGORY_ID);
+                        if (rights != null) {
+                            // only deal with needed musics
+                            if (musicMatchesSearchCriteria(music, criteria)) {
+                                // searching Rights values to be set directly on a copy of music instance if added to the results
+                                boolean mayReadInfo = false;
+                                boolean mayListen = false;
+                                boolean mayNoteAndComment = false;
+
+                                if (rights.getMayReadInfo()) {
+                                    mayReadInfo = true;
+                                }
+                                if (rights.getMayListen()) {
+                                    mayListen = true;
+                                }
+                                if (rights.getMayNoteAndComment()) {
+                                    mayNoteAndComment = true;
+                                }
+                                // if the peer is autorized to get the music
+                                if (mayReadInfo) {
+                                    // using a new instance to set specific attributes
+                                    Music musicToReturn = music.clone();
+                                    // copying rights values
+                                    musicToReturn.setMayReadInfo(true); // useless... not used by other peers
+                                    musicToReturn.setMayListen(mayListen);
+                                    musicToReturn.setMayCommentAndNote(mayNoteAndComment);
+                                    // loading last used and known peer name
+                                    fillCommentAuthorNames(musicToReturn);
+                                    // add the music to the returned set of music
+                                    catalogResult.add(musicToReturn);
+                                }
+                            }
+                        } else {
+                            log.warn("Wrong state of categories, peer isn't a contact and there should be a Rights for music ({}) and PUBLIC category", music.getRealName());
+                        }
+                    }
                 }
             }
         }
-        log.trace("searchMusic DONE");
+        log.debug("searchMusic DONE");
         return catalogResult;
     }
 
@@ -517,15 +625,16 @@ public class MusicServiceImpl implements MusicService {
         return match;
     }
 
-    private List<Integer> getAllMatchingCategoryIds(Music music, Set<Integer> contactCategoryIds) {
-        Set<Integer> musicCategories = music.getCategoryIds();
-        List<Integer> matchingCategoryIds = new ArrayList<Integer>();
-        for (Integer musicCategoryId : musicCategories) {
-            if (contactCategoryIds.contains(musicCategoryId)) {
-                matchingCategoryIds.add(musicCategoryId);
-            }
+    private Set<Integer> getAllMatchingCategoryIds(Music music, Set<Integer> contactCategoryIds) {
+        Set<Integer> matchingCategories = new HashSet<Integer>(Math.min(contactCategoryIds.size(), music.getCategoryIds().size()));
+        if (contactCategoryIds.size() < music.getCategoryIds().size()) {
+            matchingCategories.addAll(contactCategoryIds);
+            matchingCategories.retainAll(music.getCategoryIds());
+        } else {
+            matchingCategories.addAll(music.getCategoryIds());
+            matchingCategories.retainAll(contactCategoryIds);
         }
-        return matchingCategoryIds;
+        return matchingCategories;
     }
 
     /**
@@ -537,6 +646,7 @@ public class MusicServiceImpl implements MusicService {
         if (catalog == null) {
             throwMissingParameter();
         } else {
+            appModel.getSearchResults().merge(catalog);
         }
     }
 
@@ -545,7 +655,7 @@ public class MusicServiceImpl implements MusicService {
      */
     @Override
     public void loadMusicFiles(Catalog catalog) {
-        log.trace("loadMusicFiles ...");
+        log.debug("loadMusicFiles ...");
         if (catalog == null) {
             throwMissingParameter();
         } else {
@@ -553,7 +663,7 @@ public class MusicServiceImpl implements MusicService {
                 loadMusicFile(catalog.get(i));
             }
         }
-        log.trace("loadMusicFiles DONE");
+        log.debug("loadMusicFiles DONE");
     }
 
     /**
@@ -561,13 +671,13 @@ public class MusicServiceImpl implements MusicService {
      */
     @Override
     public void loadMusicFile(Music music) {
-        log.trace("loadMusicFile ...");
+        log.debug("loadMusicFile ...");
         if (music == null) {
             throwMissingParameter();
         } else {
             byte[] byteArray;
             try {
-                byteArray = fileService.getFileAsByteArray(new File(".\\" + appModel.getProfile().getUserInfo().getLogin() + "\\" + music.getFileName()));
+                byteArray = fileService.getFileAsByteArray(new File(fileService.getAppFolder() + FileService.ROOT_FOLDER_USERS + File.separator + appModel.getProfile().getUserInfo().getLogin() + File.separator + FileService.FOLDER_MUSICS + File.separator + music.getFileName()));
                 Byte[] bytes = new Byte[byteArray.length];
                 for (int i = 0; i < byteArray.length; i++) {
                     bytes[i] = byteArray[i];
@@ -577,7 +687,7 @@ public class MusicServiceImpl implements MusicService {
                 log.error(ex.toString());
             }
         }
-        log.trace("loadMusicFile DONE");
+        log.debug("loadMusicFile DONE");
     }
 
     /**
@@ -585,10 +695,23 @@ public class MusicServiceImpl implements MusicService {
      */
     @Override
     public void installMusics(Catalog catalog) {
-        log.warn("Not supported yet.");
         if (catalog == null) {
             throwMissingParameter();
         } else {
+            if (!catalog.isEmpty()) {
+                List<File> tmpFiles = null;
+                try {
+                    tmpFiles = fileService.buildTmpMusicFilesForInstall(catalog);
+                } catch (Exception ex) {
+                    log.error(ex.toString());
+                }
+                if (tmpFiles != null && !tmpFiles.isEmpty()) {
+                    addToLocalCatalog(tmpFiles);
+                    for (File tmpFile : tmpFiles) {
+                        tmpFile.delete();
+                    }
+                }
+            }
         }
     }
 
@@ -606,6 +729,8 @@ public class MusicServiceImpl implements MusicService {
      */
     @Override
     public void createAndSetCatalog() {
+        log.debug("createAndSetCatalog ...");
+
         appModel.setLocalCatalog(new Catalog());
     }
 
@@ -614,6 +739,7 @@ public class MusicServiceImpl implements MusicService {
      */
     @Override
     public void createAndSetRightsList() {
+        log.debug("createAndSetRightsList ...");
         appModel.setRightsList(new RightsList());
     }
 
@@ -622,7 +748,7 @@ public class MusicServiceImpl implements MusicService {
      */
     @Override
     public void updateMusicFileName(Music music, String name) {
-        log.trace("updateMusicFileName ...");
+        log.debug("updateMusicFileName ...");
         if (music == null || name == null) {
             throwMissingParameter();
         } else {
@@ -670,7 +796,7 @@ public class MusicServiceImpl implements MusicService {
                 saveUserMusicFile();
             }
         }
-        log.trace("updateMusicFileName DONE");
+        log.debug("updateMusicFileName DONE");
     }
 
     /**
@@ -678,7 +804,7 @@ public class MusicServiceImpl implements MusicService {
      */
     @Override
     public void saveMusicFieldChanges(Music music, String title, String artist, String album, String track, String year) {
-        log.trace("saveMusicFieldChanges ...");
+        log.debug("saveMusicFieldChanges ...");
         if (music == null) {
             throwMissingParameter();
         } else {
@@ -735,10 +861,42 @@ public class MusicServiceImpl implements MusicService {
                 }
             }
         }
-        log.trace("saveMusicFieldChanges DONE");
+        log.debug("saveMusicFieldChanges DONE");
     }
 
     private void throwMissingParameter() {
         Utils.throwMissingParameter(log, new Throwable());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void addMusicToCategory(Music music, Category category) {
+        Long musicID = music.getId();
+        Set<Integer> categoriesIdsList = music.getCategoryIds();
+
+        //Check that the music does not exist in this category
+        if (!categoriesIdsList.contains(category.getId())) {
+            appModel.getLocalCatalog().findMusicById(musicID).addCategoryId(category.getId());
+        } else {
+            log.warn("This music already exists in this category");
+            ErrorMessage nErrorMessage = new ErrorMessage("This music already exists in this category");
+            appModel.getErrorBus().pushErrorMessage(nErrorMessage);
+        }
+
+    }
+
+    @Override
+    public void removeMusicFromCategory(Music music, Category category) {
+        Music m = appModel.getLocalCatalog().findMusicById(music.getId());
+        m.removeCategoryId(category.getId());
+        // if this category was the only one, we put the music in the public one
+        /*
+         * if (m.getCategoryIds().isEmpty()) {
+         *  m.addCategoryId(Category.PUBLIC_CATEGORY_ID);
+         * }
+         */
+
     }
 }

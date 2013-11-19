@@ -22,18 +22,20 @@ public class AddToPlaylistCommandImpl implements AddToPlaylistCommand{
     private static final Logger log = LoggerFactory
             .getLogger(AddToPlaylistCommandImpl.class);
     private final PlayerService playerService;
+    private List<Music> mPlaylist;
     
     @Inject
     public AddToPlaylistCommandImpl(PlayerService playerService) {
         this.playerService = playerService;
     }
     
+       
     /**
      * {@inheritDoc}
      */
     @Override
     public List<Music> getMusics(){
-        return playerService.getPlaylist().getMusics();
+        return mPlaylist;
     }
 
     /**
@@ -41,7 +43,7 @@ public class AddToPlaylistCommandImpl implements AddToPlaylistCommand{
      */
     @Override
     public void setMusics(List<Music> musics){
-        playerService.getPlaylist().setMusics(musics);
+        mPlaylist = musics;
     }
     
     /**
@@ -49,10 +51,12 @@ public class AddToPlaylistCommandImpl implements AddToPlaylistCommand{
      */
     @Override
     public void setMusic(Music music){
-        List<Music> musics = new ArrayList<Music>();
-        musics.add(music);
-        playerService.getPlaylist().setMusics(musics);
+        if(mPlaylist == null){
+            mPlaylist = new ArrayList<Music>();
+        }
+        mPlaylist.add(music);
     }
+    
     
     /**
      * {@inheritDoc}
@@ -61,10 +65,12 @@ public class AddToPlaylistCommandImpl implements AddToPlaylistCommand{
     public void execute() {
         log.info("AddToPlaylistCommand...");
         
-        for(Music m : this.getMusics()){
-            playerService.addToPlaylist(m);
+        if(mPlaylist != null){
+            for(Music m : mPlaylist){
+                playerService.addToPlaylist(m);
+            }
         }
-
+        
         log.info("AddToPlaylistCommand DONE");
     }
 }

@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  *
- * @author Mathilde
+ * {@inheritDoc}
  */
 public class CreateCategoryCommandImpl implements CreateCategoryCommand {
     
@@ -21,11 +21,11 @@ public class CreateCategoryCommandImpl implements CreateCategoryCommand {
     final private UserService mUserService;
 
      /**
-     * {@inheritDoc}
+     * @param userService
      */
     @Inject
-    public CreateCategoryCommandImpl(UserService mUserService) {
-        this.mUserService = mUserService;
+    public CreateCategoryCommandImpl(UserService userService) {
+        this.mUserService = userService;
     }
     
      /**

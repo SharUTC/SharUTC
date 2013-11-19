@@ -5,18 +5,19 @@ import fr.utc.lo23.sharutc.controler.command.music.AddToLocalCatalogCommand;
 import fr.utc.lo23.sharutc.controler.command.music.AddToLocalCatalogCommandImpl;
 import fr.utc.lo23.sharutc.controler.service.FileService;
 import fr.utc.lo23.sharutc.controler.service.MusicService;
+import fr.utc.lo23.sharutc.controler.service.UserService;
 import fr.utc.lo23.sharutc.model.domain.Catalog;
-import fr.utc.lo23.sharutc.model.domain.Music;
 import fr.utc.lo23.sharutc.model.domain.RightsList;
 import fr.utc.lo23.sharutc.model.userdata.ActivePeerList;
+import fr.utc.lo23.sharutc.model.userdata.Categories;
+import fr.utc.lo23.sharutc.model.userdata.Contacts;
+import fr.utc.lo23.sharutc.model.userdata.KnownPeerList;
 import fr.utc.lo23.sharutc.model.userdata.Peer;
 import fr.utc.lo23.sharutc.model.userdata.Profile;
 import fr.utc.lo23.sharutc.model.userdata.UserInfo;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Level;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,24 +26,27 @@ public class AppModelBuilder {
     private static final Logger log = LoggerFactory
             .getLogger(AppModelBuilder.class);
     private static String TEST_MP3_FOLDER;
-    private static final String[] TEST_MP3_FILENAMES = {"Sting & The Police - The Very Best Of Sting & The Police - 17 - Roxanne.mp3"};
-    public static final String LOCAL_ACCOUNT_LOGIN = "test login";
+    private static final String[] TEST_MP3_FILENAMES = {"Sting & The Police - The Very Best Of Sting & The Police - 17 - Roxanne.mp3", "14 - End Credit Score.mp3", "Air - Moon Safari - Sexy Boy.mp3"};
+    public static final String LOCAL_ACCOUNT_LOGIN = "LocalPeer Mock (id=0)";
     public static final String LOCAL_ACCOUNT_PASSWORD = "pwd";
     public static final String LOCAL_ACCOUNT_FIRSTNAME = "test";
     public static final String LOCAL_ACCOUNT_LASTNAME = "login";
     public static final int LOCAL_ACCOUNT_AGE = 23;
     public static final long LOCAL_ACCOUNT_PEER_ID = 0L;
     private final AppModel appModel;
-    private Peer[] activePeers = {new Peer(1L, "Peer Mock (id=1)"), new Peer(2L, "Peer Mock (id=2)"), new Peer(3L, "Peer Mock (id=3)")};
+    // LOCAL_ACCOUNT_LOGIN as active peers only for test purpose, in order to be able to mock message for which we fake a Message reception
+    private Peer[] activePeers = {new Peer(0L, LOCAL_ACCOUNT_LOGIN), new Peer(1L, "Peer Mock (id=1)"), new Peer(2L, "Peer Mock (id=2)"), new Peer(3L, "Peer Mock (id=3)")};
     private AddToLocalCatalogCommand addToLocalCatalogCommand;
     private final MusicService musicService;
+    private final UserService userService;
 
     @Inject
-    public AppModelBuilder(AppModel appModel, MusicService musicService) {
+    public AppModelBuilder(AppModel appModel, MusicService musicService, UserService userService) {
         this.appModel = appModel;
         this.musicService = musicService;
+        this.userService = userService;
         try {
-            TEST_MP3_FOLDER = new File(".").getCanonicalPath() + "\\test\\mp3\\";
+            TEST_MP3_FOLDER = new File(".").getCanonicalPath() + File.separator + "test" + File.separator + "mp3" + File.separator;
         } catch (Exception ex) {
             log.error(ex.toString());
         }
@@ -53,7 +57,10 @@ public class AppModelBuilder {
         mockProfile();
         mockKnownPeerList();
         mockActivePeerList();
+        appModel.setRightsList(new RightsList());
         mockCatalog();
+        mockContacts();
+        mockCategories();
         mockRights();
         createFolders();
         log.debug("AppModelMock READY");
@@ -71,6 +78,7 @@ public class AppModelBuilder {
 
     private void mockKnownPeerList() {
         log.debug("mockKnownPeerList - Not supported yet.");
+        appModel.getProfile().setKnownPeerList(new KnownPeerList());
     }
 
     private void mockActivePeerList() {
@@ -100,19 +108,9 @@ public class AppModelBuilder {
         log.trace("Mocking Catalog ...");
         appModel.setLocalCatalog(new Catalog());
 
-        //  Catalog catalog = new Catalog();
         ArrayList<File> files = new ArrayList<File>();
         for (String mp3File : TEST_MP3_FILENAMES) {
             files.add(new File(TEST_MP3_FOLDER + mp3File));
-
-            /*    try {
-             Music music = fileService.readFile();
-             music.addTag("ROCK");
-             catalog.add(music);
-             } catch (Exception ex) {
-             ex.printStackTrace();
-             log.error(ex.toString());
-             }*/
         }
         addToLocalCatalogCommand = new AddToLocalCatalogCommandImpl(musicService);
         addToLocalCatalogCommand.setFiles(files);
@@ -121,7 +119,6 @@ public class AppModelBuilder {
     }
 
     private void mockRights() {
-        log.debug("mockRights - Not supported yet.");
     }
 
     private void createFolders() {
@@ -132,7 +129,7 @@ public class AppModelBuilder {
         log.trace("createFolders DONE");
     }
 
-    private void deleteFolders() {
+    public void deleteFolders() {
         log.trace("deleteFolders ...");
         String path = getSharUTCTestRootFolder();
         log.debug("deleteFolders : {}", path);
@@ -164,5 +161,13 @@ public class AppModelBuilder {
             log.error("getAccountFolder failed");
         }
         return testRootFolder;
+    }
+
+    private void mockContacts() {
+        appModel.getProfile().setContacts(new Contacts());
+    }
+
+    private void mockCategories() {
+        appModel.getProfile().setCategories(new Categories());
     }
 }

@@ -33,7 +33,7 @@ public class SaveAccountFileTest {
     public void before() {
         log.trace("building appModel");
         if (appModelBuilder == null) {
-            appModelBuilder = new AppModelBuilder(appModel, musicService);
+            appModelBuilder = new AppModelBuilder(appModel, musicService, userService);
         }
         appModelBuilder.mockAppModel();
     }
@@ -50,6 +50,6 @@ public class SaveAccountFileTest {
         musicService.saveUserMusicFile();
         musicService.saveUserRightsListFile();
         userService.saveProfileFiles();
-        Assert.assertTrue(true);
+        Assert.assertTrue(false); // TODO check content with code (list size, id values, not null and null values)
     }
 }
