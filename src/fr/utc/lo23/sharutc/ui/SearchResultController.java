@@ -25,7 +25,7 @@ import javafx.scene.layout.VBox;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class SearchResultController extends SongSelectorController implements PropertyChangeListener ,Initializable, UserCard.IUserCard, ArtistCard.IArtistCard {
+public class SearchResultController extends SongSelectorController implements PropertyChangeListener ,Initializable,AlbumCard.IAlbumCard, UserCard.IUserCard, ArtistCard.IArtistCard {
     
     private static final Logger log = LoggerFactory
             .getLogger(SearchResultController.class);
@@ -132,6 +132,11 @@ public class SearchResultController extends SongSelectorController implements Pr
     public void onArtistDetailRequested(Music music) {
         mInterface.onArtistDetailRequested(music);
     }
+    
+     @Override
+    public void onAlbumDetailRequested(Music music) {
+         mInterface.onAlbumDetailRequested(music);
+    }
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
@@ -145,6 +150,8 @@ public class SearchResultController extends SongSelectorController implements Pr
             //errorContainer.getChildren().add(new Label(((ErrorMessage) evt.getNewValue()).getMessage()));
         }
     }
+
+   
 
     
     
@@ -164,6 +171,13 @@ public class SearchResultController extends SongSelectorController implements Pr
          * @param music
          */
         public void onArtistDetailRequested(Music music);
+        
+         /**
+         * display album details
+         *
+         * @param music
+         */
+        public void onAlbumDetailRequested(Music music);
         
     }
     
