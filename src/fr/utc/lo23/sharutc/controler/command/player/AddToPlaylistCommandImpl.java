@@ -8,7 +8,6 @@ package fr.utc.lo23.sharutc.controler.command.player;
 
 import com.google.inject.Inject;
 import fr.utc.lo23.sharutc.controler.service.PlayerService;
-import fr.utc.lo23.sharutc.model.domain.Catalog;
 import fr.utc.lo23.sharutc.model.domain.Music;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,8 +19,8 @@ import org.slf4j.LoggerFactory;
  */
 public class AddToPlaylistCommandImpl implements AddToPlaylistCommand{
     
-    private static final Logger log = LoggerFactory.getLogger(AddToPlaylistCommandImpl.class);
-    private Catalog mPlaylist;
+    private static final Logger log = LoggerFactory
+            .getLogger(AddToPlaylistCommandImpl.class);
     private final PlayerService playerService;
     
     @Inject
@@ -34,7 +33,7 @@ public class AddToPlaylistCommandImpl implements AddToPlaylistCommand{
      */
     @Override
     public List<Music> getMusics(){
-        return mPlaylist.getMusics();
+        return playerService.getPlaylist().getMusics();
     }
 
     /**
@@ -42,7 +41,7 @@ public class AddToPlaylistCommandImpl implements AddToPlaylistCommand{
      */
     @Override
     public void setMusics(List<Music> musics){
-        mPlaylist.setMusics(musics);
+        playerService.getPlaylist().setMusics(musics);
     }
     
     /**
@@ -52,7 +51,7 @@ public class AddToPlaylistCommandImpl implements AddToPlaylistCommand{
     public void setMusic(Music music){
         List<Music> musics = new ArrayList<Music>();
         musics.add(music);
-        mPlaylist.setMusics(musics);
+        playerService.getPlaylist().setMusics(musics);
     }
     
     /**

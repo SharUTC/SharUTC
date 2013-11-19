@@ -30,17 +30,19 @@ public class PlayerServiceImpl implements PlayerService, PropertyChangeListener,
     public static final int VOLUME_MIN = 0;
     private final FileService fileService;
     private PlaybackListener player;
-    private Catalog mPlaylist = new Catalog();
+    private final Catalog mPlaylist;
     private Music mCurrentMusic;
     private Long mCurrentTimeSec = 0L;
     private Integer volume = 100;
     private boolean mute = false;
     private boolean pause = false;
-    private PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
+    private PropertyChangeSupport propertyChangeSupport;
 
     @Inject
     public PlayerServiceImpl(FileService fileService) {
+        this.mPlaylist = new Catalog();
         this.fileService = fileService;
+        this.propertyChangeSupport = new PropertyChangeSupport(this);
         this.mPlaylist.addPropertyChangeListener(this);
     }
 
@@ -49,6 +51,7 @@ public class PlayerServiceImpl implements PlayerService, PropertyChangeListener,
      */
     @Override
     public void addToPlaylist(Music music) {
+        
         if (music != null && !music.getFileMissing() && music.getFileBytes() != null) {
             mPlaylist.add(music);
         }

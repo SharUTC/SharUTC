@@ -13,8 +13,8 @@ import org.slf4j.LoggerFactory;
  */
 public class RemoveFromPlaylistCommandImpl implements RemoveFromPlaylistCommand {
 
-    private static final Logger log = LoggerFactory.getLogger(RemoveFromPlaylistCommandImpl.class);
-    private List<Music> mPlaylist;
+    private static final Logger log = LoggerFactory
+            .getLogger(RemoveFromPlaylistCommandImpl.class);
     private final PlayerService playerService;
 
     @Inject
@@ -27,7 +27,7 @@ public class RemoveFromPlaylistCommandImpl implements RemoveFromPlaylistCommand 
      */
     @Override
     public List<Music> getMusics() {
-        return mPlaylist;
+        return playerService.getPlaylist().getMusics();
     }
 
     /**
@@ -35,7 +35,7 @@ public class RemoveFromPlaylistCommandImpl implements RemoveFromPlaylistCommand 
      */
     @Override
     public void setMusics(List<Music> musics) {
-        this.mPlaylist = musics;
+        this.playerService.getPlaylist().setMusics(musics);
     }
 
     /**
@@ -43,10 +43,9 @@ public class RemoveFromPlaylistCommandImpl implements RemoveFromPlaylistCommand 
      */
     @Override
     public void setMusic(Music music) {
-        if (mPlaylist == null) {
-            mPlaylist = new ArrayList<Music>();
-        }
-        mPlaylist.add(music);
+        List<Music> musics = new ArrayList<Music>();
+        musics.add(music);
+        playerService.getPlaylist().setMusics(musics);
     }
 
     /**
@@ -56,7 +55,7 @@ public class RemoveFromPlaylistCommandImpl implements RemoveFromPlaylistCommand 
     public void execute() {
         log.info("RemoveFromPlaylistCommand...");
 
-        for (Music m : mPlaylist) {
+        for (Music m : this.getMusics()) {
             playerService.removeFromPlaylist(m);
         }
 
