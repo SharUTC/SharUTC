@@ -18,13 +18,23 @@ public class PeopleDetailController extends SongSelectorController implements In
 
     public Label login;
     public Button addToFriendsButton;
+    public Button seeMoreSongs;
+    public Button seeMoreArtists;
+    public Button seeMoreTags;
     public FlowPane songsContainer;
     public FlowPane artistsContainer;
     public FlowPane tagsContainer;
+
+
     private UserInfo mUserInfo;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        addToFriendsButton.getStyleClass().add("bgGreen");
+        seeMoreArtists.getStyleClass().add("bgRed");
+        seeMoreSongs.getStyleClass().add("bgBlue");
+
+
         for (int i = 0; i < 3; i++) {
             final Music m = new Music();
             m.setTitle("Music " + i);

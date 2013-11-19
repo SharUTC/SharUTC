@@ -1,22 +1,33 @@
 package fr.utc.lo23.sharutc.ui;
 
+import com.cathive.fx.guice.GuiceFXMLLoader;
+import com.google.inject.Inject;
+import fr.utc.lo23.sharutc.controler.command.search.MusicSearchCommand;
+import fr.utc.lo23.sharutc.model.AppModel;
 import fr.utc.lo23.sharutc.model.domain.Music;
+import fr.utc.lo23.sharutc.model.domain.SearchCriteria;
 import fr.utc.lo23.sharutc.model.userdata.UserInfo;
 import fr.utc.lo23.sharutc.ui.custom.card.SimpleCard;
 import fr.utc.lo23.sharutc.ui.custom.CardList;
 import fr.utc.lo23.sharutc.ui.custom.card.AlbumCard;
 import fr.utc.lo23.sharutc.ui.custom.card.ArtistCard;
-import fr.utc.lo23.sharutc.ui.custom.card.DraggableCard;
 import fr.utc.lo23.sharutc.ui.custom.card.SongCard;
 import fr.utc.lo23.sharutc.ui.custom.card.UserCard;
+import fr.utc.lo23.sharutc.util.CollectionChangeListener;
+import fr.utc.lo23.sharutc.util.CollectionEvent;
 import javafx.fxml.Initializable;
 
 import java.net.URL;
 import java.util.ResourceBundle;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class SearchResultController implements Initializable, UserCard.IUserCard, SongCard.ISongCard, ArtistCard.IArtistCard {
+public class SearchResultController extends SongSelectorController implements RighpaneInterface, CollectionChangeListener ,Initializable,AlbumCard.IAlbumCard, UserCard.IUserCard, ArtistCard.IArtistCard {
+    
+    private static final Logger log = LoggerFactory
+            .getLogger(SearchResultController.class);
+    
     public VBox gridpane;
     private String search;
     private CardList songList;
@@ -25,14 +36,26 @@ public class SearchResultController implements Initializable, UserCard.IUserCard
     private CardList albumList;
     private ISearchResultController mInterface;
 
+   
+  
+    @Inject
+    private AppModel mAppModel;
+    
+    @Inject
+    private MusicSearchCommand mMusicSearchCommand;
+        
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        if (resourceBundle != null) {
-            search = resourceBundle.getString("search");
-        } else {
-            search = "";
-        }
-       
+        
+        
+        
+        //listen for changes on the AppModel
+        mAppModel.getSearchResults().addPropertyChangeListener(this);
+
+ 
+        
+        
+    
         songList = new CardList  ("Songs", "bgBlue");
         friendList = new CardList("Friends", "bgGreen");
         artistList = new CardList("Artists", "bgRed");
@@ -42,6 +65,17 @@ public class SearchResultController implements Initializable, UserCard.IUserCard
         gridpane.getChildren().add(friendList);
         gridpane.getChildren().add(artistList);
         gridpane.getChildren().add(albumList);
+        
+        
+        SearchCriteria critera = new SearchCriteria(search);
+        mMusicSearchCommand.setSearchCriteria(critera);
+       
+         if (resourceBundle != null) {
+            search = resourceBundle.getString("search");
+        } else {
+            search = "";
+        }
+        
         
         UserInfo u = new UserInfo();
         u.setFirstName("bob");
@@ -54,6 +88,9 @@ public class SearchResultController implements Initializable, UserCard.IUserCard
         
         final Music m = new Music();
             m.setFileName("Music ");
+            m.setTitle("music");
+            m.setAlbum("Album");
+            m.setArtist("Artist");
         SongCard newCard = new SongCard(m, this, true);
        
         addChild(newCard);
@@ -61,7 +98,7 @@ public class SearchResultController implements Initializable, UserCard.IUserCard
         SimpleCard card = new ArtistCard(m, this);
         this.addChild(card);
         
-        card = new AlbumCard(m);
+        card = new AlbumCard(m, this);
         this.addChild(card);
         
     }
@@ -88,48 +125,52 @@ public class SearchResultController implements Initializable, UserCard.IUserCard
         mInterface.onPeopleDetailRequested(userInfo);
     }
 
-    @Override
-    public void onPlayRequested(Music music) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-  
-     @Override
-    public void onSongAddToPlayList(Music music) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void onTagEditionRequested(Music music) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void onSongDetailsRequested(Music music) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-
-    @Override
-    public void onSongCardSelected(SongCard songCard) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void onDragStart(MouseEvent event, DraggableCard draggableCard) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void onDragStop(DraggableCard draggableCard) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
+ 
 
     @Override
     public void onArtistDetailRequested(Music music) {
         mInterface.onArtistDetailRequested(music);
     }
+    
+     @Override
+    public void onAlbumDetailRequested(Music music) {
+         mInterface.onAlbumDetailRequested(music);
+    }
 
+    @Override
+    public void collectionChanged(CollectionEvent ev) {
+        switch(ev.getType()){
+            case ADD:
+                Music m = ((Music)ev.getSource());
+                if(m.getAlbum().contains(search)){
+                    albumList.addChild(new AlbumCard(m, this));
+                }
+                if(m.getArtist().contains(search)){
+                    artistList.addChild(new ArtistCard(m, this));
+                }
+                if(m.getTitle().contains(search)){
+                    songList.addChild(new SongCard(m, this, mAppModel.getProfile().getUserInfo().getPeerId() == m.getOwnerPeerId()));
+                }
+                break;
+             case CLEAR:
+                 log.info("Search Clear");
+                 break;
+            
+        }
+       
+    }
+
+    
+
+    @Override
+    public void onDetach() {
+        mAppModel.getSearchResults().removePropertyChangeListener(this);
+    }
+
+   
+
+    
+    
    
     
     public interface ISearchResultController{
@@ -146,6 +187,13 @@ public class SearchResultController implements Initializable, UserCard.IUserCard
          * @param music
          */
         public void onArtistDetailRequested(Music music);
+        
+         /**
+         * display album details
+         *
+         * @param music
+         */
+        public void onAlbumDetailRequested(Music music);
         
     }
     

@@ -33,7 +33,7 @@ import java.util.ArrayList;
 import java.util.ResourceBundle;
 import javafx.scene.Parent;
 
-public class MainController implements Initializable, PeopleHomeController.IPeopleHomeController, SearchResultController.ISearchResultController, ArtistsDetailController.IArtistsDetailController {
+public class MainController implements Initializable, PeopleHomeController.IPeopleHomeController, SearchResultController.ISearchResultController, ArtistsDetailController.IArtistsDetailController, AlbumsDetailController.IAlbumsDetailController {
 
     private static final Logger log = LoggerFactory.getLogger(MainController.class);
     @Inject
@@ -113,13 +113,13 @@ public class MainController implements Initializable, PeopleHomeController.IPeop
 
     @FXML
     private void handleMenuButtonAction(ActionEvent event) throws IOException {
-
-        ObservableList<Node> children = rightpane.getChildren();
-        children.clear();
+        detachRightpane();
+        
 
         if (event.getSource() == songsbutton) {
             mCurrentLoadedRighpaneResult = mFxmlLoader.load(getClass().getResource("/fr/utc/lo23/sharutc/ui/fxml/song_list.fxml"));
             ((DragPreviewDrawer) mCurrentLoadedRighpaneResult.getController()).init(mDragPreview);
+            ((SongListController) mCurrentLoadedRighpaneResult.getController()).createCards();
         } else if (event.getSource() == peoplebutton) {
             mCurrentLoadedRighpaneResult = mFxmlLoader.load(getClass().getResource("/fr/utc/lo23/sharutc/ui/fxml/people_home.fxml"));
             ((PeopleHomeController) mCurrentLoadedRighpaneResult.getController()).setInterface(this);
@@ -130,23 +130,37 @@ public class MainController implements Initializable, PeopleHomeController.IPeop
         } else if (event.getSource() == albumsbutton) {
             mCurrentLoadedRighpaneResult = mFxmlLoader.load(getClass().getResource("/fr/utc/lo23/sharutc/ui/fxml/albums_detail.fxml"));
             ((AlbumsDetailController) mCurrentLoadedRighpaneResult.getController()).createCards();
+            ((AlbumsDetailController) mCurrentLoadedRighpaneResult.getController()).setInterface(this);
         } else if (event.getSource() == logoutButton) {
             final Parent loginRoot = mFxmlLoader.load(getClass().getResource("/fr/utc/lo23/sharutc/ui/fxml/login.fxml")).getRoot();
             logoutButton.getScene().setRoot(loginRoot);
         }
 
-        if (mCurrentLoadedRighpaneResult != null) {
+       attachRightpane(mCurrentLoadedRighpaneResult);
+    }
+
+    public void detachRightpane(){
+         if(mCurrentLoadedRighpaneResult!=null&& mCurrentLoadedRighpaneResult.getController() instanceof RighpaneInterface){
+            ((RighpaneInterface)mCurrentLoadedRighpaneResult.getController()).onDetach();
+        }
+        ObservableList<Node> children = rightpane.getChildren();
+        children.clear();
+    }
+    
+    public void attachRightpane(Result mCurrentLoadedRighpaneResult){
+        ObservableList<Node> children = rightpane.getChildren();
+         if (mCurrentLoadedRighpaneResult != null) {
             children.add((Node) mCurrentLoadedRighpaneResult.getRoot());
         }
     }
-
+    
     @FXML
     public void handleTextEntered(ActionEvent actionEvent) throws IOException {
-        ObservableList<Node> children = rightpane.getChildren();
-        children.clear();
-        final Result loadingResult = mFxmlLoader.load(getClass().getResource("/fr/utc/lo23/sharutc/ui/fxml/searchresult_detail.fxml"));
-        ((SearchResultController) loadingResult.getController()).setInterface(this);
-        children.add((Node) loadingResult.getRoot());
+        detachRightpane();
+        mCurrentLoadedRighpaneResult = mFxmlLoader.load(getClass().getResource("/fr/utc/lo23/sharutc/ui/fxml/searchresult_detail.fxml"));
+        ((SearchResultController) mCurrentLoadedRighpaneResult.getController()).setInterface(this);
+        ((SearchResultController) mCurrentLoadedRighpaneResult.getController()).init(mDragPreview);
+        attachRightpane(mCurrentLoadedRighpaneResult);
 
     }
 
@@ -178,7 +192,7 @@ public class MainController implements Initializable, PeopleHomeController.IPeop
         if (db.hasString() && db.getString().equals(SongCard.DROP_KEY)) {
             final SongCard droppedCard = (SongCard) dragEvent.getGestureSource();
             //if the card comes from SongSelectorController
-            if (mCurrentLoadedRighpaneResult.getController() instanceof SongSelectorController) {
+            if (mCurrentLoadedRighpaneResult.getController() instanceof SongSelectorController||mCurrentLoadedRighpaneResult.getController() instanceof SearchResultController) {
                 //Add all selected song to the player
                 final ArrayList<SongCard> songs =
                         ((SongSelectorController) mCurrentLoadedRighpaneResult.getController()).getSelectedSong();
@@ -227,8 +241,22 @@ public class MainController implements Initializable, PeopleHomeController.IPeop
         log.info("Artist detail requested : " + music.getArtist());
         try {
             mCurrentLoadedRighpaneResult = mFxmlLoader.load(getClass().getResource("/fr/utc/lo23/sharutc/ui/fxml/albums_detail.fxml"));
-            ((AlbumsDetailController) mCurrentLoadedRighpaneResult.getController()).setArtistWanted(music.getArtist());
-            ((AlbumsDetailController) mCurrentLoadedRighpaneResult.getController()).createCards();
+            ((AlbumsDetailController) mCurrentLoadedRighpaneResult.getController()).setInterface(this);
+            ((AlbumsDetailController) mCurrentLoadedRighpaneResult.getController()).createCards(music.getArtist());
+            children.add((Node) mCurrentLoadedRighpaneResult.getRoot());
+        } catch (IOException e) {
+            log.error(e.getMessage());
+        }
+    }
+    
+    @Override
+    public void onAlbumDetailRequested(Music music) {
+        ObservableList<Node> children = rightpane.getChildren();
+        children.clear();
+        log.info("Album detail requested : " + music.getAlbum());
+        try {
+            mCurrentLoadedRighpaneResult = mFxmlLoader.load(getClass().getResource("/fr/utc/lo23/sharutc/ui/fxml/song_list.fxml"));
+            ((SongListController) mCurrentLoadedRighpaneResult.getController()).createCards(music.getArtist(), music.getAlbum());
             children.add((Node) mCurrentLoadedRighpaneResult.getRoot());
         } catch (IOException e) {
             log.error(e.getMessage());
@@ -261,14 +289,17 @@ public class MainController implements Initializable, PeopleHomeController.IPeop
     //TODO Remove once we get a real list of Musics
     private void populateMusics() {
         for (int i = 0; i < 5; i++) {
-            for (int j = 0; j < 5; j++) {
-                Music m = new Music();
-                m.setArtist("Artist " + String.valueOf(i));
-                m.setAlbum("Album " + String.valueOf(j));
-                m.setId(0l);
-                m.setOwnerPeerId(0l);
-                m.setHash(0);
-                population.add(m);
+            for (int j = 0; j < 3; j++) {
+                for(int k = 0; k < 3; k++) {
+                    Music m = new Music();
+                    m.setTitle("Music " + String.valueOf(k + 3 * j));
+                    m.setArtist("Artist " + String.valueOf(i));
+                    m.setAlbum("Album " + String.valueOf(j));
+                    m.setId(0l);
+                    m.setOwnerPeerId(0l);
+                    m.setHash(0);
+                    population.add(m);
+                }
             }
         }
     }

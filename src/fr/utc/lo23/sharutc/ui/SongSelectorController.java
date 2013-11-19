@@ -90,6 +90,9 @@ public class SongSelectorController extends DragPreviewDrawer implements SongCar
             mSongCardSelected.add(songCard);
         }
     }
+    
+    @Override
+    public void onDetach() {}
 
     /**
      * Display SongCard selected as Drag preview
@@ -106,4 +109,6 @@ public class SongSelectorController extends DragPreviewDrawer implements SongCar
             i++;
         }
     }
+
+    
 }

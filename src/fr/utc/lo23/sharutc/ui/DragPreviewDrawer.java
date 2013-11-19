@@ -4,7 +4,7 @@ package fr.utc.lo23.sharutc.ui;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
 
-public abstract class DragPreviewDrawer {
+public abstract class DragPreviewDrawer implements RighpaneInterface{
 
     protected StackPane mDragPreview;
 

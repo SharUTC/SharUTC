@@ -12,10 +12,10 @@ import javafx.scene.layout.FlowPane;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class AlbumsDetailController implements Initializable {
+public class AlbumsDetailController implements RighpaneInterface, Initializable, AlbumCard.IAlbumCard {
     
     private static final Logger log = LoggerFactory.getLogger(PeopleHomeController.class);
-    private String artistWanted;
+    public IAlbumsDetailController mInterface;
     public Label titlePage;
             
     @FXML
@@ -23,21 +23,26 @@ public class AlbumsDetailController implements Initializable {
     
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        artistWanted = "";
         titlePage.setText("Discover new albums");
     }
     
-    public void createCards() {
-        System.out.println("artistWanted = "+artistWanted);
+    public void setInterface(IAlbumsDetailController i) {
+        mInterface = i;
+    }
+    
+    public void createCards(String artistName) {
         for(Music m : MainController.population) {
             if(!existsAlready(m)) {
-                if(m.getArtist().equals(artistWanted) || artistWanted.equals("")) {
-                    AlbumCard card = new AlbumCard(m);
+                if(m.getArtist().equals(artistName) || artistName.equals("")) {
+                    AlbumCard card = new AlbumCard(m, this);
                     albumsContainer.getChildren().add(card);
                 }              
             }
         }
-        resetAlbumWanted();
+    }
+    
+    public void createCards() {
+        createCards("");
     }
     
     private boolean existsAlready(Music m) {
@@ -49,17 +54,23 @@ public class AlbumsDetailController implements Initializable {
         }      
         return false;
     }
-    
-    public void resetAlbumWanted() {
-        artistWanted = "";
+
+    @Override
+    public void onAlbumDetailRequested(Music music) {
+        log.info("onArtistDetailRequested " + music.getAlbum());
+        mInterface.onAlbumDetailRequested(music);
     }
+
+    @Override
+    public void onDetach() {}
     
-    public String getArtistWanted() {
-        return artistWanted;
-    }
-    
-    public void setArtistWanted(String artistName) {
-        artistWanted = artistName;
-        titlePage.setText("Discover "+artistName+"'s albums");
+    public interface IAlbumsDetailController {
+
+        /**
+         * display user details
+         *
+         * @param music
+         */
+        public void onAlbumDetailRequested(Music music);
     }
 }

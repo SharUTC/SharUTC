@@ -21,6 +21,9 @@ public class SongCard extends DraggableCard implements EventHandler<Event> {
 
     @FXML
     public Label songTitle;
+    
+    @FXML
+    public Label songArtist;
 
     @FXML
     Button detailButton;
@@ -40,6 +43,7 @@ public class SongCard extends DraggableCard implements EventHandler<Event> {
         mInterface = i;
         mModel = m;
         songTitle.setText(mModel.getTitle());
+        songArtist.setText(mModel.getArtist());
         setOnMouseClicked(this);
         setOnMouseEntered(this);
         setOnMouseExited(this);
