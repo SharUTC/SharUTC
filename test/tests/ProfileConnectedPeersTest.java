@@ -70,17 +70,15 @@ public class ProfileConnectedPeersTest {
         UserInfo newUserInfo1 = new UserInfo();
         newUserInfo1.setLogin("LocalPeer Mock (id=4)");
         newUserInfo1.setPeerId(4L);
-     // FIXME:    
-    //    addUserCommand.setContact(newUserInfo1);
-    //    addUserCommand.execute();
+        integrateConnectionCommand.setUserInfo(newUserInfo1);
+        integrateConnectionCommand.execute();
         
         //Add second user
         UserInfo newUserInfo2 = new UserInfo();
         newUserInfo2.setLogin("LocalPeer Mock (id=5)");
         newUserInfo2.setPeerId(5L);
-        
-   //     addUserCommand.setContact(newUserInfo2);
-    //    addUserCommand.execute();     
+        integrateConnectionCommand.setUserInfo(newUserInfo2);
+        integrateConnectionCommand.execute();    
         
         int activePeerListSize = appModel.getActivePeerList().getActivePeers().size();
         
