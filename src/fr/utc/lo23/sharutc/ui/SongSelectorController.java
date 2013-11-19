@@ -16,6 +16,8 @@ public class SongSelectorController extends DragPreviewDrawer implements SongCar
 
     private static final Logger log = LoggerFactory
             .getLogger(SongSelectorController.class);
+    
+    private ISongListController mInterface;
     /**
      * Song Card selected by the user
      */
@@ -29,6 +31,10 @@ public class SongSelectorController extends DragPreviewDrawer implements SongCar
     public void init(StackPane dragPreview) {
         super.init(dragPreview);
         mSongCardSelected = new ArrayList<SongCard>();
+    }
+    
+    public void setInterface(ISongListController i) {
+        mInterface = i;
     }
 
     @Override
@@ -74,6 +80,9 @@ public class SongSelectorController extends DragPreviewDrawer implements SongCar
     @Override
     public void onSongDetailsRequested(Music music) {
         log.info("onSongDetailsRequested: " + music.getTitle());
+        if(mInterface != null) {
+            mInterface.onSongDetailRequested(music);
+        }        
     }
 
     @Override
@@ -90,9 +99,10 @@ public class SongSelectorController extends DragPreviewDrawer implements SongCar
             mSongCardSelected.add(songCard);
         }
     }
-    
+
     @Override
-    public void onDetach() {}
+    public void onDetach() {
+    }
 
     /**
      * Display SongCard selected as Drag preview
@@ -110,5 +120,8 @@ public class SongSelectorController extends DragPreviewDrawer implements SongCar
         }
     }
 
-    
+    public interface ISongListController {
+        
+        void onSongDetailRequested(Music music);
+    }
 }

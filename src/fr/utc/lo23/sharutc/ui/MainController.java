@@ -31,9 +31,15 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
 import javafx.scene.Parent;
 
-public class MainController implements Initializable, PeopleHomeController.IPeopleHomeController, SearchResultController.ISearchResultController, ArtistsDetailController.IArtistsDetailController, AlbumsDetailController.IAlbumsDetailController {
+public class MainController implements Initializable,
+        PeopleHomeController.IPeopleHomeController,
+        SearchResultController.ISearchResultController,
+        ArtistsDetailController.IArtistsDetailController,
+        AlbumsDetailController.IAlbumsDetailController,
+        SongSelectorController.ISongListController {
 
     private static final Logger log = LoggerFactory.getLogger(MainController.class);
     @Inject
@@ -62,7 +68,6 @@ public class MainController implements Initializable, PeopleHomeController.IPeop
         //TODO Remove once we get a real list of Musics
         population = new ArrayList();
         populateMusics();
-
 
         try {
             final Result loadingResult = mFxmlLoader.load(getClass().getResource("/fr/utc/lo23/sharutc/ui/fxml/player.fxml"));
@@ -102,7 +107,8 @@ public class MainController implements Initializable, PeopleHomeController.IPeop
     }
 
     /**
-     * display the overlay on the player to inform that the song can be dropped here
+     * display the overlay on the player to inform that the song can be dropped
+     * here
      *
      * @param visible
      */
@@ -114,12 +120,12 @@ public class MainController implements Initializable, PeopleHomeController.IPeop
     @FXML
     private void handleMenuButtonAction(ActionEvent event) throws IOException {
         detachRightpane();
-        
 
         if (event.getSource() == songsbutton) {
             mCurrentLoadedRighpaneResult = mFxmlLoader.load(getClass().getResource("/fr/utc/lo23/sharutc/ui/fxml/song_list.fxml"));
             ((DragPreviewDrawer) mCurrentLoadedRighpaneResult.getController()).init(mDragPreview);
             ((SongListController) mCurrentLoadedRighpaneResult.getController()).createCards();
+            ((SongListController) mCurrentLoadedRighpaneResult.getController()).setInterface(this);
         } else if (event.getSource() == peoplebutton) {
             mCurrentLoadedRighpaneResult = mFxmlLoader.load(getClass().getResource("/fr/utc/lo23/sharutc/ui/fxml/people_home.fxml"));
             ((PeopleHomeController) mCurrentLoadedRighpaneResult.getController()).setInterface(this);
@@ -136,24 +142,24 @@ public class MainController implements Initializable, PeopleHomeController.IPeop
             logoutButton.getScene().setRoot(loginRoot);
         }
 
-       attachRightpane(mCurrentLoadedRighpaneResult);
+        attachRightpane(mCurrentLoadedRighpaneResult);
     }
 
-    public void detachRightpane(){
-         if(mCurrentLoadedRighpaneResult!=null&& mCurrentLoadedRighpaneResult.getController() instanceof RighpaneInterface){
-            ((RighpaneInterface)mCurrentLoadedRighpaneResult.getController()).onDetach();
+    public void detachRightpane() {
+        if (mCurrentLoadedRighpaneResult != null && mCurrentLoadedRighpaneResult.getController() instanceof RighpaneInterface) {
+            ((RighpaneInterface) mCurrentLoadedRighpaneResult.getController()).onDetach();
         }
         ObservableList<Node> children = rightpane.getChildren();
         children.clear();
     }
-    
-    public void attachRightpane(Result mCurrentLoadedRighpaneResult){
+
+    public void attachRightpane(Result mCurrentLoadedRighpaneResult) {
         ObservableList<Node> children = rightpane.getChildren();
-         if (mCurrentLoadedRighpaneResult != null) {
+        if (mCurrentLoadedRighpaneResult != null) {
             children.add((Node) mCurrentLoadedRighpaneResult.getRoot());
         }
     }
-    
+
     @FXML
     public void handleTextEntered(ActionEvent actionEvent) throws IOException {
         detachRightpane();
@@ -192,10 +198,10 @@ public class MainController implements Initializable, PeopleHomeController.IPeop
         if (db.hasString() && db.getString().equals(SongCard.DROP_KEY)) {
             final SongCard droppedCard = (SongCard) dragEvent.getGestureSource();
             //if the card comes from SongSelectorController
-            if (mCurrentLoadedRighpaneResult.getController() instanceof SongSelectorController||mCurrentLoadedRighpaneResult.getController() instanceof SearchResultController) {
+            if (mCurrentLoadedRighpaneResult.getController() instanceof SongSelectorController || mCurrentLoadedRighpaneResult.getController() instanceof SearchResultController) {
                 //Add all selected song to the player
-                final ArrayList<SongCard> songs =
-                        ((SongSelectorController) mCurrentLoadedRighpaneResult.getController()).getSelectedSong();
+                final ArrayList<SongCard> songs
+                        = ((SongSelectorController) mCurrentLoadedRighpaneResult.getController()).getSelectedSong();
                 for (SongCard songCard : songs) {
                     mPlayerController.addSong(songCard.getModel());
                     songCard.dropped();
@@ -248,7 +254,7 @@ public class MainController implements Initializable, PeopleHomeController.IPeop
             log.error(e.getMessage());
         }
     }
-    
+
     @Override
     public void onAlbumDetailRequested(Music music) {
         ObservableList<Node> children = rightpane.getChildren();
@@ -274,7 +280,6 @@ public class MainController implements Initializable, PeopleHomeController.IPeop
         final ObservableList<Music> listData = FXCollections.observableArrayList();
         listData.addAll(population);
 
-
         listView.setItems(listData);
         listView.setCellFactory(new Callback<ListView<Music>, ListCell<Music>>() {
             @Override
@@ -290,7 +295,7 @@ public class MainController implements Initializable, PeopleHomeController.IPeop
     private void populateMusics() {
         for (int i = 0; i < 5; i++) {
             for (int j = 0; j < 3; j++) {
-                for(int k = 0; k < 3; k++) {
+                for (int k = 0; k < 3; k++) {
                     Music m = new Music();
                     m.setTitle("Music " + String.valueOf(k + 3 * j));
                     m.setArtist("Artist " + String.valueOf(i));
@@ -301,6 +306,19 @@ public class MainController implements Initializable, PeopleHomeController.IPeop
                     population.add(m);
                 }
             }
+        }
+    }
+
+    @Override
+    public void onSongDetailRequested(Music music) {
+        ObservableList<Node> children = rightpane.getChildren();
+        children.clear();
+        log.info("Music detail requested : " + music.getAlbum());
+        try {
+            mCurrentLoadedRighpaneResult = mFxmlLoader.load(getClass().getResource("/fr/utc/lo23/sharutc/ui/fxml/song_detail.fxml"));
+            children.add((Node) mCurrentLoadedRighpaneResult.getRoot());
+        } catch (IOException e) {
+            log.error(e.getMessage());
         }
     }
 }
