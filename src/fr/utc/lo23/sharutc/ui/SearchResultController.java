@@ -4,8 +4,6 @@ import com.cathive.fx.guice.GuiceFXMLLoader;
 import com.google.inject.Inject;
 import fr.utc.lo23.sharutc.controler.command.search.MusicSearchCommand;
 import fr.utc.lo23.sharutc.model.AppModel;
-import fr.utc.lo23.sharutc.model.AppModelImpl;
-import fr.utc.lo23.sharutc.model.ErrorBus;
 import fr.utc.lo23.sharutc.model.domain.Music;
 import fr.utc.lo23.sharutc.model.domain.SearchCriteria;
 import fr.utc.lo23.sharutc.model.userdata.UserInfo;
@@ -17,8 +15,6 @@ import fr.utc.lo23.sharutc.ui.custom.card.SongCard;
 import fr.utc.lo23.sharutc.ui.custom.card.UserCard;
 import fr.utc.lo23.sharutc.util.CollectionChangeListener;
 import fr.utc.lo23.sharutc.util.CollectionEvent;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import javafx.fxml.Initializable;
 
 import java.net.URL;
@@ -27,7 +23,7 @@ import javafx.scene.layout.VBox;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class SearchResultController extends SongSelectorController implements CollectionChangeListener ,Initializable,AlbumCard.IAlbumCard, UserCard.IUserCard, ArtistCard.IArtistCard {
+public class SearchResultController extends SongSelectorController implements RighpaneInterface, CollectionChangeListener ,Initializable,AlbumCard.IAlbumCard, UserCard.IUserCard, ArtistCard.IArtistCard {
     
     private static final Logger log = LoggerFactory
             .getLogger(SearchResultController.class);
@@ -41,8 +37,7 @@ public class SearchResultController extends SongSelectorController implements Co
     private ISearchResultController mInterface;
 
    
-    @Inject
-    private GuiceFXMLLoader mFxmlLoader;
+  
     @Inject
     private AppModel mAppModel;
     
@@ -93,6 +88,7 @@ public class SearchResultController extends SongSelectorController implements Co
         
         final Music m = new Music();
             m.setFileName("Music ");
+            m.setTitle("music");
             m.setAlbum("Album");
             m.setArtist("Artist");
         SongCard newCard = new SongCard(m, this, true);
@@ -162,6 +158,13 @@ public class SearchResultController extends SongSelectorController implements Co
             
         }
        
+    }
+
+    
+
+    @Override
+    public void onDetach() {
+        mAppModel.getSearchResults().removePropertyChangeListener(this);
     }
 
    

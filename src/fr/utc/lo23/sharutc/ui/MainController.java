@@ -113,9 +113,8 @@ public class MainController implements Initializable, PeopleHomeController.IPeop
 
     @FXML
     private void handleMenuButtonAction(ActionEvent event) throws IOException {
-
-        ObservableList<Node> children = rightpane.getChildren();
-        children.clear();
+        detachRightpane();
+        
 
         if (event.getSource() == songsbutton) {
             mCurrentLoadedRighpaneResult = mFxmlLoader.load(getClass().getResource("/fr/utc/lo23/sharutc/ui/fxml/song_list.fxml"));
@@ -136,19 +135,31 @@ public class MainController implements Initializable, PeopleHomeController.IPeop
             logoutButton.getScene().setRoot(loginRoot);
         }
 
-        if (mCurrentLoadedRighpaneResult != null) {
+       attachRightpane(mCurrentLoadedRighpaneResult);
+    }
+
+    public void detachRightpane(){
+         if(mCurrentLoadedRighpaneResult!=null&& mCurrentLoadedRighpaneResult.getController() instanceof RighpaneInterface){
+            ((RighpaneInterface)mCurrentLoadedRighpaneResult.getController()).onDetach();
+        }
+        ObservableList<Node> children = rightpane.getChildren();
+        children.clear();
+    }
+    
+    public void attachRightpane(Result mCurrentLoadedRighpaneResult){
+        ObservableList<Node> children = rightpane.getChildren();
+         if (mCurrentLoadedRighpaneResult != null) {
             children.add((Node) mCurrentLoadedRighpaneResult.getRoot());
         }
     }
-
+    
     @FXML
     public void handleTextEntered(ActionEvent actionEvent) throws IOException {
-        ObservableList<Node> children = rightpane.getChildren();
-        children.clear();
-        final Result loadingResult = mFxmlLoader.load(getClass().getResource("/fr/utc/lo23/sharutc/ui/fxml/searchresult_detail.fxml"));
-        ((SearchResultController) loadingResult.getController()).setInterface(this);
-        ((SearchResultController) loadingResult.getController()).init(mDragPreview);
-        children.add((Node) loadingResult.getRoot());
+        detachRightpane();
+        mCurrentLoadedRighpaneResult = mFxmlLoader.load(getClass().getResource("/fr/utc/lo23/sharutc/ui/fxml/searchresult_detail.fxml"));
+        ((SearchResultController) mCurrentLoadedRighpaneResult.getController()).setInterface(this);
+        ((SearchResultController) mCurrentLoadedRighpaneResult.getController()).init(mDragPreview);
+        attachRightpane(mCurrentLoadedRighpaneResult);
 
     }
 

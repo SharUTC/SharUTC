@@ -12,7 +12,7 @@ import javafx.scene.layout.FlowPane;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class AlbumsDetailController implements Initializable, AlbumCard.IAlbumCard {
+public class AlbumsDetailController implements RighpaneInterface, Initializable, AlbumCard.IAlbumCard {
     
     private static final Logger log = LoggerFactory.getLogger(PeopleHomeController.class);
     public IAlbumsDetailController mInterface;
@@ -72,6 +72,9 @@ public class AlbumsDetailController implements Initializable, AlbumCard.IAlbumCa
         log.info("onArtistDetailRequested " + music.getAlbum());
         mInterface.onAlbumDetailRequested(music);
     }
+
+    @Override
+    public void onDetach() {}
     
     public interface IAlbumsDetailController {
 

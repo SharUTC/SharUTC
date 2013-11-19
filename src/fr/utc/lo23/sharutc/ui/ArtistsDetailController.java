@@ -11,7 +11,7 @@ import javafx.scene.layout.FlowPane;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ArtistsDetailController implements Initializable, ArtistCard.IArtistCard{
+public class ArtistsDetailController implements RighpaneInterface, Initializable, ArtistCard.IArtistCard{
     
     private static final Logger log = LoggerFactory.getLogger(PeopleHomeController.class);
     public IArtistsDetailController mInterface;
@@ -52,6 +52,9 @@ public class ArtistsDetailController implements Initializable, ArtistCard.IArtis
         log.info("onArtistDetailRequested " + music.getArtist());
         mInterface.onArtistDetailRequested(music);
     }
+
+    @Override
+    public void onDetach() {}
     
     public interface IArtistsDetailController {
 

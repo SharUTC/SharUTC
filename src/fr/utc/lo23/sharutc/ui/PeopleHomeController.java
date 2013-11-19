@@ -273,6 +273,9 @@ public class PeopleHomeController extends DragPreviewDrawer implements Initializ
         }
     }
 
+    @Override
+    public void onDetach() {}
+
     public interface IPeopleHomeController {
 
         /**
