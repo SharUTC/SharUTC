@@ -9,9 +9,13 @@ package tests;
 /**
  *
  *
+ *
  */
 public class ConnectionDisconnectionTestModule extends TestModule{
     
+    /**
+     *
+     */
     @Override
     public void configure(){
         super.configure();
