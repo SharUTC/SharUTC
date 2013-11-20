@@ -106,10 +106,10 @@ public class PeopleHomeController extends DragPreviewDrawer implements Initializ
         //TODO create Group Edition View
     }
 
-    @Override
+       @Override
     public void onGroupRightsRequested(Category category) {
         log.info("onGroupRightsRequested " + category.getName());
-        //TODO create Rights Edition View
+        mInterface.onGroupRightsRequested(category);
     }
 
     @Override
@@ -289,5 +289,6 @@ public class PeopleHomeController extends DragPreviewDrawer implements Initializ
          * display group details
          */
         void onGroupDetailRequested();
+        void onGroupRightsRequested (Category category) ;
     }
 }
