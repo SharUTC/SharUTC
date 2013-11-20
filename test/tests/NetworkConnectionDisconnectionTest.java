@@ -2,6 +2,7 @@ package tests;
 
 import com.google.inject.Inject;
 import fr.utc.lo23.sharutc.GuiceJUnitRunner;
+import fr.utc.lo23.sharutc.controler.command.account.IntegrateDisconnectionCommand;
 import fr.utc.lo23.sharutc.controler.command.account.IntegrateUserInfoAndReplyCommand;
 import fr.utc.lo23.sharutc.controler.command.account.IntegrateUserInfoCommand;
 import fr.utc.lo23.sharutc.controler.network.Message;
@@ -39,9 +40,11 @@ public class NetworkConnectionDisconnectionTest {
     @Inject
     private NetworkServiceMock networkService;    
     @Inject
-    private IntegrateUserInfoCommand integrateUserInfo;
+    private IntegrateUserInfoCommand integrateUserInfoCommand;
     @Inject
-    private IntegrateUserInfoAndReplyCommand integrateUserInfoAndReply;
+    private IntegrateUserInfoAndReplyCommand integrateUserInfoAndReplyCommand;
+    @Inject
+    private IntegrateDisconnectionCommand integrateDisconnectionCommand;
     private AppModelBuilder appModelBuilder = null;
 
     @Before
@@ -71,8 +74,8 @@ public class NetworkConnectionDisconnectionTest {
         userInfo.setAge(22);
         
         // call command
-        integrateUserInfo.setUserInfo(userInfo);
-        integrateUserInfo.execute();
+        integrateUserInfoCommand.setUserInfo(userInfo);
+        integrateUserInfoCommand.execute();
 
         // tests
         Assert.assertNotNull("Known doesn't peer exists", appModel.getProfile().getKnownPeerList().getPeerNameById(userInfo.getPeerId()));
@@ -91,8 +94,8 @@ public class NetworkConnectionDisconnectionTest {
         userInfo.setAge(22);
         
         // call command
-        integrateUserInfoAndReply.setUserInfo(userInfo);
-        integrateUserInfoAndReply.execute();
+        integrateUserInfoAndReplyCommand.setUserInfo(userInfo);
+        integrateUserInfoAndReplyCommand.execute();
 
         // tests
         Assert.assertNotNull("Known doesn't peer exists", appModel.getProfile().getKnownPeerList().getPeerNameById(userInfo.getPeerId()));
@@ -102,5 +105,18 @@ public class NetworkConnectionDisconnectionTest {
         Peer p = networkService.getPeer();
         Assert.assertNotNull("Message null", m);
         Assert.assertNotNull("Peer null", p);
+    }
+    
+    @Test
+    public void integrateDisconnectionCommand() {
+        // add peer
+        Peer p = new Peer(2L, "tudorluchy");
+        
+        // call command
+        integrateDisconnectionCommand.setPeerId(p.getId());
+        integrateDisconnectionCommand.execute();
+        
+        // tests
+        Assert.assertNull("Active peer exists", appModel.getActivePeerList().getByPeerId(p.getId()));
     }
 }
