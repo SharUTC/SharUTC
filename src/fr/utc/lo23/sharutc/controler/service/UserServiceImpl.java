@@ -201,9 +201,6 @@ public class UserServiceImpl implements UserService {
         log.debug("createAndSetProfile DONE");
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void connectionRequest(String login, String password) {
         Profile profileToConnect = fileService.readProfileFile(login);
@@ -226,9 +223,6 @@ public class UserServiceImpl implements UserService {
 
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void updateConnectedPeers(UserInfo userInfo) {
         ActivePeerList activePeerList = appModel.getActivePeerList();
@@ -243,9 +237,6 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void removeFromConnectedPeers(long peerId) {
         ActivePeerList activePeerList = appModel.getActivePeerList();
@@ -257,9 +248,15 @@ public class UserServiceImpl implements UserService {
     public Contact findContactByPeerId(Long peerId) {
         return getProfile().getContacts().findById(peerId);
     }
+    
+    @Override
+    public void cleanProfile(){
+        appModel.setProfile(null);
+    }
 
     @Override
     public void disconnectionRequest() {
         this.saveProfileFiles();
+        cleanProfile();
     }
 }

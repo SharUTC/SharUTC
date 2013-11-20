@@ -92,9 +92,15 @@ public interface UserService {
      * @return
      */
     public Contact findContactByPeerId(Long peerId);
+    
+    /**
+     * Clean the profile object by putting a null value in the object.
+     *
+     */
+    public void cleanProfile();
 
     /**
-     * Send a disconnection request to the network and save profile
+     * Save profile in JSON then clean the profile object.
      *
      */
     public void disconnectionRequest();

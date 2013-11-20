@@ -13,7 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * TODO : add comments
+ * Command that execute the disconnection process.
  *
  */
 public class DisconnectionCommandImpl implements DisconnectionCommand {
@@ -39,7 +39,8 @@ public class DisconnectionCommandImpl implements DisconnectionCommand {
     }
 
     /**
-     * {@inheritDoc }
+     * Save the user music files, the list of user's rights, his profile information
+     * and notify the network of its disconnection. Then stop all network threads.
      */
     @Override
     public void execute() {
