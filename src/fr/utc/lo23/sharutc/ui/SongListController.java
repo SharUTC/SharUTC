@@ -68,7 +68,7 @@ public class SongListController extends SongSelectorController implements Initia
                 fileChooser.setTitle("Add a Song");
                 fileChooser.getExtensionFilters().add(extFilter);
                 final List<File> files = fileChooser.showOpenMultipleDialog(addNewSongButton.getScene().getWindow());
-                if (!files.isEmpty()) {
+                if (files != null && !files.isEmpty()) {
                     log.info("import songs !");
                     mAddToLocalCatalogCommand.setFiles(files);
                     mAddToLocalCatalogCommand.execute();
