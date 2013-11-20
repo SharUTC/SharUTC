@@ -59,7 +59,6 @@ public class MainController implements Initializable,
     public HBox bottombar;
     public Region dropOverlay;
     public Label dropOverlayLabel;
-
     //TODO Remove once we get a real list of Musics
     static public ArrayList<Music> population;
 
@@ -135,9 +134,11 @@ public class MainController implements Initializable,
         } else if (event.getSource() == albumsbutton) {
             mCurrentLoadedRighpaneResult = mFxmlLoader.load(getClass().getResource("/fr/utc/lo23/sharutc/ui/fxml/albums_detail.fxml"));
             ((AlbumsDetailController) mCurrentLoadedRighpaneResult.getController()).setInterface(this);
+            ((AlbumsDetailController) mCurrentLoadedRighpaneResult.getController()).showAlbums();
         } else if (event.getSource() == logoutButton) {
             final Parent loginRoot = mFxmlLoader.load(getClass().getResource("/fr/utc/lo23/sharutc/ui/fxml/login.fxml")).getRoot();
             logoutButton.getScene().setRoot(loginRoot);
+            return;
         }
 
         attachRightpane(mCurrentLoadedRighpaneResult);
@@ -198,8 +199,7 @@ public class MainController implements Initializable,
             //if the card comes from SongSelectorController
             if (mCurrentLoadedRighpaneResult.getController() instanceof SongSelectorController || mCurrentLoadedRighpaneResult.getController() instanceof SearchResultController) {
                 //Add all selected song to the player
-                final ArrayList<SongCard> songs
-                        = ((SongSelectorController) mCurrentLoadedRighpaneResult.getController()).getSelectedSong();
+                final ArrayList<SongCard> songs = ((SongSelectorController) mCurrentLoadedRighpaneResult.getController()).getSelectedSong();
                 for (SongCard songCard : songs) {
                     mPlayerController.addSong(songCard.getModel());
                     songCard.dropped();
@@ -237,6 +237,7 @@ public class MainController implements Initializable,
     @Override
     public void onGroupDetailRequested() {
     }
+
     @Override
     public void onGroupEditionRequested(Category category) {
         ObservableList<Node> children = rightpane.getChildren();
@@ -250,6 +251,7 @@ public class MainController implements Initializable,
             log.error(e.getMessage());
         }
     }
+
     @Override
     public void onGroupRightsRequested(Category category) {
         ObservableList<Node> children = rightpane.getChildren();
@@ -263,6 +265,7 @@ public class MainController implements Initializable,
             log.error(e.getMessage());
         }
     }
+
     @Override
     public void onArtistDetailRequested(String artistName) {
         ObservableList<Node> children = rightpane.getChildren();
@@ -271,6 +274,7 @@ public class MainController implements Initializable,
         try {
             mCurrentLoadedRighpaneResult = mFxmlLoader.load(getClass().getResource("/fr/utc/lo23/sharutc/ui/fxml/albums_detail.fxml"));
             ((AlbumsDetailController) mCurrentLoadedRighpaneResult.getController()).setInterface(this);
+            ((AlbumsDetailController) mCurrentLoadedRighpaneResult.getController()).showAlbums(artistName);
             children.add((Node) mCurrentLoadedRighpaneResult.getRoot());
         } catch (IOException e) {
             log.error(e.getMessage());
@@ -278,7 +282,7 @@ public class MainController implements Initializable,
     }
 
     @Override
-    public void onAlbumDetailRequested(String  albumName) {
+    public void onAlbumDetailRequested(String albumName) {
         ObservableList<Node> children = rightpane.getChildren();
         children.clear();
         log.info("Album detail requested : " + albumName);

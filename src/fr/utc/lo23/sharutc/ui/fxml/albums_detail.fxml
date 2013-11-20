@@ -14,7 +14,7 @@
 <VBox id="gridPane" prefWidth="-1.0" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS" 
       xmlns:fx="http://javafx.com/fxml" fx:controller="fr.utc.lo23.sharutc.ui.AlbumsDetailController" >
 
-    <Label fx:id="titlePage" styleClass="panetitle" text="Browse your albums" />
+    <Label fx:id="titleLabel" styleClass="panetitle" text="Browse your albums" />
 
     <StackPane fx:id="contentContainer" VBox.vgrow="ALWAYS">   
         <ScrollPane styleClass="myScrollPane" fitToWidth="true" fitToHeight="true">
