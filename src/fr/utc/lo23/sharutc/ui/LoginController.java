@@ -99,7 +99,14 @@ public class LoginController implements Initializable, PropertyChangeListener {
         mAppModel.addPropertyChangeListener(this);
 
         //listen for changes on the Error Bus
-        mAppModel.getErrorBus().addPropertyChangeListener(this);
+        mAppModel.getErrorBus().addPropertyChangeListener(this);                
+    }
+    
+    //TODO remove after test
+    public void automaticLogin(String login, String password) {
+        mConnectionRequestCommand.setLogin(login);
+        mConnectionRequestCommand.setPassword(password);
+        mConnectionRequestCommand.execute();
     }
 
     /**

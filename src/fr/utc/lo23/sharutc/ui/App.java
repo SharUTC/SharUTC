@@ -25,18 +25,17 @@ public class App extends GuiceApplication {
     @Override
     public void start(Stage stage) throws Exception {
 
-        final GuiceFXMLLoader.Result loadingResult = mFxmlLoader.load(getClass().getResource("/fr/utc/lo23/sharutc/ui/fxml/main.fxml"));
+        final GuiceFXMLLoader.Result loadingResult = mFxmlLoader.load(getClass().getResource("/fr/utc/lo23/sharutc/ui/fxml/login.fxml"));
         final Parent root = loadingResult.getRoot();
 
         Scene scene = new Scene((Parent) root);
         scene.getStylesheets().add(this.getClass().getResource("/fr/utc/lo23/sharutc/ui/css/main.css").toExternalForm());
         stage.setScene(scene);
 
-        //If needed, cast your controller
-        //and call any public method here
-        ((MainController) loadingResult.getController()).sceneCreated();
-
         stage.show();
+        
+        //Use for an automatic login
+        //((LoginController)loadingResult.getController()).automaticLogin("myLogin", "myPassword");
     }
 
     /**
