@@ -232,15 +232,15 @@
 }
 
 .plusText{
- 	-fx-font-size : 60px;
-   	-fx-text-fill: #BDC3C7;
-   	-fx-font-weight: bold;
+    -fx-font-size : 60px;
+    -fx-text-fill: #BDC3C7;
+    -fx-font-weight: bold;
 }
 
 #boxtitle{
     -fx-border-color: #BDC3C7;
     -fx-border-width: 0px 0px 2px 0px;
-    
+
 }
 
 .rectButton {
@@ -253,6 +253,19 @@
 }
 .rectButton:hover {
     -fx-opacity: 0.7;
+}
+
+.bigBlueButton {
+    -fx-padding : 7px 25px 7px 25px; 
+    -fx-background-radius: 0;
+    -fx-font-size : 13px;
+    -fx-border-width : 0px 0px 2px 0px;
+    -fx-background-color: #33B5E5;
+    -fx-border-color : #0099CC;
+}
+
+.bigBlueButton:hover {
+    -fx-opacity : 0.7;
 }
 
 .bgBlue{

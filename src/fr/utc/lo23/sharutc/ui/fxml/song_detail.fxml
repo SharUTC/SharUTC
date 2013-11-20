@@ -34,7 +34,7 @@
         
         <right>
             <VBox alignment="TOP_RIGHT" >
-                <Button fx:id="addRemoveButton" text="Add" styleClass="bgBlue"  />
+                <Button fx:id="addRemoveButton" text="Add" styleClass="bigBlueButton"  />
                 
                 
                 <GridPane >

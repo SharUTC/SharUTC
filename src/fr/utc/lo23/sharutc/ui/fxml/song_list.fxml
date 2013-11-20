@@ -9,13 +9,17 @@
 <VBox id="gridPane" GridPane.hgrow="ALWAYS"
       GridPane.vgrow="ALWAYS" xmlns:fx="http://javafx.com/fxml"
       fx:controller="fr.utc.lo23.sharutc.ui.SongListController">
-
-    <BorderPane>
+      
+    <padding>
+        <javafx.geometry.Insets top="10" />
+    </padding>    
+    
+    <BorderPane >
         <left>
-            <Label text="Manage your song list" styleClass="panetitle"/>
+            <Label alignment="TOP_LEFT"  text="Manage your song list" styleClass="panetitle"/>
         </left>
         <right>
-            <Button fx:id="addNewSongButton" styleClass="rectButton,bgBlue" text="add a song"
+            <Button fx:id="addNewSongButton" styleClass="bigBlueButton,bgBlue" text="add a song"
                     BorderPane.alignment="CENTER_RIGHT">
                 <font>
                     <Font size="12.0"/>
@@ -48,8 +52,8 @@
         </VBox.margin>
 
         <HBox GridPane.hgrow="ALWAYS"
-                  GridPane.vgrow="ALWAYS" fx:id="tagContainer"
-                  prefHeight="-1.0" prefWidth="-1.0" >
+              GridPane.vgrow="ALWAYS" fx:id="tagContainer"
+              prefHeight="-1.0" prefWidth="-1.0" >
             <padding>
                 <javafx.geometry.Insets bottom="5" left="5" right="5" top="10"/>
             </padding>
