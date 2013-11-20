@@ -30,9 +30,10 @@ import javafx.geometry.Insets;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.text.TextAlignment;
 
 public class SongListController extends SongSelectorController implements Initializable,
-        CollectionChangeListener<Music>{
+        CollectionChangeListener<Music> {
 
     private static final Logger log = LoggerFactory
             .getLogger(SongListController.class);
@@ -45,11 +46,14 @@ public class SongListController extends SongSelectorController implements Initia
     @FXML
     public ScrollPane tagScrollPane;
     @FXML
+    public StackPane contentContainer;
+    @FXML
     public Label titleLabel;
     @Inject
     public AppModel mAppModel;
     @Inject
     private AddToLocalCatalogCommand mAddToLocalCatalogCommand;
+    private Label placeHolderLabel;
 
     @Override
     public void init(StackPane dragPreview) {
@@ -78,13 +82,13 @@ public class SongListController extends SongSelectorController implements Initia
                 }
             }
         });
-        
+
         //Listen to changes on the Local Catalog
         mAppModel.getLocalCatalog().addPropertyChangeListener(this);
 
         showTags();
     }
-    
+
     public void showCatalog() {
         showCatalog(null);
     }
@@ -92,29 +96,39 @@ public class SongListController extends SongSelectorController implements Initia
     public void showCatalog(String albumFilter) {
         final Catalog catalog = mAppModel.getLocalCatalog();
         ArrayList<Music> musics = new ArrayList<Music>();
-        
-        if(albumFilter != null) {
+
+        if (albumFilter != null) {
             titleLabel.setText(albumFilter + " Album");
         }
 
         for (final Music m : catalog.getMusics()) {
-            if(albumFilter == null || albumFilter.equals(m.getAlbum())) {
+            if (albumFilter == null || albumFilter.equals(m.getAlbum())) {
                 musics.add(m);
-            }            
-        }
-
-        //TODO remove
-        if (musics.isEmpty()) {            
-            musics.add(MainController.population.get(0));
+            }
         }
 
         songsContainer.getChildren().clear();
-        for (Music m : musics) {
-            songsContainer.getChildren().add(new SongCard(m, this, true));
+        if (musics.isEmpty()) {
+            placeHolderLabel = new Label("You have no songs. Please use the \"Add\" button in the left top corner.");
+            placeHolderLabel.getStyleClass().add("placeHolderLabel");
+            placeHolderLabel.setWrapText(true);
+            placeHolderLabel.setTextAlignment(TextAlignment.CENTER);
+            contentContainer.getChildren().add(placeHolderLabel);
+        } else {
+            for (Music m : musics) {
+                songsContainer.getChildren().add(new SongCard(m, this, true));
+            }
         }
+
+
+
     }
-    
+
     private void songAdded(Music music) {
+        if(placeHolderLabel != null) {
+            contentContainer.getChildren().remove(placeHolderLabel);
+            placeHolderLabel = null;
+        }
         songsContainer.getChildren().add(new SongCard(music, this, true));
     }
 
@@ -168,11 +182,10 @@ public class SongListController extends SongSelectorController implements Initia
         mAppModel.getLocalCatalog().removePropertyChangeListener(this);
     }
 
-
     @Override
     public void collectionChanged(CollectionEvent<Music> ev) {
         final Type eventType = ev.getType();
-        if(CollectionEvent.Type.ADD.equals(eventType)) {
+        if (CollectionEvent.Type.ADD.equals(eventType)) {
             log.info("a new music has just been added to the local catalog");
             songAdded(ev.getItem());
         }

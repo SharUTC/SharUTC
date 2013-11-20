@@ -28,21 +28,23 @@
         </right>
     </BorderPane>
 
-    <ScrollPane xmlns:fx="http://javafx.com/fxml" styleClass="myScrollPane"
-                VBox.vgrow="ALWAYS" fitToWidth="true" fitToHeight="true">
+    <StackPane fx:id="contentContainer" VBox.vgrow="ALWAYS">   
+        <ScrollPane styleClass="myScrollPane"
+                fitToWidth="true" fitToHeight="true">
 
-        <FlowPane fx:id="songsContainer"
+            <FlowPane fx:id="songsContainer"
                   GridPane.hgrow="ALWAYS"
                   GridPane.vgrow="ALWAYS"
                   prefHeight="-1.0" prefWidth="-1.0"
                   prefWrapLength="230.0" vgap="10.0"
                   hgap="10.0">
-            <padding>
-                <javafx.geometry.Insets bottom="5" left="5" right="5" top="5"/>
-            </padding>
-        </FlowPane>
+                <padding>
+                    <javafx.geometry.Insets bottom="5" left="5" right="5" top="5"/>
+                </padding>
+            </FlowPane>
 
-    </ScrollPane>
+        </ScrollPane>
+    </StackPane>
     
     <ScrollPane styleClass="myScrollPane" fx:id="tagScrollPane"
                 VBox.vgrow="NEVER" prefHeight="135" fitToWidth="true" fitToHeight="true" vbarPolicy="NEVER"
