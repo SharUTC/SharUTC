@@ -95,7 +95,7 @@ public class SearchResultController extends SongSelectorController implements Ri
        
         addChild(newCard);
         
-        SimpleCard card = new ArtistCard(m, this);
+        SimpleCard card = new ArtistCard("Artist ", this);
         this.addChild(card);
         
         card = new AlbumCard(m, this);
@@ -128,8 +128,8 @@ public class SearchResultController extends SongSelectorController implements Ri
  
 
     @Override
-    public void onArtistDetailRequested(Music music) {
-        mInterface.onArtistDetailRequested(music);
+    public void onArtistDetailRequested(String artistName) {
+        mInterface.onArtistDetailRequested(artistName);
     }
     
      @Override
@@ -146,7 +146,7 @@ public class SearchResultController extends SongSelectorController implements Ri
                     albumList.addChild(new AlbumCard(m, this));
                 }
                 if(m.getArtist().contains(search)){
-                    artistList.addChild(new ArtistCard(m, this));
+                    artistList.addChild(new ArtistCard(m.getArtist(), this));
                 }
                 if(m.getTitle().contains(search)){
                     songList.addChild(new SongCard(m, this, mAppModel.getProfile().getUserInfo().getPeerId() == m.getOwnerPeerId()));
@@ -186,7 +186,7 @@ public class SearchResultController extends SongSelectorController implements Ri
          *
          * @param music
          */
-        public void onArtistDetailRequested(Music music);
+        public void onArtistDetailRequested(String artistName);
         
          /**
          * display album details

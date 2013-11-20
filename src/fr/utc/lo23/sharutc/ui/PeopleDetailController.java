@@ -42,7 +42,7 @@ public class PeopleDetailController extends SongSelectorController implements In
             songsContainer.getChildren().add(newCard);
         }
         for (int i = 0; i < 3; i++) {
-            ArtistCard newCard = new ArtistCard();
+            ArtistCard newCard = new ArtistCard("Artist " + String.valueOf(i), null);
             artistsContainer.getChildren().add(newCard);
         }
         for (int i = 0; i < 3; i++) {

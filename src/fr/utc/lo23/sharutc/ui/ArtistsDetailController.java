@@ -1,10 +1,13 @@
 package fr.utc.lo23.sharutc.ui;
 
+import com.google.inject.Inject;
+import fr.utc.lo23.sharutc.model.AppModel;
 import fr.utc.lo23.sharutc.model.domain.Music;
 import fr.utc.lo23.sharutc.ui.custom.card.ArtistCard;
 import javafx.fxml.Initializable;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;
 import javafx.scene.layout.FlowPane;
@@ -19,38 +22,40 @@ public class ArtistsDetailController implements RighpaneInterface, Initializable
     @FXML
     public FlowPane artistsContainer;
     
+    @Inject
+    private AppModel mAppModel;
+    
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        createCards();
+        showArtists();
     }
     
     public void setInterface(IArtistsDetailController i) {
         mInterface = i;
     }
     
-    private void createCards() {
-        for(Music m : MainController.population) {
-            if(!existsAlready(m)) {
-                ArtistCard card = new ArtistCard(m, this);
-                artistsContainer.getChildren().add(card);
+    private void showArtists() {
+        final ArrayList<String> artists = new ArrayList<String>();
+        
+        //retrieve all the artists
+        for(Music m : mAppModel.getLocalCatalog().getMusics()) {
+            final String currentArtist = m.getArtist();
+            if(!artists.contains(currentArtist)) {
+                artists.add(currentArtist);
             }
-        } 
-    }
-    
-    private boolean existsAlready(Music m) {
-        for(Object c : artistsContainer.getChildren().toArray()) {
-            ArtistCard card = (ArtistCard) c;
-            if(card.artistName.getText().equals(m.getArtist())) {
-                return true;
-            }
-        }      
-        return false;
+        }
+        
+        //display the artists
+        for(String artistName : artists) {
+            artistsContainer.getChildren().add(new ArtistCard(artistName, this));
+        }
+        
     }
 
     @Override
-    public void onArtistDetailRequested(Music music) {
-        log.info("onArtistDetailRequested " + music.getArtist());
-        mInterface.onArtistDetailRequested(music);
+    public void onArtistDetailRequested(String artistName) {
+        log.info("onArtistDetailRequested " + artistName);
+        mInterface.onArtistDetailRequested(artistName);
     }
 
     @Override
@@ -63,7 +68,7 @@ public class ArtistsDetailController implements RighpaneInterface, Initializable
          *
          * @param music
          */
-        public void onArtistDetailRequested(Music music);
+        public void onArtistDetailRequested(String artistName);
     }
 
 }

@@ -265,14 +265,14 @@ public class MainController implements Initializable,
         }
     }
     @Override
-    public void onArtistDetailRequested(Music music) {
+    public void onArtistDetailRequested(String artistName) {
         ObservableList<Node> children = rightpane.getChildren();
         children.clear();
-        log.info("Artist detail requested : " + music.getArtist());
+        log.info("Artist detail requested : " + artistName);
         try {
             mCurrentLoadedRighpaneResult = mFxmlLoader.load(getClass().getResource("/fr/utc/lo23/sharutc/ui/fxml/albums_detail.fxml"));
             ((AlbumsDetailController) mCurrentLoadedRighpaneResult.getController()).setInterface(this);
-            ((AlbumsDetailController) mCurrentLoadedRighpaneResult.getController()).createCards(music.getArtist());
+            ((AlbumsDetailController) mCurrentLoadedRighpaneResult.getController()).createCards(artistName);
             children.add((Node) mCurrentLoadedRighpaneResult.getRoot());
         } catch (IOException e) {
             log.error(e.getMessage());

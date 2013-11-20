@@ -1,6 +1,5 @@
 package fr.utc.lo23.sharutc.ui.custom.card;
 
-import fr.utc.lo23.sharutc.model.domain.Music;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.scene.control.Label;
@@ -9,31 +8,22 @@ import javafx.scene.input.MouseEvent;
 
 public class ArtistCard extends SimpleCard implements EventHandler<Event>{
     
-    private Music mMusic;
+    private String mArtistName;
     private IArtistCard mInterface;
     
-    public Label artistName;
+    public Label artistNameLabel;
     
-    //TODO Remove once we have a real library of songs
-    @Deprecated
-    public ArtistCard() {
-        super("/fr/utc/lo23/sharutc/ui/fxml/artist_card.fxml");
-    }
-    
-    public ArtistCard(Music music, IArtistCard i) {
+    public ArtistCard(String artistName, IArtistCard i) {
         super("/fr/utc/lo23/sharutc/ui/fxml/artist_card.fxml");
         setOnMouseClicked(this);
         mInterface = i;
-        initModel(music);
-    }
-    
-    private void initModel(Music music) {
-        mMusic = music;
-        artistName.setText(mMusic.getArtist());
+        mArtistName = artistName;
+        artistNameLabel.setText(artistName);
     }
 
-    public Music getModel() {
-        return mMusic;
+
+    public String getArtistName() {
+        return mArtistName;
     }
 
     @Override
@@ -42,7 +32,7 @@ public class ArtistCard extends SimpleCard implements EventHandler<Event>{
             MouseEvent mouseEvent = (MouseEvent) event;
             if (mouseEvent.getButton().equals(MouseButton.PRIMARY)) {
                 if (mouseEvent.getClickCount() == 2) {
-                    mInterface.onArtistDetailRequested(mMusic);
+                    mInterface.onArtistDetailRequested(mArtistName);
                 }
             }
         }
@@ -55,7 +45,7 @@ public class ArtistCard extends SimpleCard implements EventHandler<Event>{
          *
          * @param music
          */
-        public void onArtistDetailRequested(Music music);
+        public void onArtistDetailRequested(String artistName);
 
     }
 }
