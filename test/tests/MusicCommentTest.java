@@ -6,7 +6,6 @@ import fr.utc.lo23.sharutc.GuiceJUnitRunner.GuiceModules;
 import fr.utc.lo23.sharutc.controler.command.music.AddCommentCommand;
 import fr.utc.lo23.sharutc.controler.command.music.EditCommentCommand;
 import fr.utc.lo23.sharutc.controler.command.music.RemoveCommentCommand;
-import fr.utc.lo23.sharutc.controler.service.FileService;
 import fr.utc.lo23.sharutc.controler.service.MusicService;
 import fr.utc.lo23.sharutc.controler.service.UserService;
 import fr.utc.lo23.sharutc.model.AppModel;
@@ -23,7 +22,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- *
+ * Allow testing of the adding, editing and removing of comments on musics
  */
 @RunWith(GuiceJUnitRunner.class)
 @GuiceModules({MusicCommentTestModule.class})
@@ -33,8 +32,6 @@ public class MusicCommentTest {
             .getLogger(MusicCommentTest.class);
     @Inject
     private AppModel appModel;
-    @Inject
-    private FileService fileService;
     @Inject
     private MusicService musicService;
     @Inject
@@ -63,7 +60,7 @@ public class MusicCommentTest {
     }
 
     /**
-     *
+     * Allow testing of the adding of comments on musics
      */
     @Test
     public void addComment() {
@@ -71,28 +68,32 @@ public class MusicCommentTest {
         dummyMusic.setFileName("Dummy Music");
         addCommentCommand.setMusic(dummyMusic);
 
-        Peer dummyPeer = new Peer();
-        dummyPeer.setDisplayName("Dummy Peer");
-        dummyPeer.setId(436907);
-        // dummyPeer.setIpAddress("192.168.1.1");
-        addCommentCommand.setAuthorPeer(dummyPeer);
+        Peer dummyAuthorPeer = new Peer();
+        dummyAuthorPeer.setDisplayName("Dummy Peer 0");
+        dummyAuthorPeer.setId(436907);
+        addCommentCommand.setAuthorPeer(dummyAuthorPeer);
+
+        Peer dummyOwnerPeer = new Peer();
+        dummyOwnerPeer.setDisplayName("Dummy Peer 1");
+        dummyOwnerPeer.setId(907868);
+        addCommentCommand.setOwnerPeer(dummyOwnerPeer);
 
         addCommentCommand.setComment("This is a comment");
 
         addCommentCommand.execute();
 
-        Comment myComment = dummyMusic.getComment(dummyPeer, 0);
+        Comment myComment = dummyMusic.getComment(dummyAuthorPeer, 0);
 
-        Assert.assertNotNull("editComment failed", myComment);
+        Assert.assertNotNull("addComment failed", myComment);
 
         if (myComment != null) {
-            Assert.assertSame("editComment failed", myComment.getText(),
+            Assert.assertSame("addComment failed", myComment.getText(),
                     "This is a comment");
         }
     }
 
     /**
-     *
+     * Allow testing of the editing of comments on musics
      */
     @Test
     public void editComment() {
@@ -100,24 +101,29 @@ public class MusicCommentTest {
         dummyMusic.setFileName("Dummy Music");
         addCommentCommand.setMusic(dummyMusic);
 
-        Peer dummyPeer = new Peer();
-        dummyPeer.setDisplayName("Dummy Peer");
-        dummyPeer.setId(436907);
-        // dummyPeer.setIpAddress("192.168.1.1");
-        addCommentCommand.setAuthorPeer(dummyPeer);
+        Peer dummyAuthorPeer = new Peer();
+        dummyAuthorPeer.setDisplayName("Dummy Peer 0");
+        dummyAuthorPeer.setId(436907);
+        addCommentCommand.setAuthorPeer(dummyAuthorPeer);
+
+        Peer dummyOwnerPeer = new Peer();
+        dummyOwnerPeer.setDisplayName("Dummy Peer 1");
+        dummyOwnerPeer.setId(907868);
+        addCommentCommand.setOwnerPeer(dummyOwnerPeer);
 
         addCommentCommand.setComment("This is a comment");
 
         addCommentCommand.execute();
 
         editCommentCommand.setMusic(dummyMusic);
-        editCommentCommand.setAuthorPeer(dummyPeer);
+        editCommentCommand.setAuthorPeer(dummyAuthorPeer);
+        editCommentCommand.setOwnerPeer(dummyOwnerPeer);
         editCommentCommand.setCommentId(0);
         editCommentCommand.setComment("This is the new comment");
 
         editCommentCommand.execute();
 
-        Comment myComment = dummyMusic.getComment(dummyPeer, 0);
+        Comment myComment = dummyMusic.getComment(dummyAuthorPeer, 0);
 
         Assert.assertNotNull("editComment failed", myComment);
 
@@ -130,7 +136,7 @@ public class MusicCommentTest {
     }
 
     /**
-     *
+     * Allow testing of the removing of comments on musics
      */
     @Test
     public void removeComment() {
@@ -138,23 +144,27 @@ public class MusicCommentTest {
         dummyMusic.setFileName("Dummy Music");
         addCommentCommand.setMusic(dummyMusic);
 
-        Peer dummyPeer = new Peer();
-        dummyPeer.setDisplayName("Dummy Peer");
-        dummyPeer.setId(436907);
-        // dummyPeer.setIpAddress("192.168.1.1");
-        addCommentCommand.setAuthorPeer(dummyPeer);
+        Peer dummyAuthorPeer = new Peer();
+        dummyAuthorPeer.setDisplayName("Dummy Peer 0");
+        dummyAuthorPeer.setId(436907);
+        addCommentCommand.setAuthorPeer(dummyAuthorPeer);
+
+        Peer dummyOwnerPeer = new Peer();
+        dummyOwnerPeer.setDisplayName("Dummy Peer 1");
+        dummyOwnerPeer.setId(907868);
+        addCommentCommand.setOwnerPeer(dummyOwnerPeer);
 
         addCommentCommand.setComment("This is a comment");
 
         addCommentCommand.execute();
 
         removeCommentCommand.setMusic(dummyMusic);
-        removeCommentCommand.setPeer(dummyPeer);
+        removeCommentCommand.setPeer(dummyAuthorPeer);
         removeCommentCommand.setCommentId(0);
         removeCommentCommand.execute();
 
-        Comment myComment = dummyMusic.getComment(dummyPeer, 0);
+        Comment myComment = dummyMusic.getComment(dummyAuthorPeer, 0);
 
-        Assert.assertNull("editComment failed", myComment);
+        Assert.assertNull("removeComment failed", myComment);
     }
 }

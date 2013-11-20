@@ -72,7 +72,7 @@ public class ProfileCreateAccountTest {
         info.setPeerId(11L);
         accountCreationCommand.setUserInfo(info);
         accountCreationCommand.execute();
-        
+
         Profile pTest = fileService.readProfileFile(info.getLogin());
         Assert.assertTrue("accountCreationCommand failed: the account is not created.", pTest.getUserInfo().equals(info));
 
@@ -84,7 +84,7 @@ public class ProfileCreateAccountTest {
         info.setPeerId(10L);
         accountCreationCommand.setUserInfo(info);
         accountCreationCommand.execute();
-        
+
         Profile pTest2 = fileService.readProfileFile(info.getLogin());
         Assert.assertFalse("accountCreationCommand failed: the account is created, while login already exists.", pTest2.getUserInfo().equals(info));
         //test both commands

@@ -30,7 +30,7 @@ import org.slf4j.LoggerFactory;
 public class ConnectionDisconnectionTest {
 
     private static final Logger log = LoggerFactory
-        .getLogger(ConnectionDisconnectionTest.class);
+            .getLogger(ConnectionDisconnectionTest.class);
     @Inject
     private AppModel appModel;
     @Inject
@@ -81,7 +81,7 @@ public class ConnectionDisconnectionTest {
         userInfo.setFirstName("Tudor");
         userInfo.setLastName("Luchiancenco");
         userInfo.setAge(22);
-        
+
         // create account
         accountCreationCommand.setUserInfo(userInfo);
         accountCreationCommand.execute();
