@@ -124,7 +124,6 @@ public class MainController implements Initializable,
         if (event.getSource() == songsbutton) {
             mCurrentLoadedRighpaneResult = mFxmlLoader.load(getClass().getResource("/fr/utc/lo23/sharutc/ui/fxml/song_list.fxml"));
             ((DragPreviewDrawer) mCurrentLoadedRighpaneResult.getController()).init(mDragPreview);
-            ((SongListController) mCurrentLoadedRighpaneResult.getController()).createCards();
             ((SongListController) mCurrentLoadedRighpaneResult.getController()).setInterface(this);
         } else if (event.getSource() == peoplebutton) {
             mCurrentLoadedRighpaneResult = mFxmlLoader.load(getClass().getResource("/fr/utc/lo23/sharutc/ui/fxml/people_home.fxml"));
