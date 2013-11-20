@@ -240,6 +240,19 @@ public class MainController implements Initializable,
     public void onGroupDetailRequested() {
     }
     @Override
+    public void onGroupEditionRequested(Category category) {
+        ObservableList<Node> children = rightpane.getChildren();
+        children.clear();
+        log.info("Group Edition requested : " + category.getName());
+        try {
+            mCurrentLoadedRighpaneResult = mFxmlLoader.load(getClass().getResource("/fr/utc/lo23/sharutc/ui/fxml/group_edit.fxml"));
+            ((GroupEditController) mCurrentLoadedRighpaneResult.getController()).setGroupInfo(category);
+            children.add((Node) mCurrentLoadedRighpaneResult.getRoot());
+        } catch (IOException e) {
+            log.error(e.getMessage());
+        }
+    }
+    @Override
     public void onGroupRightsRequested(Category category) {
         ObservableList<Node> children = rightpane.getChildren();
         children.clear();
