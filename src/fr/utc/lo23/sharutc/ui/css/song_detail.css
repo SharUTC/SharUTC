@@ -9,10 +9,27 @@
     -fx-font-weight : bold;
 }
 
-#commentTitle {
+#commentSectionTitle {
     -fx-font-size : 20px;
     -fx-text-fill: #7F8C8D;
     -fx-border-width: 0px 0px 2px 0px;
     -fx-border-color: #95A5A6;
     -fx-padding: 0px 50px 3px 0px;
+}
+
+.commentTitleContainer {
+    -fx-background-color: #99CC00;
+    -fx-padding: 3px 10px 3px 10px;
+    -fx-border-width: 0px 0px 1px 0px;
+    -fx-border-color: #669900;
+}
+
+.commentTitle {
+    -fx-font-size: 16px;
+    -fx-text-fill: #7F8C8D;
+}
+
+.commentContent {
+    -fx-font-size: 14px;
+    -fx-text-fill: #7F8C8D;
 }

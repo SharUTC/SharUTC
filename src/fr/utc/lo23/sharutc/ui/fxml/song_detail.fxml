@@ -69,20 +69,20 @@
     </BorderPane>
     
     
-    <VBox VBox.vgrow="ALWAYS" >
+    <VBox VBox.vgrow="ALWAYS">
         <padding>
-            <javafx.geometry.Insets top="20" />
+            <javafx.geometry.Insets top="20" left="5" />
         </padding>
-        <Label text="Comments" fx:id="commentTitle" />
+        <Label text="Comments" fx:id="commentSectionTitle" />
         <ScrollPane styleClass="myScrollPane"
-                    fitToWidth="true" fitToHeight="true">
-            
-            <VBox>
-                <VBox >
-                    <Label text="Jake n°1" />
-                </VBox>
-                <Label text="Jake's comment." />
+                    fitToWidth="true" VBox.vgrow="ALWAYS" >
+            <VBox.margin>
+                <javafx.geometry.Insets top="15" bottom="10" />
+            </VBox.margin>
+            <VBox  fx:id="commentContainer">
+                
             </VBox>
+
                 
         </ScrollPane>
                 
