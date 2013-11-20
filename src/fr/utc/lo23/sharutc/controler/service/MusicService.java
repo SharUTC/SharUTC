@@ -76,27 +76,30 @@ public interface MusicService {
     public void removeTag(Music music, String tag);
 
     /**
+     * Add the comment on a music given by a peer
      *
-     * @param peer
-     * @param music
-     * @param comment
+     * @param peer The peer who gives the comment
+     * @param music The music which has to be commented
+     * @param comment The comment of the music
      */
     public void addComment(Peer peer, Music music, String comment);
 
     /**
+     * Edit the comment on a music given by a peer
      *
-     * @param peer
-     * @param music
-     * @param comment
-     * @param commentIndex
+     * @param peer The peer who gives the comment
+     * @param music The music which has to be commented
+     * @param comment The comment of the music
+     * @param commentIndex The index of the comment to edit
      */
     public void editComment(Peer peer, Music music, String comment, Integer commentIndex);
 
     /**
+     * Remove the comment on a music given by a peer
      *
-     * @param peer
-     * @param music
-     * @param commentIndex
+     * @param peer The peer who gives the comment
+     * @param music The music which has to be commented
+     * @param commentIndex The index of the comment to remove
      */
     public void removeComment(Peer peer, Music music, Integer commentIndex);
 

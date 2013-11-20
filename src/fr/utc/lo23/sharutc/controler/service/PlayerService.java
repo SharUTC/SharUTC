@@ -139,7 +139,7 @@ public interface PlayerService {
      * by the user. Music doesn't require to be played to set the value but at
      * least one music must be selected in playlist
      *
-     * @param timeInSec the time in the music, must be positive and lower than
+     * @param currentTimeSec the time in the music, must be positive and lower than
      * music total duration
      */
     public void setCurrentTimeSec(Long currentTimeSec);

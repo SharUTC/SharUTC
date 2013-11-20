@@ -5,7 +5,6 @@ import fr.utc.lo23.sharutc.GuiceJUnitRunner;
 import fr.utc.lo23.sharutc.GuiceJUnitRunner.GuiceModules;
 import fr.utc.lo23.sharutc.controler.command.music.SetScoreCommand;
 import fr.utc.lo23.sharutc.controler.command.music.UnsetScoreCommand;
-import fr.utc.lo23.sharutc.controler.service.FileService;
 import fr.utc.lo23.sharutc.controler.service.MusicService;
 import fr.utc.lo23.sharutc.controler.service.UserService;
 import fr.utc.lo23.sharutc.model.AppModel;
@@ -13,7 +12,6 @@ import fr.utc.lo23.sharutc.model.AppModelBuilder;
 import fr.utc.lo23.sharutc.model.domain.Music;
 import fr.utc.lo23.sharutc.model.domain.Score;
 import fr.utc.lo23.sharutc.model.userdata.Peer;
-import java.util.HashSet;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -23,7 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- *
+ * Allow testing of the setting and unsetting of score on musics
  */
 @RunWith(GuiceJUnitRunner.class)
 @GuiceModules({MusicScoreTestModule.class})
@@ -33,8 +31,6 @@ public class MusicScoreTest {
             .getLogger(MusicScoreTest.class);
     @Inject
     private AppModel appModel;
-    @Inject
-    private FileService fileService;
     @Inject
     private UserService userService;
     @Inject
@@ -61,7 +57,7 @@ public class MusicScoreTest {
     }
 
     /**
-     *
+     * Test on the setting of a score on a music
      */
     @Test
     public void setScore() {
@@ -81,16 +77,16 @@ public class MusicScoreTest {
         setScoreCommand.execute();
 
         Score score = dummyMusic.getScore(dummyPeer);
-        Assert.assertNotNull("SetScoreCommand failed", score);
+        Assert.assertNotNull("SetScoreCommand failed 0", score);
 
         if (score != null) {
-            Assert.assertSame("SetScoreCommand failed", score.getValue(),
+            Assert.assertSame("SetScoreCommand failed 1", score.getValue(),
                     scoreValue);
         }
     }
 
     /**
-     *
+     * Test on the unsetting of a score on a music
      */
     @Test
     public void unsetScore() {

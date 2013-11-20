@@ -14,7 +14,6 @@ import fr.utc.lo23.sharutc.model.domain.SearchCriteria;
 import fr.utc.lo23.sharutc.model.domain.TagMap;
 import fr.utc.lo23.sharutc.model.userdata.Category;
 import fr.utc.lo23.sharutc.model.userdata.Contact;
-import fr.utc.lo23.sharutc.model.userdata.Profile;
 import fr.utc.lo23.sharutc.model.userdata.Peer;
 import fr.utc.lo23.sharutc.util.Utils;
 import java.io.File;
@@ -45,7 +44,10 @@ public class MusicServiceImpl implements MusicService {
     protected boolean localTagMapDirty = true;
 
     /**
-     * {@inheritDoc}
+     * Constructor of MusicServiceImpl
+     * @param appModel The model of the application
+     * @param userService The service of users
+     * @param fileService  The service of files
      */
     @Inject
     public MusicServiceImpl(AppModel appModel, UserService userService, FileService fileService) {
@@ -320,14 +322,14 @@ public class MusicServiceImpl implements MusicService {
      * {@inheritDoc}
      */
     @Override
-    public void editComment(Peer peer, Music music, String commentText, Integer commentIndex) {
+    public void editComment(Peer peer, Music music, String comment, Integer commentIndex) {
         log.debug("editComment ...");
-        if (peer == null || music == null || commentText == null || commentText.trim().isEmpty() || commentIndex == null) {
+        if (peer == null || music == null || comment == null || comment.trim().isEmpty() || commentIndex == null) {
             throwMissingParameter();
         } else {
             Comment commentToEdit = music.getComment(peer, commentIndex);
             if (commentToEdit != null) {
-                commentToEdit.setText(commentText);
+                commentToEdit.setText(comment);
             } else {
                 log.warn("editComment : Comment to edit not found");
             }
@@ -595,6 +597,9 @@ public class MusicServiceImpl implements MusicService {
         return catalogResult;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     private void fillCommentAuthorNames(Music musicToReturn) {
         // use known peer list from profile to set each author name in the comments
         for (Comment comment : musicToReturn.getComments()) {
@@ -609,6 +614,9 @@ public class MusicServiceImpl implements MusicService {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     private boolean musicMatchesSearchCriteria(Music music, SearchCriteria criteria) {
         String searchString = criteria.getSearch().toLowerCase();
         boolean match = music.getTitle().toLowerCase().contains(searchString)
@@ -625,6 +633,9 @@ public class MusicServiceImpl implements MusicService {
         return match;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     private Set<Integer> getAllMatchingCategoryIds(Music music, Set<Integer> contactCategoryIds) {
         Set<Integer> matchingCategories = new HashSet<Integer>(Math.min(contactCategoryIds.size(), music.getCategoryIds().size()));
         if (contactCategoryIds.size() < music.getCategoryIds().size()) {
@@ -715,10 +726,16 @@ public class MusicServiceImpl implements MusicService {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     private synchronized boolean isLocalTagMapDirty() {
         return localTagMapDirty;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     private synchronized void buildLocalTagMap() {
         localTagMap = new TagMap(appModel.getLocalCatalog());
         localTagMapDirty = false;
@@ -864,6 +881,9 @@ public class MusicServiceImpl implements MusicService {
         log.debug("saveMusicFieldChanges DONE");
     }
 
+    /**
+     * {@inheritDoc}
+     */
     private void throwMissingParameter() {
         Utils.throwMissingParameter(log, new Throwable());
     }
@@ -887,6 +907,9 @@ public class MusicServiceImpl implements MusicService {
 
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void removeMusicFromCategory(Music music, Category category) {
         Music m = appModel.getLocalCatalog().findMusicById(music.getId());
