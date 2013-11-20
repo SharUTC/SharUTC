@@ -1,14 +1,20 @@
 package fr.utc.lo23.sharutc.ui;
 
+import com.google.inject.Inject;
+import fr.utc.lo23.sharutc.model.AppModel;
 import fr.utc.lo23.sharutc.model.domain.Music;
 import fr.utc.lo23.sharutc.ui.custom.card.AlbumCard;
+import fr.utc.lo23.sharutc.util.Pair;
 import javafx.fxml.Initializable;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.StackPane;
+import javafx.scene.text.TextAlignment;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,49 +22,57 @@ public class AlbumsDetailController implements RighpaneInterface, Initializable,
     
     private static final Logger log = LoggerFactory.getLogger(PeopleHomeController.class);
     public IAlbumsDetailController mInterface;
-    public Label titlePage;
-            
+             
     @FXML
     public FlowPane albumsContainer;
+    @FXML
+    public StackPane contentContainer;
+
+    @Inject
+    private AppModel mAppModel;
+    
     
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        titlePage.setText("Discover new albums");
+        showAlbums();
     }
     
     public void setInterface(IAlbumsDetailController i) {
         mInterface = i;
     }
     
-    public void createCards(String artistName) {
-        for(Music m : MainController.population) {
-            if(!existsAlready(m)) {
-                if(m.getArtist().equals(artistName) || artistName.equals("")) {
-                    AlbumCard card = new AlbumCard(m, this);
-                    albumsContainer.getChildren().add(card);
-                }              
+    public void showAlbums() {
+        final ArrayList<Pair<String, String>> albumArtistPairs = new ArrayList<Pair<String, String>>();
+        
+        //retrieve the albums from the local catalog
+        for (Music m : mAppModel.getLocalCatalog().getMusics()) {
+            final Pair<String, String> currentAlbumArtistPair = 
+                    new Pair<String, String>(m.getAlbum(), m.getArtist());
+            if(!albumArtistPairs.contains(currentAlbumArtistPair)) {
+                albumArtistPairs.add(currentAlbumArtistPair);
+            }
+        }
+        
+        //display the albums
+        if (albumArtistPairs.isEmpty()) {
+            final Label placeHolder = new Label("You have no songs. Please add a song before browsing albums.");
+            placeHolder.getStyleClass().add("placeHolderLabel");
+            placeHolder.setWrapText(true);
+            placeHolder.setTextAlignment(TextAlignment.CENTER);
+            contentContainer.getChildren().add(placeHolder);
+        } else {
+            for (Pair<String, String> albumArtistPair : albumArtistPairs) {
+                albumsContainer.getChildren().add(new AlbumCard(
+                        albumArtistPair.getLeft(), albumArtistPair.getRight(), this));
             }
         }
     }
     
-    public void createCards() {
-        createCards("");
-    }
-    
-    private boolean existsAlready(Music m) {
-        for(Object c : albumsContainer.getChildren().toArray()) {
-            AlbumCard card = (AlbumCard) c;
-            if(card.albumName.getText().equals(m.getAlbum()) && card.artistName.getText().equals(m.getArtist())) {
-                return true;
-            }
-        }      
-        return false;
-    }
 
     @Override
-    public void onAlbumDetailRequested(Music music) {
-        log.info("onArtistDetailRequested " + music.getAlbum());
-        mInterface.onAlbumDetailRequested(music);
+    public void onAlbumDetailRequested(String albumName) {
+        log.info("onArtistDetailRequested " + albumName);
+        mInterface.onAlbumDetailRequested(albumName);
     }
 
     @Override
@@ -71,6 +85,6 @@ public class AlbumsDetailController implements RighpaneInterface, Initializable,
          *
          * @param music
          */
-        public void onAlbumDetailRequested(Music music);
+        public void onAlbumDetailRequested(String albumName);
     }
 }

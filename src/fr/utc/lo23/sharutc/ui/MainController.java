@@ -134,7 +134,6 @@ public class MainController implements Initializable,
             ((ArtistsDetailController) mCurrentLoadedRighpaneResult.getController()).setInterface(this);
         } else if (event.getSource() == albumsbutton) {
             mCurrentLoadedRighpaneResult = mFxmlLoader.load(getClass().getResource("/fr/utc/lo23/sharutc/ui/fxml/albums_detail.fxml"));
-            ((AlbumsDetailController) mCurrentLoadedRighpaneResult.getController()).createCards();
             ((AlbumsDetailController) mCurrentLoadedRighpaneResult.getController()).setInterface(this);
         } else if (event.getSource() == logoutButton) {
             final Parent loginRoot = mFxmlLoader.load(getClass().getResource("/fr/utc/lo23/sharutc/ui/fxml/login.fxml")).getRoot();
@@ -272,7 +271,6 @@ public class MainController implements Initializable,
         try {
             mCurrentLoadedRighpaneResult = mFxmlLoader.load(getClass().getResource("/fr/utc/lo23/sharutc/ui/fxml/albums_detail.fxml"));
             ((AlbumsDetailController) mCurrentLoadedRighpaneResult.getController()).setInterface(this);
-            ((AlbumsDetailController) mCurrentLoadedRighpaneResult.getController()).createCards(artistName);
             children.add((Node) mCurrentLoadedRighpaneResult.getRoot());
         } catch (IOException e) {
             log.error(e.getMessage());
@@ -280,13 +278,12 @@ public class MainController implements Initializable,
     }
 
     @Override
-    public void onAlbumDetailRequested(Music music) {
+    public void onAlbumDetailRequested(String  albumName) {
         ObservableList<Node> children = rightpane.getChildren();
         children.clear();
-        log.info("Album detail requested : " + music.getAlbum());
+        log.info("Album detail requested : " + albumName);
         try {
             mCurrentLoadedRighpaneResult = mFxmlLoader.load(getClass().getResource("/fr/utc/lo23/sharutc/ui/fxml/song_list.fxml"));
-            ((SongListController) mCurrentLoadedRighpaneResult.getController()).createCards(music.getArtist(), music.getAlbum());
             children.add((Node) mCurrentLoadedRighpaneResult.getRoot());
         } catch (IOException e) {
             log.error(e.getMessage());

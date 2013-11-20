@@ -23,11 +23,10 @@ import javafx.scene.layout.VBox;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class SearchResultController extends SongSelectorController implements RighpaneInterface, CollectionChangeListener ,Initializable,AlbumCard.IAlbumCard, UserCard.IUserCard, ArtistCard.IArtistCard {
-    
+public class SearchResultController extends SongSelectorController implements RighpaneInterface, CollectionChangeListener, Initializable, AlbumCard.IAlbumCard, UserCard.IUserCard, ArtistCard.IArtistCard {
+
     private static final Logger log = LoggerFactory
             .getLogger(SearchResultController.class);
-    
     public VBox gridpane;
     private String search;
     private CardList songList;
@@ -35,48 +34,44 @@ public class SearchResultController extends SongSelectorController implements Ri
     private CardList artistList;
     private CardList albumList;
     private ISearchResultController mInterface;
-
-   
-  
     @Inject
     private AppModel mAppModel;
-    
     @Inject
     private MusicSearchCommand mMusicSearchCommand;
-        
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        
-        
-        
+
+
+
         //listen for changes on the AppModel
         mAppModel.getSearchResults().addPropertyChangeListener(this);
 
- 
-        
-        
-    
-        songList = new CardList  ("Songs", "bgBlue");
+
+
+
+
+        songList = new CardList("Songs", "bgBlue");
         friendList = new CardList("Friends", "bgGreen");
         artistList = new CardList("Artists", "bgRed");
-        albumList = new CardList ("Albums", "bgOrange");
-        
+        albumList = new CardList("Albums", "bgOrange");
+
         gridpane.getChildren().add(songList);
         gridpane.getChildren().add(friendList);
         gridpane.getChildren().add(artistList);
         gridpane.getChildren().add(albumList);
-        
-        
+
+
         SearchCriteria critera = new SearchCriteria(search);
         mMusicSearchCommand.setSearchCriteria(critera);
-       
-         if (resourceBundle != null) {
+
+        if (resourceBundle != null) {
             search = resourceBundle.getString("search");
         } else {
             search = "";
         }
-        
-        
+
+
         UserInfo u = new UserInfo();
         u.setFirstName("bob");
         addChild(new UserCard(u, this));
@@ -85,37 +80,37 @@ public class SearchResultController extends SongSelectorController implements Ri
         addChild(new UserCard(u, this));
         addChild(new UserCard(u, this));
         addChild(new UserCard(u, this));
-        
+
         final Music m = new Music();
-            m.setFileName("Music ");
-            m.setTitle("music");
-            m.setAlbum("Album");
-            m.setArtist("Artist");
+        m.setFileName("Music ");
+        m.setTitle("music");
+        m.setAlbum("Album");
+        m.setArtist("Artist");
         SongCard newCard = new SongCard(m, this, true);
-       
+
         addChild(newCard);
-        
+
         SimpleCard card = new ArtistCard("Artist ", this);
         this.addChild(card);
-        
-        card = new AlbumCard(m, this);
+
+        card = new AlbumCard("Album", "Artist", this);
         this.addChild(card);
-        
+
     }
-    
-    public void setInterface(ISearchResultController i){
+
+    public void setInterface(ISearchResultController i) {
         this.mInterface = i;
     }
-    
-    public void addChild(SimpleCard card){
-        if(card instanceof UserCard){
+
+    public void addChild(SimpleCard card) {
+        if (card instanceof UserCard) {
             friendList.addChild(card);
-            
-        }else if(card instanceof SongCard){
+
+        } else if (card instanceof SongCard) {
             songList.addChild(card);
-        }else if(card instanceof ArtistCard){
+        } else if (card instanceof ArtistCard) {
             artistList.addChild(card);
-        }else if(card instanceof AlbumCard){
+        } else if (card instanceof AlbumCard) {
             albumList.addChild(card);
         }
     }
@@ -125,77 +120,65 @@ public class SearchResultController extends SongSelectorController implements Ri
         mInterface.onPeopleDetailRequested(userInfo);
     }
 
- 
-
     @Override
     public void onArtistDetailRequested(String artistName) {
         mInterface.onArtistDetailRequested(artistName);
     }
-    
-     @Override
-    public void onAlbumDetailRequested(Music music) {
-         mInterface.onAlbumDetailRequested(music);
+
+    @Override
+    public void onAlbumDetailRequested(String albumName) {
+        mInterface.onAlbumDetailRequested(albumName);
     }
 
     @Override
     public void collectionChanged(CollectionEvent ev) {
-        switch(ev.getType()){
+        switch (ev.getType()) {
             case ADD:
-                Music m = ((Music)ev.getSource());
-                if(m.getAlbum().contains(search)){
+                Music m = ((Music) ev.getSource());
+                if (m.getAlbum().contains(search)) {
                     albumList.addChild(new AlbumCard(m, this));
                 }
-                if(m.getArtist().contains(search)){
+                if (m.getArtist().contains(search)) {
                     artistList.addChild(new ArtistCard(m.getArtist(), this));
                 }
-                if(m.getTitle().contains(search)){
+                if (m.getTitle().contains(search)) {
                     songList.addChild(new SongCard(m, this, mAppModel.getProfile().getUserInfo().getPeerId() == m.getOwnerPeerId()));
                 }
                 break;
-             case CLEAR:
-                 log.info("Search Clear");
-                 break;
-            
-        }
-       
-    }
+            case CLEAR:
+                log.info("Search Clear");
+                break;
 
-    
+        }
+
+    }
 
     @Override
     public void onDetach() {
         mAppModel.getSearchResults().removePropertyChangeListener(this);
     }
 
-   
-
-    
-    
-   
-    
     public interface ISearchResultController extends SongListController.ISongListController {
-         /**
+
+        /**
          * display user details
          *
          * @param user
          */
         void onPeopleDetailRequested(UserInfo user);
-        
+
         /**
          * display user details
          *
          * @param music
          */
         public void onArtistDetailRequested(String artistName);
-        
-         /**
+
+        /**
          * display album details
          *
          * @param music
          */
-        public void onAlbumDetailRequested(Music music);
-        
+        public void onAlbumDetailRequested(String albumName);
     }
-    
-    
 }

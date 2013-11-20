@@ -3,6 +3,7 @@ package fr.utc.lo23.sharutc.ui.custom.card;
 import fr.utc.lo23.sharutc.model.domain.Music;
 import javafx.event.Event;
 import javafx.event.EventHandler;
+import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
@@ -13,24 +14,36 @@ public class AlbumCard extends SimpleCard implements EventHandler<Event>{
     private Music mMusic;
     private IAlbumCard mInterface;
     
-    public Label albumName;
-    public Label artistName;
+    @FXML
+    public Label albumNameLabel;
+    @FXML
+    public Label artistNameLabel;
     
-    public AlbumCard(Music music, IAlbumCard i) {
+    private String mAlbumName;
+    private String mArtistName;
+    
+    public AlbumCard(String albumName, String artistName, IAlbumCard i) {
         super("/fr/utc/lo23/sharutc/ui/fxml/album_card.fxml");
         setOnMouseClicked(this);
         mInterface = i;
-        initModel(music);
+        mArtistName = artistName;
+        mAlbumName = albumName;
+        artistNameLabel.setText(mArtistName);
+        albumNameLabel.setText(mAlbumName);        
     }
     
-    private void initModel(Music music) {
-        mMusic = music;
-        albumName.setText(mMusic.getAlbum());
-        artistName.setText(mMusic.getArtist());
+    public AlbumCard(Music m, IAlbumCard i) {
+        this(m.getAlbum(),m.getArtist(),i);      
     }
-
-    public Music getModel() {
-        return mMusic;
+    
+    
+    
+    public String getArtistName() {
+        return mArtistName;
+    }
+    
+    public String getAlbumName() {
+        return mAlbumName;
     }
     
     @Override
@@ -39,7 +52,7 @@ public class AlbumCard extends SimpleCard implements EventHandler<Event>{
             MouseEvent mouseEvent = (MouseEvent) event;
             if (mouseEvent.getButton().equals(MouseButton.PRIMARY)) {
                 if (mouseEvent.getClickCount() == 2) {
-                    mInterface.onAlbumDetailRequested(mMusic);
+                    mInterface.onAlbumDetailRequested(mAlbumName);
                 }
             }
         }
@@ -52,7 +65,7 @@ public class AlbumCard extends SimpleCard implements EventHandler<Event>{
          *
          * @param music
          */
-        public void onAlbumDetailRequested(Music music);
+        public void onAlbumDetailRequested(String albumName);
 
     }
 }

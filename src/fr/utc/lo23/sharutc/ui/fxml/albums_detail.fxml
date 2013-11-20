@@ -14,19 +14,21 @@
 <VBox id="gridPane" prefWidth="-1.0" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS" 
       xmlns:fx="http://javafx.com/fxml" fx:controller="fr.utc.lo23.sharutc.ui.AlbumsDetailController" >
 
-    <Label fx:id="titlePage" styleClass="panetitle"/>
+    <Label fx:id="titlePage" styleClass="panetitle" text="Browse your albums" />
 
-    <ScrollPane xmlns:fx="http://javafx.com/fxml" styleClass="myScrollPane" VBox.vgrow="ALWAYS" fitToWidth="true" fitToHeight="true">
+    <StackPane fx:id="contentContainer" VBox.vgrow="ALWAYS">   
+        <ScrollPane styleClass="myScrollPane" fitToWidth="true" fitToHeight="true">
 
-        <FlowPane GridPane.hgrow="ALWAYS"
+            <FlowPane GridPane.hgrow="ALWAYS"
                   GridPane.vgrow="ALWAYS" fx:id="albumsContainer"
                   prefHeight="-1.0" prefWidth="-1.0"
                   prefWrapLength="230.0" vgap="10.0"
                   hgap="10.0">
-            <padding>
-                <javafx.geometry.Insets bottom="5" left="5" right="5" top="5"/>
-            </padding>
-        </FlowPane>
+                <padding>
+                    <javafx.geometry.Insets bottom="5" left="5" right="5" top="5"/>
+                </padding>
+            </FlowPane>
 
-    </ScrollPane>
+        </ScrollPane>
+    </StackPane>
 </VBox>
