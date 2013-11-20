@@ -30,17 +30,19 @@ public class PlayerServiceImpl implements PlayerService, PropertyChangeListener,
     public static final int VOLUME_MIN = 0;
     private final FileService fileService;
     private PlaybackListener player;
-    private Catalog mPlaylist = new Catalog();
+    private final Catalog mPlaylist;
     private Music mCurrentMusic;
     private Long mCurrentTimeSec = 0L;
     private Integer volume = 100;
     private boolean mute = false;
     private boolean pause = false;
-    private PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
+    private PropertyChangeSupport propertyChangeSupport;
 
     @Inject
     public PlayerServiceImpl(FileService fileService) {
+        this.mPlaylist = new Catalog();
         this.fileService = fileService;
+        this.propertyChangeSupport = new PropertyChangeSupport(this);
         this.mPlaylist.addPropertyChangeListener(this);
     }
 
@@ -49,8 +51,7 @@ public class PlayerServiceImpl implements PlayerService, PropertyChangeListener,
      */
     @Override
     public void addToPlaylist(Music music) {
-        log.info("addToPlaylist");
-        if (music != null && !music.getFileMissing() && music.getFileBytes() != null) {
+        if (music != null && !music.getFileMissing()) {
             mPlaylist.add(music);
             log.debug("addToPlaylist : music added");
         } else {
@@ -64,13 +65,13 @@ public class PlayerServiceImpl implements PlayerService, PropertyChangeListener,
     @Override
     public void removeFromPlaylist(Music music) {
         if (music != null) {
-            if (mPlaylist.remove(music)) {
-                log.debug("removeFromPlaylist : music removed");
-            } else {
-                log.error("removeFromPlaylist : music NOT removed, not found");
-            }
+            mPlaylist.remove(music);
+            log.debug("removeFromPlaylist : music removed");
+        } else {
+            log.error("removeFromPlaylist : music NOT removed, not found");
         }
     }
+    
 
     /**
      * {@inheritDoc}
@@ -449,6 +450,7 @@ public class PlayerServiceImpl implements PlayerService, PropertyChangeListener,
             if (ev.getIndex() == mPlaylist.size()) {
                 mCurrentMusic = mPlaylist.get(ev.getIndex() - 1);
             } else {
+                // FIX ME : on passe ici quand on suppr l'index 0 (taille liste après = 2)
                 mCurrentMusic = mPlaylist.get(ev.getIndex());
             }
         }

@@ -9,7 +9,7 @@ import fr.utc.lo23.sharutc.model.userdata.Category;
 
 /**
  *
- * @author Arnaud
+ *
  */
 public interface RemoveMusicFromCategoryCommand {
       /**

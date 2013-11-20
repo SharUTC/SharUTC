@@ -5,18 +5,11 @@
  */
 package tests;
 
-/**
- *
- *
- *
- */
-public class NetworkConnectionDisconnectionTestModule extends TestModule {
+public class PlaylistTestModule extends TestModule {
 
-    /**
-     *
-     */
     @Override
-    public void configure() {
+    protected void configure() {
         super.configure();
     }
+
 }

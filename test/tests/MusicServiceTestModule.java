@@ -3,6 +3,8 @@ package tests;
 import com.google.inject.AbstractModule;
 import fr.utc.lo23.sharutc.controler.command.music.AddToLocalCatalogCommand;
 import fr.utc.lo23.sharutc.controler.command.music.AddToLocalCatalogCommandImpl;
+import fr.utc.lo23.sharutc.controler.command.music.IntegrateRemoteCatalogCommand;
+import fr.utc.lo23.sharutc.controler.command.music.IntegrateRemoteCatalogCommandImpl;
 import fr.utc.lo23.sharutc.controler.command.music.RemoveFromLocalCatalogCommand;
 import fr.utc.lo23.sharutc.controler.command.music.RemoveFromLocalCatalogCommandImpl;
 import fr.utc.lo23.sharutc.controler.service.FileService;
@@ -24,6 +26,7 @@ public class MusicServiceTestModule extends AbstractModule {
         bind(MusicService.class).to(MusicServiceMock.class);
         bind(AddToLocalCatalogCommand.class).to(AddToLocalCatalogCommandImpl.class);
         bind(RemoveFromLocalCatalogCommand.class).to(RemoveFromLocalCatalogCommandImpl.class);
+        bind(IntegrateRemoteCatalogCommand.class).to(IntegrateRemoteCatalogCommandImpl.class);
         requestInjection(this);
     }
 }

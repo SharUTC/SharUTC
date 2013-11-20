@@ -8,7 +8,6 @@ package fr.utc.lo23.sharutc.controler.command.player;
 
 import com.google.inject.Inject;
 import fr.utc.lo23.sharutc.controler.service.PlayerService;
-import fr.utc.lo23.sharutc.model.domain.Catalog;
 import fr.utc.lo23.sharutc.model.domain.Music;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,21 +19,23 @@ import org.slf4j.LoggerFactory;
  */
 public class AddToPlaylistCommandImpl implements AddToPlaylistCommand{
     
-    private static final Logger log = LoggerFactory.getLogger(AddToPlaylistCommandImpl.class);
-    private Catalog mPlaylist;
+    private static final Logger log = LoggerFactory
+            .getLogger(AddToPlaylistCommandImpl.class);
     private final PlayerService playerService;
+    private List<Music> mPlaylist;
     
     @Inject
     public AddToPlaylistCommandImpl(PlayerService playerService) {
         this.playerService = playerService;
     }
     
+       
     /**
      * {@inheritDoc}
      */
     @Override
     public List<Music> getMusics(){
-        return mPlaylist.getMusics();
+        return mPlaylist;
     }
 
     /**
@@ -42,7 +43,7 @@ public class AddToPlaylistCommandImpl implements AddToPlaylistCommand{
      */
     @Override
     public void setMusics(List<Music> musics){
-        mPlaylist.setMusics(musics);
+        mPlaylist = musics;
     }
     
     /**
@@ -50,10 +51,12 @@ public class AddToPlaylistCommandImpl implements AddToPlaylistCommand{
      */
     @Override
     public void setMusic(Music music){
-        List<Music> musics = new ArrayList<Music>();
-        musics.add(music);
-        mPlaylist.setMusics(musics);
+        if(mPlaylist == null){
+            mPlaylist = new ArrayList<Music>();
+        }
+        mPlaylist.add(music);
     }
+    
     
     /**
      * {@inheritDoc}
@@ -62,10 +65,12 @@ public class AddToPlaylistCommandImpl implements AddToPlaylistCommand{
     public void execute() {
         log.info("AddToPlaylistCommand...");
         
-        for(Music m : this.getMusics()){
-            playerService.addToPlaylist(m);
+        if(mPlaylist != null){
+            for(Music m : mPlaylist){
+                playerService.addToPlaylist(m);
+            }
         }
-
+        
         log.info("AddToPlaylistCommand DONE");
     }
 }

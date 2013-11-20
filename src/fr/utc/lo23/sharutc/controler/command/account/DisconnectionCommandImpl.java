@@ -15,7 +15,6 @@ import org.slf4j.LoggerFactory;
 /**
  * TODO : add comments
  *
- * @author Alexandre
  */
 public class DisconnectionCommandImpl implements DisconnectionCommand {
 

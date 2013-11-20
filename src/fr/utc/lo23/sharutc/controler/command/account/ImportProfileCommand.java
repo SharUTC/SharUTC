@@ -3,7 +3,7 @@ package fr.utc.lo23.sharutc.controler.command.account;
 import fr.utc.lo23.sharutc.controler.command.Command;
 
 /**
- *
+ * Command to import a local profil
  */
 public interface ImportProfileCommand extends Command {
 

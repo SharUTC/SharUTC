@@ -65,7 +65,7 @@ public class ProfileConnectedPeersTest {
      *
      */
     @Test
-    public void addUserCommand() {
+    public void integrateConnectionCommand() {
         //Add first user
         UserInfo newUserInfo1 = new UserInfo();
         newUserInfo1.setLogin("LocalPeer Mock (id=4)");
@@ -84,12 +84,6 @@ public class ProfileConnectedPeersTest {
         
         out.println(appModel.getActivePeerList().toString());
         Assert.assertEquals("2 users added to the list failed.", 6, activePeerListSize);
-    }
-    
-    @Test
-    public void integrateConnectionCommand(){
-        //TODO Test integrateConnectionCommand
-        Assert.assertTrue(true);
     }
     
     @Test
