@@ -365,3 +365,8 @@
 #playList .list-cell:selected .playListCardMusicArtist {
     -fx-text-fill: #ECF0F1;
 }
+
+.placeHolderLabel {
+    -fx-text-fill: #7F8C8D;
+    -fx-font-size: 25px;
+}

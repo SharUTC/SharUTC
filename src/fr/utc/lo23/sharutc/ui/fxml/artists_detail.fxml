@@ -10,22 +10,29 @@
 <?import javafx.scene.control.cell.*?>
 
 <?import fr.utc.lo23.sharutc.ui.*?>
-<VBox id="gridPane" prefWidth="-1.0" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS" 
+<VBox fx:id="root" prefWidth="-1.0" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS" 
       xmlns:fx="http://javafx.com/fxml" fx:controller="fr.utc.lo23.sharutc.ui.ArtistsDetailController" >
 
-    <Label xmlns:fx="http://javafx.com/fxml" text="Discover new artists" styleClass="panetitle"/>
+    <Label text="Browse your artists" styleClass="panetitle"/>  
+    
+    <StackPane fx:id="contentContainer" VBox.vgrow="ALWAYS">        
+        
+        <ScrollPane fx:id="scrollPane" styleClass="myScrollPane"
+                    fitToWidth="true" fitToHeight="true">
 
-    <ScrollPane xmlns:fx="http://javafx.com/fxml" styleClass="myScrollPane" VBox.vgrow="ALWAYS" fitToWidth="true" fitToHeight="true">
+            <FlowPane GridPane.hgrow="ALWAYS"
+                      GridPane.vgrow="ALWAYS" fx:id="artistsContainer"
+                      prefHeight="-1.0" prefWidth="-1.0"
+                      prefWrapLength="230.0" vgap="10.0"
+                      hgap="10.0">
+                <padding>
+                    <javafx.geometry.Insets bottom="5" left="5" right="5" top="5"/>
+                </padding>
+            </FlowPane>
 
-        <FlowPane GridPane.hgrow="ALWAYS"
-                  GridPane.vgrow="ALWAYS" fx:id="artistsContainer"
-                  prefHeight="-1.0" prefWidth="-1.0"
-                  prefWrapLength="230.0" vgap="10.0"
-                  hgap="10.0">
-            <padding>
-                <javafx.geometry.Insets bottom="5" left="5" right="5" top="5"/>
-            </padding>
-        </FlowPane>
+        </ScrollPane>
+        
+    </StackPane>
 
-    </ScrollPane>
+    
 </VBox>
