@@ -26,7 +26,7 @@ import javafx.scene.layout.*;
 import javafx.util.Callback;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
+import fr.utc.lo23.sharutc.model.userdata.Category;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -239,7 +239,19 @@ public class MainController implements Initializable,
     @Override
     public void onGroupDetailRequested() {
     }
-
+    @Override
+    public void onGroupRightsRequested(Category category) {
+        ObservableList<Node> children = rightpane.getChildren();
+        children.clear();
+        log.info("Group Rights requested : " + category.getName());
+        try {
+            mCurrentLoadedRighpaneResult = mFxmlLoader.load(getClass().getResource("/fr/utc/lo23/sharutc/ui/fxml/group_rights.fxml"));
+            ((GroupRightController) mCurrentLoadedRighpaneResult.getController()).setGroupInfo(category);
+            children.add((Node) mCurrentLoadedRighpaneResult.getRoot());
+        } catch (IOException e) {
+            log.error(e.getMessage());
+        }
+    }
     @Override
     public void onArtistDetailRequested(Music music) {
         ObservableList<Node> children = rightpane.getChildren();
