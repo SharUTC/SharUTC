@@ -37,7 +37,7 @@
                 <Button fx:id="addRemoveButton" text="Add" styleClass="bigBlueButton"  />
                 
                 
-                <GridPane >
+                <GridPane hgap="5" vgap="2" GridPane.valignment="CENTER"   >
                     <Label text="My rank" styleClass="rankingSystemLabel" GridPane.rowIndex="0" GridPane.columnIndex="0" />
                     <HBox GridPane.rowIndex="0" GridPane.columnIndex="1">
                         <fr.utc.lo23.sharutc.ui.custom.RatingStar />
@@ -70,7 +70,10 @@
     
     
     <VBox VBox.vgrow="ALWAYS" >
-        <Label text="Comments" />
+        <padding>
+            <javafx.geometry.Insets top="20" />
+        </padding>
+        <Label text="Comments" fx:id="commentTitle" />
         <ScrollPane styleClass="myScrollPane"
                     fitToWidth="true" fitToHeight="true">
             

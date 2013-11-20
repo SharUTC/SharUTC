@@ -6,4 +6,13 @@
 .ownerLabel {
     -fx-font-size : 13px;
     -fx-text-fill: #99CC00;
+    -fx-font-weight : bold;
+}
+
+#commentTitle {
+    -fx-font-size : 20px;
+    -fx-text-fill: #7F8C8D;
+    -fx-border-width: 0px 0px 2px 0px;
+    -fx-border-color: #95A5A6;
+    -fx-padding: 0px 50px 3px 0px;
 }
