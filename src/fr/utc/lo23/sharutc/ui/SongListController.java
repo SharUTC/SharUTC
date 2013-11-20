@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 import javafx.geometry.Insets;
+import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.HBox;
 
@@ -43,6 +44,8 @@ public class SongListController extends SongSelectorController implements Initia
     public HBox tagContainer;
     @FXML
     public ScrollPane tagScrollPane;
+    @FXML
+    public Label titleLabel;
     @Inject
     public AppModel mAppModel;
     @Inject
@@ -80,23 +83,30 @@ public class SongListController extends SongSelectorController implements Initia
         mAppModel.getLocalCatalog().addPropertyChangeListener(this);
 
         showTags();
-        showCatalog();
-
+    }
+    
+    public void showCatalog() {
+        showCatalog(null);
     }
 
-    public void showCatalog() {
+    public void showCatalog(String albumFilter) {
         final Catalog catalog = mAppModel.getLocalCatalog();
         ArrayList<Music> musics = new ArrayList<Music>();
-
-        for (final Music m : catalog.getMusics()) {
-            musics.add(m);
+        
+        if(albumFilter != null) {
+            titleLabel.setText(albumFilter + " Album");
         }
 
+        for (final Music m : catalog.getMusics()) {
+            if(albumFilter == null || albumFilter.equals(m.getAlbum())) {
+                musics.add(m);
+            }            
+        }
+
+        //TODO remove
         if (musics.isEmpty()) {            
             musics.add(MainController.population.get(0));
         }
-
-        //TODO filter
 
         songsContainer.getChildren().clear();
         for (Music m : musics) {

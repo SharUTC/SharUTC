@@ -16,7 +16,7 @@
     
     <BorderPane >
         <left>
-            <Label alignment="TOP_LEFT"  text="Manage your song list" styleClass="panetitle"/>
+            <Label fx:id="titleLabel" alignment="TOP_LEFT"  text="Manage your song list" styleClass="panetitle"/>
         </left>
         <right>
             <Button fx:id="addNewSongButton" styleClass="bigBlueButton,bgBlue" text="add a song"
