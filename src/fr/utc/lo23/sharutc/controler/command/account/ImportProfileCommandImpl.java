@@ -8,7 +8,7 @@ import fr.utc.lo23.sharutc.model.ErrorMessage;
 
 /**
  *
- * @author Olivier
+ *
  */
 public class ImportProfileCommandImpl implements ImportProfileCommand{
     private final FileService fs;

@@ -150,6 +150,7 @@ public class AppModelBuilder {
                     log.error("deleteRecursive failed");
                 }
             }
+            fileOrDir.delete();
         }
     }
 

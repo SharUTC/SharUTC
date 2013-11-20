@@ -1,9 +1,12 @@
 package fr.utc.lo23.sharutc.controler.command.music;
 
 import com.google.inject.Inject;
+import fr.utc.lo23.sharutc.controler.network.NetworkService;
 import fr.utc.lo23.sharutc.controler.service.MusicService;
+import fr.utc.lo23.sharutc.model.AppModel;
 import fr.utc.lo23.sharutc.model.domain.Music;
 import fr.utc.lo23.sharutc.model.userdata.Peer;
+import fr.utc.lo23.sharutc.util.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,18 +17,27 @@ public class AddCommentCommandImpl implements AddCommentCommand {
 
     private static final Logger log = LoggerFactory
             .getLogger(AddCommentCommandImpl.class);
+    private final AppModel appModel;
     private final MusicService musicService;
+    private final NetworkService networkService;
     private Peer mOwnerPeer;
     private Peer mAuthorPeer;
     private Music mMusic;
     private String mComment;
 
     /**
-     * {@inheritDoc}
+     * Constructor of AddCommentCommandImpl
+     *
+     * @param appModel The model of the application
+     * @param musicService The service of musics
+     * @param networkService The service of the network
      */
     @Inject
-    public AddCommentCommandImpl(MusicService musicService) {
+    public AddCommentCommandImpl(AppModel appModel, MusicService musicService,
+            NetworkService networkService) {
+        this.appModel = appModel;
         this.musicService = musicService;
+        this.networkService = networkService;
     }
 
     /**
@@ -98,7 +110,13 @@ public class AddCommentCommandImpl implements AddCommentCommand {
     @Override
     public void execute() {
         log.info("AddCommentCommandImpl ...");
-        musicService.addComment(mAuthorPeer, mMusic, mComment);
+        if (mOwnerPeer == null) {
+            Utils.throwMissingParameter(log, new Throwable());
+        } else if (appModel.getProfile().getUserInfo().getPeerId() == mOwnerPeer.getId()) {
+            musicService.addComment(mAuthorPeer, mMusic, mComment); // local
+        } else {
+            networkService.addComment(mOwnerPeer, mMusic, mComment); // distant
+        }
         log.info("AddCommentCommandImpl DONE");
     }
 }

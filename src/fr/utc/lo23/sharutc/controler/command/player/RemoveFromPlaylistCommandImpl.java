@@ -13,9 +13,10 @@ import org.slf4j.LoggerFactory;
  */
 public class RemoveFromPlaylistCommandImpl implements RemoveFromPlaylistCommand {
 
-    private static final Logger log = LoggerFactory.getLogger(RemoveFromPlaylistCommandImpl.class);
-    private List<Music> mPlaylist;
+    private static final Logger log = LoggerFactory
+            .getLogger(RemoveFromPlaylistCommandImpl.class);
     private final PlayerService playerService;
+    private List<Music> mPlaylist;
 
     @Inject
     public RemoveFromPlaylistCommandImpl(PlayerService playerService) {
@@ -26,7 +27,7 @@ public class RemoveFromPlaylistCommandImpl implements RemoveFromPlaylistCommand 
      * {@inheritDoc}
      */
     @Override
-    public List<Music> getMusics() {
+    public List<Music> getMusics(){
         return mPlaylist;
     }
 
@@ -34,16 +35,16 @@ public class RemoveFromPlaylistCommandImpl implements RemoveFromPlaylistCommand 
      * {@inheritDoc}
      */
     @Override
-    public void setMusics(List<Music> musics) {
-        this.mPlaylist = musics;
+    public void setMusics(List<Music> musics){
+        mPlaylist = musics;
     }
-
+    
     /**
      * {@inheritDoc}
      */
     @Override
-    public void setMusic(Music music) {
-        if (mPlaylist == null) {
+    public void setMusic(Music music){
+        if(mPlaylist == null){
             mPlaylist = new ArrayList<Music>();
         }
         mPlaylist.add(music);
@@ -55,9 +56,13 @@ public class RemoveFromPlaylistCommandImpl implements RemoveFromPlaylistCommand 
     @Override
     public void execute() {
         log.info("RemoveFromPlaylistCommand...");
-
-        for (Music m : mPlaylist) {
-            playerService.removeFromPlaylist(m);
+        
+        System.out.println(mPlaylist);
+        
+        if(mPlaylist != null){
+            for (Music m : mPlaylist) {
+                playerService.removeFromPlaylist(m);
+            }
         }
 
         log.info("RemoveFromPlaylistCommand DONE");

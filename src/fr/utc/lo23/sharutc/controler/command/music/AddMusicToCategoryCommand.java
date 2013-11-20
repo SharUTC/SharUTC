@@ -9,8 +9,8 @@ import fr.utc.lo23.sharutc.model.userdata.Category;
 
 
 /**
+ * Add a music in spécific category
  *
- * @author Arnaud
  */
 public interface AddMusicToCategoryCommand {
      /**

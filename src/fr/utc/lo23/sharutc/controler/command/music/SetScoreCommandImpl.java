@@ -1,9 +1,12 @@
 package fr.utc.lo23.sharutc.controler.command.music;
 
 import com.google.inject.Inject;
+import fr.utc.lo23.sharutc.controler.network.NetworkService;
 import fr.utc.lo23.sharutc.controler.service.MusicService;
+import fr.utc.lo23.sharutc.model.AppModel;
 import fr.utc.lo23.sharutc.model.domain.Music;
 import fr.utc.lo23.sharutc.model.userdata.Peer;
+import fr.utc.lo23.sharutc.util.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,17 +17,26 @@ public class SetScoreCommandImpl implements SetScoreCommand {
 
     private static final Logger log = LoggerFactory
             .getLogger(SetScoreCommandImpl.class);
+    private final AppModel appModel;
     private final MusicService musicService;
+    private final NetworkService networkService;
     private Peer mPeer;
     private Music mMusic;
     private int mScore;
 
     /**
-     * {@inheritDoc}
+     * Constructor of SetScoreCommandImpl
+     *
+     * @param appModel The model of the application
+     * @param musicService The service of musics
+     * @param networkService The service of the network
      */
     @Inject
-    public SetScoreCommandImpl(MusicService musicService) {
+    public SetScoreCommandImpl(AppModel appModel, MusicService musicService,
+            NetworkService networkService) {
+        this.appModel = appModel;
         this.musicService = musicService;
+        this.networkService = networkService;
     }
 
     /**
@@ -81,13 +93,13 @@ public class SetScoreCommandImpl implements SetScoreCommand {
     @Override
     public void execute() {
         log.info("SetScoreCommandImpl ...");
-        
-        // FIXME: use music service if music is local (peerId = appModel.profile.userInfo.peerId)
-        // else, music comes from network, send message to update score value
-        // then also change local value to simulate accepted changes without sending more message
-        // @See MessageHandlerImpl.java, two switch values are waiting for you !
-        // note that if score value is null, score is to be deleted rather than set to null
-        musicService.setScore(mPeer, mMusic, mScore);
+        if (mPeer == null) {
+            Utils.throwMissingParameter(log, new Throwable());
+        } else if (appModel.getProfile().getUserInfo().getPeerId() == mPeer.getId()) {
+            musicService.setScore(mPeer, mMusic, mScore); // local
+        } else {
+            networkService.setScore(mPeer, mMusic, mScore); // distant
+        }
         log.info("SetScoreCommandImpl DONE");
     }
 }

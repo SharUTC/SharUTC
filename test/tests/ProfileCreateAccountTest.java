@@ -9,6 +9,7 @@ import fr.utc.lo23.sharutc.controler.service.MusicService;
 import fr.utc.lo23.sharutc.controler.service.UserService;
 import fr.utc.lo23.sharutc.model.AppModel;
 import fr.utc.lo23.sharutc.model.AppModelBuilder;
+import fr.utc.lo23.sharutc.model.userdata.Profile;
 import fr.utc.lo23.sharutc.model.userdata.UserInfo;
 import org.junit.After;
 import org.junit.Assert;
@@ -34,6 +35,8 @@ public class ProfileCreateAccountTest {
     private UserService userService;
     @Inject
     private MusicService musicService;
+    @Inject
+    private FileService fileService;
     @Inject
     private AccountCreationCommand accountCreationCommand;
     @Inject
@@ -66,15 +69,30 @@ public class ProfileCreateAccountTest {
         info.setLastName("lastname");
         info.setLogin("LOGIN");
         info.setPassword("pwd");
-        info.setPeerId(0L);
+        info.setPeerId(11L);
         accountCreationCommand.setUserInfo(info);
         accountCreationCommand.execute();
+        
+        Profile pTest = fileService.readProfileFile(info.getLogin());
+        Assert.assertTrue("accountCreationCommand failed: the account is not created.", pTest.getUserInfo().equals(info));
 
+        info.setAge(25);
+        info.setFirstName("first");
+        info.setLastName("last");
+        info.setLogin("LOGIN");
+        info.setPassword("pwd");
+        info.setPeerId(10L);
+        accountCreationCommand.setUserInfo(info);
+        accountCreationCommand.execute();
+        
+        Profile pTest2 = fileService.readProfileFile(info.getLogin());
+        Assert.assertFalse("accountCreationCommand failed: the account is created, while login already exists.", pTest2.getUserInfo().equals(info));
         //test both commands
         connectionRequestCommand.setLogin("LOGIN");
         connectionRequestCommand.setPassword("pwd");
         connectionRequestCommand.execute();
-        Assert.assertTrue(true);
+        Profile pTest3 = appModel.getProfile();
+        Assert.assertTrue("connectionRequestCommand failed: the account is not connected.", pTest3.getUserInfo().equals(pTest.getUserInfo()));
         //TODO validate datas
 
 

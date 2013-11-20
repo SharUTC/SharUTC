@@ -16,18 +16,24 @@ public interface MusicService {
 
     /**
      *
+     * Adding a collection of mp3 files to user's local catalog.
+     * 
      * @param mp3Files
      */
     public void addToLocalCatalog(Collection<File> mp3Files);
 
     /**
      *
+     * Removing a collection of musics from local catalog.
+     * 
      * @param musics
      */
     public void removeFromLocalCatalog(Collection<Music> musics);
 
     /**
      *
+     * Integrating music from catalog parameter to the remote catalog.
+     * 
      * @param peer
      * @param catalog
      */
@@ -39,7 +45,7 @@ public interface MusicService {
      * taking account of current user's rights regarding peer's music
      *
      * @param peer
-     * @param catalog
+     * @return 
      */
     public Catalog getCatalogForPeer(Peer peer);
 
@@ -70,27 +76,30 @@ public interface MusicService {
     public void removeTag(Music music, String tag);
 
     /**
+     * Add the comment on a music given by a peer
      *
-     * @param peer
-     * @param music
-     * @param comment
+     * @param peer The peer who gives the comment
+     * @param music The music which has to be commented
+     * @param comment The comment of the music
      */
     public void addComment(Peer peer, Music music, String comment);
 
     /**
+     * Edit the comment on a music given by a peer
      *
-     * @param peer
-     * @param music
-     * @param comment
-     * @param commentIndex
+     * @param peer The peer who gives the comment
+     * @param music The music which has to be commented
+     * @param comment The comment of the music
+     * @param commentIndex The index of the comment to edit
      */
     public void editComment(Peer peer, Music music, String comment, Integer commentIndex);
 
     /**
+     * Remove the comment on a music given by a peer
      *
-     * @param peer
-     * @param music
-     * @param commentIndex
+     * @param peer The peer who gives the comment
+     * @param music The music which has to be commented
+     * @param commentIndex The index of the comment to remove
      */
     public void removeComment(Peer peer, Music music, Integer commentIndex);
 
@@ -136,6 +145,7 @@ public interface MusicService {
      *
      * @param peer
      * @param criteria
+     * @return
      */
     public Catalog searchMusic(Peer peer, SearchCriteria criteria);
 
@@ -155,7 +165,6 @@ public interface MusicService {
      * Load file into passed music, work with the instance in parameter
      *
      * @param music the music to load
-     * @return the instance of music with file inside
      */
     public void loadMusicFile(Music music);
 
@@ -164,7 +173,6 @@ public interface MusicService {
      * parameter
      *
      * @param catalog the catalog containing the music files to load
-     * @return the instance of catalog with modified musics inside
      */
     public void loadMusicFiles(Catalog catalog);
 

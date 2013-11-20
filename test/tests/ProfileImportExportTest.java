@@ -6,13 +6,19 @@ import fr.utc.lo23.sharutc.controler.command.account.ExportProfileCommand;
 import fr.utc.lo23.sharutc.controler.command.account.ImportProfileCommand;
 import fr.utc.lo23.sharutc.controler.service.FileService;
 import static fr.utc.lo23.sharutc.controler.service.FileService.FOLDER_MUSICS;
+import static fr.utc.lo23.sharutc.controler.service.FileService.JSON_MUSICS;
+import static fr.utc.lo23.sharutc.controler.service.FileService.JSON_PROFILE;
+import static fr.utc.lo23.sharutc.controler.service.FileService.JSON_RIGHTS;
 import fr.utc.lo23.sharutc.controler.service.MusicService;
 import fr.utc.lo23.sharutc.controler.service.UserService;
 import fr.utc.lo23.sharutc.model.AppModel;
 import fr.utc.lo23.sharutc.model.AppModelBuilder;
 import java.io.File;
 import java.io.IOException;
+import java.util.Enumeration;
 import java.util.logging.Level;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -95,6 +101,41 @@ public class ProfileImportExportTest {
         Assert.assertTrue("The zip of the profile has not been created", 
                             new File(dest).exists());
         //TODO Test what is inside the zip
+        
+        //chech the structure of the file
+        boolean musicJsonExists = false;
+        boolean profileJsonExists = false;
+        boolean rightsJsonExists = false;
+        boolean musicFolderExists = false;
+
+        ZipFile zf;
+        try {
+            zf = new ZipFile(dest);
+            Enumeration entries = zf.entries();
+
+            while (entries.hasMoreElements()) {
+                ZipEntry ze = (ZipEntry) entries.nextElement();
+                String entryName = ze.getName();
+                if (entryName.equals(JSON_MUSICS)) {
+                    musicJsonExists = true;
+                } else if (entryName.equals(JSON_PROFILE)) {
+                    profileJsonExists = true;
+                } else if (entryName.equals(JSON_RIGHTS)) {
+                    rightsJsonExists = true;
+                } else if (entryName.indexOf(File.separator) != -1
+                        && entryName.substring(0, entryName.indexOf(File.separator)).equals(FOLDER_MUSICS)) {
+                    musicFolderExists = true;
+                }
+            }
+            
+            Assert.assertTrue("music json has not been zipped", musicJsonExists);
+            Assert.assertTrue("profile json has not been zipped", profileJsonExists);
+            Assert.assertTrue("rights json has not been zipped", rightsJsonExists);
+            Assert.assertTrue("music folder has not been zipped", musicFolderExists);
+            
+        } catch (IOException ex) {
+            java.util.logging.Logger.getLogger(ProfileImportExportTest.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
     
     @Test
