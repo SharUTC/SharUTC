@@ -7,6 +7,7 @@ import fr.utc.lo23.sharutc.util.CollectionEvent;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 /**
@@ -17,20 +18,20 @@ public class Categories implements Serializable {
     private static final long serialVersionUID = -1740797994155053145L;
     @JsonIgnore
     private CollectionChangeSupport mCollectionChangeSupport = new CollectionChangeSupport(this);
-    private HashSet<Category> mCategories;
+    private LinkedHashSet<Category> mCategories;
 
     /**
      *
      */
     public Categories() {
-        this.mCategories = new HashSet<Category>();
+        this.mCategories = new LinkedHashSet<Category>();
     }
 
     /**
      *
      * @return
      */
-    public HashSet<Category> getCategories() {
+    public LinkedHashSet<Category> getCategories() {
         return mCategories;
     }
 
@@ -38,7 +39,7 @@ public class Categories implements Serializable {
      *
      * @param categories
      */
-    public void setCategories(HashSet<Category> categories) {
+    public void setCategories(LinkedHashSet<Category> categories) {
         this.mCategories = categories;
     }
 
