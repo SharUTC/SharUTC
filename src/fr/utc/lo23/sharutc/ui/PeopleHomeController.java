@@ -18,9 +18,7 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.DragEvent;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.StackPane;
 import org.slf4j.Logger;
@@ -51,7 +49,8 @@ public class PeopleHomeController extends DragPreviewDrawer implements Initializ
     private AppModel mAppModel;
 
     private Category mCurrentCategory;
-    private final Category mVirtualConnectedCategory = new Category();
+    private GroupCard mVirtualConnectedGroup;
+    private GroupCard mVirtualAllContactsGroup;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -61,10 +60,20 @@ public class PeopleHomeController extends DragPreviewDrawer implements Initializ
         mPeopleCardSelected = new ArrayList<PeopleCard>();
         mAppModel.addPropertyChangeListener(this);
 
-        //initialize the connected category
-        mVirtualConnectedCategory.setName("Connected ");
+        //initialize virtual categories
+        mVirtualConnectedGroup = createVirtualGroup("Connected");
+        final Category allContacts = new Category();
+        allContacts.setName("My Contacts ");
+        mVirtualAllContactsGroup = new GroupCard(allContacts, this);
+
+        //set current category to the virtualConnectedOne
+        mCurrentCategory = mVirtualConnectedGroup.getModel();
+
+        //display GroupCard
         displayUserGroup();
-        displayActivePeers(mVirtualConnectedCategory);
+
+        //display UserCard
+        displayActivePeers(mCurrentCategory);
 
     }
 
@@ -107,7 +116,7 @@ public class PeopleHomeController extends DragPreviewDrawer implements Initializ
         //TODO create Group Edition View
     }
 
-       @Override
+    @Override
     public void onGroupRightsRequested(Category category) {
         log.info("onGroupRightsRequested " + category.getName());
         mInterface.onGroupRightsRequested(category);
@@ -188,8 +197,8 @@ public class PeopleHomeController extends DragPreviewDrawer implements Initializ
         peopleContainer.getChildren().clear();
 
 
-        if (c.equals(mVirtualConnectedCategory)) {
-            //display all user
+        if (c.equals(mVirtualConnectedGroup.getModel())) {
+            //display connected user
 
             //TODO Remove once we get the real peersList
             for (int i = 0; i < 50; i++) {
@@ -201,8 +210,20 @@ public class PeopleHomeController extends DragPreviewDrawer implements Initializ
                 peopleContainer.getChildren().add(newCard);
             }
 
-        } else {
+        } else if (c.equals(mVirtualAllContactsGroup.getModel())) {
+            //display contact from all Categories
 
+            //TODO Remove once we get the real peersList
+            for (int i = 10; i < 35; i++) {
+                final UserInfo userInfo = new UserInfo();
+                userInfo.setLogin("Login " + String.valueOf(i));
+                userInfo.setLastName("LastName");
+                userInfo.setFirstName("FirstName");
+                PeopleCard newCard = new PeopleCard(userInfo, this, PeopleCard.USAGE_CATEGORY);
+                peopleContainer.getChildren().add(newCard);
+            }
+
+        } else {
 
             //TODO Remove once we get the real peersList
             for (int i = 10; i < 25; i++) {
@@ -220,6 +241,7 @@ public class PeopleHomeController extends DragPreviewDrawer implements Initializ
 //                peopleContainer.getChildren().add()   ;
 //            }
         }
+
     }
 
     /**
@@ -229,14 +251,9 @@ public class PeopleHomeController extends DragPreviewDrawer implements Initializ
         groupContainer.getChildren().clear();
 
         //Display the virtual category for find connected people
-        GroupCard virtualConnectedCard = new GroupCard(mVirtualConnectedCategory, this);
-        //disable deletion, edit and rights for this virtual groupCard, needs improvement
-        virtualConnectedCard.setOnMouseEntered(null);
-        //disable drop behavior for this virtual groupCard, needs improvement
-        virtualConnectedCard.setOnDragEntered(null);
-        virtualConnectedCard.setOnDragOver(null);
-        groupContainer.getChildren().add(virtualConnectedCard);
-        mCurrentCategory = mVirtualConnectedCategory;
+        groupContainer.getChildren().add(mVirtualConnectedGroup);
+        //Display the category for all contacts of the current user
+        groupContainer.getChildren().add(mVirtualAllContactsGroup);
 
 
         //TODO Remove once we get the groupList
@@ -266,6 +283,24 @@ public class PeopleHomeController extends DragPreviewDrawer implements Initializ
         groupContainer.getChildren().add(createNewGroup);
     }
 
+    /**
+     * Create virtual category of users
+     *
+     * @param groupName category name which will be displayed
+     * @return a GroupCard corresponding to the virtual category
+     */
+    private GroupCard createVirtualGroup(String groupName) {
+        Category virtualCategory = new Category();
+        virtualCategory.setName(groupName);
+        GroupCard virtualGroup = new GroupCard(virtualCategory, this);
+        //disable deletion, edit and rights for this virtual groupCard, needs improvement
+        virtualGroup.setOnMouseEntered(null);
+        //disable drop behavior for this virtual groupCard, needs improvement
+        virtualGroup.setOnDragEntered(null);
+        virtualGroup.setOnDragOver(null);
+        return virtualGroup;
+    }
+
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         final String propertyName = evt.getPropertyName();
@@ -275,7 +310,8 @@ public class PeopleHomeController extends DragPreviewDrawer implements Initializ
     }
 
     @Override
-    public void onDetach() {}
+    public void onDetach() {
+    }
 
     public interface IPeopleHomeController {
 
@@ -285,11 +321,14 @@ public class PeopleHomeController extends DragPreviewDrawer implements Initializ
          * @param user
          */
         void onPeopleDetailRequested(UserInfo user);
+
         void onGroupEditionRequested(Category category);
+
         /**
          * display group details
          */
         void onGroupDetailRequested();
-        void onGroupRightsRequested (Category category) ;
+
+        void onGroupRightsRequested(Category category);
     }
 }
