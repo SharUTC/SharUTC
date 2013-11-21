@@ -22,3 +22,7 @@ build.xml
 out/production/
 out/test/
 *.iml
+
+# SharUTC : user profile and songs#
+users/
+*.mp3
