@@ -1,9 +1,11 @@
 package fr.utc.lo23.sharutc.ui;
 
 import com.google.inject.Inject;
+import fr.utc.lo23.sharutc.controler.command.profile.AddContactCommand;
 import fr.utc.lo23.sharutc.model.AppModel;
 import fr.utc.lo23.sharutc.model.AppModelImpl;
 import fr.utc.lo23.sharutc.model.userdata.Category;
+import fr.utc.lo23.sharutc.model.userdata.Contact;
 import fr.utc.lo23.sharutc.model.userdata.UserInfo;
 import fr.utc.lo23.sharutc.ui.custom.HorizontalScrollHandler;
 import fr.utc.lo23.sharutc.ui.custom.card.DraggableCard;
@@ -28,6 +30,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.ResourceBundle;
 
 public class PeopleHomeController extends DragPreviewDrawer implements Initializable, PeopleCard.IPeopleCard, GroupCard.IGroupCard, PropertyChangeListener {
@@ -47,6 +50,8 @@ public class PeopleHomeController extends DragPreviewDrawer implements Initializ
     public ScrollPane groupScrollPane;
     @Inject
     private AppModel mAppModel;
+    @Inject
+    private AddContactCommand addContactCommand;
 
     private Category mCurrentCategory;
     private GroupCard mVirtualConnectedGroup;
@@ -65,6 +70,8 @@ public class PeopleHomeController extends DragPreviewDrawer implements Initializ
         final Category allContacts = new Category();
         allContacts.setName("My Contacts ");
         mVirtualAllContactsGroup = new GroupCard(allContacts, this);
+        //remove possibility to delete or edit this virtual category
+        mVirtualAllContactsGroup.setOnMouseEntered(null);
 
         //set current category to the virtualConnectedOne
         mCurrentCategory = mVirtualConnectedGroup.getModel();
@@ -212,17 +219,15 @@ public class PeopleHomeController extends DragPreviewDrawer implements Initializ
 
         } else if (c.equals(mVirtualAllContactsGroup.getModel())) {
             //display contact from all Categories
-
-            //TODO Remove once we get the real peersList
-            for (int i = 10; i < 35; i++) {
-                final UserInfo userInfo = new UserInfo();
-                userInfo.setLogin("Login " + String.valueOf(i));
-                userInfo.setLastName("LastName");
-                userInfo.setFirstName("FirstName");
-                PeopleCard newCard = new PeopleCard(userInfo, this, PeopleCard.USAGE_CATEGORY);
-                peopleContainer.getChildren().add(newCard);
+            HashSet<Contact> allContact = mAppModel.getProfile().getContacts().getContacts();
+            if (allContact.size() == 0) {
+                log.info("no contact");
+            } else {
+                for (Contact contact : allContact) {
+                    PeopleCard newCard = new PeopleCard(contact.getUserInfo(), this, PeopleCard.USAGE_CATEGORY);
+                    peopleContainer.getChildren().add(newCard);
+                }
             }
-
         } else {
 
             //TODO Remove once we get the real peersList
