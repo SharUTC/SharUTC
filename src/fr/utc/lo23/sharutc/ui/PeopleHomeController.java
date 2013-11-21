@@ -2,6 +2,7 @@ package fr.utc.lo23.sharutc.ui;
 
 import com.google.inject.Inject;
 import fr.utc.lo23.sharutc.controler.command.profile.AddContactCommand;
+import fr.utc.lo23.sharutc.controler.command.profile.CreateCategoryCommand;
 import fr.utc.lo23.sharutc.model.AppModel;
 import fr.utc.lo23.sharutc.model.AppModelImpl;
 import fr.utc.lo23.sharutc.model.userdata.Category;
@@ -55,6 +56,8 @@ public class PeopleHomeController extends DragPreviewDrawer implements Initializ
     private AppModel mAppModel;
     @Inject
     private AddContactCommand addContactCommand;
+    @Inject
+    private CreateCategoryCommand createCategoryCommand;
 
     /**
      * Display message to the user
@@ -67,6 +70,11 @@ public class PeopleHomeController extends DragPreviewDrawer implements Initializ
     private Category mCurrentCategory;
     private GroupCard mVirtualConnectedGroup;
     private GroupCard mVirtualAllContactsGroup;
+
+    /**
+     * + card for create a new category
+     */
+    private SimpleCard mCreateNewGroupCard;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -293,32 +301,58 @@ public class PeopleHomeController extends DragPreviewDrawer implements Initializ
         //Display the category for all contacts of the current user
         groupContainer.getChildren().add(mVirtualAllContactsGroup);
 
-
-        //TODO Remove once we get the groupList
-        for (int i = 0; i < 10; i++) {
-            //TODO add GroupCard with color attribute
-            final Category category = new Category();
-            category.setName("Category " + i);
-            GroupCard newCard = new GroupCard(category, this);
-            groupContainer.getChildren().add(newCard);
-        }
-
         //Add the + card for create a new group
-        SimpleCard createNewGroup = new SimpleCard("/fr/utc/lo23/sharutc/ui/fxml/simple_card.fxml",
+        displayAddNewGroupCard();
+    }
+
+    /**
+     * add a GroupCard to the GroupCard list
+     *
+     * @param category
+     */
+    private void addNewGroupCard(Category category) {
+        hideAddNewGroupCard();
+        groupContainer.getChildren().add(
+                new GroupCard(
+                        category,
+                        PeopleHomeController.this));
+        displayAddNewGroupCard();
+
+    }
+
+    /**
+     * show the + card used to create a new Category
+     */
+    private void displayAddNewGroupCard() {
+        mCreateNewGroupCard = new SimpleCard("/fr/utc/lo23/sharutc/ui/fxml/simple_card.fxml",
                 180, 108, Pos.CENTER);
         final Label plusText = new Label("+");
         plusText.getStyleClass().addAll("plusText");
-        createNewGroup.getChildren().add(plusText);
-        createNewGroup.setOnMouseClicked(new EventHandler<MouseEvent>() {
+        mCreateNewGroupCard.getChildren().add(plusText);
+        mCreateNewGroupCard.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent mouseEvent) {
                 if (mouseEvent.getEventType() == MouseEvent.MOUSE_CLICKED) {
                     //create a new group
-                    log.info("group creation requested");
+                    final int id = mAppModel.getProfile().getCategories().size();
+                    log.info("group creation requested " + id);
+                    createCategoryCommand.setCategoryName("Category" + id);
+                    createCategoryCommand.execute();
+                    //TODO remove when the controller will listen for the right propertyChange
+                    addNewGroupCard(mAppModel.getProfile().getCategories().findCategoryById(Integer.valueOf(id)));
                 }
             }
         });
-        groupContainer.getChildren().add(createNewGroup);
+        groupContainer.getChildren().add(mCreateNewGroupCard);
+    }
+
+    /**
+     * hide the + card used to create a new Category
+     */
+    private void hideAddNewGroupCard() {
+        if (mCreateNewGroupCard != null) {
+            groupContainer.getChildren().remove(mCreateNewGroupCard);
+        }
     }
 
     /**
