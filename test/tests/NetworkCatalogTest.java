@@ -33,7 +33,7 @@ import org.slf4j.LoggerFactory;
  *
  */
 @RunWith(GuiceJUnitRunner.class)
-@GuiceJUnitRunner.GuiceModules({NetworkConnectionDisconnectionTestModule.class})
+@GuiceJUnitRunner.GuiceModules({NetworkCatalogTestModule.class})
 public class NetworkCatalogTest {
     
     private static final Logger log = LoggerFactory
