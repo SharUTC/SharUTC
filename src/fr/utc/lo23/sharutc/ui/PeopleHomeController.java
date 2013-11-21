@@ -3,6 +3,7 @@ package fr.utc.lo23.sharutc.ui;
 import com.google.inject.Inject;
 import fr.utc.lo23.sharutc.controler.command.profile.AddContactCommand;
 import fr.utc.lo23.sharutc.controler.command.profile.CreateCategoryCommand;
+import fr.utc.lo23.sharutc.controler.command.profile.DeleteCategoryCommand;
 import fr.utc.lo23.sharutc.model.AppModel;
 import fr.utc.lo23.sharutc.model.AppModelImpl;
 import fr.utc.lo23.sharutc.model.userdata.Category;
@@ -60,6 +61,8 @@ public class PeopleHomeController extends DragPreviewDrawer implements Initializ
     private AddContactCommand addContactCommand;
     @Inject
     private CreateCategoryCommand createCategoryCommand;
+    @Inject
+    private DeleteCategoryCommand deleteCategoryCommand;
 
     /**
      * Display message to the user
@@ -71,6 +74,7 @@ public class PeopleHomeController extends DragPreviewDrawer implements Initializ
      */
     private Category mCurrentCategory;
     private GroupCard mVirtualConnectedGroup;
+    private GroupCard mAskForDeletionCard;
 
     /**
      * + card for create a new category
@@ -129,7 +133,9 @@ public class PeopleHomeController extends DragPreviewDrawer implements Initializ
     @Override
     public void onGroupDeletionRequested(GroupCard g) {
         log.info("onGroupDeletionRequested " + g.getModel().getName());
-        groupContainer.getChildren().remove(g);
+        mAskForDeletionCard = g;
+        deleteCategoryCommand.setCategory(g.getModel());
+        deleteCategoryCommand.execute();
     }
 
     @Override
@@ -390,9 +396,16 @@ public class PeopleHomeController extends DragPreviewDrawer implements Initializ
 
     @Override
     public void collectionChanged(CollectionEvent ev) {
-        if (ev.getType().equals(CollectionEvent.Type.ADD)) {
-            if (ev.getItem() instanceof Category) {
+        final CollectionEvent.Type type = ev.getType();
+        final Object item = ev.getItem();
+        log.info(type.name());
+        if (type.equals(CollectionEvent.Type.ADD)) {
+            if (item instanceof Category) {
                 addNewGroupCard((Category) ev.getItem(), true);
+            }
+        } else if (type.equals(CollectionEvent.Type.REMOVE)) {
+            if (item instanceof Category) {
+                groupContainer.getChildren().remove(mAskForDeletionCard);
             }
         }
     }
