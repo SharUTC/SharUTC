@@ -69,7 +69,6 @@ public class PeopleHomeController extends DragPreviewDrawer implements Initializ
      */
     private Category mCurrentCategory;
     private GroupCard mVirtualConnectedGroup;
-    private GroupCard mVirtualAllContactsGroup;
 
     /**
      * + card for create a new category
@@ -86,11 +85,6 @@ public class PeopleHomeController extends DragPreviewDrawer implements Initializ
 
         //initialize virtual categories
         mVirtualConnectedGroup = createVirtualGroup("Connected");
-        final Category allContacts = new Category();
-        allContacts.setName("My Contacts ");
-        mVirtualAllContactsGroup = new GroupCard(allContacts, this);
-        //remove possibility to delete or edit this virtual category
-        mVirtualAllContactsGroup.setOnMouseEntered(null);
 
         //set current category to the virtualConnectedOne
         mCurrentCategory = mVirtualConnectedGroup.getModel();
@@ -258,7 +252,7 @@ public class PeopleHomeController extends DragPreviewDrawer implements Initializ
                 peopleContainer.getChildren().add(newCard);
             }
 
-        } else if (c.equals(mVirtualAllContactsGroup.getModel())) {
+        } else if (c.getId().equals(0)) {
             //display contact from all Categories
             HashSet<Contact> allContact = mAppModel.getProfile().getContacts().getContacts();
             if (allContact.size() == 0) {
@@ -298,24 +292,32 @@ public class PeopleHomeController extends DragPreviewDrawer implements Initializ
 
         //Display the virtual category for find connected people
         groupContainer.getChildren().add(mVirtualConnectedGroup);
-        //Display the category for all contacts of the current user
-        groupContainer.getChildren().add(mVirtualAllContactsGroup);
 
         //Add the + card for create a new group
         displayAddNewGroupCard();
+
+        //Display Existing Category
+        for (Category c : mAppModel.getProfile().getCategories().getCategories()) {
+            if (c.getId().equals(0)) {
+                addNewGroupCard(c, false);
+            } else {
+                addNewGroupCard(c, true);
+            }
+        }
     }
 
     /**
      * add a GroupCard to the GroupCard list
      *
-     * @param category
+     * @param category the model og this card
+     * @param editable true is the card can be deleted and edited
      */
-    private void addNewGroupCard(Category category) {
+    private void addNewGroupCard(Category category, boolean editable) {
         hideAddNewGroupCard();
-        groupContainer.getChildren().add(
-                new GroupCard(
-                        category,
-                        PeopleHomeController.this));
+        final GroupCard newGroupCard = new GroupCard(category, PeopleHomeController.this);
+        //need some improvement, remove mouse enter behaviour which display buttons for edition
+        if (!editable) newGroupCard.setOnMouseEntered(null);
+        groupContainer.getChildren().add(newGroupCard);
         displayAddNewGroupCard();
 
     }
@@ -339,7 +341,7 @@ public class PeopleHomeController extends DragPreviewDrawer implements Initializ
                     createCategoryCommand.setCategoryName("Category" + id);
                     createCategoryCommand.execute();
                     //TODO remove when the controller will listen for the right propertyChange
-                    addNewGroupCard(mAppModel.getProfile().getCategories().findCategoryById(Integer.valueOf(id)));
+                    addNewGroupCard(mAppModel.getProfile().getCategories().findCategoryById(Integer.valueOf(id)), true);
                 }
             }
         });
