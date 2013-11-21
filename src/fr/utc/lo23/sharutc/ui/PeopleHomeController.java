@@ -13,6 +13,8 @@ import fr.utc.lo23.sharutc.ui.custom.card.DraggableCard;
 import fr.utc.lo23.sharutc.ui.custom.card.GroupCard;
 import fr.utc.lo23.sharutc.ui.custom.card.PeopleCard;
 import fr.utc.lo23.sharutc.ui.custom.card.SimpleCard;
+import fr.utc.lo23.sharutc.util.CollectionChangeListener;
+import fr.utc.lo23.sharutc.util.CollectionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -35,7 +37,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.ResourceBundle;
 
-public class PeopleHomeController extends DragPreviewDrawer implements Initializable, PeopleCard.IPeopleCard, GroupCard.IGroupCard, PropertyChangeListener {
+public class PeopleHomeController extends DragPreviewDrawer implements Initializable, PeopleCard.IPeopleCard, GroupCard.IGroupCard, PropertyChangeListener, CollectionChangeListener {
 
     private static final Logger log = LoggerFactory.getLogger(PeopleHomeController.class);
     private IPeopleHomeController mInterface;
@@ -82,6 +84,7 @@ public class PeopleHomeController extends DragPreviewDrawer implements Initializ
 
         mPeopleCardSelected = new ArrayList<PeopleCard>();
         mAppModel.addPropertyChangeListener(this);
+        mAppModel.getProfile().getCategories().addPropertyChangeListener(this);
 
         //initialize virtual categories
         mVirtualConnectedGroup = createVirtualGroup("Connected");
@@ -340,8 +343,6 @@ public class PeopleHomeController extends DragPreviewDrawer implements Initializ
                     log.info("group creation requested " + id);
                     createCategoryCommand.setCategoryName("Category" + id);
                     createCategoryCommand.execute();
-                    //TODO remove when the controller will listen for the right propertyChange
-                    addNewGroupCard(mAppModel.getProfile().getCategories().findCategoryById(Integer.valueOf(id)), true);
                 }
             }
         });
@@ -385,6 +386,15 @@ public class PeopleHomeController extends DragPreviewDrawer implements Initializ
 
     @Override
     public void onDetach() {
+    }
+
+    @Override
+    public void collectionChanged(CollectionEvent ev) {
+        if (ev.getType().equals(CollectionEvent.Type.ADD)) {
+            if (ev.getItem() instanceof Category) {
+                addNewGroupCard((Category) ev.getItem(), true);
+            }
+        }
     }
 
     public interface IPeopleHomeController {
