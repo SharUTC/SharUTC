@@ -6,26 +6,28 @@
 <?import javafx.scene.layout.*?>
 <VBox id="gridPane" prefWidth="-1.0" GridPane.hgrow="ALWAYS"
       GridPane.vgrow="ALWAYS" xmlns:fx="http://javafx.com/fxml"
-      fx:controller="fr.utc.lo23.sharutc.ui.PeopleHomeController" >
+      fx:controller="fr.utc.lo23.sharutc.ui.PeopleHomeController">
 
     <Label xmlns:fx="http://javafx.com/fxml"
            text="Manage your contact" styleClass="panetitle"/>
 
-    <ScrollPane xmlns:fx="http://javafx.com/fxml" styleClass="myScrollPane"
-                VBox.vgrow="ALWAYS" fitToWidth="true" fitToHeight="true">
+    <StackPane fx:id="contentContainer" VBox.vgrow="ALWAYS">
+        <ScrollPane styleClass="myScrollPane"
+                    VBox.vgrow="ALWAYS" fitToWidth="true" fitToHeight="true">
 
-        <FlowPane GridPane.hgrow="ALWAYS"
-                  GridPane.vgrow="ALWAYS" fx:id="peopleContainer"
-                  prefHeight="-1.0" prefWidth="-1.0"
-                  prefWrapLength="230.0" vgap="10.0"
-                  hgap="10.0">
-            <padding>
-                <javafx.geometry.Insets bottom="5" left="5" right="5" top="5"/>
-            </padding>
-        </FlowPane>
+            <FlowPane GridPane.hgrow="ALWAYS"
+                      GridPane.vgrow="ALWAYS" fx:id="peopleContainer"
+                      prefHeight="-1.0" prefWidth="-1.0"
+                      prefWrapLength="230.0" vgap="10.0"
+                      hgap="10.0">
+                <padding>
+                    <javafx.geometry.Insets bottom="5" left="5" right="5" top="5"/>
+                </padding>
+            </FlowPane>
 
-    </ScrollPane>
-    <ScrollPane xmlns:fx="http://javafx.com/fxml" styleClass="myScrollPane" fx:id="groupScrollPane"
+        </ScrollPane>
+    </StackPane>
+    <ScrollPane styleClass="myScrollPane" fx:id="groupScrollPane"
                 VBox.vgrow="NEVER" prefHeight="150" fitToWidth="true" fitToHeight="true" vbarPolicy="NEVER"
                 hbarPolicy="ALWAYS">
 

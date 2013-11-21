@@ -23,6 +23,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.text.TextAlignment;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,11 +49,21 @@ public class PeopleHomeController extends DragPreviewDrawer implements Initializ
     public FlowPane groupContainer;
     @FXML
     public ScrollPane groupScrollPane;
+    @FXML
+    public StackPane contentContainer;
     @Inject
     private AppModel mAppModel;
     @Inject
     private AddContactCommand addContactCommand;
 
+    /**
+     * Display message to the user
+     */
+    private Label placeHolderLabel;
+
+    /**
+     * Manage Category
+     */
     private Category mCurrentCategory;
     private GroupCard mVirtualConnectedGroup;
     private GroupCard mVirtualAllContactsGroup;
@@ -198,10 +209,32 @@ public class PeopleHomeController extends DragPreviewDrawer implements Initializ
     }
 
     /**
+     * Display the message in the place Holder
+     */
+    private void showPlaceHolder(String message) {
+        placeHolderLabel = new Label(message);
+        placeHolderLabel.getStyleClass().add("placeHolderLabel");
+        placeHolderLabel.setWrapText(true);
+        placeHolderLabel.setTextAlignment(TextAlignment.CENTER);
+        contentContainer.getChildren().add(placeHolderLabel);
+    }
+
+    /**
+     * hide the place holder if it's displayed
+     */
+    private void hidePlaceHolder() {
+        if (placeHolderLabel != null) {
+            contentContainer.getChildren().remove(placeHolderLabel);
+            placeHolderLabel = null;
+        }
+    }
+
+    /**
      * call at the beginning and each time propertyChange ACTIVE_PEERS
      */
     private void displayActivePeers(Category c) {
         peopleContainer.getChildren().clear();
+        hidePlaceHolder();
 
 
         if (c.equals(mVirtualConnectedGroup.getModel())) {
@@ -221,7 +254,7 @@ public class PeopleHomeController extends DragPreviewDrawer implements Initializ
             //display contact from all Categories
             HashSet<Contact> allContact = mAppModel.getProfile().getContacts().getContacts();
             if (allContact.size() == 0) {
-                log.info("no contact");
+                showPlaceHolder("You have no contact in \"" + c.getName() + "\". Select \"Connected\" and Drag&Drop a user to a category.");
             } else {
                 for (Contact contact : allContact) {
                     PeopleCard newCard = new PeopleCard(contact.getUserInfo(), this, PeopleCard.USAGE_CATEGORY);
