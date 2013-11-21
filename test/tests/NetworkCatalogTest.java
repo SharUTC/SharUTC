@@ -33,7 +33,7 @@ import org.slf4j.LoggerFactory;
 public class NetworkCatalogTest {
     
     private static final Logger log = LoggerFactory
-        .getLogger(ConnectionDisconnectionTest.class);
+        .getLogger(NetworkCatalogTest.class);
     @Inject
     private AppModel appModel;
     private AppModelBuilder appModelBuilder = null;
