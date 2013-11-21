@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package tests;
 
 import com.google.inject.Inject;
@@ -18,7 +14,6 @@ import fr.utc.lo23.sharutc.model.AppModelBuilder;
 import fr.utc.lo23.sharutc.model.domain.Catalog;
 import fr.utc.lo23.sharutc.model.domain.Music;
 import fr.utc.lo23.sharutc.model.userdata.Peer;
-import fr.utc.lo23.sharutc.model.userdata.UserInfo;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -53,7 +48,7 @@ public class NetworkCatalogTest {
     @Inject
     private SendCatalogCommand sendCatalogCommand;
 
-        /**
+    /**
      *
      */
     @Before
@@ -76,8 +71,6 @@ public class NetworkCatalogTest {
     
     @Test
     public void fetchRemoteCatalogCommand(){
-        
-
         // Create a Peer
         Peer peerTest = new Peer();
         peerTest.setDisplayName("PeerTest");
@@ -93,7 +86,6 @@ public class NetworkCatalogTest {
         Message msgSent = networkService.getSentMessage();
         Assert.assertNotNull("No message sent", msgSent);
         Assert.assertEquals("The mesage type must be : MUSIC_GET", MessageType.MUSIC_GET, msgSent.getType());
-        
     }
     
     @Test
@@ -117,10 +109,9 @@ public class NetworkCatalogTest {
             Assert.fail("message have to contain a content as MESSAGE.CATALOG");
         }
         if(msgSent.getContent().containsKey(Message.CONVERSATION_ID)){
-            Assert.assertEquals("the conversationId is false",conversationId, msgSent.getContent().get(Message.CONVERSATION_ID));
+            Assert.assertEquals("the conversationId is false", conversationId, msgSent.getContent().get(Message.CONVERSATION_ID));
         } else {
             Assert.fail("the message has to contain a content as Message.CONVERSATION_ID");
         }
-
     }
 }
