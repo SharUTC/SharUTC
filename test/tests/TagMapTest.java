@@ -5,6 +5,7 @@ import fr.utc.lo23.sharutc.GuiceJUnitRunner;
 import fr.utc.lo23.sharutc.GuiceJUnitRunner.GuiceModules;
 import fr.utc.lo23.sharutc.controler.command.music.IntegrateRemoteTagMapCommand;
 import fr.utc.lo23.sharutc.controler.command.music.SendTagMapCommand;
+import fr.utc.lo23.sharutc.controler.command.music.ShowTagMapCommand;
 import fr.utc.lo23.sharutc.controler.network.Message;
 import fr.utc.lo23.sharutc.controler.network.MessageParser;
 import fr.utc.lo23.sharutc.controler.network.MessageType;
@@ -15,6 +16,7 @@ import fr.utc.lo23.sharutc.controler.service.MusicServiceMock;
 import fr.utc.lo23.sharutc.controler.service.UserService;
 import fr.utc.lo23.sharutc.model.AppModel;
 import fr.utc.lo23.sharutc.model.AppModelBuilder;
+import fr.utc.lo23.sharutc.model.domain.Catalog;
 import fr.utc.lo23.sharutc.model.domain.TagMap;
 import org.junit.After;
 import org.junit.Assert;
@@ -47,6 +49,8 @@ public class TagMapTest {
     private IntegrateRemoteTagMapCommand integrateRemoteTagMapCommand;
     @Inject
     private SendTagMapCommand sendTagMapCommand;
+    @Inject
+    private ShowTagMapCommand showTagMapCommand;
     @Inject
     private MessageParser messageParser;
     private AppModelBuilder appModelBuilder = null;
@@ -159,4 +163,32 @@ public class TagMapTest {
         Assert.assertNotNull("No tagMap in message", tm);
         Assert.assertEquals(musicService.getLocalTagMap(), tm);
     }
+    @Test
+    public void showTagMapCommand(){
+        // Clear the local tag map
+        appModel.getLocalCatalog().clear();
+        // Add test values in the local tag map
+        appModel.getLocalCatalog().get(0).addTag("ROCK");
+        appModel.getLocalCatalog().get(1).addTag("TV");
+        appModel.getLocalCatalog().get(2).addTag("Rock");
+        appModel.getLocalCatalog().get(2).addTag("Rock Indé");
+        ((MusicServiceMock)musicService).setTagMapDirty();
+        
+        Catalog cat = appModel.getLocalCatalog();
+        
+        showTagMapCommand.execute();
+        
+        // Test if network tag map has been merged with the local catalog
+        Assert.assertEquals("The network tag map has not been merged with the local tag map",cat, appModel.getNetworkTagMap());
+        
+        // Test Type and message content
+        Message msgSent = networkService.getSentMessage();
+        messageParser.read(msgSent);
+        // Test Message Type
+        Assert.assertEquals("The message type must be TAG_GET_MAP",MessageType.TAG_GET_MAP, msgSent.getType());
+        // Test Conversation Id
+        Long conversationId = (Long) messageParser.getValue(Message.CONVERSATION_ID);
+        Assert.assertNotNull("the conversation id is null", conversationId);
+    }
+    
 }
