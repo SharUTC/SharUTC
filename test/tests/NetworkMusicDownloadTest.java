@@ -96,8 +96,8 @@ public class NetworkMusicDownloadTest {
 
         Assert.assertNotNull("No message sent", networkService.getSentMessage());
         messageParser.read(networkService.getSentMessage());
-        Assert.assertEquals("Music id requested is erroneous", (long) dummyMusic.getId(),
-                (long) messageParser.getValue(Message.MUSIC_ID));
+        Assert.assertEquals("Music id requested is erroneous", (Long) dummyMusic.getId(),
+                (Long) messageParser.getValue(Message.MUSIC_ID));
     }
 
     @Test
@@ -112,8 +112,8 @@ public class NetworkMusicDownloadTest {
 
         Assert.assertNotNull("No message sent", networkService.getSentMessage());
         messageParser.read(networkService.getSentMessage());
-        Assert.assertEquals("ConversationId sent is erroneous", 1337l,
-                (long) messageParser.getValue(Message.CONVERSATION_ID));
+        Assert.assertEquals("ConversationId sent is erroneous", (Long) 1337l,
+                (Long) messageParser.getValue(Message.CONVERSATION_ID));
         Music music = (Music) messageParser.getValue(Message.MUSIC);
         Assert.assertNotNull("Music sent is null", music);
         Assert.assertEquals("Music hash mismatch", dummyMusic.getHash(), music.getHash());
