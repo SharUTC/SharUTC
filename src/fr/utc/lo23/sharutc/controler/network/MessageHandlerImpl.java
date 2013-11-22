@@ -235,6 +235,10 @@ public class MessageHandlerImpl implements MessageHandler {
         }
     }
 
+    /**
+     * chek if the current conversation id is equal to the message conversation id
+     * @return true if the current conversation id is equal to the message conversation id, else false.
+     */
     private boolean isMessageForCurrentConversation() {
         return appModel.getCurrentConversationId().equals(messageParser.getValue(Message.CONVERSATION_ID));
     }

@@ -43,13 +43,7 @@ public class MessageParserImpl implements MessageParser {
     @Override
     public void read(Message incomingMessage) {
         this.message = incomingMessage;
-        /*  Map<String, Object> parsedContent = null;
-         try {
-         log.debug("Reading Message : content = {}", message.getContent());
-         parsedContent = mapper.readValue(message.getContent(), Map.class);
-         } catch (Exception ex) {
-         log.error(ex.toString());
-         }*/
+        
         Map<String, Object> parsedContent = message.getContent();
         if (parsedContent != null) {
             messageContent = new HashMap<String, Object>();

@@ -10,7 +10,7 @@ import java.util.Map;
  */
 public class Message {
     /**
-     *
+     * 
      */
     public final static String CONVERSATION_ID = "CONVERSATION_ID";
     /**
