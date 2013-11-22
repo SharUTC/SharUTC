@@ -98,7 +98,7 @@ public class NetworkCatalogTest {
 
         appModel.getLocalCatalog().add(music);
 
-        long conversationId = 0L;
+        Long conversationId = 0L;
         sendCatalogCommand.setConversationId(conversationId);
         sendCatalogCommand.setPeer(appModel.getActivePeerList().getByPeerId(1L));
         sendCatalogCommand.execute();
@@ -109,6 +109,6 @@ public class NetworkCatalogTest {
         messageParser.read(msgSent);
 
         Assert.assertNotNull("the catalog can't be null", messageParser.getValue(Message.CATALOG));
-        Assert.assertEquals("The conversationId don't match", conversationId, (long) messageParser.getValue(Message.CONVERSATION_ID));
+        Assert.assertEquals("The conversationId don't match", conversationId, (Long) messageParser.getValue(Message.CONVERSATION_ID));
     }
 }
