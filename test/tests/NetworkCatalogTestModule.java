@@ -8,7 +8,7 @@ package tests;
  *
  * @author Audrey
  */
-public class NetworkCatalogModuleTest extends TestModule{
+public class NetworkCatalogTestModule extends TestModule{
     
     /**
      *
