@@ -3,7 +3,7 @@ package fr.utc.lo23.sharutc.controler.command.account;
 import fr.utc.lo23.sharutc.controler.command.Command;
 
 /**
- *
+ * Command to export an entire profile into a zip file
  */
 public interface ExportProfileCommand extends Command {
 

@@ -100,7 +100,7 @@ public class FileServiceImpl implements FileService {
             }
         }
 
-        //chech the structure of the file
+        //check the structure of the file
         boolean musicJsonExists = false;
         boolean profileJsonExists = false;
         boolean rightsJsonExists = false;
@@ -161,11 +161,6 @@ public class FileServiceImpl implements FileService {
     @Override
     public void exportFile(String srcPath, String destPath) throws IOException {
         log.debug("exportFile ...");
-        /**TODO Dossier de conception P18
-         * S’il le souhaite, l’utilisateur peut éditer le contenu de l’archive 
-         * exportée pour en retirer les fichiers qu’il ne veut pas exporter.
-         * A voir avec l'IHM
-        * */
         List<String> fileList = new ArrayList<String>();
         byte data[] = new byte[BUFFER_SIZE];
 
@@ -220,7 +215,7 @@ public class FileServiceImpl implements FileService {
     }
 
     /**
-     * Delete every file and forlder under <i>pathname</i> {@inheritDoc}
+     * Delete every file and forlder under <i>pathname</i>
      *
      * @param pathname
      */

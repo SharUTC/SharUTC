@@ -7,8 +7,7 @@ import fr.utc.lo23.sharutc.model.AppModel;
 import fr.utc.lo23.sharutc.model.ErrorMessage;
 
 /**
- *
- *
+ * Implementation if the command to import a local profil
  */
 public class ImportProfileCommandImpl implements ImportProfileCommand{
     private final FileService fs;
@@ -17,9 +16,9 @@ public class ImportProfileCommandImpl implements ImportProfileCommand{
     private boolean mForce;
     
     /**
-     * 
-     * @param fs
-     * @param appModel 
+     * Constructor
+     * @param fs - File Service
+     * @param appModel - Application Model
      */
     @Inject
     public ImportProfileCommandImpl(FileService fs, AppModel appModel) {
