@@ -23,7 +23,7 @@ public class SearchCriteria implements Serializable {
      * @param search the value the user entered
      */
     public SearchCriteria(String search) {
-        this.search = search;
+        this.search = search != null ? search.trim() : "";
     }
 
     /**

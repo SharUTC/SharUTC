@@ -39,6 +39,10 @@ public class NetworkServiceMock extends NetworkServiceImpl implements NetworkSer
         return sendMessage;
     }
 
+    public void setSentMessage(Message sendMessage) {
+        this.sendMessage = sendMessage;
+    }
+
     public Peer getPeer() {
         return peer;
     }

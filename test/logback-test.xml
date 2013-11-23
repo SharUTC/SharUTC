@@ -55,7 +55,7 @@
     <logger name="fr.utc.lo23.sharutc.model.domain.Comment" level="INFO" />
     <logger name="fr.utc.lo23.sharutc.model.domain.Music" level="INFO" />
     <logger name="fr.utc.lo23.sharutc.model.domain.Rights" level="INFO" />
-    <logger name="fr.utc.lo23.sharutc.model.domain.RightsList" level="INFO" />
+    <logger name="fr.utc.lo23.sharutc.model.domain.RightsList" level="DEBUG" />
     <logger name="fr.utc.lo23.sharutc.model.domain.Score" level="INFO" />
     <logger name="fr.utc.lo23.sharutc.model.domain.SearchCriteria" level="INFO" />
     <logger name="fr.utc.lo23.sharutc.model.domain.TagMap" level="INFO" />

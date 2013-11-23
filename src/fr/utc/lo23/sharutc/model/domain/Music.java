@@ -42,8 +42,10 @@ public class Music implements Serializable {
      * No JsonIgnore annotation, but when searching a music, file must be set to
      * null before returning the results, file must be present for transfers
      */
+    @JsonInclude(value = Include.NON_NULL)
     private Byte[] mFile;
     private Long mFrames;
+    @JsonInclude(value = Include.NON_NULL)
     private Boolean mFileMissing;
     private Long mOwnerPeerId;
     private Integer mHash;
@@ -251,8 +253,9 @@ public class Music implements Serializable {
      * @param fileMissing
      */
     public void setFileMissing(Boolean fileMissing) {
+        Boolean oldFileMissing = this.mFileMissing;
         this.mFileMissing = fileMissing;
-        propertyChangeSupport.firePropertyChange(Property.FILE_MISSING.name(), !fileMissing.booleanValue(), fileMissing.booleanValue());
+        propertyChangeSupport.firePropertyChange(Property.FILE_MISSING.name(), oldFileMissing, fileMissing);
     }
 
     /**
@@ -670,6 +673,11 @@ public class Music implements Serializable {
         int hash = 3;
         hash = 41 * hash + (this.mHash != null ? this.mHash.hashCode() : 0);
         return hash;
+    }
+
+    public void cleanForPreview() {
+        mCategoryIds.clear();
+        mFileMissing = null;
     }
 
     /**

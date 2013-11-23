@@ -85,6 +85,8 @@ public class PerformMusicSearchCommandImpl implements PerformMusicSearchCommand 
         Catalog searchResults = musicService.searchMusic(mPeer, mSearchCriteria);
         if (!searchResults.isEmpty()) {
             networkService.sendMusicSearchResults(mPeer, mConversationId, searchResults);
+        } else {
+            log.info("PerformMusicSearchCommand : no results (empty list)");
         }
 
         log.info("PerformMusicSearchCommand DONE");

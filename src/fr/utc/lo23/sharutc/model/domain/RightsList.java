@@ -8,6 +8,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Contains all rights relative to an account, stored with categoryId and
@@ -18,6 +20,8 @@ import java.util.List;
  */
 public class RightsList implements Serializable {
 
+    private static final Logger log = LoggerFactory
+            .getLogger(RightsList.class);
     private static final long serialVersionUID = 3450643720510945491L;
     private ArrayList<Rights> mRightsList = new ArrayList<Rights>();
     @JsonIgnore
@@ -55,7 +59,7 @@ public class RightsList implements Serializable {
      * @param rights the rights to add
      * @return true if the rights was added (java norm, not used here)
      */
-    public boolean add(Rights rights) {
+    private boolean add(Rights rights) {
         add(mRightsList.size(), rights);
         return true;
     }
@@ -67,7 +71,7 @@ public class RightsList implements Serializable {
      * @param index where to add the rights, must be inside [0; size()]
      * @param rights the rights to add
      */
-    public void add(int index, Rights rights) {
+    private void add(int index, Rights rights) {
         mRightsList.add(index, rights);
         collectionChangeSupport.fireCollectionChanged(rights, index, CollectionEvent.Type.ADD);
     }
@@ -80,7 +84,7 @@ public class RightsList implements Serializable {
      * @param rights the rights to add
      * @return the previously element at the given position
      */
-    public Rights set(int index, Rights rights) {
+    private Rights set(int index, Rights rights) {
         Rights set = mRightsList.set(index, rights);
         collectionChangeSupport.fireCollectionChanged(rights, index, CollectionEvent.Type.UPDATE);
         return set;
@@ -91,7 +95,7 @@ public class RightsList implements Serializable {
      *
      * @param rightsList the rights to add
      */
-    public void addAll(List<Rights> rightsList) {
+    private void addAll(List<Rights> rightsList) {
         if (rightsList != null && !rightsList.isEmpty()) {
             for (Rights rights : rightsList) {
                 this.add(rights);
@@ -144,7 +148,7 @@ public class RightsList implements Serializable {
      * @return index of the rights instance in this catalog, -1 if there's no
      * such instance
      */
-    public int indexOf(Rights rights) {
+    private int indexOf(Rights rights) {
         return mRightsList.indexOf(rights);
     }
 
@@ -192,18 +196,22 @@ public class RightsList implements Serializable {
         Rights rights = null;
         for (Rights r : mRightsList) {
             if (r != null && r.getMusicId() != null && r.getCategoryId() != null && r.getMusicId().equals(musicId) && r.getCategoryId().equals(categoryId)) {
-                r = rights;
+                rights = r;
+                break;
             }
         }
         return rights;
     }
 
     public void setRights(Rights rights) {
+        log.debug("setRights ... ({})", rights);
         if (rights != null) {
             Rights r = getByMusicIdAndCategoryId(rights.getMusicId(), rights.getCategoryId());
             if (r != null) {
+                log.debug("setRights : Rights already exists for this music and category, updating values");
                 r.copyRightsValues(rights);
             } else {
+                log.debug("setRights : Rights doesn't exist, adding it to Rightlist");
                 mRightsList.add(rights);
             }
         }
