@@ -2,6 +2,7 @@ package fr.utc.lo23.sharutc.controler.network;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import fr.utc.lo23.sharutc.controler.command.account.IntegrateDisconnectionCommand;
 import fr.utc.lo23.sharutc.model.AppModel;
 import fr.utc.lo23.sharutc.model.domain.Catalog;
 import fr.utc.lo23.sharutc.model.domain.Music;
@@ -12,6 +13,7 @@ import fr.utc.lo23.sharutc.model.userdata.UserInfo;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.HashMap;
+import java.util.Map.Entry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,6 +31,9 @@ public class NetworkServiceImpl implements NetworkService {
     private final AppModel appModel;
     private final MessageHandler messageHandler;
     private final MessageParser messageParser;
+
+    @Inject
+    private IntegrateDisconnectionCommand integrateDisconnectionCommand;
 
     private ListenThread mListenThread;
     private PeerDiscoverySocket mPeerDiscoverySocket;
@@ -96,6 +101,27 @@ public class NetworkServiceImpl implements NetworkService {
      */
     public synchronized void removePeer(PeerSocket peerSocket) {
         mPeers.values().remove(peerSocket);
+    }
+
+    /**
+     * Disconnect from the model a peer which connection died.
+     *
+     * @param peerSocket the disconnected peerSocket
+     */
+    public void disconnectPeer(PeerSocket peerSocket) {
+        Long peerId = null;
+        for (Entry<Long, PeerSocket> entry : mPeers.entrySet()) {
+            if (peerSocket == entry.getValue()) {
+                peerId = entry.getKey();
+                break;
+            }
+        }
+        if (peerId != null) {
+            integrateDisconnectionCommand.setPeerId(peerId);
+            integrateDisconnectionCommand.execute();
+        } else {
+            log.error("Can't find and disconnect peerSocket");
+        }
     }
 
     /**
