@@ -13,8 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Command that execute the disconnection process.
- *
+ * {@inheritDoc}
  */
 public class DisconnectionCommandImpl implements DisconnectionCommand {
 
@@ -26,6 +25,9 @@ public class DisconnectionCommandImpl implements DisconnectionCommand {
     private final AppModel appModel;
 
     /**
+     * Construct DisconnectionCommandImpl.
+     * 
+     * @param appModel
      * @param userService
      * @param musicService
      * @param networkService
