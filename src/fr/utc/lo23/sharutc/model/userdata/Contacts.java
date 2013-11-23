@@ -9,7 +9,8 @@ import java.util.Collection;
 import java.util.HashSet;
 
 /**
- *
+ * Contains all Peer that user has promoted to Contact Status. Don't use index
+ * from CollectionChangeSupport (HashSet inside)
  */
 public class Contacts implements Serializable {
 
@@ -42,23 +43,25 @@ public class Contacts implements Serializable {
         return contact;
     }
 
-     /**
+    /**
      *
      * @return
      */
     public HashSet<Contact> getContacts() {
         return mContacts;
     }
-    
+
     /**
+     * Add a Contact to Contacts (list). Don't use index from
+     * CollectionChangeSupport
      *
      * @param contact
-     * @return
+     * @return true if the contact was added, false otherwise
      */
     public boolean add(Contact contact) {
         boolean added = mContacts.add(contact);
         if (added) {
-            mCollectionChangeSupport.fireCollectionChanged(contact, mContacts.size() - 1, CollectionEvent.Type.ADD);
+            mCollectionChangeSupport.fireCollectionChanged(contact, CollectionEvent.Type.ADD);
         }
         return added;
     }
@@ -76,6 +79,8 @@ public class Contacts implements Serializable {
     }
 
     /**
+     * Remove a contact from this container. Don't use index from
+     * CollectionChangeSupport
      *
      * @param contact
      * @return
@@ -83,7 +88,7 @@ public class Contacts implements Serializable {
     public boolean remove(Contact contact) {
         boolean removed = mContacts.remove(contact);
         if (removed) {
-            mCollectionChangeSupport.fireCollectionChanged(contact, -1, CollectionEvent.Type.REMOVE);
+            mCollectionChangeSupport.fireCollectionChanged(contact, CollectionEvent.Type.REMOVE);
         }
         return removed;
     }
@@ -94,7 +99,7 @@ public class Contacts implements Serializable {
     public void clear() {
         if (!mContacts.isEmpty()) {
             mContacts.clear();
-            mCollectionChangeSupport.fireCollectionChanged(null, -1, CollectionEvent.Type.CLEAR);
+            mCollectionChangeSupport.fireCollectionChanged(null, CollectionEvent.Type.CLEAR);
         }
     }
 

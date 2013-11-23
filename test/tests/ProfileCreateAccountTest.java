@@ -63,6 +63,7 @@ public class ProfileCreateAccountTest {
 
     @Test
     public void accountCreationCommand() {
+        // FIXME: le problème n'a rien a voir avec la commande de création, il faut corriger l'envoi de la connexion au niveau du réseau
         UserInfo info = new UserInfo();
         info.setAge(25);
         info.setFirstName("firstname");
@@ -71,7 +72,7 @@ public class ProfileCreateAccountTest {
         info.setPassword("pwd");
         accountCreationCommand.setUserInfo(info);
         accountCreationCommand.execute();
-        
+
         Profile pTest = fileService.readProfileFile(info.getLogin());
         Assert.assertTrue("accountCreationCommand failed: the account is not created.", pTest.getUserInfo().equals(info));
 
@@ -82,7 +83,7 @@ public class ProfileCreateAccountTest {
         info.setPassword("pwd");
         accountCreationCommand.setUserInfo(info);
         accountCreationCommand.execute();
-        
+
         Profile pTest2 = fileService.readProfileFile(info.getLogin());
         Assert.assertFalse("accountCreationCommand failed: the account is created, while login already exists.", pTest2.getUserInfo().equals(info));
         //test both commands

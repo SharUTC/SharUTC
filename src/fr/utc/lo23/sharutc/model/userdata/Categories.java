@@ -7,10 +7,9 @@ import fr.utc.lo23.sharutc.util.CollectionEvent;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Set;
 
 /**
- *
+ * Don't use index from CollectionChangeSupport (HashSet inside)
  */
 public class Categories implements Serializable {
 
@@ -90,7 +89,7 @@ public class Categories implements Serializable {
     public boolean remove(Category category) {
         boolean removed = mCategories.remove(category);
         if (removed) {
-            mCollectionChangeSupport.fireCollectionChanged(category, -1, CollectionEvent.Type.REMOVE);
+            mCollectionChangeSupport.fireCollectionChanged(category, CollectionEvent.Type.REMOVE);
         }
         return removed;
     }
@@ -101,7 +100,7 @@ public class Categories implements Serializable {
     public void clear() {
         if (!mCategories.isEmpty()) {
             mCategories.clear();
-            mCollectionChangeSupport.fireCollectionChanged(null, -1, CollectionEvent.Type.CLEAR);
+            mCollectionChangeSupport.fireCollectionChanged(null, CollectionEvent.Type.CLEAR);
         }
     }
 

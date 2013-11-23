@@ -61,6 +61,8 @@ public class MusicScoreTest {
      */
     @Test
     public void setScore() {
+        // FIXME: use music from catalog , and use active or kwown peer to set a score
+        // FIXME: don't use dummyMusic in Assert..., even with previous correction, get the music reference from localCatalog directly in Assert or with another var
         Music dummyMusic = new Music();
         dummyMusic.setFileName("Dummy Music");
         setScoreCommand.setMusic(dummyMusic);
@@ -90,6 +92,7 @@ public class MusicScoreTest {
      */
     @Test
     public void unsetScore() {
+        // FIXME: same remarks for this test, see setScore Test
         Music dummyMusic = new Music();
         dummyMusic.setFileName("Dummy Music");
         setScoreCommand.setMusic(dummyMusic);

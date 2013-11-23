@@ -10,7 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- *
+ * Don't use index from CollectionChangeSupport (HashMap inside)
  */
 public class ActivePeerList implements Serializable {
 
@@ -48,7 +48,7 @@ public class ActivePeerList implements Serializable {
     public void update(Peer peer) {
         boolean update = mActivePeers.put(peer, new Date()) != null;
         if (update) {
-            mCollectionChangeSupport.fireCollectionChanged(peer, -1, CollectionEvent.Type.ADD);
+            mCollectionChangeSupport.fireCollectionChanged(peer, CollectionEvent.Type.ADD);
         }
     }
 
@@ -59,7 +59,7 @@ public class ActivePeerList implements Serializable {
     public void remove(Peer peer) {
         if (mActivePeers.containsKey(peer)) {
             mActivePeers.remove(peer);
-            mCollectionChangeSupport.fireCollectionChanged(peer, -1, CollectionEvent.Type.REMOVE);
+            mCollectionChangeSupport.fireCollectionChanged(peer, CollectionEvent.Type.REMOVE);
         }
     }
 
@@ -69,7 +69,7 @@ public class ActivePeerList implements Serializable {
     public void clear() {
         if (!mActivePeers.isEmpty()) {
             mActivePeers.clear();
-            mCollectionChangeSupport.fireCollectionChanged(null, -1, CollectionEvent.Type.CLEAR);
+            mCollectionChangeSupport.fireCollectionChanged(null, CollectionEvent.Type.CLEAR);
         }
     }
 

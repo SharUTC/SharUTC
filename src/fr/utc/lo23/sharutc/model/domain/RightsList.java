@@ -101,15 +101,19 @@ public class RightsList implements Serializable {
 
     /**
      * Remove a given rights instance from this rightsList if it exists, send
-     * updates (REMOVE)
+     * updates (REMOVE) with index removed
      *
      * @param rights the rights instance to remove
      * @return true is the rights instance was removed, else false
      */
     public boolean remove(Rights rights) {
-        boolean removed = mRightsList.remove(rights);
-        if (removed) {
-            collectionChangeSupport.fireCollectionChanged(rights, -1, CollectionEvent.Type.REMOVE);
+        int indexRemoved = mRightsList.indexOf(rights);
+        boolean removed = false;
+        if (indexRemoved != -1) {
+            removed = mRightsList.remove(rights);
+            if (removed) {
+                collectionChangeSupport.fireCollectionChanged(rights, indexRemoved, CollectionEvent.Type.REMOVE);
+            }
         }
         return removed;
     }
@@ -187,7 +191,7 @@ public class RightsList implements Serializable {
     public Rights getByMusicIdAndCategoryId(Long musicId, Integer categoryId) {
         Rights rights = null;
         for (Rights r : mRightsList) {
-            if (r.getMusicId().equals(musicId) && r.getCategoryId().equals(categoryId)) {
+            if (r != null && r.getMusicId() != null && r.getCategoryId() != null && r.getMusicId().equals(musicId) && r.getCategoryId().equals(categoryId)) {
                 r = rights;
             }
         }

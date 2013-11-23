@@ -83,7 +83,7 @@ public class PlayerServiceImpl implements PlayerService, PropertyChangeListener,
         log.info("playMusicFromPlaylist");
         if (music != null && mPlaylist.contains(music)) {
             playerStop();
-            mCurrentMusic = mPlaylist.get(mPlaylist.indexOf(music));
+            setCurrentMusic(mPlaylist.get(mPlaylist.indexOf(music)));
             playerPlay();
         }
     }
@@ -298,9 +298,11 @@ public class PlayerServiceImpl implements PlayerService, PropertyChangeListener,
      */
     private void setCurrentMusic(Music music) {
         log.trace("setCurrentMusic ...");
-        Music oldMusic = this.mCurrentMusic;
-        this.mCurrentMusic = music;
-        propertyChangeSupport.firePropertyChange(Property.SELECTED_MUSIC.name(), oldMusic, mCurrentMusic);
+        if (music != mCurrentMusic) {
+            Music oldMusic = this.mCurrentMusic;
+            this.mCurrentMusic = music;
+            propertyChangeSupport.firePropertyChange(Property.CURRENT_MUSIC.name(), oldMusic, mCurrentMusic);
+        }
     }
 
     /**
@@ -440,27 +442,39 @@ public class PlayerServiceImpl implements PlayerService, PropertyChangeListener,
     }
 
     private void onPlaylistClear() {
-        mCurrentTimeSec = 0L;
-        mCurrentMusic = null;
+        playerStop();
+        setCurrentMusic(null);
     }
 
     private void onPlaylistRemove(CollectionEvent<Music> ev) {
-        mCurrentTimeSec = 0L;
+        Music currentMusic;
         if (mPlaylist.isEmpty()) {
-            mCurrentMusic = null;
+            playerStop();
+            currentMusic = null;
         } else {
-            if (ev.getIndex() == mPlaylist.size()) {
-                mCurrentMusic = mPlaylist.get(ev.getIndex() - 1);
+            // currentMusic was removed
+            if (mCurrentMusic.equals(ev.getItem())) {
+                playerStop();
+                // auto select next (=id removed) if possible for current music or previous 
+                // list is NOT EMPTY, mPlaylist has already changed
+                if (mPlaylist.size() == ev.getIndex()) {
+                    // deleted : last of playlist, no next, use previous
+                    currentMusic = mPlaylist.get(ev.getIndex() - 1);
+                } else {
+                    // deleted : one of playlist except last
+                    currentMusic = mPlaylist.get(ev.getIndex());
+                }
             } else {
-                // FIX ME : on passe ici quand on suppr l'index 0 (taille liste après = 2)
-                mCurrentMusic = mPlaylist.get(ev.getIndex());
+                // other music was removed, no need to stop music or change currentMusic reference
+                currentMusic = mCurrentMusic;
             }
         }
+        setCurrentMusic(currentMusic);
     }
 
     private void onPlaylistAdd() {
         if (mPlaylist.size() == 1) {
-            mCurrentMusic = mPlaylist.get(0);
+            setCurrentMusic(mPlaylist.get(0));
         }
     }
 }

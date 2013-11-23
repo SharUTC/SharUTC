@@ -64,6 +64,7 @@ public class MusicCommentTest {
      */
     @Test
     public void addComment() {
+        //FIXME: use a music from localCatalog instead of dummy, commands work with appModel instance and doesn't know dummyMusic
         Music dummyMusic = new Music();
         dummyMusic.setFileName("Dummy Music");
         addCommentCommand.setMusic(dummyMusic);
@@ -97,6 +98,7 @@ public class MusicCommentTest {
      */
     @Test
     public void editComment() {
+        //FIXME: use a music from localCatalog instead of dummy, commands work with appModel instance and doesn't know dummyMusic
         Music dummyMusic = new Music();
         dummyMusic.setFileName("Dummy Music");
         addCommentCommand.setMusic(dummyMusic);
@@ -140,6 +142,7 @@ public class MusicCommentTest {
      */
     @Test
     public void removeComment() {
+        //FIXME: use a music from localCatalog instead of dummy, commands work with appModel instance and doesn't know dummyMusic
         Music dummyMusic = new Music();
         dummyMusic.setFileName("Dummy Music");
         addCommentCommand.setMusic(dummyMusic);
