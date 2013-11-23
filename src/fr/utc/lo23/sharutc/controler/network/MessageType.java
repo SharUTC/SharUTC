@@ -78,7 +78,7 @@ public enum MessageType {
      */
     CONNECTION_RESPONSE,
     /**
-     * Send info of a peer just connected.
+     * Send updated info of a user.
      */
     USER_INFO,
     /**

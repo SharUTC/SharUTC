@@ -309,6 +309,18 @@ public class NetworkServiceImpl implements NetworkService {
      * {inheritDoc}
      */
     @Override
+    public void connectionBroadcast(UserInfo userInfo) {
+        if (userInfo != null) {
+            mPeerDiscoverySocket.send(messageParser.write(MessageType.CONNECTION, new Object[][]{{Message.USER_INFO, userInfo}}));
+        } else {
+            log.error("userInfo is null");
+        }
+    }
+
+    /**
+     * {inheritDoc}
+     */
+    @Override
     public void disconnectionBroadcast() {
         sendBroadcast(messageParser.write(MessageType.DISCONNECT, null));
     }
