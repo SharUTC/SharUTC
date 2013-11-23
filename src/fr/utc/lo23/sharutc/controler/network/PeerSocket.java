@@ -12,7 +12,7 @@ public class PeerSocket implements Runnable {
 
     private final MessageHandler messageHandler;
     private final MessageParser messageParser;
-    private final NetworkService networkService;
+    private final NetworkServiceImpl networkService;
 
     private final Socket mSocket;
     private Thread mThread;
@@ -35,7 +35,7 @@ public class PeerSocket implements Runnable {
         this.mSocket = socket;
         this.messageHandler = messageHandler;
         this.messageParser = messageParser;
-        this.networkService = networkService;
+        this.networkService = (NetworkServiceImpl) networkService;
 
         try {
             mOut = new ObjectOutputStream(mSocket.getOutputStream());
@@ -45,7 +45,7 @@ public class PeerSocket implements Runnable {
         }
 
         // add this new PeerSocket to the PeerSocket list
-        networkService.addPeer(peerId, this);
+        this.networkService.addPeer(peerId, this);
     }
 
     /**

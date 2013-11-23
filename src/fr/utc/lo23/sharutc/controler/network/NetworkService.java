@@ -33,21 +33,6 @@ public interface NetworkService {
     public void stop();
 
     /**
-     * Register a new peer and its PeerSocket to the NetworkService.
-     *
-     * @param peerId the id of the new peer
-     * @param peerSocket the PeerSocket object associated to that peer
-     */
-    public void addPeer(long peerId, PeerSocket peerSocket);
-
-    /**
-     * Unregister a peer that is disconnected.
-     *
-     * @param peerSocket the PeerSocket of the disconnected peer
-     */
-    public void removePeer(PeerSocket peerSocket);
-
-    /**
      * Send a heartbeat message to all the connected peer
      * to verify if a peer is always connected
      */

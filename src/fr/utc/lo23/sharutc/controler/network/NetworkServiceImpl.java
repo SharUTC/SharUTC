@@ -74,9 +74,11 @@ public class NetworkServiceImpl implements NetworkService {
     }
 
     /**
-     * {inheritDoc}
+     * Register a new peer and its PeerSocket to the NetworkService.
+     *
+     * @param peerId the id of the new peer
+     * @param peerSocket the PeerSocket object associated to that peer
      */
-    @Override
     public synchronized void addPeer(long peerId, PeerSocket peerSocket) {
         log.warn("addPeer - Not supported yet.");
         if (peerId == 0 || peerSocket == null) {
@@ -88,9 +90,10 @@ public class NetworkServiceImpl implements NetworkService {
     }
 
     /**
-     * {inheritDoc}
+     * Unregister a peer that is disconnected.
+     *
+     * @param peerSocket the PeerSocket of the disconnected peer
      */
-    @Override
     public synchronized void removePeer(PeerSocket peerSocket) {
         mPeers.values().remove(peerSocket);
     }
