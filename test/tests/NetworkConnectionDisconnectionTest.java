@@ -6,6 +6,8 @@ import fr.utc.lo23.sharutc.controler.command.account.IntegrateDisconnectionComma
 import fr.utc.lo23.sharutc.controler.command.account.IntegrateUserInfoAndReplyCommand;
 import fr.utc.lo23.sharutc.controler.command.account.IntegrateUserInfoCommand;
 import fr.utc.lo23.sharutc.controler.network.Message;
+import fr.utc.lo23.sharutc.controler.network.MessageParser;
+import fr.utc.lo23.sharutc.controler.network.MessageType;
 import fr.utc.lo23.sharutc.controler.network.NetworkServiceMock;
 import fr.utc.lo23.sharutc.controler.service.MusicService;
 import fr.utc.lo23.sharutc.controler.service.UserService;
@@ -46,6 +48,8 @@ public class NetworkConnectionDisconnectionTest {
     private IntegrateUserInfoAndReplyCommand integrateUserInfoAndReplyCommand;
     @Inject
     private IntegrateDisconnectionCommand integrateDisconnectionCommand;
+    @Inject
+    private MessageParser messageParser;
     private AppModelBuilder appModelBuilder = null;
 
     /**
@@ -118,6 +122,9 @@ public class NetworkConnectionDisconnectionTest {
         Peer p = networkService.getPeer();
         Assert.assertNotNull("Message null", m);
         Assert.assertNotNull("Peer null", p);
+
+        messageParser.read(m);
+        Assert.assertEquals("The mesage type must be : CONNECTION_RESPONSE", MessageType.CONNECTION_RESPONSE, m.getType());
     }
 
     /**
