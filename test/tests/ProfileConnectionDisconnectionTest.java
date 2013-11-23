@@ -32,7 +32,7 @@ import org.slf4j.LoggerFactory;
 public class ProfileConnectionDisconnectionTest {
 
     private static final Logger log = LoggerFactory
-        .getLogger(ProfileConnectionDisconnectionTest.class);
+            .getLogger(ProfileConnectionDisconnectionTest.class);
     @Inject
     private AppModel appModel;
     @Inject
@@ -76,17 +76,23 @@ public class ProfileConnectionDisconnectionTest {
     /**
      *
      */
+    // FIXME: le problème vient de connectionRequestCommand qui n'est pas encore
+    // terminée, j'ai utilisé une méthode pour que le message parte en broadcast
+    // mais la méthode est mal écrite ou c'est pas la bonne que j'ai utilisé,
+    // si on veut pouvoir tester le message envoyé il faut alors créer
+    // et envoyé le message de la même manière que les autres, sinon les tests
+    // plantent puisque la couche réseau ne fonctionne pas
     @Test
     public void connectionRequestCommand() {
         // add first user
         String login = "tudorluchy1";
         String password = "password1";
-        Long peerId = 4L;
+        //  Long peerId = 4L;
 
         UserInfo userInfo = new UserInfo();
         userInfo.setLogin(login);
         userInfo.setPassword(password);
-        userInfo.setPeerId(peerId);
+        //   userInfo.setPeerId(peerId);
         userInfo.setFirstName("Tudor");
         userInfo.setLastName("Luchiancenco");
         userInfo.setAge(22);
@@ -109,13 +115,14 @@ public class ProfileConnectionDisconnectionTest {
         Assert.assertEquals("The mesage type must be : CONNECTION", MessageType.CONNECTION, m.getType());
         Assert.assertEquals("The login don't match", login, receivedUserInfo.getLogin());
         Assert.assertEquals("The password don't match", password, receivedUserInfo.getPassword());
-        Assert.assertEquals("The peerId don't match", peerId, receivedUserInfo.getPeerId());
+        Assert.assertEquals("The peerId don't match", appModel.getProfile().getUserInfo().getPeerId(), receivedUserInfo.getPeerId());
 
     }
 
     /**
      *
      */
+    // FIXME: le problème est similaire, la correction est à faire dans NetworkServiceImpl
     @Test
     public void disconnectionCommand() {
         disconnectionCommand.execute();

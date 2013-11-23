@@ -69,7 +69,6 @@ public class ProfileCreateAccountTest {
         info.setLastName("lastname");
         info.setLogin("LOGIN");
         info.setPassword("pwd");
-        info.setPeerId(11L);
         accountCreationCommand.setUserInfo(info);
         accountCreationCommand.execute();
         
@@ -81,7 +80,6 @@ public class ProfileCreateAccountTest {
         info.setLastName("last");
         info.setLogin("LOGIN");
         info.setPassword("pwd");
-        info.setPeerId(10L);
         accountCreationCommand.setUserInfo(info);
         accountCreationCommand.execute();
         

@@ -56,12 +56,12 @@ public class AccountCreationCommandImpl implements AccountCreationCommand {
         log.info("AccountCreationCommand ...");
         StringBuilder builder = new StringBuilder(fileService.getAppFolder()).append(FileService.ROOT_FOLDER_USERS).append(File.separator).append(mUserInfo.getLogin());
         File file = new File(builder.toString());
-        
-        if(file.exists() == false){
+
+        if (file.exists() == false) {
             // FIXME userProfile validation ??
             // it should be performed by the command or a service,
             // not in ui, use ErrorMessage and ErrorBus
-
+            mUserInfo.setPeerId(System.currentTimeMillis());
             musicService.createAndSetCatalog();
             musicService.createAndSetRightsList();
             // let userService.createAndSetProfile(mUserInfo) call AFTER
@@ -74,8 +74,7 @@ public class AccountCreationCommandImpl implements AccountCreationCommand {
             musicService.saveUserMusicFile();
             musicService.saveUserRightsListFile();
             log.info("AccountCreationCommand DONE");
-            }
-        else{
+        } else {
             log.warn("Can't create the profile. A profile with the same login already exists.");
             ErrorMessage nErrorMessage = new ErrorMessage("Can't create the profile. A profile with the same login already exists.");
             appModel.getErrorBus().pushErrorMessage(nErrorMessage);
