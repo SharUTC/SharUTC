@@ -142,10 +142,10 @@ public class NetworkServiceImpl implements NetworkService {
      * @param peer the receiver
      */
     protected void sendUnicast(Message message, Peer peer) {
-        if (peer != null) {
-            this.mPeers.get(peer.getId()).send(message);
+        if (peer != null && mPeers.containsKey(peer.getId())) {
+            mPeers.get(peer.getId()).send(message);
         } else {
-            log.error("[NetworkService - sendUnicast()] - object Peer is null");
+            log.error("Peer " + (peer != null ? peer.getId(): "null") + " not connected");
         }
     }
 
