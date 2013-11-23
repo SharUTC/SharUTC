@@ -97,8 +97,8 @@ public class PeerSocket implements Runnable {
     /**
      * Listen to incoming message from the peer and handles them.
      * <p>
-     * The message receive are given to messageHandler to instanciate the right
-     * command to treat them.
+     * The messages received are given to messageHandler to instantiate the
+     * right command to treat them.
      *
      * @see MessageHandler
      */
