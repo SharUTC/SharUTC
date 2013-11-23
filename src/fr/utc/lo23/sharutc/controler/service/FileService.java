@@ -27,15 +27,17 @@ public interface FileService {
     public String getAppFolder();
 
     /**
-     *
-     * @param srcPath
-     * @param force
+     * Unzip the file find in <i>srcPath</i> in the users folder
+     * @param srcPath - path of the file to unzip
+     * @param force - <b>True</b> if the profile already exists, it overwrites it
+     *                <b>False</b> if the profile already exists, throws an Exception
      * @throws java.lang.Exception
      */
     public void importWholeProfile(String srcPath, boolean force) throws Exception;
 
     /**
-     * Compress the folder srcPath and write it at destPath
+     * Compress the folder srcPath  into a zip
+     * and write it at destPath
      *
      * @param srcPath path of the folder to compress
      * @param destPath path of the destination

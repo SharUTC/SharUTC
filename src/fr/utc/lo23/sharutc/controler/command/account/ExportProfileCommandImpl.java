@@ -7,8 +7,7 @@ import fr.utc.lo23.sharutc.model.ErrorMessage;
 import java.io.IOException;
 
 /**
- * implementation of export profile command
- * {@inheritDoc}
+ * implementation of the export profile command
  */
 public class ExportProfileCommandImpl implements ExportProfileCommand {
     private final FileService fs;
@@ -18,8 +17,8 @@ public class ExportProfileCommandImpl implements ExportProfileCommand {
     
     /**
      * Constructor
-     * @param fs
-     * @param appModel
+     * @param fs - File Service
+     * @param appModel - Application Model
      */
     @Inject
     public ExportProfileCommandImpl(FileService fs, AppModel appModel) {
