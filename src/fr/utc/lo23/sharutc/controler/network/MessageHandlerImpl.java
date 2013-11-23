@@ -198,6 +198,10 @@ public class MessageHandlerImpl implements MessageHandler {
                             command = playIncomingMusicCommand;
                         }
                         break;
+                    case USER_INFO:
+                        integrateUserInfoCommand.setUserInfo((UserInfo) messageParser.getValue(Message.USER_INFO));
+                        command = integrateUserInfoCommand;
+                        break;
                     case CONNECTION:
                         integrateUserInfoAndReplyCommand.setUserInfo((UserInfo) messageParser.getValue(Message.USER_INFO));
                         command = integrateUserInfoAndReplyCommand;

@@ -33,21 +33,6 @@ public interface NetworkService {
     public void stop();
 
     /**
-     * Register a new peer and its PeerSocket to the NetworkService.
-     *
-     * @param peerId the id of the new peer
-     * @param peerSocket the PeerSocket object associated to that peer
-     */
-    public void addPeer(long peerId, PeerSocket peerSocket);
-
-    /**
-     * Unregister a peer that is disconnected.
-     *
-     * @param peerSocket the PeerSocket of the disconnected peer
-     */
-    public void removePeer(PeerSocket peerSocket);
-
-    /**
      * Send a heartbeat message to all the connected peer
      * to verify if a peer is always connected
      */
@@ -183,13 +168,21 @@ public interface NetworkService {
     public void sendMusicToPlay(Peer peer, Long conversationId, Music music);
 
     /**
-     * Notify all user of the client's connection.
+     * Notify all user of the update to our user info.
      * <p>
-     * Multicast to all connected peers the user's infos.
+     * Multicast to all connected peers the updated user info.
      *
-     * @param userInfo the user's infos to broadcast
+     * @param userInfo the new user's info to broadcast
      */
     public void userInfoBroadcast(UserInfo userInfo);
+    /**
+     * Notify all user of the client's connection.
+     * <p>
+     * Multicast to all connected peers the user info.
+     *
+     * @param userInfo the user's info to broadcast
+     */
+    public void connectionBroadcast(UserInfo userInfo);
 
     /**
      * Notify all user of the client's disconnection.

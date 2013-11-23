@@ -80,7 +80,7 @@ public class ConnectionRequestCommandImpl implements ConnectionRequestCommand {
             musicService.loadUserMusicFile();
             musicService.loadUserRightsListFile();
         }
-        networkService.userInfoBroadcast(appModel.getProfile().getUserInfo());
+        networkService.connectionBroadcast(appModel.getProfile().getUserInfo());
         log.info("AccountCreationCommand DONE");
     }
 }

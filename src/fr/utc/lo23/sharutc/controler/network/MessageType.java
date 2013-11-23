@@ -78,6 +78,10 @@ public enum MessageType {
      */
     CONNECTION_RESPONSE,
     /**
+     * Send updated info of a user.
+     */
+    USER_INFO,
+    /**
      * Edit a music comments.
      */
     EDIT_COMMENT,

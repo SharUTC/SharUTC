@@ -8,8 +8,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- *
- * 
+ * Simple thread which periodically call NetworkService.sendBroadcastHeartbeat().
+ * @see NetworkService.sendBroadcastHeartbeat()
  */
 public class HeartbeatThread implements Runnable {
 
@@ -17,7 +17,7 @@ public class HeartbeatThread implements Runnable {
             .getLogger(NetworkServiceImpl.class);
     private final NetworkService mNetworkService;
     private Thread mThread;
-    private boolean mThreadShouldStop = false;
+    private volatile boolean mThreadShouldStop = false;
     
     public HeartbeatThread(NetworkService nws){
         this.mNetworkService = nws;
@@ -40,25 +40,25 @@ public class HeartbeatThread implements Runnable {
     /**
      * Stop the thread.
      */
-    public void stop() {
+    public synchronized void stop() {
         mThreadShouldStop = true;
+        mThread.interrupt();
     }
     
     /**
-     * Testing TCP connection with known and connected peers
+     * Testing TCP connection with known and connected peers.
      */
     @Override
     public void run() {
         while (!mThreadShouldStop) {
-            // TODO tudor : il faudrait en quelque sorte récuperer le catch si jamais pb d'émission (public void send(Message msg) de PEERSOCKET)
-            // il faut donc faire ici TRY .... CATCH et dans le CATCH on doit supprimer le peer défaillant
             mNetworkService.sendBroadcastHeartbeat();
-            log.warn("[HeartBeatThread - run()] TODO");
             try {
                 // every 5 seconds we test the TCP connections
                 Thread.sleep(5000);
             } catch (InterruptedException ex) {
-                log.error(ex.getMessage());
+                if (!mThreadShouldStop) {
+                    log.error(ex.getMessage());
+                }
             }
         }
     }
