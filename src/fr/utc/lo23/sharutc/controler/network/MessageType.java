@@ -78,10 +78,6 @@ public enum MessageType {
      */
     CONNECTION_RESPONSE,
     /**
-     * Send info of a peer just connected.
-     */
-    USER_INFO,
-    /**
      * Edit a music comments.
      */
     EDIT_COMMENT,
