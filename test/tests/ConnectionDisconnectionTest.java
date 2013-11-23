@@ -6,6 +6,8 @@ import fr.utc.lo23.sharutc.controler.command.account.AccountCreationCommand;
 import fr.utc.lo23.sharutc.controler.command.account.ConnectionRequestCommand;
 import fr.utc.lo23.sharutc.controler.command.account.DisconnectionCommand;
 import fr.utc.lo23.sharutc.controler.network.Message;
+import fr.utc.lo23.sharutc.controler.network.MessageParser;
+import fr.utc.lo23.sharutc.controler.network.MessageType;
 import fr.utc.lo23.sharutc.controler.network.NetworkServiceMock;
 import fr.utc.lo23.sharutc.controler.service.MusicService;
 import fr.utc.lo23.sharutc.controler.service.UserService;
@@ -45,6 +47,8 @@ public class ConnectionDisconnectionTest {
     private DisconnectionCommand disconnectionCommand;
     @Inject
     private AccountCreationCommand accountCreationCommand;
+    @Inject
+    private MessageParser messageParser;
     private AppModelBuilder appModelBuilder = null;
 
     /**
@@ -66,6 +70,7 @@ public class ConnectionDisconnectionTest {
     public void after() {
         log.trace("cleaning appModel");
         appModelBuilder.clearAppModel();
+        appModelBuilder.deleteFolders();
     }
 
     /**
@@ -74,14 +79,18 @@ public class ConnectionDisconnectionTest {
     @Test
     public void connectionRequestCommand() {
         // add first user
+        String login = "tudorluchy1";
+        String password = "password1";
+        Long peerId = 4L;
+
         UserInfo userInfo = new UserInfo();
-        userInfo.setLogin("tudorluchy1");
-        userInfo.setPassword("password1");
-        userInfo.setPeerId(4L);
+        userInfo.setLogin(login);
+        userInfo.setPassword(password);
+        userInfo.setPeerId(peerId);
         userInfo.setFirstName("Tudor");
         userInfo.setLastName("Luchiancenco");
         userInfo.setAge(22);
-        
+
         // create account
         accountCreationCommand.setUserInfo(userInfo);
         accountCreationCommand.execute();
@@ -94,6 +103,14 @@ public class ConnectionDisconnectionTest {
         // tests
         Message m = networkService.getSentMessage();
         Assert.assertNotNull("Message null", m);
+
+        messageParser.read(m);
+        UserInfo receivedUserInfo = (UserInfo) messageParser.getValue(Message.USER_INFO);
+        Assert.assertEquals("The mesage type must be : CONNECTION", MessageType.CONNECTION, m.getType());
+        Assert.assertEquals("The login don't match", login, receivedUserInfo.getLogin());
+        Assert.assertEquals("The password don't match", password, receivedUserInfo.getPassword());
+        Assert.assertEquals("The peerId don't match", peerId, receivedUserInfo.getPeerId());
+
     }
 
     /**
@@ -106,5 +123,17 @@ public class ConnectionDisconnectionTest {
         // tests
         Message m = networkService.getSentMessage();
         Assert.assertNotNull("Message null", m);
+        
+        messageParser.read(m);
+        Assert.assertEquals("The mesage type must be : DISCONNECT", MessageType.DISCONNECT, m.getType());
+
+        Assert.assertNull(appModel.getProfile());
+        Assert.assertNull(appModel.getLocalCatalog());
+        Assert.assertNull(appModel.getRightsList());
+
+        Assert.assertEquals("ActivePeerList not empty", 0, appModel.getActivePeerList().size());
+        Assert.assertEquals("RemoteUserCatalog not empty", 0, appModel.getRemoteUserCatalog().size());
+        Assert.assertEquals("SearchResults not empty", 0, appModel.getSearchResults().size());
+        Assert.assertEquals("TmpCatalog not empty", 0, appModel.getTmpCatalog().size());
     }
 }
