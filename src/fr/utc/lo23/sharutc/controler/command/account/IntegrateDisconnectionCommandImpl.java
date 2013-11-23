@@ -6,7 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * 
+ * {@inheritDoc}
  */
 public class IntegrateDisconnectionCommandImpl implements IntegrateDisconnectionCommand {
 
@@ -42,7 +42,7 @@ public class IntegrateDisconnectionCommandImpl implements IntegrateDisconnection
     }
 
     /**
-     * Remove peer from connected peer list
+     * Remove peer from connected peer list.
      */
     @Override
     public void execute() {
