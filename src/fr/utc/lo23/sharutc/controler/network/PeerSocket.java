@@ -17,7 +17,7 @@ public class PeerSocket implements Runnable {
     private boolean mFailureHandled = false;
     private final Socket mSocket;
     private Thread mThread;
-    private boolean mThreadShouldStop = false;
+    private volatile boolean mThreadShouldStop = false;
     private ObjectInputStream mIn;
     private ObjectOutputStream mOut;
 
@@ -65,8 +65,14 @@ public class PeerSocket implements Runnable {
     /**
      * Stop the thread.
      */
-    public void stop() {
+    public synchronized void stop() {
         mThreadShouldStop = true;
+        try {
+            mIn.close();
+            mOut.close();
+        } catch (IOException ex) {
+            log.error(ex.toString());
+        }
     }
 
     /**
@@ -78,15 +84,15 @@ public class PeerSocket implements Runnable {
         String json = messageParser.toJSON(msg);
         try {
             mOut.writeObject(json);
-        } catch (IOException e) {
-            log.error(e.toString());
+        } catch (IOException ex) {
+            handleSocketFailure(ex);
         }
     }
 
     /**
      * Any clean-up action following a socket failure.
      */
-    private void handleSocketFailure(IOException ex) {
+    private synchronized void handleSocketFailure(IOException ex) {
         if (!mThreadShouldStop && !mFailureHandled) {
             log.info("Peer socket failure: " + ex.getMessage());
             networkService.disconnectPeer(this);

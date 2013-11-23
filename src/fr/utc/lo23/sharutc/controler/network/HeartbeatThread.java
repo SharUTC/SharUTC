@@ -17,7 +17,7 @@ public class HeartbeatThread implements Runnable {
             .getLogger(NetworkServiceImpl.class);
     private final NetworkService mNetworkService;
     private Thread mThread;
-    private boolean mThreadShouldStop = false;
+    private volatile boolean mThreadShouldStop = false;
     
     public HeartbeatThread(NetworkService nws){
         this.mNetworkService = nws;
@@ -40,8 +40,9 @@ public class HeartbeatThread implements Runnable {
     /**
      * Stop the thread.
      */
-    public void stop() {
+    public synchronized void stop() {
         mThreadShouldStop = true;
+        mThread.interrupt();
     }
     
     /**
@@ -55,7 +56,9 @@ public class HeartbeatThread implements Runnable {
                 // every 5 seconds we test the TCP connections
                 Thread.sleep(5000);
             } catch (InterruptedException ex) {
-                log.error(ex.getMessage());
+                if (!mThreadShouldStop) {
+                    log.error(ex.getMessage());
+                }
             }
         }
     }

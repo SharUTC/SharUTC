@@ -108,7 +108,7 @@ public class NetworkServiceImpl implements NetworkService {
      *
      * @param peerSocket the disconnected peerSocket
      */
-    public void disconnectPeer(PeerSocket peerSocket) {
+    public synchronized void disconnectPeer(PeerSocket peerSocket) {
         Long peerId = null;
         for (Entry<Long, PeerSocket> entry : mPeers.entrySet()) {
             if (peerSocket == entry.getValue()) {
@@ -129,7 +129,7 @@ public class NetworkServiceImpl implements NetworkService {
      *
      * @param message the message to send
      */
-    protected void sendBroadcast(Message message) {
+    protected synchronized void sendBroadcast(Message message) {
         for (PeerSocket peer : mPeers.values()) {
             peer.send(message);
         }
@@ -141,7 +141,7 @@ public class NetworkServiceImpl implements NetworkService {
      * @param message the message to send
      * @param peer the receiver
      */
-    protected void sendUnicast(Message message, Peer peer) {
+    protected synchronized void sendUnicast(Message message, Peer peer) {
         if (peer != null && mPeers.containsKey(peer.getId())) {
             mPeers.get(peer.getId()).send(message);
         } else {
