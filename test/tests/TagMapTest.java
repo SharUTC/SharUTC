@@ -151,7 +151,7 @@ public class TagMapTest {
         appModel.getLocalCatalog().get(1).addTag("TV");
         appModel.getLocalCatalog().get(2).addTag("Rock");
         appModel.getLocalCatalog().get(2).addTag("Rock Indé");
-        ((MusicServiceMock)musicService).setTagMapDirty();
+        ((MusicServiceMock) musicService).setTagMapDirty();
         long conversationId = 0L;
         sendTagMapCommand.setConversationId(conversationId);
         sendTagMapCommand.setPeer(appModel.getActivePeerList().getByPeerId(1L));
@@ -163,32 +163,30 @@ public class TagMapTest {
         Assert.assertNotNull("No tagMap in message", tm);
         Assert.assertEquals(musicService.getLocalTagMap(), tm);
     }
+
     @Test
-    public void showTagMapCommand(){
-        // Clear the local tag map
-        appModel.getLocalCatalog().clear();
+    public void showTagMapCommand() {
         // Add test values in the local tag map
-        appModel.getLocalCatalog().get(0).addTag("ROCK");
-        appModel.getLocalCatalog().get(1).addTag("TV");
-        appModel.getLocalCatalog().get(2).addTag("Rock");
-        appModel.getLocalCatalog().get(2).addTag("Rock Indé");
-        ((MusicServiceMock)musicService).setTagMapDirty();
-        
         Catalog cat = appModel.getLocalCatalog();
-        
+
+        cat.get(0).addTag("ROCK");
+        cat.get(1).addTag("TV");
+        cat.get(2).addTag("Rock");
+        cat.get(2).addTag("Rock Indé");
+        ((MusicServiceMock) musicService).setTagMapDirty();
+
         showTagMapCommand.execute();
-        
+
         // Test if network tag map has been merged with the local catalog
-        Assert.assertEquals("The network tag map has not been merged with the local tag map",cat, appModel.getNetworkTagMap());
-        
+        Assert.assertEquals("The network tag map has not been merged with the local tag map", new TagMap(cat), appModel.getNetworkTagMap());
+
         // Test Type and message content
         Message msgSent = networkService.getSentMessage();
         messageParser.read(msgSent);
         // Test Message Type
-        Assert.assertEquals("The message type must be TAG_GET_MAP",MessageType.TAG_GET_MAP, msgSent.getType());
+        Assert.assertEquals("The message type must be TAG_GET_MAP", MessageType.TAG_GET_MAP, msgSent.getType());
         // Test Conversation Id
         Long conversationId = (Long) messageParser.getValue(Message.CONVERSATION_ID);
         Assert.assertNotNull("the conversation id is null", conversationId);
     }
-    
 }

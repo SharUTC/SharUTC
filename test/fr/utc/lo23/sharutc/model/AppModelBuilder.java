@@ -5,6 +5,7 @@ import fr.utc.lo23.sharutc.controler.command.music.AddToLocalCatalogCommand;
 import fr.utc.lo23.sharutc.controler.command.music.AddToLocalCatalogCommandImpl;
 import fr.utc.lo23.sharutc.controler.service.FileService;
 import fr.utc.lo23.sharutc.controler.service.MusicService;
+import fr.utc.lo23.sharutc.controler.service.MusicServiceMock;
 import fr.utc.lo23.sharutc.controler.service.UserService;
 import fr.utc.lo23.sharutc.model.domain.Catalog;
 import fr.utc.lo23.sharutc.model.domain.RightsList;
@@ -72,6 +73,7 @@ public class AppModelBuilder {
         appModel.setActivePeerList(new ActivePeerList());
         appModel.setLocalCatalog(new Catalog());
         appModel.setRightsList(new RightsList());
+        ((MusicServiceMock)musicService).setTagMapDirty();
         deleteFolders();
         log.debug("AppModelMock CLEARED");
     }
