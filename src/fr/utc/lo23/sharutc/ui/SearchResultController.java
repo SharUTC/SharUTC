@@ -1,11 +1,12 @@
 package fr.utc.lo23.sharutc.ui;
 
-import com.cathive.fx.guice.GuiceFXMLLoader;
 import com.google.inject.Inject;
 import fr.utc.lo23.sharutc.controler.command.search.MusicSearchCommand;
 import fr.utc.lo23.sharutc.model.AppModel;
 import fr.utc.lo23.sharutc.model.domain.Music;
 import fr.utc.lo23.sharutc.model.domain.SearchCriteria;
+import fr.utc.lo23.sharutc.model.userdata.ActivePeerList;
+import fr.utc.lo23.sharutc.model.userdata.Peer;
 import fr.utc.lo23.sharutc.model.userdata.UserInfo;
 import fr.utc.lo23.sharutc.ui.custom.card.SimpleCard;
 import fr.utc.lo23.sharutc.ui.custom.CardList;
@@ -18,6 +19,8 @@ import fr.utc.lo23.sharutc.util.CollectionEvent;
 import javafx.fxml.Initializable;
 
 import java.net.URL;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.ResourceBundle;
 import javafx.scene.layout.VBox;
 import org.slf4j.Logger;
@@ -47,10 +50,6 @@ public class SearchResultController extends SongSelectorController implements Ri
         //listen for changes on the AppModel
         mAppModel.getSearchResults().addPropertyChangeListener(this);
 
-
-
-
-
         songList = new CardList("Songs", "bgBlue");
         friendList = new CardList("Friends", "bgGreen");
         artistList = new CardList("Artists", "bgRed");
@@ -61,17 +60,26 @@ public class SearchResultController extends SongSelectorController implements Ri
         gridpane.getChildren().add(artistList);
         gridpane.getChildren().add(albumList);
 
-
-        SearchCriteria critera = new SearchCriteria(search);
-        mMusicSearchCommand.setSearchCriteria(critera);
-
         if (resourceBundle != null) {
             search = resourceBundle.getString("search");
         } else {
             search = "";
         }
 
-
+        SearchCriteria critera = new SearchCriteria(search);
+        mMusicSearchCommand.setSearchCriteria(critera);
+        mMusicSearchCommand.execute();
+        
+        ActivePeerList peers = mAppModel.getActivePeerList();
+        HashMap<Peer, Date> peerList = peers.getActivePeers();
+        for(Peer peer : peerList.keySet()){
+            if(peer.getDisplayName().contains(search)){
+                UserInfo u = new UserInfo();
+                u.setPeerId(peer.getId());
+                u.setFirstName(peer.getDisplayName());
+            }
+        }
+        
         UserInfo u = new UserInfo();
         u.setFirstName("bob");
         addChild(new UserCard(u, this));
