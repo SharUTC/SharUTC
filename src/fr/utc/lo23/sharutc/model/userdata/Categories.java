@@ -9,6 +9,8 @@ import java.util.Collection;
 import java.util.HashSet;
 
 /**
+ * Represents a list of categories
+ * 
  * Don't use index from CollectionChangeSupport (HashSet inside)
  */
 public class Categories implements Serializable {
@@ -19,32 +21,35 @@ public class Categories implements Serializable {
     private HashSet<Category> mCategories;
 
     /**
-     *
+     * Constructor
      */
     public Categories() {
         this.mCategories = new HashSet<Category>();
     }
 
     /**
-     *
-     * @return
+     * Return the category list
+     * 
+     * @return the category list
      */
     public HashSet<Category> getCategories() {
         return mCategories;
     }
 
     /**
-     *
-     * @param categories
+     * Set the category list
+     * 
+     * @param categories - a category list
      */
     public void setCategories(HashSet<Category> categories) {
         this.mCategories = categories;
     }
 
     /**
-     *
+     * Find the category thanks to its id given in parameter if it exists
+     * 
      * @param id
-     * @return
+     * @return the category or null if it does not exist
      */
     public Category findCategoryById(Integer id) {
         Category category = null;
@@ -57,9 +62,10 @@ public class Categories implements Serializable {
     }
 
     /**
-     *
+     * Add a category to the category list
+     * 
      * @param category
-     * @return
+     * @return a boolean
      */
     public boolean add(Category category) {
         boolean added = mCategories.add(category);
@@ -70,8 +76,9 @@ public class Categories implements Serializable {
     }
 
     /**
-     *
-     * @param categories
+     * Add a category list
+     * 
+     * @param categories - a category list
      */
     public void addAll(Collection<Category> categories) {
         if (categories != null && !categories.isEmpty()) {
@@ -82,9 +89,10 @@ public class Categories implements Serializable {
     }
 
     /**
-     *
+     * Remove a category from the category list
+     * 
      * @param category
-     * @return
+     * @return a boolean
      */
     public boolean remove(Category category) {
         boolean removed = mCategories.remove(category);
@@ -95,7 +103,7 @@ public class Categories implements Serializable {
     }
 
     /**
-     *
+     * Empty the category list
      */
     public void clear() {
         if (!mCategories.isEmpty()) {
@@ -105,25 +113,28 @@ public class Categories implements Serializable {
     }
 
     /**
-     *
-     * @return
+     * Return the size of the category list
+     * 
+     * @return the size of the category list
      */
     public int size() {
         return mCategories.size();
     }
 
     /**
-     *
+     * Check if the category list contains the category given in parameter
+     * 
      * @param category
-     * @return
+     * @return a boolean
      */
     public boolean contains(Category category) {
         return mCategories.contains(category);
     }
 
     /**
-     *
-     * @return
+     * Check if the category list is empty
+     * 
+     * @return a boolean
      */
     @JsonIgnore
     public boolean isEmpty() {
