@@ -16,7 +16,6 @@ public class IntegrateUserInfoCommandImpl implements IntegrateUserInfoCommand {
     private final UserService userService;
     private UserInfo mUserInfo;
 
-    
     @Inject
     public IntegrateUserInfoCommandImpl(UserService userService) {
         this.userService = userService;
@@ -39,15 +38,15 @@ public class IntegrateUserInfoCommandImpl implements IntegrateUserInfoCommand {
     }
 
     /**
-     * Add user info to model and update active peer list & contact
+     * Add user info to model and update active peer list
      */
     @Override
     public void execute() {
         log.info("IntegrateUserInfoCommandImpl ...");
-        
-        // update contacts & active peers
+
+        // update active peers
         userService.updateConnectedPeers(mUserInfo);
-        
+
         log.info("IntegrateUserInfoCommandImpl DONE");
     }
 }
