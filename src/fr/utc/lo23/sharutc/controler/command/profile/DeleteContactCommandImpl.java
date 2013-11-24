@@ -7,8 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- *
- * {@inheritDoc}
+ * implementation of the DeleteContactCommand
  */
 public class DeleteContactCommandImpl implements DeleteContactCommand {
 
@@ -18,6 +17,7 @@ public class DeleteContactCommandImpl implements DeleteContactCommand {
     final private UserService mUserService;
 
      /**
+     * Constructor
      * @param userService
      */
     @Inject

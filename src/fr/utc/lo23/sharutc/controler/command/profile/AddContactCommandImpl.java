@@ -7,7 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * {@inheritDoc}
+ * implementation of the AddContactCommand
  */
 public class AddContactCommandImpl implements AddContactCommand {
 
@@ -17,7 +17,7 @@ public class AddContactCommandImpl implements AddContactCommand {
     final private UserService mUserService;
 
     /**
-     * 
+     * Constructor
      * @param userService
      */
     @Inject

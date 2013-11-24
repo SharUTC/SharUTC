@@ -4,7 +4,7 @@ import fr.utc.lo23.sharutc.controler.command.Command;
 import fr.utc.lo23.sharutc.model.userdata.Contact;
 
 /**
- *
+ * Command to delete a contact
  */
 public interface DeleteContactCommand extends Command {
 

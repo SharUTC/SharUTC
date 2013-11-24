@@ -4,7 +4,7 @@ import fr.utc.lo23.sharutc.controler.command.Command;
 import fr.utc.lo23.sharutc.model.userdata.Contact;
 
 /**
- *
+ * Command to add a contact (to the category Public)
  */
 public interface AddContactCommand extends Command {
 

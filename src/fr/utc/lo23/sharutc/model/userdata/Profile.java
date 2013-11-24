@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import java.io.Serializable;
 
 /**
- *
+ * Represents a user profile
  */
 public class Profile implements Serializable {
 
@@ -18,6 +18,7 @@ public class Profile implements Serializable {
     private Integer categoryIdSequence;
 
     /**
+     * Constructor
      * keep no args constructor for parsing purpose
      */
     public Profile() {
@@ -26,6 +27,7 @@ public class Profile implements Serializable {
     }
 
     /**
+     * Constructor
      * For ProfileCreationCommand at least
      *
      * @param userInfo
@@ -41,21 +43,27 @@ public class Profile implements Serializable {
     }
 
     /**
-     *
-     * @return
+     * Return a new unique music id and increment the music id sequence
+     * 
+     * @return a new unique music id
      */
     @JsonIgnore
     public Long getNewMusicId() {
         return ++musicCounter;
     }
 
+     /**
+     * Decrement the music id sequence
+     * 
+     */
     public void decrementMusicId() {
         musicCounter--;
     }
 
     /**
-     *
-     * @return
+     * Return a new unique category id and increment the category id sequence
+     * 
+     * @return a new unique category id 
      */
     @JsonIgnore
     public Integer getNewCategoryId() {
@@ -81,15 +89,17 @@ public class Profile implements Serializable {
     }
 
     /**
-     *
-     * @return
+     * Return the category list
+     * 
+     * @return the category list
      */
     public Categories getCategories() {
         return mCategories;
     }
 
     /**
-     *
+     * Set the category list
+     * 
      * @param categories
      */
     public void setCategories(Categories categories) {
@@ -97,15 +107,17 @@ public class Profile implements Serializable {
     }
 
     /**
-     *
-     * @return
+     * Return the contact list
+     * 
+     * @return the contact list
      */
     public Contacts getContacts() {
         return mContacts;
     }
 
     /**
-     *
+     * Set the contact list
+     * 
      * @param mContacts
      */
     public void setContacts(Contacts mContacts) {
@@ -113,15 +125,17 @@ public class Profile implements Serializable {
     }
 
     /**
-     *
-     * @return
+     * Return user's information
+     * 
+     * @return user's information
      */
     public UserInfo getUserInfo() {
         return mUserInfo;
     }
 
     /**
-     *
+     * Set user's information
+     * 
      * @param userInfo
      */
     public void setUserInfo(UserInfo userInfo) {
@@ -129,15 +143,17 @@ public class Profile implements Serializable {
     }
 
     /**
-     *
-     * @return
+     * Return the number of musics
+     * 
+     * @return the number of musics
      */
     public Long getMusicCounter() {
         return musicCounter;
     }
 
     /**
-     *
+     * Set the number of musics
+     * 
      * @param musicCounter
      */
     public void setMusicCounter(Long musicCounter) {
@@ -145,15 +161,17 @@ public class Profile implements Serializable {
     }
 
     /**
-     *
-     * @return
+     * Return the number of categories
+     * 
+     * @return the number of categories
      */
     public Integer getCategoryIdSequence() {
         return categoryIdSequence;
     }
 
     /**
-     *
+     * Set the number of categories
+     * 
      * @param categoryIdSequence
      */
     public void setCategoryIdSequence(Integer categoryIdSequence) {

@@ -56,6 +56,18 @@ public class NetworkServiceImpl implements NetworkService {
      * {@inheritDoc}
      */
     @Override
+    public void start() {
+        try {
+            start(NetworkService.defaultPort, NetworkService.defaultGroup);
+        } catch (UnknownHostException ex) {
+            log.error(ex.toString());
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public void start(int port, String group) throws UnknownHostException {
         InetAddress g = InetAddress.getByName(group);
         mListenThread = new ListenThread(port, appModel, messageHandler,
@@ -147,6 +159,15 @@ public class NetworkServiceImpl implements NetworkService {
         } else {
             log.error("Peer " + (peer != null ? peer.getId(): "null") + " not connected");
         }
+    }
+
+    /**
+     * Send a message to the multicast group.
+     *
+     * @param message the message to multicast
+     */
+    protected void sendMulticast(Message message) {
+        mPeerDiscoverySocket.send(message);
     }
 
     /**
@@ -299,7 +320,7 @@ public class NetworkServiceImpl implements NetworkService {
     @Override
     public void userInfoBroadcast(UserInfo userInfo) {
         if (userInfo != null) {
-            mPeerDiscoverySocket.send(messageParser.write(MessageType.USER_INFO, new Object[][]{{Message.USER_INFO, userInfo}}));
+            sendBroadcast(messageParser.write(MessageType.USER_INFO, new Object[][]{{Message.USER_INFO, userInfo}}));
         } else {
             log.error("userInfo is null");
         }
@@ -311,7 +332,7 @@ public class NetworkServiceImpl implements NetworkService {
     @Override
     public void connectionBroadcast(UserInfo userInfo) {
         if (userInfo != null) {
-            mPeerDiscoverySocket.send(messageParser.write(MessageType.CONNECTION, new Object[][]{{Message.USER_INFO, userInfo}}));
+            sendMulticast(messageParser.write(MessageType.CONNECTION, new Object[][]{{Message.USER_INFO, userInfo}}));
         } else {
             log.error("userInfo is null");
         }

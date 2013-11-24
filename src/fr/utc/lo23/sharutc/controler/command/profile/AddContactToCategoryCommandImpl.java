@@ -12,8 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- *
- * {@inheritDoc}
+ * implementation of the AddContactToCategoryCommand
  */
 public class AddContactToCategoryCommandImpl implements AddContactToCategoryCommand {
 
@@ -24,6 +23,7 @@ public class AddContactToCategoryCommandImpl implements AddContactToCategoryComm
     final private UserService mUserService;
 
      /**
+     * Constructor 
      * @param userService
      */
     @Inject

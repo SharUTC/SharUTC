@@ -14,7 +14,7 @@ import org.slf4j.LoggerFactory;
 public class IntegrateUserInfoAndReplyCommandImpl implements IntegrateUserInfoAndReplyCommand {
 
     private static final Logger log = LoggerFactory
-            .getLogger(IntegrateUserInfoAndReplyCommandImpl.class);
+        .getLogger(IntegrateUserInfoAndReplyCommandImpl.class);
     private final AppModel appModel;
     private final UserService userService;
     private final NetworkService networkService;
@@ -51,13 +51,12 @@ public class IntegrateUserInfoAndReplyCommandImpl implements IntegrateUserInfoAn
     }
 
     /**
-     * Add user info to model, update active peer list & contact and send
-     * personal information to broadcaster
+     * Add user info to model, update active peer list and send personal information to broadcaster
      */
     @Override
     public void execute() {
         log.info("IntegrateUserInfoAndReplyCommandImpl ...");
-        // update contacts & active peers
+        // update active peers
         userService.updateConnectedPeers(mUserInfo);
         // send my personal information to the broadcaster
         networkService.sendConnectionResponse(mUserInfo.toPeer(), appModel.getProfile().getUserInfo());
