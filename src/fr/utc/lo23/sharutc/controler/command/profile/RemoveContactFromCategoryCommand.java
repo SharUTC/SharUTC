@@ -5,7 +5,9 @@ import fr.utc.lo23.sharutc.model.userdata.Category;
 import fr.utc.lo23.sharutc.model.userdata.Contact;
 
 /**
- *
+ * Command to remove a contact from a category (we can't remove a contact from the category Public)
+ * This command manages the changes of categories. 
+ * For instance, if the contact was only in this category, we add it in the category Public
  */
 public interface RemoveContactFromCategoryCommand extends Command {
 

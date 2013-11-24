@@ -10,8 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- *
- * {@inheritDoc}
+ * implementation of the CreateCategoryCommand
  */
 public class CreateCategoryCommandImpl implements CreateCategoryCommand {
     
@@ -21,6 +20,7 @@ public class CreateCategoryCommandImpl implements CreateCategoryCommand {
     final private UserService mUserService;
 
      /**
+     * Constructor
      * @param userService
      */
     @Inject
