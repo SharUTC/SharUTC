@@ -177,5 +177,6 @@ public class AppModelBuilder {
 
     private void mockCategories() {
         appModel.getProfile().setCategories(new Categories());
+        appModel.getProfile().getCategories().add(new Category(Category.PUBLIC_CATEGORY_ID, Category.PUBLIC_CATEGORY_NAME));
     }
 }

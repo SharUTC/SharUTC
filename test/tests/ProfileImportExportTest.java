@@ -29,7 +29,6 @@ import org.slf4j.LoggerFactory;
 
 /**
  *
- * @author Olivier
  */
 @RunWith(GuiceJUnitRunner.class)
 @GuiceJUnitRunner.GuiceModules({ProfileImportExportTestModule.class})

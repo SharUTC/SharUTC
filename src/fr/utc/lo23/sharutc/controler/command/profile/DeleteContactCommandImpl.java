@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package fr.utc.lo23.sharutc.controler.command.profile;
 
 import com.google.inject.Inject;

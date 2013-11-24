@@ -72,6 +72,7 @@ import fr.utc.lo23.sharutc.controler.command.profile.DeleteCategoryCommandImpl;
 import fr.utc.lo23.sharutc.controler.command.profile.DeleteContactCommand;
 import fr.utc.lo23.sharutc.controler.command.profile.DeleteContactCommandImpl;
 import fr.utc.lo23.sharutc.controler.command.profile.ManageRightsCommand;
+import fr.utc.lo23.sharutc.controler.command.profile.ManageRightsCommandImpl;
 import fr.utc.lo23.sharutc.controler.command.profile.RemoveContactFromCategoryCommand;
 import fr.utc.lo23.sharutc.controler.command.profile.RemoveContactFromCategoryCommandImpl;
 import fr.utc.lo23.sharutc.controler.command.search.DownloadMusicsCommand;
@@ -172,6 +173,8 @@ class TestModule extends AbstractModule {
 
         bind(AddContactToCategoryCommand.class).to(AddContactToCategoryCommandImpl.class);
         bind(RemoveContactFromCategoryCommand.class).to(RemoveContactFromCategoryCommandImpl.class);
+        
+        bind(ManageRightsCommand.class).to(ManageRightsCommandImpl.class);
 
 
         //bind(ManageRightsCommand.class).to(ManageRightsCommandImpl.class);
