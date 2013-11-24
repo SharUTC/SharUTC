@@ -79,10 +79,14 @@ public class NetworkConnectionDisconnectionTest {
     @Test
     public void integrateUserInfoCommand() {
         // add first user
+        String login = "tudorluchy1";
+        String password = "password1";
+        Long peerId = 4L;
+
         UserInfo userInfo = new UserInfo();
-        userInfo.setLogin("tudorluchy (id=1)");
-        userInfo.setPassword("password");
-        userInfo.setPeerId(16L);
+        userInfo.setLogin(login);
+        userInfo.setPassword(password);
+        userInfo.setPeerId(peerId);
         userInfo.setFirstName("Tudor");
         userInfo.setLastName("Luchiancenco");
         userInfo.setAge(22);
@@ -102,10 +106,14 @@ public class NetworkConnectionDisconnectionTest {
     @Test
     public void integrateUserInfoAndReplyCommand() {
         // add first user
+        String login = "tudorluchy1";
+        String password = "password1";
+        Long peerId = 4L;
+
         UserInfo userInfo = new UserInfo();
-        userInfo.setLogin("tudorluchy (id=2)");
-        userInfo.setPassword("password");
-        userInfo.setPeerId(4L);
+        userInfo.setLogin(login);
+        userInfo.setPassword(password);
+        userInfo.setPeerId(peerId);
         userInfo.setFirstName("Tudor");
         userInfo.setLastName("Luchiancenco");
         userInfo.setAge(22);
