@@ -46,6 +46,11 @@ public class NetworkServiceMock extends NetworkServiceImpl implements NetworkSer
         this.peer = peer;
     }
 
+    @Override
+    protected void sendMulticast(Message message) {
+        this.sendMessage = message;
+    }
+
     public Message getSentMessage() {
         return sendMessage;
     }
