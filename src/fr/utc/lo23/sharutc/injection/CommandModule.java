@@ -7,6 +7,8 @@ import fr.utc.lo23.sharutc.controler.command.account.ConnectionRequestCommand;
 import fr.utc.lo23.sharutc.controler.command.account.ConnectionRequestCommandImpl;
 import fr.utc.lo23.sharutc.controler.command.account.DisconnectionCommand;
 import fr.utc.lo23.sharutc.controler.command.account.DisconnectionCommandImpl;
+import fr.utc.lo23.sharutc.controler.command.account.EditUserInfoCommand;
+import fr.utc.lo23.sharutc.controler.command.account.EditUserInfoCommandImpl;
 import fr.utc.lo23.sharutc.controler.command.account.ExportProfileCommand;
 import fr.utc.lo23.sharutc.controler.command.account.ExportProfileCommandImpl;
 import fr.utc.lo23.sharutc.controler.command.account.ImportProfileCommand;
@@ -94,6 +96,7 @@ public class CommandModule extends AbstractModule {
         bind(DisconnectionCommand.class).to(DisconnectionCommandImpl.class);
         bind(ExportProfileCommand.class).to(ExportProfileCommandImpl.class);
         bind(ImportProfileCommand.class).to(ImportProfileCommandImpl.class);
+        bind(EditUserInfoCommand.class).to(EditUserInfoCommandImpl.class);
         // more...
 
         //music
