@@ -11,8 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- *
- * {@inheritDoc}
+ * implementation of the DeleteCategoryCommand
  */
 public class DeleteCategoryCommandImpl implements DeleteCategoryCommand {
 
@@ -22,6 +21,7 @@ public class DeleteCategoryCommandImpl implements DeleteCategoryCommand {
     final private UserService mUserService;
 
      /**
+     * Constructor
      * @param userService
      */
     @Inject

@@ -3,7 +3,7 @@ package fr.utc.lo23.sharutc.controler.command.profile;
 import fr.utc.lo23.sharutc.controler.command.Command;
 
 /**
- *
+ * Command to create a category
  */
 public interface CreateCategoryCommand extends Command {
 
