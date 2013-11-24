@@ -93,10 +93,11 @@ public class SetScoreCommandImpl implements SetScoreCommand {
     @Override
     public void execute() {
         log.info("SetScoreCommandImpl ...");
-        if (mPeer == null) {
+        if (mPeer == null || mMusic == null) {
             Utils.throwMissingParameter(log, new Throwable());
-        } else if (appModel.getProfile().getUserInfo().getPeerId() == mPeer.getId()) {
+        } else if (appModel.getProfile().getUserInfo().getPeerId().equals(mMusic.getOwnerPeerId())) {
             musicService.setScore(mPeer, mMusic, mScore); // local
+            appModel.getProfile().getKnownPeerList().update(mPeer);
         } else {
             networkService.setScore(mPeer, mMusic, mScore); // distant
         }

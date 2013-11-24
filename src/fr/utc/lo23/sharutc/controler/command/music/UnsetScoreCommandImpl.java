@@ -76,10 +76,11 @@ public class UnsetScoreCommandImpl implements UnsetScoreCommand {
     @Override
     public void execute() {
         log.info("UnsetScoreCommandImpl ...");
-        if (mPeer == null) {
+        if (mPeer == null || mMusic == null) {
             Utils.throwMissingParameter(log, new Throwable());
-        } else if (appModel.getProfile().getUserInfo().getPeerId() == mPeer.getId()) {
+        } else if (appModel.getProfile().getUserInfo().getPeerId().equals(mMusic.getOwnerPeerId())) {
             musicService.unsetScore(mPeer, mMusic); // local
+            musicService.removeFromKnownPeersIfUseless(mPeer);
         } else {
             networkService.unsetScore(mPeer, mMusic); // distant
         }

@@ -927,4 +927,62 @@ public class MusicServiceImpl implements MusicService {
          */
 
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void removeFromKnownPeersIfUseless(Peer peer) {
+        boolean keepPeer = false;
+        if (appModel.getProfile() != null && appModel.getProfile().getContacts() != null && !appModel.getProfile().getContacts().isEmpty()) {
+            for (Contact contact : appModel.getProfile().getContacts().getContacts()) {
+                if (contact.getUserInfo().getPeerId().equals(peer.getId())) {
+                    keepPeer = true;
+                    break;
+                }
+            }
+        }
+        if (!keepPeer) {
+            if (appModel.getLocalCatalog() != null && !appModel.getLocalCatalog().isEmpty()) {
+                for (Music m : appModel.getLocalCatalog().getMusics()) {
+                    if (m.getScores() != null && !m.getScores().isEmpty()) {
+                        for (Score score : m.getScores()) {
+                            if (score.getPeerId().equals(peer.getId())) {
+                                keepPeer = true;
+                                break;
+                            }
+                        }
+                    }
+                    if (keepPeer) {
+                        break;
+                    }
+                    if (m.getComments() != null && !m.getComments().isEmpty()) {
+                        for (Comment comment : m.getComments()) {
+                            if (comment.getAuthorPeerId().equals(peer.getId())) {
+                                keepPeer = true;
+                                break;
+                            }
+                        }
+                    }
+                    if (keepPeer) {
+                        break;
+                    }
+                    if (m.getScores() != null && !m.getScores().isEmpty()) {
+                        for (Score score : m.getScores()) {
+                            if (score.getPeerId().equals(peer.getId())) {
+                                keepPeer = true;
+                                break;
+                            }
+                        }
+                    }
+                    if (keepPeer) {
+                        break;
+                    }
+                }
+            }
+        }
+        if (!keepPeer) {
+            appModel.getProfile().getKnownPeerList().remove(peer);
+        }
+    }
 }

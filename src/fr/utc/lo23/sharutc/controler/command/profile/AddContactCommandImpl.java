@@ -2,6 +2,7 @@ package fr.utc.lo23.sharutc.controler.command.profile;
 
 import com.google.inject.Inject;
 import fr.utc.lo23.sharutc.controler.service.UserService;
+import fr.utc.lo23.sharutc.model.AppModel;
 import fr.utc.lo23.sharutc.model.userdata.Contact;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,14 +15,17 @@ public class AddContactCommandImpl implements AddContactCommand {
     private static final Logger log = LoggerFactory
             .getLogger(AddContactCommandImpl.class);
     private Contact mContact;
+    final private AppModel appModel;
     final private UserService mUserService;
 
     /**
      * Constructor
+     *
      * @param userService
      */
     @Inject
-    public AddContactCommandImpl(UserService userService) {
+    public AddContactCommandImpl(AppModel appModel, UserService userService) {
+        this.appModel = appModel;
         this.mUserService = userService;
     }
 
@@ -48,6 +52,7 @@ public class AddContactCommandImpl implements AddContactCommand {
     public void execute() {
         log.info("AddContactCommand ...");
         mUserService.addContact(mContact);
+        appModel.getProfile().getKnownPeerList().update(mContact.getUserInfo().toPeer());
         log.info("AddContactCommand DONE");
     }
 }

@@ -63,13 +63,10 @@ public class MusicScoreTest {
     public void setScore() {
         // FIXME: use music from catalog , and use active or kwown peer to set a score
         // FIXME: don't use dummyMusic in Assert..., even with previous correction, get the music reference from localCatalog directly in Assert or with another var
-        Music dummyMusic = new Music();
-        dummyMusic.setFileName("Dummy Music");
-        setScoreCommand.setMusic(dummyMusic);
+        Music music = appModel.getLocalCatalog().get(0);
+        setScoreCommand.setMusic(music);
 
-        Peer dummyPeer = new Peer();
-        dummyPeer.setDisplayName("Dummy Peer");
-        dummyPeer.setId(436907);
+        Peer dummyPeer = appModel.getActivePeerList().getActivePeers().keySet().iterator().next();
         // dummyPeer.setIpAddress("192.168.1.1");
         setScoreCommand.setPeer(dummyPeer);
 
@@ -78,7 +75,7 @@ public class MusicScoreTest {
 
         setScoreCommand.execute();
 
-        Score score = dummyMusic.getScore(dummyPeer);
+        Score score = appModel.getLocalCatalog().get(0).getScore(dummyPeer);
         Assert.assertNotNull("SetScoreCommand failed 0", score);
 
         if (score != null) {

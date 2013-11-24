@@ -1,7 +1,6 @@
 package fr.utc.lo23.sharutc.model.userdata;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import java.io.Serializable;
 import java.util.HashMap;
 
@@ -21,7 +20,7 @@ public class KnownPeerList implements Serializable {
 
     /**
      * Return the known peer list
-     * 
+     *
      * @return the known peer list
      */
     public HashMap<Long, String> getKnownPeers() {
@@ -30,7 +29,7 @@ public class KnownPeerList implements Serializable {
 
     /**
      * Set the known peer list
-     * 
+     *
      * @param knownPeers - the known peer list
      */
     public void setKnownPeers(HashMap<Long, String> knownPeers) {
@@ -39,7 +38,7 @@ public class KnownPeerList implements Serializable {
 
     /**
      * Return peer's name thanks to its id given in parameter
-     * 
+     *
      * @param id
      * @return the name
      */
@@ -49,7 +48,7 @@ public class KnownPeerList implements Serializable {
 
     /**
      * Update the known peer list with a new peer, given in parameter
-     * 
+     *
      * @param peer
      */
     public void update(Peer peer) {
@@ -58,7 +57,7 @@ public class KnownPeerList implements Serializable {
 
     /**
      * Return the size of the known peer list
-     * 
+     *
      * @return the size of the known peer list
      */
     public int size() {
@@ -67,7 +66,7 @@ public class KnownPeerList implements Serializable {
 
     /**
      * Check if the known peer list contains the peer given in parameter
-     * 
+     *
      * @param peer
      * @return a boolean
      */
@@ -77,11 +76,21 @@ public class KnownPeerList implements Serializable {
 
     /**
      * Check if the known peer list is empty
-     * 
+     *
      * @return a boolean
      */
     @JsonIgnore
     public boolean isEmpty() {
         return mKnownPeers.isEmpty();
+    }
+
+    /**
+     * Remove given peer following its Id, use only when peer is no more
+     * referenced elsewhere in application
+     *
+     * @param peer the peer to remove from app
+     */
+    public void remove(Peer peer) {
+        mKnownPeers.remove(peer.getId());
     }
 }

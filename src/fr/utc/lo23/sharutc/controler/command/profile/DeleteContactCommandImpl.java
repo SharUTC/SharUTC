@@ -1,6 +1,7 @@
 package fr.utc.lo23.sharutc.controler.command.profile;
 
 import com.google.inject.Inject;
+import fr.utc.lo23.sharutc.controler.service.MusicService;
 import fr.utc.lo23.sharutc.controler.service.UserService;
 import fr.utc.lo23.sharutc.model.userdata.Contact;
 import org.slf4j.Logger;
@@ -15,25 +16,28 @@ public class DeleteContactCommandImpl implements DeleteContactCommand {
             .getLogger(AddContactCommandImpl.class);
     private Contact mContact;
     final private UserService mUserService;
+    final private MusicService musicService;
 
-     /**
+    /**
      * Constructor
+     *
      * @param userService
      */
     @Inject
-    public DeleteContactCommandImpl(UserService userService) {
+    public DeleteContactCommandImpl(UserService userService, MusicService musicService) {
         this.mUserService = userService;
+        this.musicService = musicService;
     }
-        
-     /**
+
+    /**
      * {@inheritDoc}
      */
     @Override
     public Contact getContact() {
-       return mContact;
+        return mContact;
     }
-    
-     /**
+
+    /**
      * {@inheritDoc}
      */
     @Override
@@ -41,15 +45,14 @@ public class DeleteContactCommandImpl implements DeleteContactCommand {
         this.mContact = contact;
     }
 
-   
-     /**
+    /**
      * {@inheritDoc}
      */
     @Override
     public void execute() {
         log.info("DeleteContactCommand ...");
         mUserService.deleteContact(mContact);
+        musicService.removeFromKnownPeersIfUseless(mContact.getUserInfo().toPeer());
         log.info("DeleteContactCommand DONE");
     }
-    
 }

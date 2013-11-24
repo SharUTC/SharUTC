@@ -127,10 +127,11 @@ public class EditCommentCommandImpl implements EditCommentCommand {
     @Override
     public void execute() {
         log.info("EditCommentCommandImpl ...");
-        if (mOwnerPeer == null) {
+        if (mOwnerPeer == null || mMusic == null) {
             Utils.throwMissingParameter(log, new Throwable());
-        } else if (appModel.getProfile().getUserInfo().getPeerId() == mOwnerPeer.getId()) {
+        } else if (appModel.getProfile().getUserInfo().getPeerId().equals(mMusic.getOwnerPeerId())) {
             musicService.editComment(mAuthorPeer, mMusic, mComment, mCommentId); // local
+            appModel.getProfile().getKnownPeerList().update(mAuthorPeer);
         } else {
             networkService.editComment(mOwnerPeer, mMusic, mComment, mCommentId); // distant
         }

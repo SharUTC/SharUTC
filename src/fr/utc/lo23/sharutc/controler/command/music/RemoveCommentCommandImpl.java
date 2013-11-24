@@ -93,10 +93,11 @@ public class RemoveCommentCommandImpl implements RemoveCommentCommand {
     @Override
     public void execute() {
         log.info("RemoveCommentCommandImpl ...");
-        if (mPeer == null) {
+        if (mPeer == null || mMusic == null) {
             Utils.throwMissingParameter(log, new Throwable());
-        } else if (appModel.getProfile().getUserInfo().getPeerId() == mPeer.getId()) {
+        } else if (appModel.getProfile().getUserInfo().getPeerId().equals(mMusic.getOwnerPeerId())) {
             musicService.removeComment(mPeer, mMusic, mCommentId); // local
+            musicService.removeFromKnownPeersIfUseless(mPeer);
         } else {
             networkService.removeComment(mPeer, mMusic, mCommentId); // distant
         }
