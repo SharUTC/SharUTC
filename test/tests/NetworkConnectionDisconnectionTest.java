@@ -33,7 +33,7 @@ import org.slf4j.LoggerFactory;
 public class NetworkConnectionDisconnectionTest {
 
     private static final Logger log = LoggerFactory
-        .getLogger(NetworkConnectionDisconnectionTest.class);
+            .getLogger(NetworkConnectionDisconnectionTest.class);
     @Inject
     private AppModel appModel;
     @Inject
@@ -96,8 +96,8 @@ public class NetworkConnectionDisconnectionTest {
         integrateUserInfoCommand.execute();
 
         // tests
-        Assert.assertNotNull("Known doesn't peer exists", appModel.getProfile().getKnownPeerList().getPeerNameById(userInfo.getPeerId()));
-        Assert.assertNotNull("Active doesn't peer exists", appModel.getActivePeerList().getByPeerId(userInfo.getPeerId()));
+        Assert.assertNull("Known shouldn't be added to KnownPeerList this way", appModel.getProfile().getKnownPeerList().getPeerNameById(userInfo.getPeerId()));
+        Assert.assertNotNull("Peer doesn't exist in ActivePeerList", appModel.getActivePeerList().getByPeerId(userInfo.getPeerId()));
     }
 
     /**
@@ -123,8 +123,8 @@ public class NetworkConnectionDisconnectionTest {
         integrateUserInfoAndReplyCommand.execute();
 
         // tests
-        Assert.assertNotNull("Known doesn't peer exists", appModel.getProfile().getKnownPeerList().getPeerNameById(userInfo.getPeerId()));
-        Assert.assertNotNull("Active doesn't peer exists", appModel.getActivePeerList().getByPeerId(userInfo.getPeerId()));
+        Assert.assertNull("Known shouldn't be added to KnownPeerList this way", appModel.getProfile().getKnownPeerList().getPeerNameById(userInfo.getPeerId()));
+        Assert.assertNotNull("Peer doesn't exist in ActivePeerList", appModel.getActivePeerList().getByPeerId(userInfo.getPeerId()));
 
         Message m = networkService.getSentMessage();
         Peer p = networkService.getPeer();
