@@ -56,6 +56,18 @@ public class NetworkServiceImpl implements NetworkService {
      * {@inheritDoc}
      */
     @Override
+    public void start() {
+        try {
+            start(NetworkService.defaultPort, NetworkService.defaultGroup);
+        } catch (UnknownHostException ex) {
+            log.error(ex.toString());
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public void start(int port, String group) throws UnknownHostException {
         InetAddress g = InetAddress.getByName(group);
         mListenThread = new ListenThread(port, appModel, messageHandler,

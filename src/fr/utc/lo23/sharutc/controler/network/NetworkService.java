@@ -17,6 +17,14 @@ import java.net.UnknownHostException;
  * connected peers and instantiate the right command to handle it.
  */
 public interface NetworkService {
+    public static int defaultPort = 1337;
+    public static String defaultGroup = "239.42.42.42";
+
+    /**
+     * Setup the NetworkService with the default parameters.
+     */
+    public void start();
+
     /**
      * Setup the NetworkService and start it.
      *
