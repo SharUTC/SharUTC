@@ -196,7 +196,9 @@ public class UserServiceImpl implements UserService {
     @Override
     public void createAndSetProfile(UserInfo userInfo) {
         log.debug("createAndSetProfile ...");
+        //Create the new profile with the userInfo entered by a user
         Profile nProfile = new Profile(userInfo);
+        //The new profile is automatically online
         appModel.setProfile(nProfile);
         log.debug("createAndSetProfile DONE");
     }
