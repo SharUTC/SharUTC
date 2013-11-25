@@ -2,13 +2,16 @@ package fr.utc.lo23.sharutc.controler.service;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import fr.utc.lo23.sharutc.controler.network.NetworkService;
 import fr.utc.lo23.sharutc.controler.player.PlaybackListener;
 import fr.utc.lo23.sharutc.controler.player.PlayerEvent;
 import fr.utc.lo23.sharutc.controler.player.PlaybackListenerImpl;
 import static fr.utc.lo23.sharutc.controler.service.PlayerServiceImpl.VOLUME_MAX;
 import static fr.utc.lo23.sharutc.controler.service.PlayerServiceImpl.VOLUME_MIN;
+import fr.utc.lo23.sharutc.model.AppModel;
 import fr.utc.lo23.sharutc.model.domain.Catalog;
 import fr.utc.lo23.sharutc.model.domain.Music;
+import fr.utc.lo23.sharutc.model.userdata.Peer;
 import fr.utc.lo23.sharutc.util.CollectionChangeListener;
 import fr.utc.lo23.sharutc.util.CollectionEvent;
 import java.beans.PropertyChangeEvent;
@@ -28,7 +31,9 @@ public class PlayerServiceImpl implements PlayerService, PropertyChangeListener,
             .getLogger(PlayerServiceImpl.class);
     public static final int VOLUME_MAX = 100;
     public static final int VOLUME_MIN = 0;
+    private final AppModel appModel;
     private final FileService fileService;
+    private final NetworkService networkService;
     private PlaybackListener player;
     private final Catalog mPlaylist;
     private Music mCurrentMusic;
@@ -39,10 +44,12 @@ public class PlayerServiceImpl implements PlayerService, PropertyChangeListener,
     private PropertyChangeSupport propertyChangeSupport;
 
     @Inject
-    public PlayerServiceImpl(FileService fileService) {
-        this.mPlaylist = new Catalog();
+    public PlayerServiceImpl(AppModel appModel, FileService fileService, NetworkService networkService) {
+        this.appModel = appModel;
         this.fileService = fileService;
+        this.networkService = networkService;
         this.propertyChangeSupport = new PropertyChangeSupport(this);
+        this.mPlaylist = new Catalog();
         this.mPlaylist.addPropertyChangeListener(this);
     }
 
@@ -298,7 +305,12 @@ public class PlayerServiceImpl implements PlayerService, PropertyChangeListener,
      */
     private void setCurrentMusic(Music music) {
         log.trace("setCurrentMusic ...");
-        if (music != mCurrentMusic) {
+        if (music != null
+                && (music.getFileBytes() == null || music.getFileBytes().length == 0)
+                && !music.getOwnerPeerId().equals(appModel.getProfile().getUserInfo().getPeerId())) {
+            log.debug("setCurrentMusic : delayed, fetching remote music data ...");
+            fetchRemoteDataThenPlay(music);
+        } else if (music != mCurrentMusic) {
             Music oldMusic = this.mCurrentMusic;
             this.mCurrentMusic = music;
             propertyChangeSupport.firePropertyChange(Property.CURRENT_MUSIC.name(), oldMusic, mCurrentMusic);
@@ -476,5 +488,11 @@ public class PlayerServiceImpl implements PlayerService, PropertyChangeListener,
         if (mPlaylist.size() == 1) {
             setCurrentMusic(mPlaylist.get(0));
         }
+    }
+
+    private void fetchRemoteDataThenPlay(Music music) {
+        Peer peer = appModel.getActivePeerList().getByPeerId(music.getOwnerPeerId());
+        log.info("Fetching data for remote music from {}: {}", peer, music);
+        networkService.downloadMusicForPlaying(peer, music.getId());
     }
 }

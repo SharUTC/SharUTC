@@ -1,7 +1,16 @@
 package tests;
 
+import fr.utc.lo23.sharutc.controler.network.MessageHandler;
+import fr.utc.lo23.sharutc.controler.network.MessageHandlerImpl;
+import fr.utc.lo23.sharutc.controler.network.MessageParser;
+import fr.utc.lo23.sharutc.controler.network.MessageParserImpl;
+import fr.utc.lo23.sharutc.controler.network.NetworkServiceMock;
 import fr.utc.lo23.sharutc.controler.service.FileServiceImpl;
+import fr.utc.lo23.sharutc.controler.service.MusicService;
+import fr.utc.lo23.sharutc.controler.service.MusicServiceImpl;
 import fr.utc.lo23.sharutc.controler.service.PlayerServiceImpl;
+import fr.utc.lo23.sharutc.controler.service.UserService;
+import fr.utc.lo23.sharutc.controler.service.UserServiceImpl;
 import fr.utc.lo23.sharutc.model.AppModelImpl;
 import fr.utc.lo23.sharutc.model.domain.Music;
 import fr.utc.lo23.sharutc.model.userdata.Profile;
@@ -21,7 +30,12 @@ public class PlayerServiceManual implements PropertyChangeListener {
     private final static int PREV = 5;
     private final static AppModelImpl appModel = new AppModelImpl();
     private final static FileServiceImpl fileService = new FileServiceImpl(appModel);
-    private final static PlayerServiceImpl playerService = new PlayerServiceImpl(fileService);
+    private final static MessageParser messageParser = new MessageParserImpl(appModel);
+    private final static UserService userService = new UserServiceImpl(appModel, fileService);
+    private final static MusicService musicService = new MusicServiceImpl(appModel, userService, fileService);
+    private final static MessageHandler messageHandler = new MessageHandlerImpl(appModel, messageParser, musicService, userService);
+    private final static NetworkServiceMock networkService = new NetworkServiceMock(appModel, messageParser, messageHandler);
+    private final static PlayerServiceImpl playerService = new PlayerServiceImpl(appModel, fileService, networkService);
     private final static Scanner scanIn = new Scanner(System.in);
     private static long currentTimeSec;
 
@@ -119,12 +133,12 @@ public class PlayerServiceManual implements PropertyChangeListener {
                     playerService.setCurrentTimeSec(Math.min((playerService != null && playerService.getTotalTimeSec() != null) ? playerService.getTotalTimeSec() : Long.MAX_VALUE, currentTimeSec + 15L));
                     break;
                 case 8:
-                    System.out.println("SET VOLUME (50)");
-                    playerService.setVolume(50);
+                    System.out.println("SET VOLUME " + Math.max(playerService.getVolume() - 10, 0) + " (-10)");
+                    playerService.setVolume(Math.max(playerService.getVolume() - 10, 0));
                     break;
                 case 9:
-                    System.out.println("SET VOLUME (100)");
-                    playerService.setVolume(100);
+                    System.out.println("SET VOLUME " + Math.min(playerService.getVolume() + 10, 100) + " (+10)");
+                    playerService.setVolume(Math.min(playerService.getVolume() + 10, 100));
                     break;
                 case 10:
                     System.out.println("MUTE ON/OFF");

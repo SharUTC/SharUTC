@@ -2,6 +2,7 @@ package fr.utc.lo23.sharutc.controler.service;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import fr.utc.lo23.sharutc.controler.network.NetworkService;
 import fr.utc.lo23.sharutc.model.AppModel;
 import fr.utc.lo23.sharutc.model.domain.Music;
 import org.slf4j.Logger;
@@ -17,8 +18,8 @@ public class PlayerServiceMock extends PlayerServiceImpl implements PlayerServic
             .getLogger(PlayerServiceMock.class);
 
     @Inject
-    public PlayerServiceMock(FileService fileService) {
-        super(fileService);
+    public PlayerServiceMock(AppModel appModel, FileService fileService, NetworkService networkService) {
+        super(appModel, fileService, networkService);
     }
 
     @Override
