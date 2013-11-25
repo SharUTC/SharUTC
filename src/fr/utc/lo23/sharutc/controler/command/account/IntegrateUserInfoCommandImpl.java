@@ -16,6 +16,11 @@ public class IntegrateUserInfoCommandImpl implements IntegrateUserInfoCommand {
     private final UserService userService;
     private UserInfo mUserInfo;
 
+     /**
+     * Constructor
+     * 
+     * @param userService
+     */
     @Inject
     public IntegrateUserInfoCommandImpl(UserService userService) {
         this.userService = userService;

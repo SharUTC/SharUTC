@@ -21,6 +21,7 @@ public class AddContactCommandImpl implements AddContactCommand {
     /**
      * Constructor
      *
+     * @param appModel
      * @param userService
      */
     @Inject

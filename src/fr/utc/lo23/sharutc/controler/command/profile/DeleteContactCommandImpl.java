@@ -22,6 +22,7 @@ public class DeleteContactCommandImpl implements DeleteContactCommand {
      * Constructor
      *
      * @param userService
+     * @param musicService
      */
     @Inject
     public DeleteContactCommandImpl(UserService userService, MusicService musicService) {
