@@ -124,4 +124,9 @@ public class Score implements Serializable {
          */
         VALUE
     }
+
+    @Override
+    public String toString() {
+        return "Score{" + "peerId=" + mPeerId + ", value=" + mValue + '}';
+    }
 }

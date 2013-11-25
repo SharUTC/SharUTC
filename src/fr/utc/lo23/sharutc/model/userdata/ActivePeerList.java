@@ -10,7 +10,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- *
+ * Represents the list of the currently connected peers
+ * 
+ * Don't use index from CollectionChangeSupport (HashMap inside)
  */
 public class ActivePeerList implements Serializable {
 
@@ -20,86 +22,94 @@ public class ActivePeerList implements Serializable {
     private HashMap<Peer, Date> mActivePeers = new HashMap<Peer, Date>();
 
     /**
-     *
+     * Default constructor
      */
     public ActivePeerList() {
     }
 
     /**
-     *
-     * @return
+     * Return the list of connected peers
+     * 
+     * @return the list of connected peers
      */
     public HashMap<Peer, Date> getActivePeers() {
         return mActivePeers;
     }
 
     /**
-     *
-     * @param activePeers
+     * Set the list of connected peers
+     * 
+     * @param activePeers - list of connected peers
      */
     public void setActivePeers(HashMap<Peer, Date> activePeers) {
         this.mActivePeers = activePeers;
     }
 
     /**
-     *
+     * Update the active peer list with a new peer, given in parameter
+     * 
      * @param peer
      */
     public void update(Peer peer) {
         boolean update = mActivePeers.put(peer, new Date()) != null;
         if (update) {
-            mCollectionChangeSupport.fireCollectionChanged(peer, -1, CollectionEvent.Type.ADD);
+            mCollectionChangeSupport.fireCollectionChanged(peer, CollectionEvent.Type.ADD);
         }
     }
 
     /**
-     *
+     * Remove a peer from the active peer list
+     * 
      * @param peer
      */
     public void remove(Peer peer) {
         if (mActivePeers.containsKey(peer)) {
             mActivePeers.remove(peer);
-            mCollectionChangeSupport.fireCollectionChanged(peer, -1, CollectionEvent.Type.REMOVE);
+            mCollectionChangeSupport.fireCollectionChanged(peer, CollectionEvent.Type.REMOVE);
         }
     }
 
     /**
-     *
+     * Empty the active peer list
+     * 
      */
     public void clear() {
         if (!mActivePeers.isEmpty()) {
             mActivePeers.clear();
-            mCollectionChangeSupport.fireCollectionChanged(null, -1, CollectionEvent.Type.CLEAR);
+            mCollectionChangeSupport.fireCollectionChanged(null, CollectionEvent.Type.CLEAR);
         }
     }
 
     /**
-     *
-     * @return
+     * Return the size of the active peer list
+     * 
+     * @return the size of the active peer list
      */
     public int size() {
         return mActivePeers.size();
     }
 
     /**
-     *
+     * Check if the active peer list contains the peer given in parameter
+     * 
      * @param peer
-     * @return
+     * @return a boolean
      */
     public boolean contains(Peer peer) {
         return mActivePeers.containsKey(peer);
     }
 
     /**
-     *
-     * @return
+     * Check if the active peer list is empty
+     * 
+     * @return a boolean
      */
     public boolean isEmpty() {
         return mActivePeers.isEmpty();
     }
 
     /**
-     *
+     * 
      * @param listener
      */
     public void addPropertyChangeListener(CollectionChangeListener listener) {
@@ -115,9 +125,10 @@ public class ActivePeerList implements Serializable {
     }
 
     /**
-     *
+     * Return the peer thanks to its id given in parameter if it exists
+     * 
      * @param peerId
-     * @return
+     * @return a peer or null if it does not exist
      */
     public Peer getByPeerId(Long peerId) {
         Peer peer = null;

@@ -5,11 +5,14 @@ import fr.utc.lo23.sharutc.controler.command.music.AddToLocalCatalogCommand;
 import fr.utc.lo23.sharutc.controler.command.music.AddToLocalCatalogCommandImpl;
 import fr.utc.lo23.sharutc.controler.service.FileService;
 import fr.utc.lo23.sharutc.controler.service.MusicService;
+import fr.utc.lo23.sharutc.controler.service.MusicServiceMock;
 import fr.utc.lo23.sharutc.controler.service.UserService;
 import fr.utc.lo23.sharutc.model.domain.Catalog;
+import fr.utc.lo23.sharutc.model.domain.Rights;
 import fr.utc.lo23.sharutc.model.domain.RightsList;
 import fr.utc.lo23.sharutc.model.userdata.ActivePeerList;
 import fr.utc.lo23.sharutc.model.userdata.Categories;
+import fr.utc.lo23.sharutc.model.userdata.Category;
 import fr.utc.lo23.sharutc.model.userdata.Contacts;
 import fr.utc.lo23.sharutc.model.userdata.KnownPeerList;
 import fr.utc.lo23.sharutc.model.userdata.Peer;
@@ -72,6 +75,7 @@ public class AppModelBuilder {
         appModel.setActivePeerList(new ActivePeerList());
         appModel.setLocalCatalog(new Catalog());
         appModel.setRightsList(new RightsList());
+        ((MusicServiceMock) musicService).setTagMapDirty();
         deleteFolders();
         log.debug("AppModelMock CLEARED");
     }
@@ -119,7 +123,10 @@ public class AppModelBuilder {
     }
 
     private void mockRights() {
-    }
+      /*  appModel.getRightsList().setRights(new Rights(Category.PUBLIC_CATEGORY_ID, 0L, Rights.DEFAULT_MAY_READ_INFO, Rights.DEFAULT_LISTEN, Rights.DEFAULT_MAY_NOTE_AND_COMMENT));
+        appModel.getRightsList().setRights(new Rights(Category.PUBLIC_CATEGORY_ID, 1L, Rights.DEFAULT_MAY_READ_INFO, Rights.DEFAULT_LISTEN, Rights.DEFAULT_MAY_NOTE_AND_COMMENT));
+        appModel.getRightsList().setRights(new Rights(Category.PUBLIC_CATEGORY_ID, 2L, Rights.DEFAULT_MAY_READ_INFO, Rights.DEFAULT_LISTEN, Rights.DEFAULT_MAY_NOTE_AND_COMMENT));
+    */}
 
     private void createFolders() {
         log.trace("createFolders ...");
@@ -170,5 +177,6 @@ public class AppModelBuilder {
 
     private void mockCategories() {
         appModel.getProfile().setCategories(new Categories());
+        appModel.getProfile().getCategories().add(new Category(Category.PUBLIC_CATEGORY_ID, Category.PUBLIC_CATEGORY_NAME));
     }
 }

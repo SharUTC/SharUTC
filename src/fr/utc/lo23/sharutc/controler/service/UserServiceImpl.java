@@ -149,7 +149,7 @@ public class UserServiceImpl implements UserService {
             if (categoriesIdsList.contains(Category.PUBLIC_CATEGORY_ID)) {
                 getProfile().getContacts().findById(contactId).removeCategoryId(Category.PUBLIC_CATEGORY_ID);
             } else {
-            // if the contact does not already exists, we add the contact
+                // if the contact does not already exists, we add the contact
                 boolean present = false;
                 for (Contact c : getProfile().getContacts().getContacts()) {
                     if (c.getUserInfo().getPeerId().equals(contact.getUserInfo().getPeerId())) {
@@ -196,7 +196,9 @@ public class UserServiceImpl implements UserService {
     @Override
     public void createAndSetProfile(UserInfo userInfo) {
         log.debug("createAndSetProfile ...");
+        //Create the new profile with the userInfo entered by a user
         Profile nProfile = new Profile(userInfo);
+        //The new profile is automatically online
         appModel.setProfile(nProfile);
         log.debug("createAndSetProfile DONE");
     }
@@ -235,7 +237,10 @@ public class UserServiceImpl implements UserService {
         KnownPeerList knownPeerList = appModel.getProfile().getKnownPeerList();
         Peer newPeer = userInfo.toPeer();
         activePeerList.update(newPeer);
-        knownPeerList.update(newPeer);
+        //peer is in knownPeerList only if he is a contact, commented or scored a music, otherwise we don't need to save it's name
+        if (knownPeerList.contains(newPeer)) {
+            knownPeerList.update(newPeer);
+        }
 
         Contact contact = appModel.getProfile().getContacts().findById(userInfo.getPeerId());
         if (contact != null) {
@@ -253,13 +258,28 @@ public class UserServiceImpl implements UserService {
         activePeerList.remove(removePeer);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Contact findContactByPeerId(Long peerId) {
         return getProfile().getContacts().findById(peerId);
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void cleanProfile() {
+        appModel.setProfile(null);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void disconnectionRequest() {
         this.saveProfileFiles();
+        cleanProfile();
     }
 }

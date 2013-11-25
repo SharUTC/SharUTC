@@ -110,10 +110,11 @@ public class AddCommentCommandImpl implements AddCommentCommand {
     @Override
     public void execute() {
         log.info("AddCommentCommandImpl ...");
-        if (mOwnerPeer == null) {
+        if (mOwnerPeer == null || mMusic == null) {
             Utils.throwMissingParameter(log, new Throwable());
-        } else if (appModel.getProfile().getUserInfo().getPeerId() == mOwnerPeer.getId()) {
+        } else if (appModel.getProfile().getUserInfo().getPeerId().equals(mMusic.getOwnerPeerId())) {
             musicService.addComment(mAuthorPeer, mMusic, mComment); // local
+            appModel.getProfile().getKnownPeerList().update(mAuthorPeer);
         } else {
             networkService.addComment(mOwnerPeer, mMusic, mComment); // distant
         }

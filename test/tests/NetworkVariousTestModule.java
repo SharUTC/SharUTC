@@ -3,7 +3,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package tests;
 
 /**
@@ -11,13 +10,13 @@ package tests;
  *
  *
  */
-public class ConnectionDisconnectionTestModule extends TestModule{
-    
+public class NetworkVariousTestModule extends TestModule {
+
     /**
      *
      */
     @Override
-    public void configure(){
+    public void configure() {
         super.configure();
     }
 }

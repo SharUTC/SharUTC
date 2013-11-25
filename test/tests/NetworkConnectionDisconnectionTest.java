@@ -6,6 +6,8 @@ import fr.utc.lo23.sharutc.controler.command.account.IntegrateDisconnectionComma
 import fr.utc.lo23.sharutc.controler.command.account.IntegrateUserInfoAndReplyCommand;
 import fr.utc.lo23.sharutc.controler.command.account.IntegrateUserInfoCommand;
 import fr.utc.lo23.sharutc.controler.network.Message;
+import fr.utc.lo23.sharutc.controler.network.MessageParser;
+import fr.utc.lo23.sharutc.controler.network.MessageType;
 import fr.utc.lo23.sharutc.controler.network.NetworkServiceMock;
 import fr.utc.lo23.sharutc.controler.service.MusicService;
 import fr.utc.lo23.sharutc.controler.service.UserService;
@@ -31,7 +33,7 @@ import org.slf4j.LoggerFactory;
 public class NetworkConnectionDisconnectionTest {
 
     private static final Logger log = LoggerFactory
-        .getLogger(NetworkConnectionDisconnectionTest.class);
+            .getLogger(NetworkConnectionDisconnectionTest.class);
     @Inject
     private AppModel appModel;
     @Inject
@@ -46,6 +48,8 @@ public class NetworkConnectionDisconnectionTest {
     private IntegrateUserInfoAndReplyCommand integrateUserInfoAndReplyCommand;
     @Inject
     private IntegrateDisconnectionCommand integrateDisconnectionCommand;
+    @Inject
+    private MessageParser messageParser;
     private AppModelBuilder appModelBuilder = null;
 
     /**
@@ -75,10 +79,14 @@ public class NetworkConnectionDisconnectionTest {
     @Test
     public void integrateUserInfoCommand() {
         // add first user
+        String login = "tudorluchy1";
+        String password = "password1";
+        Long peerId = 4L;
+
         UserInfo userInfo = new UserInfo();
-        userInfo.setLogin("tudorluchy (id=1)");
-        userInfo.setPassword("password");
-        userInfo.setPeerId(16L);
+        userInfo.setLogin(login);
+        userInfo.setPassword(password);
+        userInfo.setPeerId(peerId);
         userInfo.setFirstName("Tudor");
         userInfo.setLastName("Luchiancenco");
         userInfo.setAge(22);
@@ -88,8 +96,8 @@ public class NetworkConnectionDisconnectionTest {
         integrateUserInfoCommand.execute();
 
         // tests
-        Assert.assertNotNull("Known doesn't peer exists", appModel.getProfile().getKnownPeerList().getPeerNameById(userInfo.getPeerId()));
-        Assert.assertNotNull("Active doesn't peer exists", appModel.getActivePeerList().getByPeerId(userInfo.getPeerId()));
+        Assert.assertNull("Known shouldn't be added to KnownPeerList this way", appModel.getProfile().getKnownPeerList().getPeerNameById(userInfo.getPeerId()));
+        Assert.assertNotNull("Peer doesn't exist in ActivePeerList", appModel.getActivePeerList().getByPeerId(userInfo.getPeerId()));
     }
 
     /**
@@ -98,10 +106,14 @@ public class NetworkConnectionDisconnectionTest {
     @Test
     public void integrateUserInfoAndReplyCommand() {
         // add first user
+        String login = "tudorluchy1";
+        String password = "password1";
+        Long peerId = 4L;
+
         UserInfo userInfo = new UserInfo();
-        userInfo.setLogin("tudorluchy (id=2)");
-        userInfo.setPassword("password");
-        userInfo.setPeerId(4L);
+        userInfo.setLogin(login);
+        userInfo.setPassword(password);
+        userInfo.setPeerId(peerId);
         userInfo.setFirstName("Tudor");
         userInfo.setLastName("Luchiancenco");
         userInfo.setAge(22);
@@ -111,13 +123,16 @@ public class NetworkConnectionDisconnectionTest {
         integrateUserInfoAndReplyCommand.execute();
 
         // tests
-        Assert.assertNotNull("Known doesn't peer exists", appModel.getProfile().getKnownPeerList().getPeerNameById(userInfo.getPeerId()));
-        Assert.assertNotNull("Active doesn't peer exists", appModel.getActivePeerList().getByPeerId(userInfo.getPeerId()));
+        Assert.assertNull("Known shouldn't be added to KnownPeerList this way", appModel.getProfile().getKnownPeerList().getPeerNameById(userInfo.getPeerId()));
+        Assert.assertNotNull("Peer doesn't exist in ActivePeerList", appModel.getActivePeerList().getByPeerId(userInfo.getPeerId()));
 
         Message m = networkService.getSentMessage();
         Peer p = networkService.getPeer();
         Assert.assertNotNull("Message null", m);
         Assert.assertNotNull("Peer null", p);
+
+        messageParser.read(m);
+        Assert.assertEquals("The mesage type must be : CONNECTION_RESPONSE", MessageType.CONNECTION_RESPONSE, m.getType());
     }
 
     /**

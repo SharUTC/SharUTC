@@ -13,8 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * TODO : add comments
- *
+ * {@inheritDoc}
  */
 public class DisconnectionCommandImpl implements DisconnectionCommand {
 
@@ -26,6 +25,9 @@ public class DisconnectionCommandImpl implements DisconnectionCommand {
     private final AppModel appModel;
 
     /**
+     * Construct DisconnectionCommandImpl.
+     * 
+     * @param appModel
      * @param userService
      * @param musicService
      * @param networkService
@@ -39,23 +41,20 @@ public class DisconnectionCommandImpl implements DisconnectionCommand {
     }
 
     /**
-     * {@inheritDoc }
+     * Save the user music files, the list of user's rights, his profile information
+     * and notify the network of its disconnection. Then stop all network threads.
      */
     @Override
     public void execute() {
         log.info("DisconnectionCommand ...");
         musicService.saveUserMusicFile();
         musicService.saveUserRightsListFile();
-        userService.disconnectionRequest();
+        userService.disconnectionRequest(); //Save and clear profile
         // Notify network
         networkService.disconnectionBroadcast();
-        
-        // FIXME : create a new method on appModel to set to null instances attached to appModel (not appModel itself)
-        // call setProfile(null) in this new method instead of here
-        appModel.setProfile(null);
-        
-        //FIXME : turn down network threads
-        
+         
+        //Turn down network threads
+        networkService.stop();
         log.info("DisconnectionCommand DONE");
     }
 }

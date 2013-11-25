@@ -26,7 +26,8 @@ public class ListenThread implements Runnable {
 
     private Thread mThread;
     private final int mPort;
-    private boolean mThreadShouldStop = false;
+    private ServerSocket mServerSocket;
+    private volatile boolean mThreadShouldStop = false;
 
     /**
      * Set the different service provider we'll need and the port to listen.
@@ -58,8 +59,13 @@ public class ListenThread implements Runnable {
     /**
      * Stops the listenThread.
      */
-    public void stop() {
+    public synchronized void stop() {
         mThreadShouldStop = true;
+        try {
+            mServerSocket.close();
+        } catch (IOException ex) {
+            log.error(ex.toString());
+        }
     }
 
     /**
@@ -76,16 +82,21 @@ public class ListenThread implements Runnable {
     public void run() {
         long peerID = appModel.getProfile().getUserInfo().getPeerId();
         try {
-            ServerSocket socketServer = new ServerSocket(mPort);
-            log.info("[ListenThread - run()] - Started listening on port " + mPort);
+            mServerSocket = new ServerSocket(mPort);
+            log.info("Started listening on port " + mPort);
 
-            while (socketServer.isBound()) {
-                Socket socketClient = socketServer.accept();
-                PeerSocket ps = new PeerSocket(socketClient, peerID, messageHandler, messageParser, networkService);
+            while (mServerSocket.isBound()) {
+                Socket clientSocket = mServerSocket.accept();
+                PeerSocket ps = new PeerSocket(clientSocket, peerID, messageHandler, messageParser, networkService);
                 ps.start();
             }
-        } catch (IOException e) {
-            log.error(e.toString());
+            if (!mServerSocket.isClosed()) {
+                mServerSocket.close();
+            }
+        } catch (IOException ex) {
+            if (!mThreadShouldStop) {
+                log.error(ex.toString());
+            }
         }
     }
 }

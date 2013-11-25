@@ -3,17 +3,20 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package tests;
 
 /**
  *
- * @author Olivier
+ *
+ *
  */
-public class ProfileConnectionDisconnectionTestModule extends TestModule{
-    
+public class ProfileConnectionDisconnectionTestModule extends TestModule {
+
+    /**
+     *
+     */
     @Override
-    public void configure(){
+    public void configure() {
         super.configure();
     }
 }

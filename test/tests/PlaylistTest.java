@@ -66,9 +66,10 @@ public class PlaylistTest {
      */
     @Test
     public void addToPlaylist() {
+        Assert.assertTrue(playerService.getPlaylist().isEmpty());
+
         ArrayList<Music> dummyMusics = new ArrayList<Music>();
         dummyMusics.addAll(appModel.getLocalCatalog().getMusics());
-
         addToPlaylistCommand.setMusics(dummyMusics);
         addToPlaylistCommand.execute();
 
@@ -80,21 +81,50 @@ public class PlaylistTest {
      *
      */
     @Test
-    public void removeFromPlaylist() {
-        ArrayList<Music> dummyMusics = new ArrayList<Music>();
-        dummyMusics.addAll(appModel.getLocalCatalog().getMusics());
-        // FIX ME
-        addToPlaylistCommand.setMusics(dummyMusics);
+    public void removeFirstFromPlaylist() {
+        ArrayList<Music> playlistMusics = new ArrayList<Music>();
+        playlistMusics.addAll(appModel.getLocalCatalog().getMusics());
+
+        addToPlaylistCommand.setMusics(playlistMusics);
         addToPlaylistCommand.execute();
 
-        removeFromPlaylistCommand.setMusic(playerService.getPlaylist().getMusics().get(0));
+        Music removedMusic = appModel.getLocalCatalog().get(0);
+
+
+        removeFromPlaylistCommand.setMusic(removedMusic);
         removeFromPlaylistCommand.execute();
 
         Assert.assertNotNull("removeFromPlaylistCommand failed", playerService.getPlaylist().getMusics());
 
         ArrayList<Music> testMusics = new ArrayList<Music>();
-        testMusics.addAll(1, dummyMusics);
+        testMusics.addAll(playlistMusics);
+        testMusics.remove(removedMusic);
+        Assert.assertEquals("removeFromPlaylistCommand failed", testMusics.size(), playerService.getPlaylist().getMusics().size());
+        Assert.assertTrue(playerService.getPlaylist().contains(testMusics.get(0)));
+        Assert.assertTrue(playerService.getPlaylist().contains(testMusics.get(1)));
+    }
 
-        Assert.assertEquals("removeFromPlaylistCommand failed", playerService.getPlaylist().getMusics(), testMusics);
+    @Test
+    public void removeLastFromPlaylist() {
+        ArrayList<Music> playlistMusics = new ArrayList<Music>();
+        playlistMusics.addAll(appModel.getLocalCatalog().getMusics());
+
+        addToPlaylistCommand.setMusics(playlistMusics);
+        addToPlaylistCommand.execute();
+
+        Music removedMusic = appModel.getLocalCatalog().get(appModel.getLocalCatalog().size() - 1);
+
+
+        removeFromPlaylistCommand.setMusic(removedMusic);
+        removeFromPlaylistCommand.execute();
+
+        Assert.assertNotNull("removeFromPlaylistCommand failed", playerService.getPlaylist().getMusics());
+
+        ArrayList<Music> testMusics = new ArrayList<Music>();
+        testMusics.addAll(playlistMusics);
+        testMusics.remove(removedMusic);
+        Assert.assertEquals("removeFromPlaylistCommand failed", testMusics.size(), playerService.getPlaylist().getMusics().size());
+        Assert.assertTrue(playerService.getPlaylist().contains(testMusics.get(0)));
+        Assert.assertTrue(playerService.getPlaylist().contains(testMusics.get(1)));
     }
 }

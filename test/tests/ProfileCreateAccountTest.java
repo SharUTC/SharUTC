@@ -63,13 +63,13 @@ public class ProfileCreateAccountTest {
 
     @Test
     public void accountCreationCommand() {
+        // FIXME: le problème n'a rien a voir avec la commande de création, il faut corriger l'envoi de la connexion au niveau du réseau
         UserInfo info = new UserInfo();
         info.setAge(25);
         info.setFirstName("firstname");
         info.setLastName("lastname");
         info.setLogin("LOGIN");
         info.setPassword("pwd");
-        info.setPeerId(11L);
         accountCreationCommand.setUserInfo(info);
         accountCreationCommand.execute();
 
@@ -81,7 +81,6 @@ public class ProfileCreateAccountTest {
         info.setLastName("last");
         info.setLogin("LOGIN");
         info.setPassword("pwd");
-        info.setPeerId(10L);
         accountCreationCommand.setUserInfo(info);
         accountCreationCommand.execute();
 
@@ -98,3 +97,4 @@ public class ProfileCreateAccountTest {
 
     }
 }
+

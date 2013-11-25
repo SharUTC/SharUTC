@@ -45,9 +45,10 @@ public class MusicServiceImpl implements MusicService {
 
     /**
      * Constructor of MusicServiceImpl
+     *
      * @param appModel The model of the application
      * @param userService The service of users
-     * @param fileService  The service of files
+     * @param fileService The service of files
      */
     @Inject
     public MusicServiceImpl(AppModel appModel, UserService userService, FileService fileService) {
@@ -90,6 +91,7 @@ public class MusicServiceImpl implements MusicService {
                             Rights.DEFAULT_LISTEN,
                             Rights.DEFAULT_MAY_NOTE_AND_COMMENT));
                     localCatalog.add(musicFromFile);
+                    log.debug("addToLocalCatalog : music added to localCatalog");
                 }
             }
         }
@@ -188,6 +190,7 @@ public class MusicServiceImpl implements MusicService {
                         musicToReturn.setMayListen(mayListen);
                         musicToReturn.setMayCommentAndNote(mayNoteAndComment);
                         fillCommentAuthorNames(musicToReturn);
+                        musicToReturn.cleanForPreview();
 
                         userFilteredCatalog.add(musicToReturn);
                     }
@@ -216,6 +219,7 @@ public class MusicServiceImpl implements MusicService {
                             musicToReturn.setMayListen(mayListen);
                             musicToReturn.setMayCommentAndNote(mayNoteAndComment);
                             fillCommentAuthorNames(musicToReturn);
+                            musicToReturn.cleanForPreview();
 
                             userFilteredCatalog.add(musicToReturn);
                         }
@@ -546,6 +550,7 @@ public class MusicServiceImpl implements MusicService {
                                 musicToReturn.setMayCommentAndNote(mayNoteAndComment);
                                 // loading last used and known peer name
                                 fillCommentAuthorNames(musicToReturn);
+                                musicToReturn.cleanForPreview();
                                 // add the music to the returned set of music
                                 catalogResult.add(musicToReturn);
                             }
@@ -582,6 +587,7 @@ public class MusicServiceImpl implements MusicService {
                                     musicToReturn.setMayCommentAndNote(mayNoteAndComment);
                                     // loading last used and known peer name
                                     fillCommentAuthorNames(musicToReturn);
+                                    musicToReturn.cleanForPreview();
                                     // add the music to the returned set of music
                                     catalogResult.add(musicToReturn);
                                 }
@@ -653,7 +659,6 @@ public class MusicServiceImpl implements MusicService {
      */
     @Override
     public void integrateMusicSearch(Catalog catalog) {
-        log.warn("Not supported yet.");
         if (catalog == null) {
             throwMissingParameter();
         } else {
@@ -921,5 +926,63 @@ public class MusicServiceImpl implements MusicService {
          * }
          */
 
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void removeFromKnownPeersIfUseless(Peer peer) {
+        boolean keepPeer = false;
+        if (appModel.getProfile() != null && appModel.getProfile().getContacts() != null && !appModel.getProfile().getContacts().isEmpty()) {
+            for (Contact contact : appModel.getProfile().getContacts().getContacts()) {
+                if (contact.getUserInfo().getPeerId().equals(peer.getId())) {
+                    keepPeer = true;
+                    break;
+                }
+            }
+        }
+        if (!keepPeer) {
+            if (appModel.getLocalCatalog() != null && !appModel.getLocalCatalog().isEmpty()) {
+                for (Music m : appModel.getLocalCatalog().getMusics()) {
+                    if (m.getScores() != null && !m.getScores().isEmpty()) {
+                        for (Score score : m.getScores()) {
+                            if (score.getPeerId().equals(peer.getId())) {
+                                keepPeer = true;
+                                break;
+                            }
+                        }
+                    }
+                    if (keepPeer) {
+                        break;
+                    }
+                    if (m.getComments() != null && !m.getComments().isEmpty()) {
+                        for (Comment comment : m.getComments()) {
+                            if (comment.getAuthorPeerId().equals(peer.getId())) {
+                                keepPeer = true;
+                                break;
+                            }
+                        }
+                    }
+                    if (keepPeer) {
+                        break;
+                    }
+                    if (m.getScores() != null && !m.getScores().isEmpty()) {
+                        for (Score score : m.getScores()) {
+                            if (score.getPeerId().equals(peer.getId())) {
+                                keepPeer = true;
+                                break;
+                            }
+                        }
+                    }
+                    if (keepPeer) {
+                        break;
+                    }
+                }
+            }
+        }
+        if (!keepPeer) {
+            appModel.getProfile().getKnownPeerList().remove(peer);
+        }
     }
 }

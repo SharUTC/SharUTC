@@ -9,7 +9,9 @@ import java.util.Collection;
 import java.util.HashSet;
 
 /**
- *
+ * Reprents a list of contact
+ * Contains all Peers that user has promoted to Contact Status. Don't use index
+ * from CollectionChangeSupport (HashSet inside)
  */
 public class Contacts implements Serializable {
 
@@ -19,7 +21,7 @@ public class Contacts implements Serializable {
     private CollectionChangeSupport mCollectionChangeSupport = new CollectionChangeSupport(this);
 
     /**
-     *
+     * Constructor
      */
     public Contacts() {
         mContacts = new HashSet<Contact>();
@@ -29,7 +31,7 @@ public class Contacts implements Serializable {
      * Return the Peer who has the Id given in parameter if exists
      *
      * @param peerID the Peer id of a Long
-     * @return the Peer who has the Id given in parameter, null is the peer
+     * @return the Peer who has the Id given in parameter, null if the peer
      * isn't a Long
      */
     public Contact findById(Long peerID) {
@@ -42,30 +44,34 @@ public class Contacts implements Serializable {
         return contact;
     }
 
-     /**
-     *
-     * @return
+    /**
+     * Return the contact list
+     * 
+     * @return the contact list
      */
     public HashSet<Contact> getContacts() {
         return mContacts;
     }
-    
+
     /**
+     * Add a Contact to Contacts (list). Don't use index from
+     * CollectionChangeSupport
      *
      * @param contact
-     * @return
+     * @return true if the contact was added, false otherwise
      */
     public boolean add(Contact contact) {
         boolean added = mContacts.add(contact);
         if (added) {
-            mCollectionChangeSupport.fireCollectionChanged(contact, mContacts.size() - 1, CollectionEvent.Type.ADD);
+            mCollectionChangeSupport.fireCollectionChanged(contact, CollectionEvent.Type.ADD);
         }
         return added;
     }
 
     /**
-     *
-     * @param contacts
+     * Add a contact list
+     * 
+     * @param contacts - a contact list
      */
     public void addAll(Collection<Contact> contacts) {
         if (contacts != null && !contacts.isEmpty()) {
@@ -76,48 +82,53 @@ public class Contacts implements Serializable {
     }
 
     /**
+     * Remove a contact from this container. Don't use index from
+     * CollectionChangeSupport
      *
      * @param contact
-     * @return
+     * @return a boolean
      */
     public boolean remove(Contact contact) {
         boolean removed = mContacts.remove(contact);
         if (removed) {
-            mCollectionChangeSupport.fireCollectionChanged(contact, -1, CollectionEvent.Type.REMOVE);
+            mCollectionChangeSupport.fireCollectionChanged(contact, CollectionEvent.Type.REMOVE);
         }
         return removed;
     }
 
     /**
-     *
+     * Empty the contact list
      */
     public void clear() {
         if (!mContacts.isEmpty()) {
             mContacts.clear();
-            mCollectionChangeSupport.fireCollectionChanged(null, -1, CollectionEvent.Type.CLEAR);
+            mCollectionChangeSupport.fireCollectionChanged(null, CollectionEvent.Type.CLEAR);
         }
     }
 
     /**
-     *
-     * @return
+     * Return the size of the contact list
+     * 
+     * @return the size of the contact list
      */
     public int size() {
         return mContacts.size();
     }
 
     /**
-     *
+     * Check if the contact list contains the contact given in parameter
+     * 
      * @param contact
-     * @return
+     * @return a boolean
      */
     public boolean contains(Contact contact) {
         return mContacts.contains(contact);
     }
 
     /**
-     *
-     * @return
+     * Check if the contact list is empty
+     * 
+     * @return a booelan
      */
     @JsonIgnore
     public boolean isEmpty() {

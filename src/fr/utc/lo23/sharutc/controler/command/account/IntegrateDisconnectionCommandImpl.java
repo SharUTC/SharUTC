@@ -6,25 +6,25 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- *
- *
+ * {@inheritDoc}
  */
 public class IntegrateDisconnectionCommandImpl implements IntegrateDisconnectionCommand {
+
     private static final Logger log = LoggerFactory
-            .getLogger(IntegrateDisconnectionCommandImpl.class);
+        .getLogger(IntegrateDisconnectionCommandImpl.class);
     final private UserService mUserService;
     private long mPeerId;
-    
 
     /**
-     * 
-     * @param mUserService 
+     * Construct IntegrateDisconnectionCommandImpl
+     *
+     * @param mUserService
      */
     @Inject
     public IntegrateDisconnectionCommandImpl(UserService mUserService) {
         this.mUserService = mUserService;
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -42,15 +42,14 @@ public class IntegrateDisconnectionCommandImpl implements IntegrateDisconnection
     }
 
     /**
-     * Remove peer from connected peer list
+     * Remove peer from connected peer list.
      */
     @Override
     public void execute() {
         log.info("Remove Peer...");
         // remove peer from connected peer list
         this.mUserService.removeFromConnectedPeers(mPeerId);
-        log.info("Peer removed.");  
+        log.info("Peer removed.");
     }
 
-    
 }

@@ -5,7 +5,10 @@ import fr.utc.lo23.sharutc.model.userdata.Category;
 import fr.utc.lo23.sharutc.model.userdata.Contact;
 
 /**
- *
+ * Command to add a contact to a specified cateory
+ * This command manages the changes of categories for a contact, if it is needed
+ * (particularly with the category Public : if the contact was previously
+ * present in the category Public, we remove the contact from it)
  */
 public interface AddContactToCategoryCommand extends Command {
 

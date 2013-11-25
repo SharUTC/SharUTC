@@ -12,11 +12,12 @@ public class PeerSocket implements Runnable {
 
     private final MessageHandler messageHandler;
     private final MessageParser messageParser;
-    private final NetworkService networkService;
+    private final NetworkServiceImpl networkService;
 
+    private boolean mFailureHandled = false;
     private final Socket mSocket;
     private Thread mThread;
-    private boolean mThreadShouldStop = false;
+    private volatile boolean mThreadShouldStop = false;
     private ObjectInputStream mIn;
     private ObjectOutputStream mOut;
 
@@ -35,7 +36,7 @@ public class PeerSocket implements Runnable {
         this.mSocket = socket;
         this.messageHandler = messageHandler;
         this.messageParser = messageParser;
-        this.networkService = networkService;
+        this.networkService = (NetworkServiceImpl) networkService;
 
         try {
             mOut = new ObjectOutputStream(mSocket.getOutputStream());
@@ -45,7 +46,7 @@ public class PeerSocket implements Runnable {
         }
 
         // add this new PeerSocket to the PeerSocket list
-        networkService.addPeer(peerId, this);
+        this.networkService.addPeer(peerId, this);
     }
 
     /**
@@ -64,8 +65,14 @@ public class PeerSocket implements Runnable {
     /**
      * Stop the thread.
      */
-    public void stop() {
+    public synchronized void stop() {
         mThreadShouldStop = true;
+        try {
+            mIn.close();
+            mOut.close();
+        } catch (IOException ex) {
+            log.error(ex.toString());
+        }
     }
 
     /**
@@ -77,16 +84,27 @@ public class PeerSocket implements Runnable {
         String json = messageParser.toJSON(msg);
         try {
             mOut.writeObject(json);
-        } catch (IOException e) {
-            log.error(e.toString());
+        } catch (IOException ex) {
+            handleSocketFailure(ex);
         }
+    }
+
+    /**
+     * Any clean-up action following a socket failure.
+     */
+    private synchronized void handleSocketFailure(IOException ex) {
+        if (!mThreadShouldStop && !mFailureHandled) {
+            log.info("Peer socket failure: " + ex.getMessage());
+            networkService.disconnectPeer(this);
+        }
+        mFailureHandled = true;
     }
 
     /**
      * Listen to incoming message from the peer and handles them.
      * <p>
-     * The message receive are given to messageHandler to instanciate the right
-     * command to treat them.
+     * The messages received are given to messageHandler to instantiate the
+     * right command to treat them.
      *
      * @see MessageHandler
      */
@@ -96,15 +114,21 @@ public class PeerSocket implements Runnable {
             String msg = null;
             try {
                 msg = (String) mIn.readObject();
-            } catch (Exception ex) {
+            } catch (ClassNotFoundException ex) {
                 log.error(ex.toString());
+            } catch (IOException ex) {
+                handleSocketFailure(ex);
+                break;
             }
             messageHandler.handleMessage(msg);
         }
-        try {
-            mSocket.close();
-        } catch (IOException ex) {
-            log.error(ex.toString());
+        if (mSocket.isConnected()) {
+            try {
+                mSocket.close();
+            } catch (IOException ex) {
+                log.error(ex.toString());
+            }
         }
+        networkService.removePeer(this);
     }
 }

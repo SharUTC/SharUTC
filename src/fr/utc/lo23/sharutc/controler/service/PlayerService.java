@@ -166,7 +166,7 @@ public interface PlayerService {
         /**
          *
          */
-        SELECTED_MUSIC,
+        CURRENT_MUSIC,
         /**
          *
          */

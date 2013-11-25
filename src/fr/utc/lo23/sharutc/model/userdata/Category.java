@@ -3,12 +3,18 @@ package fr.utc.lo23.sharutc.model.userdata;
 import java.io.Serializable;
 
 /**
- *
+ * Represents a category
  */
 public class Category implements Serializable {
 
     private static final long serialVersionUID = 3790688676428360970L;
+    /**
+    * Id of the category Public
+    */
     public static final Integer PUBLIC_CATEGORY_ID = new Integer(0);
+    /**
+    * Name of the category Public
+    */
     public static final String PUBLIC_CATEGORY_NAME = "Public";
 
     private Integer mId;
@@ -21,7 +27,8 @@ public class Category implements Serializable {
     }
 
     /**
-     *
+     * Constructor
+     * 
      * @param mId
      * @param mName
      */
@@ -31,31 +38,35 @@ public class Category implements Serializable {
     }
 
     /**
-     *
-     * @return
+     * Return the category id
+     * 
+     * @return the category id
      */
     public Integer getId() {
         return mId;
     }
 
     /**
-     *
-     * @param id
+     * Set the category id
+     * 
+     * @param id - the category id
      */
     public void setId(Integer id) {
         this.mId = id;
     }
 
     /**
-     *
-     * @return
+     * Return the name of the category
+     * 
+     * @return the name of the category
      */
     public String getName() {
         return mName;
     }
 
     /**
-     *
+     * Set the name of the category
+     * 
      * @param name
      */
     public void setName(String name) {
@@ -64,9 +75,10 @@ public class Category implements Serializable {
 
     
      /**
-     * @param obj
+     * Override the method equals
      * 
-     * @return
+     * @param obj
+     * @return a boolean
      */
     @Override
     public boolean equals(Object obj) {
@@ -88,8 +100,9 @@ public class Category implements Serializable {
 
     
      /**
+     * Override the method hashCode
      * 
-     * @return
+     * @return the hash
      */
     @Override
     public int hashCode() {
@@ -101,8 +114,9 @@ public class Category implements Serializable {
 
     
      /**
+     * Override the method toString
      * 
-     * @return
+     * @return the string
      */
     @Override
     public String toString() {

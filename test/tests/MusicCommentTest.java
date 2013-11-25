@@ -10,6 +10,7 @@ import fr.utc.lo23.sharutc.controler.service.MusicService;
 import fr.utc.lo23.sharutc.controler.service.UserService;
 import fr.utc.lo23.sharutc.model.AppModel;
 import fr.utc.lo23.sharutc.model.AppModelBuilder;
+import fr.utc.lo23.sharutc.model.AppModelMock;
 import fr.utc.lo23.sharutc.model.domain.Comment;
 import fr.utc.lo23.sharutc.model.domain.Music;
 import fr.utc.lo23.sharutc.model.userdata.Peer;
@@ -64,25 +65,21 @@ public class MusicCommentTest {
      */
     @Test
     public void addComment() {
-        Music dummyMusic = new Music();
-        dummyMusic.setFileName("Dummy Music");
-        addCommentCommand.setMusic(dummyMusic);
+        Music music = appModel.getLocalCatalog().get(0);
+        music.setFileName("Dummy Music");
+        addCommentCommand.setMusic(music);
 
-        Peer dummyAuthorPeer = new Peer();
-        dummyAuthorPeer.setDisplayName("Dummy Peer 0");
-        dummyAuthorPeer.setId(436907);
-        addCommentCommand.setAuthorPeer(dummyAuthorPeer);
+        Peer authorPeer = appModel.getActivePeerList().getByPeerId(1L);
+        addCommentCommand.setAuthorPeer(authorPeer);
 
-        Peer dummyOwnerPeer = new Peer();
-        dummyOwnerPeer.setDisplayName("Dummy Peer 1");
-        dummyOwnerPeer.setId(907868);
-        addCommentCommand.setOwnerPeer(dummyOwnerPeer);
+        Peer ownerPeer = appModel.getActivePeerList().getByPeerId(AppModelBuilder.LOCAL_ACCOUNT_PEER_ID);
+        addCommentCommand.setOwnerPeer(ownerPeer);
 
         addCommentCommand.setComment("This is a comment");
-
+        
         addCommentCommand.execute();
 
-        Comment myComment = dummyMusic.getComment(dummyAuthorPeer, 0);
+        Comment myComment = appModel.getLocalCatalog().get(0).getComment(authorPeer, 0);
 
         Assert.assertNotNull("addComment failed", myComment);
 
@@ -97,33 +94,29 @@ public class MusicCommentTest {
      */
     @Test
     public void editComment() {
-        Music dummyMusic = new Music();
-        dummyMusic.setFileName("Dummy Music");
-        addCommentCommand.setMusic(dummyMusic);
+        Music music = appModel.getLocalCatalog().get(0);
+        music.setFileName("Dummy Music");
+        addCommentCommand.setMusic(music);
 
-        Peer dummyAuthorPeer = new Peer();
-        dummyAuthorPeer.setDisplayName("Dummy Peer 0");
-        dummyAuthorPeer.setId(436907);
-        addCommentCommand.setAuthorPeer(dummyAuthorPeer);
+        Peer authorPeer = appModel.getActivePeerList().getByPeerId(1L);
+        addCommentCommand.setAuthorPeer(authorPeer);
 
-        Peer dummyOwnerPeer = new Peer();
-        dummyOwnerPeer.setDisplayName("Dummy Peer 1");
-        dummyOwnerPeer.setId(907868);
-        addCommentCommand.setOwnerPeer(dummyOwnerPeer);
+        Peer ownerPeer = appModel.getActivePeerList().getByPeerId(AppModelBuilder.LOCAL_ACCOUNT_PEER_ID);
+        addCommentCommand.setOwnerPeer(ownerPeer);
 
         addCommentCommand.setComment("This is a comment");
 
         addCommentCommand.execute();
 
-        editCommentCommand.setMusic(dummyMusic);
-        editCommentCommand.setAuthorPeer(dummyAuthorPeer);
-        editCommentCommand.setOwnerPeer(dummyOwnerPeer);
+        editCommentCommand.setMusic(appModel.getLocalCatalog().get(0));
+        editCommentCommand.setAuthorPeer(authorPeer);
+        editCommentCommand.setOwnerPeer(ownerPeer);
         editCommentCommand.setCommentId(0);
         editCommentCommand.setComment("This is the new comment");
 
         editCommentCommand.execute();
 
-        Comment myComment = dummyMusic.getComment(dummyAuthorPeer, 0);
+        Comment myComment = appModel.getLocalCatalog().get(0).getComment(authorPeer, 0);
 
         Assert.assertNotNull("editComment failed", myComment);
 
@@ -140,30 +133,26 @@ public class MusicCommentTest {
      */
     @Test
     public void removeComment() {
-        Music dummyMusic = new Music();
-        dummyMusic.setFileName("Dummy Music");
-        addCommentCommand.setMusic(dummyMusic);
+        Music music = appModel.getLocalCatalog().get(0);
+        music.setFileName("Dummy Music");
+        addCommentCommand.setMusic(music);
 
-        Peer dummyAuthorPeer = new Peer();
-        dummyAuthorPeer.setDisplayName("Dummy Peer 0");
-        dummyAuthorPeer.setId(436907);
-        addCommentCommand.setAuthorPeer(dummyAuthorPeer);
+        Peer authorPeer = appModel.getActivePeerList().getByPeerId(1L);
+        addCommentCommand.setAuthorPeer(authorPeer);
 
-        Peer dummyOwnerPeer = new Peer();
-        dummyOwnerPeer.setDisplayName("Dummy Peer 1");
-        dummyOwnerPeer.setId(907868);
-        addCommentCommand.setOwnerPeer(dummyOwnerPeer);
+        Peer ownerPeer = appModel.getActivePeerList().getByPeerId(AppModelBuilder.LOCAL_ACCOUNT_PEER_ID);
+        addCommentCommand.setOwnerPeer(ownerPeer);
 
         addCommentCommand.setComment("This is a comment");
 
         addCommentCommand.execute();
 
-        removeCommentCommand.setMusic(dummyMusic);
-        removeCommentCommand.setPeer(dummyAuthorPeer);
+        removeCommentCommand.setMusic(appModel.getLocalCatalog().get(0));
+        removeCommentCommand.setPeer(authorPeer);
         removeCommentCommand.setCommentId(0);
         removeCommentCommand.execute();
 
-        Comment myComment = dummyMusic.getComment(dummyAuthorPeer, 0);
+        Comment myComment = appModel.getLocalCatalog().get(0).getComment(authorPeer, 0);
 
         Assert.assertNull("removeComment failed", myComment);
     }

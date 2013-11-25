@@ -6,12 +6,14 @@ import fr.utc.lo23.sharutc.util.CollectionChangeSupport;
 import fr.utc.lo23.sharutc.util.CollectionEvent;
 import java.io.Serializable;
 import java.util.Collection;
-import java.util.HashSet;
+
 import java.util.LinkedHashSet;
-import java.util.Set;
+
 
 /**
- *
+ * Represents a list of categories
+ * 
+ * Don't use index from CollectionChangeSupport (HashSet inside)
  */
 public class Categories implements Serializable {
 
@@ -21,32 +23,35 @@ public class Categories implements Serializable {
     private LinkedHashSet<Category> mCategories;
 
     /**
-     *
+     * Constructor
      */
     public Categories() {
         this.mCategories = new LinkedHashSet<Category>();
     }
 
     /**
-     *
-     * @return
+     * Return the category list
+     * 
+     * @return the category list
      */
     public LinkedHashSet<Category> getCategories() {
         return mCategories;
     }
 
     /**
-     *
-     * @param categories
+     * Set the category list
+     * 
+     * @param categories - a category list
      */
     public void setCategories(LinkedHashSet<Category> categories) {
         this.mCategories = categories;
     }
 
     /**
-     *
+     * Find the category thanks to its id given in parameter if it exists
+     * 
      * @param id
-     * @return
+     * @return the category or null if it does not exist
      */
     public Category findCategoryById(Integer id) {
         Category category = null;
@@ -59,9 +64,10 @@ public class Categories implements Serializable {
     }
 
     /**
-     *
+     * Add a category to the category list
+     * 
      * @param category
-     * @return
+     * @return a boolean
      */
     public boolean add(Category category) {
         boolean added = mCategories.add(category);
@@ -72,8 +78,9 @@ public class Categories implements Serializable {
     }
 
     /**
-     *
-     * @param categories
+     * Add a category list
+     * 
+     * @param categories - a category list
      */
     public void addAll(Collection<Category> categories) {
         if (categories != null && !categories.isEmpty()) {
@@ -84,48 +91,52 @@ public class Categories implements Serializable {
     }
 
     /**
-     *
+     * Remove a category from the category list
+     * 
      * @param category
-     * @return
+     * @return a boolean
      */
     public boolean remove(Category category) {
         boolean removed = mCategories.remove(category);
         if (removed) {
-            mCollectionChangeSupport.fireCollectionChanged(category, -1, CollectionEvent.Type.REMOVE);
+            mCollectionChangeSupport.fireCollectionChanged(category, CollectionEvent.Type.REMOVE);
         }
         return removed;
     }
 
     /**
-     *
+     * Empty the category list
      */
     public void clear() {
         if (!mCategories.isEmpty()) {
             mCategories.clear();
-            mCollectionChangeSupport.fireCollectionChanged(null, -1, CollectionEvent.Type.CLEAR);
+            mCollectionChangeSupport.fireCollectionChanged(null, CollectionEvent.Type.CLEAR);
         }
     }
 
     /**
-     *
-     * @return
+     * Return the size of the category list
+     * 
+     * @return the size of the category list
      */
     public int size() {
         return mCategories.size();
     }
 
     /**
-     *
+     * Check if the category list contains the category given in parameter
+     * 
      * @param category
-     * @return
+     * @return a boolean
      */
     public boolean contains(Category category) {
         return mCategories.contains(category);
     }
 
     /**
-     *
-     * @return
+     * Check if the category list is empty
+     * 
+     * @return a boolean
      */
     @JsonIgnore
     public boolean isEmpty() {

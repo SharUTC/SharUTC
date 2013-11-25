@@ -17,7 +17,7 @@ public interface MusicService {
     /**
      *
      * Adding a collection of mp3 files to user's local catalog.
-     * 
+     *
      * @param mp3Files
      */
     public void addToLocalCatalog(Collection<File> mp3Files);
@@ -25,7 +25,7 @@ public interface MusicService {
     /**
      *
      * Removing a collection of musics from local catalog.
-     * 
+     *
      * @param musics
      */
     public void removeFromLocalCatalog(Collection<Music> musics);
@@ -33,7 +33,7 @@ public interface MusicService {
     /**
      *
      * Integrating music from catalog parameter to the remote catalog.
-     * 
+     *
      * @param peer
      * @param catalog
      */
@@ -45,7 +45,7 @@ public interface MusicService {
      * taking account of current user's rights regarding peer's music
      *
      * @param peer
-     * @return 
+     * @return
      */
     public Catalog getCatalogForPeer(Peer peer);
 
@@ -209,19 +209,27 @@ public interface MusicService {
      * @param year the year to set, or null if not changed
      */
     public void saveMusicFieldChanges(Music music, String title, String artist, String album, String track, String year);
-    
+
     /**
      * Add a music to a category
+     *
      * @param music
-     * @param category 
+     * @param category
      */
     public void addMusicToCategory(Music music, Category category);
-    
+
     /**
      * Remove a music from a category
+     *
      * @param music
-     * @param category 
+     * @param category
      */
     public void removeMusicFromCategory(Music music, Category category);
-    
+
+    /**
+     * Remove peer data from KnownPeerList if they are useless
+     *
+     * @param peer the peer whom we're looking for any comment or score
+     */
+    public void removeFromKnownPeersIfUseless(Peer peer);
 }

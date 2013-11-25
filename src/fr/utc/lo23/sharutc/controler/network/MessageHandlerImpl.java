@@ -198,6 +198,10 @@ public class MessageHandlerImpl implements MessageHandler {
                             command = playIncomingMusicCommand;
                         }
                         break;
+                    case USER_INFO:
+                        integrateUserInfoCommand.setUserInfo((UserInfo) messageParser.getValue(Message.USER_INFO));
+                        command = integrateUserInfoCommand;
+                        break;
                     case CONNECTION:
                         integrateUserInfoAndReplyCommand.setUserInfo((UserInfo) messageParser.getValue(Message.USER_INFO));
                         command = integrateUserInfoAndReplyCommand;
@@ -235,6 +239,10 @@ public class MessageHandlerImpl implements MessageHandler {
         }
     }
 
+    /**
+     * chek if the current conversation id is equal to the message conversation id
+     * @return true if the current conversation id is equal to the message conversation id, else false.
+     */
     private boolean isMessageForCurrentConversation() {
         return appModel.getCurrentConversationId().equals(messageParser.getValue(Message.CONVERSATION_ID));
     }

@@ -2,6 +2,7 @@ package fr.utc.lo23.sharutc.controler.network;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import fr.utc.lo23.sharutc.controler.command.account.IntegrateDisconnectionCommand;
 import fr.utc.lo23.sharutc.model.AppModel;
 import fr.utc.lo23.sharutc.model.domain.Catalog;
 import fr.utc.lo23.sharutc.model.domain.Music;
@@ -12,6 +13,7 @@ import fr.utc.lo23.sharutc.model.userdata.UserInfo;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.HashMap;
+import java.util.Map.Entry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,6 +32,9 @@ public class NetworkServiceImpl implements NetworkService {
     private final MessageHandler messageHandler;
     private final MessageParser messageParser;
 
+    @Inject
+    private IntegrateDisconnectionCommand integrateDisconnectionCommand;
+
     private ListenThread mListenThread;
     private PeerDiscoverySocket mPeerDiscoverySocket;
     private HeartbeatThread mHeartbeatThread;
@@ -45,6 +50,18 @@ public class NetworkServiceImpl implements NetworkService {
         this.mPeerDiscoverySocket = null;
         this.mHeartbeatThread = null;
         this.mPeers = new HashMap<Long, PeerSocket>();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void start() {
+        try {
+            start(NetworkService.defaultPort, NetworkService.defaultGroup);
+        } catch (UnknownHostException ex) {
+            log.error(ex.toString());
+        }
     }
 
     /**
@@ -74,9 +91,11 @@ public class NetworkServiceImpl implements NetworkService {
     }
 
     /**
-     * {inheritDoc}
+     * Register a new peer and its PeerSocket to the NetworkService.
+     *
+     * @param peerId the id of the new peer
+     * @param peerSocket the PeerSocket object associated to that peer
      */
-    @Override
     public synchronized void addPeer(long peerId, PeerSocket peerSocket) {
         log.warn("addPeer - Not supported yet.");
         if (peerId == 0 || peerSocket == null) {
@@ -88,11 +107,33 @@ public class NetworkServiceImpl implements NetworkService {
     }
 
     /**
-     * {inheritDoc}
+     * Unregister a peer that is disconnected.
+     *
+     * @param peerSocket the PeerSocket of the disconnected peer
      */
-    @Override
     public synchronized void removePeer(PeerSocket peerSocket) {
         mPeers.values().remove(peerSocket);
+    }
+
+    /**
+     * Disconnect from the model a peer which connection died.
+     *
+     * @param peerSocket the disconnected peerSocket
+     */
+    public synchronized void disconnectPeer(PeerSocket peerSocket) {
+        Long peerId = null;
+        for (Entry<Long, PeerSocket> entry : mPeers.entrySet()) {
+            if (peerSocket == entry.getValue()) {
+                peerId = entry.getKey();
+                break;
+            }
+        }
+        if (peerId != null) {
+            integrateDisconnectionCommand.setPeerId(peerId);
+            integrateDisconnectionCommand.execute();
+        } else {
+            log.error("Can't find and disconnect peerSocket");
+        }
     }
 
     /**
@@ -100,7 +141,7 @@ public class NetworkServiceImpl implements NetworkService {
      *
      * @param message the message to send
      */
-    protected void sendBroadcast(Message message) {
+    protected synchronized void sendBroadcast(Message message) {
         for (PeerSocket peer : mPeers.values()) {
             peer.send(message);
         }
@@ -112,12 +153,21 @@ public class NetworkServiceImpl implements NetworkService {
      * @param message the message to send
      * @param peer the receiver
      */
-    protected void sendUnicast(Message message, Peer peer) {
-        if (peer != null) {
-            this.mPeers.get(peer.getId()).send(message);
+    protected synchronized void sendUnicast(Message message, Peer peer) {
+        if (peer != null && mPeers.containsKey(peer.getId())) {
+            mPeers.get(peer.getId()).send(message);
         } else {
-            log.error("[NetworkService - sendUnicast()] - object Peer is null");
+            log.error("Peer " + (peer != null ? peer.getId(): "null") + " not connected");
         }
+    }
+
+    /**
+     * Send a message to the multicast group.
+     *
+     * @param message the message to multicast
+     */
+    protected void sendMulticast(Message message) {
+        mPeerDiscoverySocket.send(message);
     }
 
     /**
@@ -270,9 +320,21 @@ public class NetworkServiceImpl implements NetworkService {
     @Override
     public void userInfoBroadcast(UserInfo userInfo) {
         if (userInfo != null) {
-            mPeerDiscoverySocket.send(messageParser.write(MessageType.USER_INFO, new Object[][]{{Message.USER_INFO, userInfo}}));
+            sendBroadcast(messageParser.write(MessageType.USER_INFO, new Object[][]{{Message.USER_INFO, userInfo}}));
         } else {
-            log.error("[NetworkService - userInfoBroadCast()] - userInfo is null");
+            log.error("userInfo is null");
+        }
+    }
+
+    /**
+     * {inheritDoc}
+     */
+    @Override
+    public void connectionBroadcast(UserInfo userInfo) {
+        if (userInfo != null) {
+            sendMulticast(messageParser.write(MessageType.CONNECTION, new Object[][]{{Message.USER_INFO, userInfo}}));
+        } else {
+            log.error("userInfo is null");
         }
     }
 

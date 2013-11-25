@@ -26,7 +26,7 @@ public class PeerDiscoverySocket implements Runnable {
     private final int mPort;
     private MulticastSocket mSocket;
     private Thread mThread;
-    private boolean mThreadShouldStop = false;
+    private volatile boolean mThreadShouldStop = false;
 
     /**
      * Construct a PeerDiscoverySocket.
@@ -73,8 +73,9 @@ public class PeerDiscoverySocket implements Runnable {
     /**
      * Stop the listening thread.
      */
-    public void stop() {
+    public synchronized void stop() {
         mThreadShouldStop = true;
+        mSocket.close();
     }
 
     /**
@@ -88,7 +89,9 @@ public class PeerDiscoverySocket implements Runnable {
         try {
             mSocket.send(p);
         } catch (IOException e) {
-            log.error(e.toString());
+            if (!mThreadShouldStop) {
+                log.error(e.toString());
+            }
         }
     }
 
@@ -145,9 +148,13 @@ public class PeerDiscoverySocket implements Runnable {
                     log.warn("Message type must be CONNECTION !");
                 }
             } catch (IOException e) {
-                log.error(e.toString());
+                if (!mThreadShouldStop) {
+                    log.error(e.toString());
+                }
             }
         }
-        mSocket.close();
+        if (!mSocket.isClosed()) {
+            mSocket.close();
+        }
     }
 }

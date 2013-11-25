@@ -127,4 +127,9 @@ public class Rights implements Serializable {
             mMayNoteAndComment = rights.getMayNoteAndComment();
         }
     }
+
+    @Override
+    public String toString() {
+        return "Rights{" + "catID=" + mCategoryId + ", musicID=" + mMusicId + ", readInfo=" + mMayReadInfo + ", listen=" + mMayListen + ", noteAndComment=" + mMayNoteAndComment + '}';
+    }
 }

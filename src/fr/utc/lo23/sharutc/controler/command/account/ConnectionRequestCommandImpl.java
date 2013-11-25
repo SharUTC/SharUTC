@@ -1,6 +1,7 @@
 package fr.utc.lo23.sharutc.controler.command.account;
 
 import com.google.inject.Inject;
+import fr.utc.lo23.sharutc.controler.network.NetworkService;
 import fr.utc.lo23.sharutc.controler.service.MusicService;
 import fr.utc.lo23.sharutc.controler.service.UserService;
 import fr.utc.lo23.sharutc.model.AppModel;
@@ -8,8 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- *
- *
+ * Implementation of ConnectionRequestCommand
  */
 public class ConnectionRequestCommandImpl implements ConnectionRequestCommand {
 
@@ -17,15 +17,26 @@ public class ConnectionRequestCommandImpl implements ConnectionRequestCommand {
             .getLogger(ConnectionRequestCommandImpl.class);
     private String mLogin;
     private String mPassword;
+    private final AppModel appModel;
     private final UserService userService;
     private final MusicService musicService;
-    private final AppModel appModel;
+    private final NetworkService networkService;
 
+     /**
+     * Constructor
+     * 
+     * @param appModel
+     * @param userservice
+     * @param musicService
+     * @param networkService
+     */
     @Inject
-    public ConnectionRequestCommandImpl(UserService userservice, MusicService musicService, AppModel appModel) {
+    public ConnectionRequestCommandImpl(AppModel appModel, UserService userservice, MusicService musicService, NetworkService networkService) {
+        this.appModel = appModel;
         this.userService = userservice;
         this.musicService = musicService;
-        this.appModel = appModel;
+        this.networkService = networkService;
+
     }
 
     /**
@@ -76,7 +87,8 @@ public class ConnectionRequestCommandImpl implements ConnectionRequestCommand {
             musicService.loadUserMusicFile();
             musicService.loadUserRightsListFile();
         }
-
+        networkService.start();
+        networkService.connectionBroadcast(appModel.getProfile().getUserInfo());
         log.info("AccountCreationCommand DONE");
     }
 }

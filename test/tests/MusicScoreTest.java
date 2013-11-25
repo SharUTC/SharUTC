@@ -61,28 +61,25 @@ public class MusicScoreTest {
      */
     @Test
     public void setScore() {
-        Music dummyMusic = new Music();
-        dummyMusic.setFileName("Dummy Music");
-        setScoreCommand.setMusic(dummyMusic);
+        // FIXME: use music from catalog , and use active or kwown peer to set a score
+        // FIXME: don't use dummyMusic in Assert..., even with previous correction, get the music reference from localCatalog directly in Assert or with another var
+        Music music = appModel.getLocalCatalog().get(0);
+        setScoreCommand.setMusic(music);
 
-        Peer dummyPeer = new Peer();
-        dummyPeer.setDisplayName("Dummy Peer");
-        dummyPeer.setId(436907);
-        // dummyPeer.setIpAddress("192.168.1.1");
-        setScoreCommand.setPeer(dummyPeer);
+        Peer peer = appModel.getActivePeerList().getActivePeers().keySet().iterator().next();
+        setScoreCommand.setPeer(peer);
 
         Integer scoreValue = 4;
         setScoreCommand.setScore(scoreValue);
 
         setScoreCommand.execute();
 
-        Score score = dummyMusic.getScore(dummyPeer);
+        Score score = appModel.getLocalCatalog().get(0).getScore(peer);
         Assert.assertNotNull("SetScoreCommand failed 0", score);
 
-        if (score != null) {
-            Assert.assertSame("SetScoreCommand failed 1", score.getValue(),
-                    scoreValue);
-        }
+        Assert.assertEquals("SetScoreCommand failed 1", score.getValue(),
+                scoreValue);
+
     }
 
     /**
@@ -90,26 +87,46 @@ public class MusicScoreTest {
      */
     @Test
     public void unsetScore() {
-        Music dummyMusic = new Music();
-        dummyMusic.setFileName("Dummy Music");
-        setScoreCommand.setMusic(dummyMusic);
+        Music music = appModel.getLocalCatalog().get(0);
+        setScoreCommand.setMusic(music);
 
-        Peer dummyPeer = new Peer();
-        dummyPeer.setDisplayName("Dummy Peer");
-        dummyPeer.setId(436907);
-        // dummyPeer.setIpAddress("192.168.1.1");
-        setScoreCommand.setPeer(dummyPeer);
+        Peer peer = appModel.getActivePeerList().getActivePeers().keySet().iterator().next();
+        setScoreCommand.setPeer(peer);
 
         Integer scoreValue = 4;
         setScoreCommand.setScore(scoreValue);
 
         setScoreCommand.execute();
 
-        unsetScoreCommand.setMusic(dummyMusic);
-        unsetScoreCommand.setPeer(dummyPeer);
+        unsetScoreCommand.setMusic(music);
+        unsetScoreCommand.setPeer(peer);
         unsetScoreCommand.execute();
 
-        Score score = dummyMusic.getScore(dummyPeer);
+        Score score = appModel.getLocalCatalog().get(0).getScore(peer);
         Assert.assertNull("SetScoreCommand failed", score);
+    }
+
+    /**
+     * Test on the setting of a score on a music
+     */
+    @Test
+    public void setScore2() {
+        Music music = appModel.getLocalCatalog().get(0);
+        setScoreCommand.setMusic(music);
+
+        Peer peer = appModel.getActivePeerList().getActivePeers().keySet().iterator().next();
+        setScoreCommand.setPeer(peer);
+
+        setScoreCommand.setScore(4);
+        setScoreCommand.execute();
+        Score score = appModel.getLocalCatalog().get(0).getScore(peer);
+        Assert.assertNotNull("SetScoreCommand failed", score);
+        Assert.assertEquals(new Integer(4), score.getValue());
+
+        setScoreCommand.setScore(0);
+        setScoreCommand.execute();
+        Score score2 = appModel.getLocalCatalog().get(0).getScore(peer);
+        Assert.assertNotNull("SetScoreCommand failed", score2);
+        Assert.assertEquals(new Integer(0), score2.getValue());
     }
 }

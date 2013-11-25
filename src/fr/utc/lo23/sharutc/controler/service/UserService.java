@@ -16,7 +16,7 @@ public interface UserService {
     public void saveProfileFiles();
 
     /**
-     * Add a new contact in the category
+     * Add a new contact (to the category Public)
      *
      * @param contact
      */
@@ -37,14 +37,20 @@ public interface UserService {
     public void createCategory(String categoryName);
 
     /**
-     * Delete the category category
-     *
+     * Delete the category category (we can't delete the category Public)
+     * It removes the contacts from this category
+     * and manages the changes of categories. 
+     * For instance, if a contact was only in this category, we add it in the category Public.
+     * 
      * @param category
      */
     public void deleteCategory(Category category);
 
     /**
      * Add a contact to a specified category
+     * It manages the changes of categories for a contact, if it is needed
+     * (particularly with the category Public : if the contact was previously
+     * present in the category Public, we remove the contact from it)
      *
      * @param contact
      * @param category
@@ -52,7 +58,9 @@ public interface UserService {
     public void addContactToCategory(Contact contact, Category category);
 
     /**
-     * Remove a contact from a specified category
+     * Remove a contact from a specified category (we can't remove a contact from the category Public)
+     * It manages the changes of categories. 
+     * For instance, if the contact was only in this category, we add it in the category Public
      *
      * @param contact
      * @param category
@@ -60,13 +68,15 @@ public interface UserService {
     public void removeContactFromCategory(Contact contact, Category category);
 
     /**
-     *
+     * Create and set the profile
+     * 
      * @param userInfo
      */
     public void createAndSetProfile(UserInfo userInfo);
 
     /**
-     *
+     * loginRequest
+     * 
      * @param login
      * @param password
      */
@@ -76,6 +86,7 @@ public interface UserService {
      * Update the connected peers list with userInfo.
      * If the peerId didn't exist in the list, it is added.
      * Else, the peer info is updated
+     * 
      * @param userInfo
      */
     public void updateConnectedPeers(UserInfo userInfo);
@@ -87,14 +98,21 @@ public interface UserService {
     public void removeFromConnectedPeers(long peerId);
 
     /**
-     *
+     * Find a contact thanks to its peerId
+     * 
      * @param peerId
-     * @return
+     * @return the contact
      */
     public Contact findContactByPeerId(Long peerId);
+    
+    /**
+     * Clean the profile object by putting a null value in the object.
+     *
+     */
+    public void cleanProfile();
 
     /**
-     * Send a disconnection request to the network and save profile
+     * Save profile in JSON then clean the profile object.
      *
      */
     public void disconnectionRequest();
