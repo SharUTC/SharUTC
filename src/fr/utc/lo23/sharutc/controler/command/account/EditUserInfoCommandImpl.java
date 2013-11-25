@@ -23,8 +23,9 @@ public class EditUserInfoCommandImpl implements EditUserInfoCommand {
     
     /**
      * Constructor
-     * @param fs - File Service
+     * 
      * @param appModel - Application Model
+     * @param userService
      */
     @Inject
     public EditUserInfoCommandImpl(AppModel appModel, UserService userService) {

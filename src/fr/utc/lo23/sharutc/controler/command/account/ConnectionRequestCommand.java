@@ -3,7 +3,7 @@ package fr.utc.lo23.sharutc.controler.command.account;
 import fr.utc.lo23.sharutc.controler.command.Command;
 
 /**
- * TODO : add comments
+ * Command to log on
  */
 public interface ConnectionRequestCommand extends Command {
 

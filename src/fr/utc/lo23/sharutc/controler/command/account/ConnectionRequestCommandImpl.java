@@ -9,8 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- *
- *
+ * Implementation of ConnectionRequestCommand
  */
 public class ConnectionRequestCommandImpl implements ConnectionRequestCommand {
 
@@ -23,6 +22,14 @@ public class ConnectionRequestCommandImpl implements ConnectionRequestCommand {
     private final MusicService musicService;
     private final NetworkService networkService;
 
+     /**
+     * Constructor
+     * 
+     * @param appModel
+     * @param userservice
+     * @param musicService
+     * @param networkService
+     */
     @Inject
     public ConnectionRequestCommandImpl(AppModel appModel, UserService userservice, MusicService musicService, NetworkService networkService) {
         this.appModel = appModel;

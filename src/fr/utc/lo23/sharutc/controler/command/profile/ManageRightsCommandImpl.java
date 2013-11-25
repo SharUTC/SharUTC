@@ -21,6 +21,11 @@ public class ManageRightsCommandImpl implements ManageRightsCommand {
     private Boolean mMayCommentAndScore;
     private final AppModel appModel;
 
+     /**
+     * Constructor
+     *
+     * @param appModel
+     */
     @Inject
     public ManageRightsCommandImpl(AppModel appModel) {
         this.appModel = appModel;

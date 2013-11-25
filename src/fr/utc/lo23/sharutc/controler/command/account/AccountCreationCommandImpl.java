@@ -12,7 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * {@inheritDoc}
+ * Implementation of AccountCreationCommand
  */
 public class AccountCreationCommandImpl implements AccountCreationCommand {
 
@@ -23,7 +23,15 @@ public class AccountCreationCommandImpl implements AccountCreationCommand {
     private final UserService userService;
     private final MusicService musicService;
     private final FileService fileService;
-
+    
+     /**
+     * Constructor
+     * 
+     * @param appModel
+     * @param userService
+     * @param fileService
+     * @param musicService
+     */
     @Inject
     public AccountCreationCommandImpl(AppModel appModel, UserService userService, FileService fileService, MusicService musicService) {
         this.appModel = appModel;
