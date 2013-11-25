@@ -86,9 +86,9 @@ public class ConnectionRequestCommandImpl implements ConnectionRequestCommand {
         if (appModel.getProfile() != null) {
             musicService.loadUserMusicFile();
             musicService.loadUserRightsListFile();
+            networkService.start();
+            networkService.connectionBroadcast(appModel.getProfile().getUserInfo());
         }
-        networkService.start();
-        networkService.connectionBroadcast(appModel.getProfile().getUserInfo());
         log.info("AccountCreationCommand DONE");
     }
 }

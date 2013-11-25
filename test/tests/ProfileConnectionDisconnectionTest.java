@@ -88,23 +88,41 @@ public class ProfileConnectionDisconnectionTest {
         String login = "tudorluchy1";
         String password = "password1";
         //  Long peerId = 4L;
+        String firstName = "Tudor";
+        String lastName = "Luchiancenco";
 
         UserInfo userInfo = new UserInfo();
         userInfo.setLogin(login);
         userInfo.setPassword(password);
         //   userInfo.setPeerId(peerId);
-        userInfo.setFirstName("Tudor");
-        userInfo.setLastName("Luchiancenco");
+        userInfo.setFirstName(firstName);
+        userInfo.setLastName(lastName);
         userInfo.setAge(22);
 
         // create account
         accountCreationCommand.setUserInfo(userInfo);
         accountCreationCommand.execute();
+        
+        // Clean profile to try connection
+        userService.cleanProfile();
+        Assert.assertNull(appModel.getProfile());
+        
+        // call command (wrong login / pass)
+        connectionRequestCommand.setLogin("tudorluchy111");
+        connectionRequestCommand.setPassword("password111");
+        connectionRequestCommand.execute();
+        Assert.assertNull(appModel.getProfile());
 
-        // call command
+        // call command (right login / pass)
         connectionRequestCommand.setLogin("tudorluchy1");
         connectionRequestCommand.setPassword("password1");
         connectionRequestCommand.execute();
+        
+        Assert.assertNotNull(appModel.getProfile());
+        Assert.assertEquals(appModel.getProfile().getUserInfo().getLogin(), login);
+        Assert.assertEquals(appModel.getProfile().getUserInfo().getPassword(), password);
+        Assert.assertEquals(appModel.getProfile().getUserInfo().getFirstName() , firstName);
+        Assert.assertEquals(appModel.getProfile().getUserInfo().getLastName() , lastName);
 
         // tests
         Message m = networkService.getSentMessage();
