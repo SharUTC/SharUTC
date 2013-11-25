@@ -88,7 +88,7 @@ public class MusicSearchTest {
         Assert.assertNull("Sent message not null before test", networkService.getSentMessage());
 
         performMusicSearchCommand.setConversationId(0L);
-        performMusicSearchCommand.setPeer(appModel.getActivePeerList().getByPeerId(1L));
+        performMusicSearchCommand.setPeer(appModel.getActivePeerList().getPeerByPeerId(1L));
         performMusicSearchCommand.setSearchCriteria(new SearchCriteria("air"));
         performMusicSearchCommand.execute();
 
@@ -111,7 +111,7 @@ public class MusicSearchTest {
         appModel.getLocalCatalog().get(1).addTag("TV");
         appModel.getLocalCatalog().get(2).addTag("Rock");
         performMusicSearchCommand.setConversationId(0L);
-        performMusicSearchCommand.setPeer(appModel.getActivePeerList().getByPeerId(1L));
+        performMusicSearchCommand.setPeer(appModel.getActivePeerList().getPeerByPeerId(1L));
         performMusicSearchCommand.setSearchCriteria(new SearchCriteria("   rOcK "));
         performMusicSearchCommand.execute();
 

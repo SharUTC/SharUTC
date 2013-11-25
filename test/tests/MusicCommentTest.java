@@ -69,10 +69,10 @@ public class MusicCommentTest {
         music.setFileName("Dummy Music");
         addCommentCommand.setMusic(music);
 
-        Peer authorPeer = appModel.getActivePeerList().getByPeerId(1L);
+        Peer authorPeer = appModel.getActivePeerList().getPeerByPeerId(1L);
         addCommentCommand.setAuthorPeer(authorPeer);
 
-        Peer ownerPeer = appModel.getActivePeerList().getByPeerId(AppModelBuilder.LOCAL_ACCOUNT_PEER_ID);
+        Peer ownerPeer = appModel.getActivePeerList().getPeerByPeerId(AppModelBuilder.LOCAL_ACCOUNT_PEER_ID);
         addCommentCommand.setOwnerPeer(ownerPeer);
 
         addCommentCommand.setComment("This is a comment");
@@ -98,10 +98,10 @@ public class MusicCommentTest {
         music.setFileName("Dummy Music");
         addCommentCommand.setMusic(music);
 
-        Peer authorPeer = appModel.getActivePeerList().getByPeerId(1L);
+        Peer authorPeer = appModel.getActivePeerList().getPeerByPeerId(1L);
         addCommentCommand.setAuthorPeer(authorPeer);
 
-        Peer ownerPeer = appModel.getActivePeerList().getByPeerId(AppModelBuilder.LOCAL_ACCOUNT_PEER_ID);
+        Peer ownerPeer = appModel.getActivePeerList().getPeerByPeerId(AppModelBuilder.LOCAL_ACCOUNT_PEER_ID);
         addCommentCommand.setOwnerPeer(ownerPeer);
 
         addCommentCommand.setComment("This is a comment");
@@ -137,10 +137,10 @@ public class MusicCommentTest {
         music.setFileName("Dummy Music");
         addCommentCommand.setMusic(music);
 
-        Peer authorPeer = appModel.getActivePeerList().getByPeerId(1L);
+        Peer authorPeer = appModel.getActivePeerList().getPeerByPeerId(1L);
         addCommentCommand.setAuthorPeer(authorPeer);
 
-        Peer ownerPeer = appModel.getActivePeerList().getByPeerId(AppModelBuilder.LOCAL_ACCOUNT_PEER_ID);
+        Peer ownerPeer = appModel.getActivePeerList().getPeerByPeerId(AppModelBuilder.LOCAL_ACCOUNT_PEER_ID);
         addCommentCommand.setOwnerPeer(ownerPeer);
 
         addCommentCommand.setComment("This is a comment");

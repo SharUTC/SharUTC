@@ -71,7 +71,7 @@ public class MessageParserImpl implements MessageParser {
     @Override
     public Peer getSource() {
         checkMessageRead();
-        Peer destinationPeer = appModel.getActivePeerList().getByPeerId(message.getFromPeerId());
+        Peer destinationPeer = appModel.getActivePeerList().getPeerByPeerId(message.getFromPeerId());
         if (destinationPeer == null) {
             log.error("Missing arg : no destination");
         }

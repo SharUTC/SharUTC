@@ -12,6 +12,7 @@ import fr.utc.lo23.sharutc.model.AppModelBuilder;
 import fr.utc.lo23.sharutc.model.domain.Music;
 import fr.utc.lo23.sharutc.model.domain.Score;
 import fr.utc.lo23.sharutc.model.userdata.Peer;
+import fr.utc.lo23.sharutc.model.userdata.UserInfo;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -66,7 +67,8 @@ public class MusicScoreTest {
         Music music = appModel.getLocalCatalog().get(0);
         setScoreCommand.setMusic(music);
 
-        Peer peer = appModel.getActivePeerList().getActivePeers().keySet().iterator().next();
+        UserInfo userInfo = appModel.getActivePeerList().getActivePeers().keySet().iterator().next();
+        Peer peer = new Peer(userInfo.getPeerId(), userInfo.getLogin());
         setScoreCommand.setPeer(peer);
 
         Integer scoreValue = 4;
@@ -90,7 +92,8 @@ public class MusicScoreTest {
         Music music = appModel.getLocalCatalog().get(0);
         setScoreCommand.setMusic(music);
 
-        Peer peer = appModel.getActivePeerList().getActivePeers().keySet().iterator().next();
+        UserInfo userInfo = appModel.getActivePeerList().getActivePeers().keySet().iterator().next();
+        Peer peer = new Peer(userInfo.getPeerId(), userInfo.getLogin());
         setScoreCommand.setPeer(peer);
 
         Integer scoreValue = 4;
@@ -114,7 +117,8 @@ public class MusicScoreTest {
         Music music = appModel.getLocalCatalog().get(0);
         setScoreCommand.setMusic(music);
 
-        Peer peer = appModel.getActivePeerList().getActivePeers().keySet().iterator().next();
+        UserInfo userInfo = appModel.getActivePeerList().getActivePeers().keySet().iterator().next();
+        Peer peer = new Peer(userInfo.getPeerId(), userInfo.getLogin());
         setScoreCommand.setPeer(peer);
 
         setScoreCommand.setScore(4);

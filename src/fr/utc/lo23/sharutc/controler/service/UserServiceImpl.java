@@ -236,7 +236,7 @@ public class UserServiceImpl implements UserService {
         ActivePeerList activePeerList = appModel.getActivePeerList();
         KnownPeerList knownPeerList = appModel.getProfile().getKnownPeerList();
         Peer newPeer = userInfo.toPeer();
-        activePeerList.update(newPeer);
+        activePeerList.update(userInfo);
         //peer is in knownPeerList only if he is a contact, commented or scored a music, otherwise we don't need to save it's name
         if (knownPeerList.contains(newPeer)) {
             knownPeerList.update(newPeer);
@@ -254,8 +254,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public void removeFromConnectedPeers(long peerId) {
         ActivePeerList activePeerList = appModel.getActivePeerList();
-        Peer removePeer = activePeerList.getByPeerId(peerId);
-        activePeerList.remove(removePeer);
+        UserInfo removeUserInfo = activePeerList.getUserInfoByPeerId(peerId);
+        activePeerList.remove(removeUserInfo);
     }
 
     /**

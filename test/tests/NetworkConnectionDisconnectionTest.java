@@ -97,7 +97,7 @@ public class NetworkConnectionDisconnectionTest {
 
         // tests
         Assert.assertNull("Known shouldn't be added to KnownPeerList this way", appModel.getProfile().getKnownPeerList().getPeerNameById(userInfo.getPeerId()));
-        Assert.assertNotNull("Peer doesn't exist in ActivePeerList", appModel.getActivePeerList().getByPeerId(userInfo.getPeerId()));
+        Assert.assertNotNull("Peer doesn't exist in ActivePeerList", appModel.getActivePeerList().getUserInfoByPeerId(userInfo.getPeerId()));
     }
 
     /**
@@ -124,7 +124,7 @@ public class NetworkConnectionDisconnectionTest {
 
         // tests
         Assert.assertNull("Known shouldn't be added to KnownPeerList this way", appModel.getProfile().getKnownPeerList().getPeerNameById(userInfo.getPeerId()));
-        Assert.assertNotNull("Peer doesn't exist in ActivePeerList", appModel.getActivePeerList().getByPeerId(userInfo.getPeerId()));
+        Assert.assertNotNull("Peer doesn't exist in ActivePeerList", appModel.getActivePeerList().getUserInfoByPeerId(userInfo.getPeerId()));
 
         Message m = networkService.getSentMessage();
         Peer p = networkService.getPeer();
@@ -148,6 +148,6 @@ public class NetworkConnectionDisconnectionTest {
         integrateDisconnectionCommand.execute();
 
         // tests
-        Assert.assertNull("Active peer exists", appModel.getActivePeerList().getByPeerId(p.getId()));
+        Assert.assertNull("Active peer exists", appModel.getActivePeerList().getUserInfoByPeerId(p.getId()));
     }
 }

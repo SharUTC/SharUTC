@@ -154,7 +154,7 @@ public class TagMapTest {
         ((MusicServiceMock) musicService).setTagMapDirty();
         long conversationId = 0L;
         sendTagMapCommand.setConversationId(conversationId);
-        sendTagMapCommand.setPeer(appModel.getActivePeerList().getByPeerId(1L));
+        sendTagMapCommand.setPeer(appModel.getActivePeerList().getPeerByPeerId(1L));
         sendTagMapCommand.execute();
         Assert.assertNotNull("No message sent", networkService.getSentMessage());
         // extract values from created message and validate them

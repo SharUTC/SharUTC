@@ -8,7 +8,6 @@ import fr.utc.lo23.sharutc.controler.service.MusicService;
 import fr.utc.lo23.sharutc.controler.service.MusicServiceMock;
 import fr.utc.lo23.sharutc.controler.service.UserService;
 import fr.utc.lo23.sharutc.model.domain.Catalog;
-import fr.utc.lo23.sharutc.model.domain.Rights;
 import fr.utc.lo23.sharutc.model.domain.RightsList;
 import fr.utc.lo23.sharutc.model.userdata.ActivePeerList;
 import fr.utc.lo23.sharutc.model.userdata.Categories;
@@ -38,7 +37,7 @@ public class AppModelBuilder {
     public static final long LOCAL_ACCOUNT_PEER_ID = 0L;
     private final AppModel appModel;
     // LOCAL_ACCOUNT_LOGIN as active peers only for test purpose, in order to be able to mock message for which we fake a Message reception
-    private Peer[] activePeers = {new Peer(0L, LOCAL_ACCOUNT_LOGIN), new Peer(1L, "Peer Mock (id=1)"), new Peer(2L, "Peer Mock (id=2)"), new Peer(3L, "Peer Mock (id=3)")};
+    private UserInfo[] activePeers = {new UserInfo(0L, LOCAL_ACCOUNT_LOGIN), new UserInfo(1L, "Peer Mock (id=1)"), new UserInfo(2L, "Peer Mock (id=2)"), new UserInfo(3L, "Peer Mock (id=3)")};
     private AddToLocalCatalogCommand addToLocalCatalogCommand;
     private final MusicService musicService;
     private final UserService userService;
@@ -87,8 +86,8 @@ public class AppModelBuilder {
 
     private void mockActivePeerList() {
         log.trace("MockingActivePeerList ...");
-        for (Peer peer : activePeers) {
-            appModel.getActivePeerList().update(peer);
+        for (UserInfo userInfo : activePeers) {
+            appModel.getActivePeerList().update(userInfo);
         }
         log.trace("MockingActivePeerList DONE");
     }

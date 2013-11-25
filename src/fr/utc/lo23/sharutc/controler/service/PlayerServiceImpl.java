@@ -491,7 +491,7 @@ public class PlayerServiceImpl implements PlayerService, PropertyChangeListener,
     }
 
     private void fetchRemoteDataThenPlay(Music music) {
-        Peer peer = appModel.getActivePeerList().getByPeerId(music.getOwnerPeerId());
+        Peer peer = appModel.getActivePeerList().getPeerByPeerId(music.getOwnerPeerId());
         log.info("Fetching data for remote music from {}: {}", peer, music);
         networkService.downloadMusicForPlaying(peer, music.getId());
     }
