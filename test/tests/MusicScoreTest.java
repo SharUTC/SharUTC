@@ -68,7 +68,7 @@ public class MusicScoreTest {
         setScoreCommand.setMusic(music);
 
         UserInfo userInfo = appModel.getActivePeerList().getActivePeers().keySet().iterator().next();
-        Peer peer = new Peer(userInfo.getPeerId(), userInfo.getLogin());
+        Peer peer = userInfo.toPeer();
         setScoreCommand.setPeer(peer);
 
         Integer scoreValue = 4;
@@ -93,7 +93,7 @@ public class MusicScoreTest {
         setScoreCommand.setMusic(music);
 
         UserInfo userInfo = appModel.getActivePeerList().getActivePeers().keySet().iterator().next();
-        Peer peer = new Peer(userInfo.getPeerId(), userInfo.getLogin());
+        Peer peer = userInfo.toPeer();
         setScoreCommand.setPeer(peer);
 
         Integer scoreValue = 4;
@@ -118,7 +118,7 @@ public class MusicScoreTest {
         setScoreCommand.setMusic(music);
 
         UserInfo userInfo = appModel.getActivePeerList().getActivePeers().keySet().iterator().next();
-        Peer peer = new Peer(userInfo.getPeerId(), userInfo.getLogin());
+        Peer peer = userInfo.toPeer();
         setScoreCommand.setPeer(peer);
 
         setScoreCommand.setScore(4);
