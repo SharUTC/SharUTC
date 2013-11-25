@@ -288,9 +288,12 @@ public class MainController implements Initializable,
         children.clear();
         log.info("Album detail requested : " + albumName);
         try {
+            detachRightpane();
             mCurrentLoadedRighpaneResult = mFxmlLoader.load(getClass().getResource("/fr/utc/lo23/sharutc/ui/fxml/song_list.fxml"));
+            ((DragPreviewDrawer) mCurrentLoadedRighpaneResult.getController()).init(mDragPreview);
+            ((SongListController) mCurrentLoadedRighpaneResult.getController()).setInterface(this);
             ((SongListController) mCurrentLoadedRighpaneResult.getController()).showCatalog(albumName);
-            children.add((Node) mCurrentLoadedRighpaneResult.getRoot());
+            attachRightpane(mCurrentLoadedRighpaneResult);
         } catch (IOException e) {
             log.error(e.getMessage());
         }
