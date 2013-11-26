@@ -35,7 +35,7 @@ public class PlayerServiceManual implements PropertyChangeListener {
     private final static MusicService musicService = new MusicServiceImpl(appModel, userService, fileService);
     private final static MessageHandler messageHandler = new MessageHandlerImpl(appModel, messageParser, musicService, userService);
     private final static NetworkServiceMock networkService = new NetworkServiceMock(appModel, messageParser, messageHandler);
-    private final static PlayerServiceImpl playerService = new PlayerServiceImpl(appModel, fileService, networkService);
+    private final static PlayerServiceImpl playerService = new PlayerServiceImpl(appModel, fileService, musicService, networkService);
     private final static Scanner scanIn = new Scanner(System.in);
     private static long currentTimeSec;
 
