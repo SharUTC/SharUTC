@@ -19,7 +19,7 @@ public class ActivePeerList implements Serializable {
     private static final long serialVersionUID = 7777378837435596771L;
     @JsonIgnore
     private CollectionChangeSupport mCollectionChangeSupport = new CollectionChangeSupport(this);
-    private HashMap<Peer, Date> mActivePeers = new HashMap<Peer, Date>();
+    private HashMap<UserInfo, Date> mActivePeers = new HashMap<UserInfo, Date>();
 
     /**
      * Default constructor
@@ -32,7 +32,7 @@ public class ActivePeerList implements Serializable {
      * 
      * @return the list of connected peers
      */
-    public HashMap<Peer, Date> getActivePeers() {
+    public HashMap<UserInfo, Date> getActivePeers() {
         return mActivePeers;
     }
 
@@ -41,7 +41,7 @@ public class ActivePeerList implements Serializable {
      * 
      * @param activePeers - list of connected peers
      */
-    public void setActivePeers(HashMap<Peer, Date> activePeers) {
+    public void setActivePeers(HashMap<UserInfo, Date> activePeers) {
         this.mActivePeers = activePeers;
     }
 
@@ -50,7 +50,7 @@ public class ActivePeerList implements Serializable {
      * 
      * @param peer
      */
-    public void update(Peer peer) {
+    public void update(UserInfo peer) {
         boolean update = mActivePeers.put(peer, new Date()) != null;
         if (update) {
             mCollectionChangeSupport.fireCollectionChanged(peer, CollectionEvent.Type.ADD);
@@ -62,7 +62,7 @@ public class ActivePeerList implements Serializable {
      * 
      * @param peer
      */
-    public void remove(Peer peer) {
+    public void remove(UserInfo peer) {
         if (mActivePeers.containsKey(peer)) {
             mActivePeers.remove(peer);
             mCollectionChangeSupport.fireCollectionChanged(peer, CollectionEvent.Type.REMOVE);
@@ -95,7 +95,7 @@ public class ActivePeerList implements Serializable {
      * @param peer
      * @return a boolean
      */
-    public boolean contains(Peer peer) {
+    public boolean contains(UserInfo peer) {
         return mActivePeers.containsKey(peer);
     }
 
@@ -125,17 +125,36 @@ public class ActivePeerList implements Serializable {
     }
 
     /**
-     * Return the peer thanks to its id given in parameter if it exists
+     * Return the UserInfo thanks to its id given in parameter if it exists
+     * 
+     * @param peerId
+     * @return a UserInfo or null if it does not exist
+     */
+    public UserInfo getUserInfoByPeerId(Long peerId) {
+        UserInfo peer = null;
+        if (peerId != null) {
+            for (Map.Entry<UserInfo, Date> activePeer : mActivePeers.entrySet()) {
+                if (activePeer.getKey().getPeerId() == peerId.longValue()) {
+                    peer = activePeer.getKey();
+                }
+            }
+        }
+        return peer;
+    }
+    
+    /**
+     * Return the peer corresponding to the UserInfo id given in parameter
+     * if it exists
      * 
      * @param peerId
      * @return a peer or null if it does not exist
      */
-    public Peer getByPeerId(Long peerId) {
+    public Peer getPeerByPeerId(Long peerId) {
         Peer peer = null;
         if (peerId != null) {
-            for (Map.Entry<Peer, Date> activePeer : mActivePeers.entrySet()) {
-                if (activePeer.getKey().getId() == peerId.longValue()) {
-                    peer = activePeer.getKey();
+            for (Map.Entry<UserInfo, Date> activePeer : mActivePeers.entrySet()) {
+                if (activePeer.getKey().getPeerId() == peerId.longValue()) {
+                    peer = new Peer(activePeer.getKey().getPeerId(), activePeer.getKey().getLogin());
                 }
             }
         }

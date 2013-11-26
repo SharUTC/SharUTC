@@ -100,7 +100,7 @@ public class NetworkVariousTest {
         integrateUserInfoCommand.execute();
         // tests
         Assert.assertNotNull("Known doesn't peer exists", appModel.getProfile().getKnownPeerList().getPeerNameById(userInfo.getPeerId()));
-        Assert.assertNotNull("Active doesn't peer exists", appModel.getActivePeerList().getByPeerId(userInfo.getPeerId()));
+        Assert.assertNotNull("Active doesn't peer exists", appModel.getActivePeerList().getUserInfoByPeerId(userInfo.getPeerId()));
    
         Catalog dummyCatalog = appModel.getLocalCatalog();
 
@@ -118,6 +118,6 @@ public class NetworkVariousTest {
         integrateDisconnectionCommand.setPeerId(peer.getId());
         integrateDisconnectionCommand.execute();
         // tests
-        Assert.assertNull("Active peer exists", appModel.getActivePeerList().getByPeerId(peer.getId()));
+        Assert.assertNull("Active peer exists", appModel.getActivePeerList().getUserInfoByPeerId(peer.getId()));
     }
 }

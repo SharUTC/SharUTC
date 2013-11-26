@@ -61,7 +61,7 @@ public class PlayMusicCommandImpl implements PlayMusicCommand {
             // add music to update ui before file has arrived
             playerService.addToPlaylist(mMusic);
             // file is remote, music.id belongs to the remote peer
-            Peer peer = appModel.getActivePeerList().getByPeerId(mMusic.getOwnerPeerId());
+            Peer peer = appModel.getActivePeerList().getPeerByPeerId(mMusic.getOwnerPeerId());
             networkService.downloadMusicForPlaying(peer, mMusic.getId());
         }
 

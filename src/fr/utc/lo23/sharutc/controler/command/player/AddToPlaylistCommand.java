@@ -10,20 +10,23 @@ import java.util.List;
 public interface AddToPlaylistCommand extends Command {
 
     /**
-     *
-     * @return
+     * Return the music to add 
+     * 
+     * @return the music to add
      */
     public List<Music> getMusics();
 
     /**
-     *
-     * @param musics
+     * Set the music to add (erase previous list in parameter)
+     * 
+     * @param musics to add
      */
     public void setMusics(List<Music> musics);
     
     /**
-     *
-     * @param music
+     * Add one music to the previous list to add (no erase of the previous list)
+     * 
+     * @param music to add
      */
     public void setMusic(Music music);
 }

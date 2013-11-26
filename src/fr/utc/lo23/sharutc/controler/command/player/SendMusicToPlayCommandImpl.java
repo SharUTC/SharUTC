@@ -61,6 +61,7 @@ public class SendMusicToPlayCommandImpl implements SendMusicToPlayCommand {
     /**
      * {@inheritDoc}
      */
+    @Override
     public Long getConversationId() {
         return mConversationId;
     }
@@ -68,6 +69,7 @@ public class SendMusicToPlayCommandImpl implements SendMusicToPlayCommand {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setConversationId(Long conversationId) {
         this.mConversationId = conversationId;
     }

@@ -12,7 +12,6 @@ import fr.utc.lo23.sharutc.controler.service.MusicService;
 import fr.utc.lo23.sharutc.controler.service.UserService;
 import fr.utc.lo23.sharutc.model.AppModel;
 import fr.utc.lo23.sharutc.model.AppModelBuilder;
-import fr.utc.lo23.sharutc.model.domain.Catalog;
 import fr.utc.lo23.sharutc.model.domain.Music;
 import fr.utc.lo23.sharutc.model.userdata.Peer;
 import org.junit.After;
@@ -100,7 +99,7 @@ public class NetworkCatalogTest {
 
         Long conversationId = 0L;
         sendCatalogCommand.setConversationId(conversationId);
-        sendCatalogCommand.setPeer(appModel.getActivePeerList().getByPeerId(1L));
+        sendCatalogCommand.setPeer(appModel.getActivePeerList().getPeerByPeerId(1L));
         sendCatalogCommand.execute();
 
         Message msgSent = networkService.getSentMessage();

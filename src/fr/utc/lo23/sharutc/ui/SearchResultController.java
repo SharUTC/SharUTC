@@ -71,6 +71,9 @@ public class SearchResultController extends SongSelectorController implements Ri
         mMusicSearchCommand.execute();
         
         ActivePeerList peers = mAppModel.getActivePeerList();
+        
+        //TODO adapte to the last master modification
+        /*
         HashMap<Peer, Date> peerList = peers.getActivePeers();
         for(Peer peer : peerList.keySet()){
             if(peer.getDisplayName().contains(search)){
@@ -79,6 +82,7 @@ public class SearchResultController extends SongSelectorController implements Ri
                 u.setFirstName(peer.getDisplayName());
             }
         }
+        */
         
         UserInfo u = new UserInfo();
         u.setFirstName("bob");

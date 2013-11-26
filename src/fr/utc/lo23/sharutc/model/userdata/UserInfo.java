@@ -25,6 +25,17 @@ public class UserInfo implements Serializable {
      */
     public UserInfo() {
     }
+    
+    /**
+     * Constructor - create a UserInfo with an id and a login
+     * 
+     * @param id peer's id
+     * @param login peer's login
+     */
+    public UserInfo(long id, String login) {
+        this.mPeerId = id;
+        this.mLogin = login;
+    }
 
     /**
      * Return user's id

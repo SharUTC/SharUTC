@@ -4,6 +4,7 @@
  */
 package fr.utc.lo23.sharutc.controler.command.music;
 
+import fr.utc.lo23.sharutc.controler.command.Command;
 import fr.utc.lo23.sharutc.model.domain.Music;
 import fr.utc.lo23.sharutc.model.userdata.Category;
 
@@ -11,7 +12,7 @@ import fr.utc.lo23.sharutc.model.userdata.Category;
  *
  *
  */
-public interface RemoveMusicFromCategoryCommand {
+public interface RemoveMusicFromCategoryCommand extends Command {
       /**
      * Return the category
      * 

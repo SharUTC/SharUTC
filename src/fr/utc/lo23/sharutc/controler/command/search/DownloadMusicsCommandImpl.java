@@ -95,7 +95,7 @@ public class DownloadMusicsCommandImpl implements DownloadMusicsCommand {
 
         // sending each list of musics in a separate message
         for (Map.Entry<Long, List<Music>> entry : ownedMusics.entrySet()) {
-            Peer targetPeer = appModel.getActivePeerList().getByPeerId(entry.getKey());
+            Peer targetPeer = appModel.getActivePeerList().getPeerByPeerId(entry.getKey());
             Catalog catalog = new Catalog();
             catalog.addAll(entry.getValue());
             log.debug("Sending download request to {} ({} file(s)", targetPeer.getDisplayName(), catalog.size());

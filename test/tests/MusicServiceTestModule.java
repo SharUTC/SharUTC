@@ -1,12 +1,16 @@
 package tests;
 
 import com.google.inject.AbstractModule;
+import fr.utc.lo23.sharutc.controler.command.music.AddMusicToCategoryCommand;
+import fr.utc.lo23.sharutc.controler.command.music.AddMusicToCategoryCommandImpl;
 import fr.utc.lo23.sharutc.controler.command.music.AddToLocalCatalogCommand;
 import fr.utc.lo23.sharutc.controler.command.music.AddToLocalCatalogCommandImpl;
 import fr.utc.lo23.sharutc.controler.command.music.IntegrateRemoteCatalogCommand;
 import fr.utc.lo23.sharutc.controler.command.music.IntegrateRemoteCatalogCommandImpl;
 import fr.utc.lo23.sharutc.controler.command.music.RemoveFromLocalCatalogCommand;
 import fr.utc.lo23.sharutc.controler.command.music.RemoveFromLocalCatalogCommandImpl;
+import fr.utc.lo23.sharutc.controler.command.music.RemoveMusicFromCategoryCommand;
+import fr.utc.lo23.sharutc.controler.command.music.RemoveMusicFromCategoryCommandImpl;
 import fr.utc.lo23.sharutc.controler.service.FileService;
 import fr.utc.lo23.sharutc.controler.service.FileServiceMock;
 import fr.utc.lo23.sharutc.controler.service.MusicService;
@@ -27,6 +31,8 @@ public class MusicServiceTestModule extends AbstractModule {
         bind(AddToLocalCatalogCommand.class).to(AddToLocalCatalogCommandImpl.class);
         bind(RemoveFromLocalCatalogCommand.class).to(RemoveFromLocalCatalogCommandImpl.class);
         bind(IntegrateRemoteCatalogCommand.class).to(IntegrateRemoteCatalogCommandImpl.class);
+        bind(AddMusicToCategoryCommand.class).to(AddMusicToCategoryCommandImpl.class);
+        bind(RemoveMusicFromCategoryCommand.class).to(RemoveMusicFromCategoryCommandImpl.class);
         requestInjection(this);
     }
 }

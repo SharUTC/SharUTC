@@ -25,16 +25,14 @@ import org.slf4j.LoggerFactory;
  */
 @Singleton
 public class NetworkServiceImpl implements NetworkService {
+
     private static final Logger log = LoggerFactory
             .getLogger(NetworkServiceImpl.class);
-
     private final AppModel appModel;
     private final MessageHandler messageHandler;
     private final MessageParser messageParser;
-
     @Inject
     private IntegrateDisconnectionCommand integrateDisconnectionCommand;
-
     private ListenThread mListenThread;
     private PeerDiscoverySocket mPeerDiscoverySocket;
     private HeartbeatThread mHeartbeatThread;
@@ -157,7 +155,7 @@ public class NetworkServiceImpl implements NetworkService {
         if (peer != null && mPeers.containsKey(peer.getId())) {
             mPeers.get(peer.getId()).send(message);
         } else {
-            log.error("Peer " + (peer != null ? peer.getId(): "null") + " not connected");
+            log.error("Peer " + (peer != null ? peer.getId() : "null") + " not connected");
         }
     }
 
@@ -174,10 +172,11 @@ public class NetworkServiceImpl implements NetworkService {
      * {inheritDoc}
      */
     @Override
-    public void sendBroadcastHeartbeat(){
-        Message message = messageParser.write(MessageType.HEARTBEAT,new Object[][]{{}});
+    public void sendBroadcastHeartbeat() {
+        Message message = messageParser.write(MessageType.HEARTBEAT, new Object[][]{{}});
         sendBroadcast(message);
     }
+
     /**
      * {inheritDoc}
      */
@@ -219,8 +218,8 @@ public class NetworkServiceImpl implements NetworkService {
      */
     @Override
     public void addComment(Peer peer, Music music, String comment) {
-       Message message = messageParser.write(MessageType.COMMENT_ADD, new Object[][]{{Message.OWNER_PEER, peer}, {Message.MUSIC_ID, music}, {Message.COMMENT, comment}});
-       sendUnicast(message, peer);
+        Message message = messageParser.write(MessageType.COMMENT_ADD, new Object[][]{{Message.OWNER_PEER, peer}, {Message.MUSIC_ID, music}, {Message.COMMENT, comment}});
+        sendUnicast(message, peer);
     }
 
     /**
@@ -228,7 +227,7 @@ public class NetworkServiceImpl implements NetworkService {
      */
     @Override
     public void editComment(Peer peer, Music music, String comment, Integer commentIndex) {
-        Message message = messageParser.write(MessageType.EDIT_COMMENT, new Object[][]{{Message.OWNER_PEER, peer}, {Message.MUSIC, music}, {Message.COMMENT,comment}});
+        Message message = messageParser.write(MessageType.EDIT_COMMENT, new Object[][]{{Message.OWNER_PEER, peer}, {Message.MUSIC, music}, {Message.COMMENT, comment}});
         sendUnicast(message, peer);
 
     }
@@ -238,7 +237,7 @@ public class NetworkServiceImpl implements NetworkService {
      */
     @Override
     public void removeComment(Peer peer, Music music, Integer commentIndex) {
-        Message message = messageParser.write(MessageType.COMMENT_REMOVE, new Object[][]{{Message.MUSIC,music},{Message.COMMENT_ID, commentIndex}});
+        Message message = messageParser.write(MessageType.COMMENT_REMOVE, new Object[][]{{Message.MUSIC, music}, {Message.COMMENT_ID, commentIndex}});
         sendUnicast(message, peer);
     }
 
@@ -246,8 +245,8 @@ public class NetworkServiceImpl implements NetworkService {
      * {inheritDoc}
      */
     @Override
-    public void setScore(Peer peer, Music music, Integer rating) {
-        Message message = messageParser.write(MessageType.SCORE_SET,new Object[][]{{Message.MUSIC, music}, {Message.SCORE, rating}});
+    public void setScore(Peer peer, Music music, Integer score) {
+        Message message = messageParser.write(MessageType.SCORE_SET, new Object[][]{{Message.MUSIC, music}, {Message.SCORE, score}});
         sendUnicast(message, peer);
     }
 
@@ -320,6 +319,7 @@ public class NetworkServiceImpl implements NetworkService {
     @Override
     public void userInfoBroadcast(UserInfo userInfo) {
         if (userInfo != null) {
+            userInfo.setPassword(null);
             sendBroadcast(messageParser.write(MessageType.USER_INFO, new Object[][]{{Message.USER_INFO, userInfo}}));
         } else {
             log.error("userInfo is null");
@@ -332,6 +332,7 @@ public class NetworkServiceImpl implements NetworkService {
     @Override
     public void connectionBroadcast(UserInfo userInfo) {
         if (userInfo != null) {
+            userInfo.setPassword(null);
             sendMulticast(messageParser.write(MessageType.CONNECTION, new Object[][]{{Message.USER_INFO, userInfo}}));
         } else {
             log.error("userInfo is null");
@@ -351,6 +352,7 @@ public class NetworkServiceImpl implements NetworkService {
      */
     @Override
     public void sendConnectionResponse(Peer peer, UserInfo userInfo) {
+        userInfo.setPassword(null);
         Message message = messageParser.write(MessageType.CONNECTION_RESPONSE, new Object[][]{{Message.USER_INFO, userInfo}});
         sendUnicast(message, peer);
     }
