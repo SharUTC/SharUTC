@@ -283,6 +283,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public void cleanProfile() {
         appModel.setProfile(null);
+        appModel.setRightsList(null);
+        appModel.setLocalCatalog(null);
     }
 
     /**

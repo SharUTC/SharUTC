@@ -26,7 +26,7 @@ public class DisconnectionCommandImpl implements DisconnectionCommand {
 
     /**
      * Construct DisconnectionCommandImpl.
-     * 
+     *
      * @param appModel
      * @param userService
      * @param musicService
@@ -41,18 +41,25 @@ public class DisconnectionCommandImpl implements DisconnectionCommand {
     }
 
     /**
-     * Save the user music files, the list of user's rights, his profile information
-     * and notify the network of its disconnection. Then stop all network threads.
+     * Save the user music files, the list of user's rights, his profile
+     * information and notify the network of its disconnection. Then stop all
+     * network threads.
      */
     @Override
     public void execute() {
         log.info("DisconnectionCommand ...");
         musicService.saveUserMusicFile();
         musicService.saveUserRightsListFile();
-        userService.disconnectionRequest(); //Save and clear profile
         // Notify network
         networkService.disconnectionBroadcast();
-         
+
+        userService.disconnectionRequest(); //Save and clear profile
+
+        appModel.getActivePeerList().clear();
+        appModel.getRemoteUserCatalog().clear();
+        appModel.getSearchResults().clear();
+        appModel.getTmpCatalog().clear();
+                
         //Turn down network threads
         networkService.stop();
         log.info("DisconnectionCommand DONE");

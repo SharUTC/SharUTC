@@ -60,6 +60,7 @@ public class NetworkMusicDownloadTest {
             appModelBuilder = new AppModelBuilder(appModel, musicService, userService);
         }
         appModelBuilder.mockAppModel();
+        networkService.clear();
     }
 
     /**

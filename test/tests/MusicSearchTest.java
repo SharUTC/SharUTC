@@ -58,6 +58,7 @@ public class MusicSearchTest {
             appModelBuilder = new AppModelBuilder(appModel, musicService, userService);
         }
         appModelBuilder.mockAppModel();
+        networkService.clear();
 
     }
 

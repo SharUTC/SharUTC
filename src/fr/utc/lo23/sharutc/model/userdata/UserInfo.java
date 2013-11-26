@@ -25,10 +25,10 @@ public class UserInfo implements Serializable {
      */
     public UserInfo() {
     }
-    
+
     /**
      * Constructor - create a UserInfo with an id and a login
-     * 
+     *
      * @param id peer's id
      * @param login peer's login
      */
@@ -39,7 +39,7 @@ public class UserInfo implements Serializable {
 
     /**
      * Return user's id
-     * 
+     *
      * @return user's id
      */
     public Long getPeerId() {
@@ -48,7 +48,7 @@ public class UserInfo implements Serializable {
 
     /**
      * Set user's id
-     * 
+     *
      * @param peerId
      */
     public void setPeerId(Long peerId) {
@@ -57,7 +57,7 @@ public class UserInfo implements Serializable {
 
     /**
      * Return user's login
-     * 
+     *
      * @return user's login
      */
     public String getLogin() {
@@ -66,7 +66,7 @@ public class UserInfo implements Serializable {
 
     /**
      * Set user's login
-     * 
+     *
      * @param login
      */
     public void setLogin(String login) {
@@ -75,7 +75,7 @@ public class UserInfo implements Serializable {
 
     /**
      * Return user's password
-     * 
+     *
      * @return user's password
      */
     public String getPassword() {
@@ -84,7 +84,7 @@ public class UserInfo implements Serializable {
 
     /**
      * Set user's password
-     * 
+     *
      * @param password
      */
     public void setPassword(String password) {
@@ -93,7 +93,7 @@ public class UserInfo implements Serializable {
 
     /**
      * Return user's first name
-     * 
+     *
      * @return user's first name
      */
     public String getFirstName() {
@@ -102,7 +102,7 @@ public class UserInfo implements Serializable {
 
     /**
      * Set user's first name
-     * 
+     *
      * @param firstName
      */
     public void setFirstName(String firstName) {
@@ -111,7 +111,7 @@ public class UserInfo implements Serializable {
 
     /**
      * Return user's last name
-     * 
+     *
      * @return user's last name
      */
     public String getLastName() {
@@ -120,7 +120,7 @@ public class UserInfo implements Serializable {
 
     /**
      * Set user's last name
-     * 
+     *
      * @param lastName
      */
     public void setLastName(String lastName) {
@@ -129,7 +129,7 @@ public class UserInfo implements Serializable {
 
     /**
      * Return user's age
-     * 
+     *
      * @return user's age
      */
     public Integer getAge() {
@@ -138,7 +138,7 @@ public class UserInfo implements Serializable {
 
     /**
      * Set user's age
-     * 
+     *
      * @param age
      */
     public void setAge(Integer age) {
@@ -147,7 +147,7 @@ public class UserInfo implements Serializable {
 
     /**
      * Return user's avatar File
-     * 
+     *
      * @return
      */
     public File getAvatarFile() {
@@ -156,17 +156,16 @@ public class UserInfo implements Serializable {
 
     /**
      * Set user's avatar File
-     * 
+     *
      * @param avatarFile
      */
     public void setAvatarFile(File avatarFile) {
         this.mAvatarFile = avatarFile;
     }
 
-    
-     /**
+    /**
      * Override the method equals
-     * 
+     *
      * @param obj
      * @return a boolean
      */
@@ -203,10 +202,9 @@ public class UserInfo implements Serializable {
         return true;
     }
 
-    
-     /**
+    /**
      * Override the method hashCode
-     * 
+     *
      * @return the hash
      */
     @Override
@@ -222,10 +220,9 @@ public class UserInfo implements Serializable {
         return hash;
     }
 
-    
-     /**
+    /**
      * Override the method toString
-     * 
+     *
      * @return the string
      */
     @Override
@@ -233,12 +230,23 @@ public class UserInfo implements Serializable {
         return "UserInfo{" + "mPeerId=" + mPeerId + ", mLogin=" + mLogin + ", mPassword=" + mPassword + ", mFirstName=" + mFirstName + ", mLastName=" + mLastName + ", mAge=" + mAge + ", mAvatarFile=" + mAvatarFile + '}';
     }
 
-     /**
+    /**
      * Create a new peer from user's peerId and user's login
-     * 
+     *
      * @return the new peer
      */
     public Peer toPeer() {
         return new Peer(mPeerId, mLogin);
+    }
+
+    @Override
+    public UserInfo clone() {
+        UserInfo userInfo = new UserInfo(this.mPeerId, this.mLogin);
+        userInfo.setAge(mAge);
+        userInfo.setAvatarFile(mAvatarFile);
+        userInfo.setFirstName(mFirstName);
+        userInfo.setLastName(mLastName);
+        userInfo.setPassword(mPassword);
+        return userInfo;
     }
 }

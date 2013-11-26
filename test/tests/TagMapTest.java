@@ -62,6 +62,7 @@ public class TagMapTest {
             appModelBuilder = new AppModelBuilder(appModel, musicService, userService);
         }
         appModelBuilder.mockAppModel();
+        networkService.clear();
     }
 
     @After

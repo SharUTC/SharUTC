@@ -60,6 +60,7 @@ public class NetworkCatalogTest {
             appModelBuilder = new AppModelBuilder(appModel, musicService, userService);
         }
         appModelBuilder.mockAppModel();
+        networkService.clear();
     }
 
     /**
@@ -87,7 +88,7 @@ public class NetworkCatalogTest {
         
         Message msgSent = networkService.getSentMessage();
         Assert.assertNotNull("No message sent", msgSent);
-        Assert.assertEquals("The mesage type must be : MUSIC_GET", MessageType.MUSIC_GET, msgSent.getType());
+        Assert.assertEquals("The mesage type must be : MUSIC_GET_CATALOG", MessageType.MUSIC_GET_CATALOG, msgSent.getType());
     }
     
     @Test

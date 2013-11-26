@@ -318,8 +318,9 @@ public class NetworkServiceImpl implements NetworkService {
     @Override
     public void userInfoBroadcast(UserInfo userInfo) {
         if (userInfo != null) {
-            userInfo.setPassword(null);
-            sendBroadcast(messageParser.write(MessageType.USER_INFO, new Object[][]{{Message.USER_INFO, userInfo}}));
+            UserInfo ui = userInfo.clone();
+            ui.setPassword(null);
+            sendBroadcast(messageParser.write(MessageType.USER_INFO, new Object[][]{{Message.USER_INFO, ui}}));
         } else {
             log.error("userInfo is null");
         }
@@ -331,8 +332,9 @@ public class NetworkServiceImpl implements NetworkService {
     @Override
     public void connectionBroadcast(UserInfo userInfo) {
         if (userInfo != null) {
-            userInfo.setPassword(null);
-            sendMulticast(messageParser.write(MessageType.CONNECTION, new Object[][]{{Message.USER_INFO, userInfo}}));
+            UserInfo ui = userInfo.clone();
+            ui.setPassword(null);
+            sendMulticast(messageParser.write(MessageType.CONNECTION, new Object[][]{{Message.USER_INFO, ui}}));
         } else {
             log.error("userInfo is null");
         }
@@ -351,8 +353,9 @@ public class NetworkServiceImpl implements NetworkService {
      */
     @Override
     public void sendConnectionResponse(Peer peer, UserInfo userInfo) {
-        userInfo.setPassword(null);
-        Message message = messageParser.write(MessageType.CONNECTION_RESPONSE, new Object[][]{{Message.USER_INFO, userInfo}});
+        UserInfo ui = userInfo.clone();
+        ui.setPassword(null);
+        Message message = messageParser.write(MessageType.CONNECTION_RESPONSE, new Object[][]{{Message.USER_INFO, ui}});
         sendUnicast(message, peer);
     }
 }
