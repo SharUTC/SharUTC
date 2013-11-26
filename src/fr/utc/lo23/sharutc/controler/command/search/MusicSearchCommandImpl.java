@@ -2,6 +2,7 @@ package fr.utc.lo23.sharutc.controler.command.search;
 
 import com.google.inject.Inject;
 import fr.utc.lo23.sharutc.controler.network.NetworkService;
+import fr.utc.lo23.sharutc.model.AppModel;
 import fr.utc.lo23.sharutc.model.domain.SearchCriteria;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,6 +13,7 @@ import org.slf4j.LoggerFactory;
 public class MusicSearchCommandImpl implements MusicSearchCommand {
 
     private static final Logger log = LoggerFactory.getLogger(MusicSearchCommandImpl.class);
+    private final AppModel appModel;
     private final NetworkService networkService;
     private SearchCriteria searchCriteria;
 
@@ -19,7 +21,8 @@ public class MusicSearchCommandImpl implements MusicSearchCommand {
      * {@inheritDoc}
      */
     @Inject
-    public MusicSearchCommandImpl(NetworkService networkService) {
+    public MusicSearchCommandImpl(AppModel appModel, NetworkService networkService) {
+        this.appModel = appModel;
         this.networkService = networkService;
     }
 
@@ -49,6 +52,7 @@ public class MusicSearchCommandImpl implements MusicSearchCommand {
         if (searchCriteria != null
                 && searchCriteria.getSearch() != null
                 && !searchCriteria.getSearch().trim().isEmpty()) {
+            appModel.getSearchResults().clear();
             networkService.searchRequestBroadcast(searchCriteria);
         }
 

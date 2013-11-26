@@ -16,7 +16,7 @@ import org.slf4j.LoggerFactory;
 import fr.utc.lo23.sharutc.model.userdata.KnownPeerList;
 
 /**
- * {@inheritDoc}
+ * Implementation of UserService
  */
 @Singleton
 public class UserServiceImpl implements UserService {
@@ -26,12 +26,23 @@ public class UserServiceImpl implements UserService {
     private final AppModel appModel;
     private final FileService fileService;
 
+     /**
+     * Constructor
+     * 
+     * @param appModel
+     * @param fileService
+     */
     @Inject
     public UserServiceImpl(AppModel appModel, FileService fileService) {
         this.appModel = appModel;
         this.fileService = fileService;
     }
 
+     /**
+     * Return user's profile
+     * 
+     * @return user's profile
+     */
     private Profile getProfile() {
         return appModel.getProfile();
     }
