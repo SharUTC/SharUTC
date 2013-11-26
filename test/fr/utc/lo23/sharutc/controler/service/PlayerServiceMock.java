@@ -18,8 +18,8 @@ public class PlayerServiceMock extends PlayerServiceImpl implements PlayerServic
             .getLogger(PlayerServiceMock.class);
 
     @Inject
-    public PlayerServiceMock(AppModel appModel, FileService fileService, NetworkService networkService) {
-        super(appModel, fileService, networkService);
+    public PlayerServiceMock(AppModel appModel, FileService fileService, MusicService musicService, NetworkService networkService) {
+        super(appModel, fileService, musicService, networkService);
     }
 
     @Override

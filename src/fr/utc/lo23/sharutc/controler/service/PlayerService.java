@@ -2,6 +2,7 @@ package fr.utc.lo23.sharutc.controler.service;
 
 import fr.utc.lo23.sharutc.model.domain.Catalog;
 import fr.utc.lo23.sharutc.model.domain.Music;
+import java.beans.PropertyChangeListener;
 
 /**
  * Contains the playlist, the currently selected music reference and methods to
@@ -139,8 +140,8 @@ public interface PlayerService {
      * by the user. Music doesn't require to be played to set the value but at
      * least one music must be selected in playlist
      *
-     * @param currentTimeSec the time in the music, must be positive and lower than
-     * music total duration
+     * @param currentTimeSec the time in the music, must be positive and lower
+     * than music total duration
      */
     public void setCurrentTimeSec(Long currentTimeSec);
 
@@ -153,6 +154,16 @@ public interface PlayerService {
     public Long getTotalTimeSec();
 
     public boolean isPause();
+
+    /**
+     * {@inheritDoc}
+     */
+    public void addPropertyChangeListener(PropertyChangeListener listener);
+
+    /**
+     * {@inheritDoc}
+     */
+    public void removePropertyChangeListener(PropertyChangeListener listener);
 
     /**
      *

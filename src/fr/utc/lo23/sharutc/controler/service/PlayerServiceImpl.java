@@ -34,6 +34,7 @@ public class PlayerServiceImpl implements PlayerService, PropertyChangeListener,
     private final AppModel appModel;
     private final FileService fileService;
     private final NetworkService networkService;
+    private final MusicService musicService;
     private PlaybackListener player;
     private final Catalog mPlaylist;
     private Music mCurrentMusic;
@@ -44,10 +45,11 @@ public class PlayerServiceImpl implements PlayerService, PropertyChangeListener,
     private PropertyChangeSupport propertyChangeSupport;
 
     @Inject
-    public PlayerServiceImpl(AppModel appModel, FileService fileService, NetworkService networkService) {
+    public PlayerServiceImpl(AppModel appModel, FileService fileService, MusicService musicService, NetworkService networkService) {
         this.appModel = appModel;
         this.fileService = fileService;
         this.networkService = networkService;
+        this.musicService = musicService;
         this.propertyChangeSupport = new PropertyChangeSupport(this);
         this.mPlaylist = new Catalog();
         this.mPlaylist.addPropertyChangeListener(this);
@@ -310,7 +312,11 @@ public class PlayerServiceImpl implements PlayerService, PropertyChangeListener,
                 && !music.getOwnerPeerId().equals(appModel.getProfile().getUserInfo().getPeerId())) {
             log.debug("setCurrentMusic : delayed, fetching remote music data ...");
             fetchRemoteDataThenPlay(music);
+
         } else if (music != mCurrentMusic) {
+            if (music != null && music.getFileBytes() == null || music.getFileBytes().length == 0) {
+                musicService.loadMusicFile(music);
+            }
             Music oldMusic = this.mCurrentMusic;
             this.mCurrentMusic = music;
             propertyChangeSupport.firePropertyChange(Property.CURRENT_MUSIC.name(), oldMusic, mCurrentMusic);

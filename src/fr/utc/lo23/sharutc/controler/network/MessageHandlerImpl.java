@@ -115,7 +115,7 @@ public class MessageHandlerImpl implements MessageHandler {
                         sendCatalogCommand.setPeer(messageParser.getSource());
                         command = sendCatalogCommand;
                         break;
-                    case MUSIC_CATALOG:
+                    case MUSIC_SEND_CATALOG:
                         if (isMessageForCurrentConversation()) {
                             integrateRemoteCatalogCommand.setPeer(messageParser.getSource());
                             integrateRemoteCatalogCommand.setCatalog((Catalog) messageParser.getValue(Message.CATALOG));
