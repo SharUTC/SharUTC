@@ -5,7 +5,6 @@ import fr.utc.lo23.sharutc.controler.command.profile.AddContactCommand;
 import fr.utc.lo23.sharutc.controler.command.profile.CreateCategoryCommand;
 import fr.utc.lo23.sharutc.controler.command.profile.DeleteCategoryCommand;
 import fr.utc.lo23.sharutc.model.AppModel;
-import fr.utc.lo23.sharutc.model.AppModelImpl;
 import fr.utc.lo23.sharutc.model.userdata.Category;
 import fr.utc.lo23.sharutc.model.userdata.Contact;
 import fr.utc.lo23.sharutc.model.userdata.UserInfo;
@@ -16,11 +15,13 @@ import fr.utc.lo23.sharutc.ui.custom.card.PeopleCard;
 import fr.utc.lo23.sharutc.ui.custom.card.SimpleCard;
 import fr.utc.lo23.sharutc.util.CollectionChangeListener;
 import fr.utc.lo23.sharutc.util.CollectionEvent;
+import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.image.ImageView;
@@ -31,14 +32,10 @@ import javafx.scene.text.TextAlignment;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.ResourceBundle;
+import java.util.*;
 
-public class PeopleHomeController extends DragPreviewDrawer implements Initializable, PeopleCard.IPeopleCard, GroupCard.IGroupCard, PropertyChangeListener, CollectionChangeListener {
+public class PeopleHomeController extends DragPreviewDrawer implements Initializable, PeopleCard.IPeopleCard, GroupCard.IGroupCard, CollectionChangeListener {
 
     private static final Logger log = LoggerFactory.getLogger(PeopleHomeController.class);
     private IPeopleHomeController mInterface;
@@ -87,8 +84,12 @@ public class PeopleHomeController extends DragPreviewDrawer implements Initializ
         HorizontalScrollHandler scrollHandler = new HorizontalScrollHandler(groupScrollPane);
 
         mPeopleCardSelected = new ArrayList<PeopleCard>();
-        mAppModel.addPropertyChangeListener(this);
+
+        //listen for group change
         mAppModel.getProfile().getCategories().addPropertyChangeListener(this);
+
+        //listent for users events
+        mAppModel.getActivePeerList().addPropertyChangeListener(this);
 
         //initialize virtual categories
         mVirtualConnectedGroup = createVirtualGroup("Connected");
@@ -117,7 +118,6 @@ public class PeopleHomeController extends DragPreviewDrawer implements Initializ
     @Override
     public void onPeopleDetailsRequested(UserInfo userInfo) {
         log.info("onPeopleDetailsRequested " + userInfo.getLogin());
-        mAppModel.removePropertyChangeListener(this);
         mInterface.onPeopleDetailRequested(userInfo);
     }
 
@@ -250,15 +250,15 @@ public class PeopleHomeController extends DragPreviewDrawer implements Initializ
 
         if (c.equals(mVirtualConnectedGroup.getModel())) {
             //display connected user
-
-            //TODO Remove once we get the real peersList
-            for (int i = 0; i < 50; i++) {
-                final UserInfo userInfo = new UserInfo();
-                userInfo.setLogin("Login " + String.valueOf(i));
-                userInfo.setLastName("LastName");
-                userInfo.setFirstName("FirstName");
-                PeopleCard newCard = new PeopleCard(userInfo, this, PeopleCard.USAGE_CONNECTED);
-                peopleContainer.getChildren().add(newCard);
+            final HashMap<UserInfo, Date> currentConnectedPeer = mAppModel.getActivePeerList().getActivePeers();
+            if (currentConnectedPeer.size() == 0) {
+                //TODO display no user connected
+                showPlaceHolder("Currently, there is no connected user.");
+                log.info("No user connected");
+            } else {
+                for (UserInfo userInfo : currentConnectedPeer.keySet()) {
+                    peopleContainer.getChildren().add(new PeopleCard(userInfo, this, PeopleCard.USAGE_CONNECTED));
+                }
             }
 
         } else if (c.getId().equals(0)) {
@@ -383,14 +383,6 @@ public class PeopleHomeController extends DragPreviewDrawer implements Initializ
     }
 
     @Override
-    public void propertyChange(PropertyChangeEvent evt) {
-        final String propertyName = evt.getPropertyName();
-        if (AppModelImpl.Property.ACTIVE_PEERS.name().equals(propertyName)) {
-            //retrieve the ACTIVE_PEERS list
-        }
-    }
-
-    @Override
     public void onDetach() {
     }
 
@@ -400,12 +392,34 @@ public class PeopleHomeController extends DragPreviewDrawer implements Initializ
         final Object item = ev.getItem();
         log.info(type.name());
         if (type.equals(CollectionEvent.Type.ADD)) {
+            //ADD EVENT
             if (item instanceof Category) {
+                //new category added callback
                 addNewGroupCard((Category) ev.getItem(), true);
+            } else if (item instanceof UserInfo) {
+                //new user connected
+                log.info("new user connected");
+                final UserInfo newConnectedUser = (UserInfo) item;
+                PeopleCard newCard = new PeopleCard(newConnectedUser, this, PeopleCard.USAGE_CONNECTED);
+                peopleContainer.getChildren().add(newCard);
             }
         } else if (type.equals(CollectionEvent.Type.REMOVE)) {
+            //REMOVE EVENT
             if (item instanceof Category) {
+                //removed category callback
                 groupContainer.getChildren().remove(mAskForDeletionCard);
+            } else if (item instanceof UserInfo) {
+                //user disconnected callback
+                log.info("one user disconnected");
+                ObservableList<Node> children = peopleContainer.getChildren();
+                for (Node n : children) {
+                    if (n instanceof PeopleCard) {
+                        final PeopleCard userCard = (PeopleCard) n;
+                        if (((PeopleCard) n).getModel().equals(item)) {
+                            children.remove(userCard);
+                        }
+                    }
+                }
             }
         }
     }
