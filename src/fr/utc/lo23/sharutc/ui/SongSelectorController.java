@@ -1,5 +1,8 @@
 package fr.utc.lo23.sharutc.ui;
 
+import com.google.inject.Inject;
+import fr.utc.lo23.sharutc.controler.command.player.AddToPlaylistCommand;
+import fr.utc.lo23.sharutc.controler.command.player.PlayMusicCommand;
 import fr.utc.lo23.sharutc.model.domain.Music;
 import fr.utc.lo23.sharutc.ui.custom.card.DraggableCard;
 import fr.utc.lo23.sharutc.ui.custom.card.SongCard;
@@ -22,6 +25,12 @@ public class SongSelectorController extends DragPreviewDrawer implements SongCar
      * Song Card selected by the user
      */
     protected ArrayList<SongCard> mSongCardSelected;
+    
+    @Inject
+    private PlayMusicCommand mPlayMusicCommand;
+    
+    @Inject
+    private AddToPlaylistCommand mAddToPlaylistCommand;
 
     public ArrayList<SongCard> getSelectedSong() {
         return mSongCardSelected;
@@ -75,6 +84,9 @@ public class SongSelectorController extends DragPreviewDrawer implements SongCar
     @Override
     public void onPlayRequested(Music music) {
         log.info("onPlayRequested: " + music.getTitle());
+        mPlayMusicCommand.setMusic(music);
+        mPlayMusicCommand.execute();
+       
     }
 
     @Override
@@ -88,6 +100,8 @@ public class SongSelectorController extends DragPreviewDrawer implements SongCar
     @Override
     public void onSongAddToPlayList(Music music) {
         log.info("onSongAddToPlayList: " + music.getTitle());
+        mAddToPlaylistCommand.setMusic(music);
+        mAddToPlaylistCommand.execute();
     }
 
     @Override

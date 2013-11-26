@@ -191,6 +191,7 @@ public class MainController implements Initializable,
         } else if (event.getSource() == logoutButton) {
             final Parent loginRoot = mFxmlLoader.load(getClass().getResource("/fr/utc/lo23/sharutc/ui/fxml/login.fxml")).getRoot();
             logoutButton.getScene().setRoot(loginRoot);
+            mPlayerController.onDetach();
             return;
         }
 

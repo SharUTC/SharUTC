@@ -16,14 +16,14 @@
     </stylesheets>
     
     <VBox >
-        <Label fx:id="currentMusicTitle" text="New York, New York" />
+        <Label fx:id="currentMusicTitle" text="" />
         <HBox >
-            <Label fx:id="currentMusicAlbum" text="Album name">
+            <Label fx:id="currentMusicAlbum" text="">
                 <HBox.margin>
                     <javafx.geometry.Insets right="4" />
                 </HBox.margin>
             </Label>
-            <Label fx:id="currentMusicArtist" text="Frank Sinatra" >
+            <Label fx:id="currentMusicArtist" text="" >
                 <HBox.margin>
                     <javafx.geometry.Insets left="4" />
                 </HBox.margin>
@@ -36,7 +36,7 @@
         <VBox.margin>
             <javafx.geometry.Insets top="15"/>
         </VBox.margin>
-        <Button fx:id="prevButton" styleClass="imageButton">
+        <Button fx:id="prevButton" styleClass="imageButton" onAction="#handlePrevAction">
             <graphic>
                 <ImageView>
                     <image>
@@ -46,7 +46,7 @@
             </graphic>   
         </Button>
         
-        <Button fx:id="buttonPlay" styleClass="imageButton">
+        <Button fx:id="buttonPlay" styleClass="imageButton" onAction="#handlePlayAction">
             <HBox.margin>
                 <javafx.geometry.Insets left="5" />
             </HBox.margin>
@@ -59,7 +59,7 @@
             </graphic>   
         </Button>
         
-        <Button fx:id="nextButton" styleClass="imageButton">
+        <Button fx:id="nextButton" styleClass="imageButton" onAction="#handleNextAction">
             <graphic>
                 <ImageView>
                     <image>

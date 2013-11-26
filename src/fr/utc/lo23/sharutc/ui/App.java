@@ -35,7 +35,7 @@ public class App extends GuiceApplication {
         stage.show();
         
         //Use for an automatic login
-        //((LoginController)loadingResult.getController()).automaticLogin("myLogin", "myPassword");
+        ((LoginController)loadingResult.getController()).automaticLogin("florian", "florian");
     }
 
     /**
