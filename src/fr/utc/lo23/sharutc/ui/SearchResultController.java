@@ -6,7 +6,6 @@ import fr.utc.lo23.sharutc.model.AppModel;
 import fr.utc.lo23.sharutc.model.domain.Music;
 import fr.utc.lo23.sharutc.model.domain.SearchCriteria;
 import fr.utc.lo23.sharutc.model.userdata.ActivePeerList;
-import fr.utc.lo23.sharutc.model.userdata.Peer;
 import fr.utc.lo23.sharutc.model.userdata.UserInfo;
 import fr.utc.lo23.sharutc.ui.custom.card.SimpleCard;
 import fr.utc.lo23.sharutc.ui.custom.CardList;
@@ -71,18 +70,18 @@ public class SearchResultController extends SongSelectorController implements Ri
         mMusicSearchCommand.execute();
         
         ActivePeerList peers = mAppModel.getActivePeerList();
-        
         //TODO adapte to the last master modification
-        /*
-        HashMap<Peer, Date> peerList = peers.getActivePeers();
-        for(Peer peer : peerList.keySet()){
-            if(peer.getDisplayName().contains(search)){
+        HashMap<UserInfo, Date> peerList = peers.getActivePeers();
+        for(UserInfo peer : peerList.keySet()){
+            if(peer.getFirstName().contains(search)||peer.getLastName().contains(search)
+                    ||search.contains(peer.getFirstName())||search.contains(peer.getLastName())){
                 UserInfo u = new UserInfo();
-                u.setPeerId(peer.getId());
-                u.setFirstName(peer.getDisplayName());
+                u.setPeerId(peer.getPeerId());
+                u.setFirstName(peer.getFirstName());
+                u.setLastName(peer.getLastName());
             }
         }
-        */
+        
         
         UserInfo u = new UserInfo();
         u.setFirstName("bob");

@@ -1,8 +1,13 @@
 package fr.utc.lo23.sharutc.ui;
 
+import com.google.inject.Inject;
+import fr.utc.lo23.sharutc.controler.service.PlayerService;
+import fr.utc.lo23.sharutc.model.AppModel;
 import fr.utc.lo23.sharutc.model.domain.Music;
 import fr.utc.lo23.sharutc.ui.custom.RatingStar;
 import fr.utc.lo23.sharutc.ui.custom.SliderScrollHandler;
+import fr.utc.lo23.sharutc.util.CollectionChangeListener;
+import fr.utc.lo23.sharutc.util.CollectionEvent;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
@@ -49,12 +54,21 @@ public class PlayerController implements Initializable {
     //TODO Remove once we get a real rating
     private int mSongRating = 3;
 
+    
+    
+    @Inject
+    private PlayerService mPlayerService;
+    
+    
     /**
      * Initializes the controller class.
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
 
+        
+        
+        
         // TODO remove once we get a real song
         playerMaxTime.setText(timeInSecondsToString(SONG_TIME_IN_SECONDS));
         updateCurrentSongTime(0.7);
@@ -186,4 +200,6 @@ public class PlayerController implements Initializable {
 
         }
     }
+
+    
 }
