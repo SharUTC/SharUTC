@@ -1,10 +1,7 @@
 package fr.utc.lo23.sharutc.ui;
 
 import com.google.inject.Inject;
-import fr.utc.lo23.sharutc.controler.command.profile.AddContactCommand;
-import fr.utc.lo23.sharutc.controler.command.profile.AddContactToCategoryCommand;
-import fr.utc.lo23.sharutc.controler.command.profile.CreateCategoryCommand;
-import fr.utc.lo23.sharutc.controler.command.profile.DeleteCategoryCommand;
+import fr.utc.lo23.sharutc.controler.command.profile.*;
 import fr.utc.lo23.sharutc.model.AppModel;
 import fr.utc.lo23.sharutc.model.userdata.Category;
 import fr.utc.lo23.sharutc.model.userdata.Contact;
@@ -57,6 +54,10 @@ public class PeopleHomeController extends DragPreviewDrawer implements Initializ
     private AppModel mAppModel;
     @Inject
     private AddContactCommand addContactCommand;
+    @Inject
+    private RemoveContactFromCategoryCommand removeContactFromCategoryCommand;
+    @Inject
+    private DeleteContactCommand deleteContactCommand;
     @Inject
     private CreateCategoryCommand createCategoryCommand;
     @Inject
@@ -116,6 +117,19 @@ public class PeopleHomeController extends DragPreviewDrawer implements Initializ
     public void onPeopleDeletetionRequested(PeopleCard peopleCard) {
         log.info("onPeopleDeletetionRequested " + peopleCard.getModel().getLogin());
         peopleContainer.getChildren().remove(peopleCard);
+
+        //TODO improve, create card with Contact model
+        final UserInfo user = peopleCard.getModel();
+
+        if (mCurrentCategory.getId() == 0) {
+            //from Public, remove contact from all category
+            deleteContactCommand.setContact(mAppModel.getProfile().getContacts().findById(user.getPeerId()));
+            deleteContactCommand.execute();
+        } else {
+            removeContactFromCategoryCommand.setContact(mAppModel.getProfile().getContacts().findById(user.getPeerId()));
+            removeContactFromCategoryCommand.setCategory(mCurrentCategory);
+            removeContactFromCategoryCommand.execute();
+        }
     }
 
     @Override
@@ -261,8 +275,19 @@ public class PeopleHomeController extends DragPreviewDrawer implements Initializ
             final HashMap<UserInfo, Date> currentConnectedPeer = mAppModel.getActivePeerList().getActivePeers();
             if (currentConnectedPeer.size() == 0) {
                 //TODO display no user connected
-                showPlaceHolder("Currently, there is no connected user.");
+                //showPlaceHolder("Currently, there is no connected user.");
                 log.info("No user connected");
+
+                //TODO Remove once we get the real peersList
+                for (int i = 10; i < 25; i++) {
+                    final UserInfo userInfo = new UserInfo();
+                    userInfo.setLogin("Login " + String.valueOf(i));
+                    userInfo.setLastName("LastName");
+                    userInfo.setFirstName("FirstName");
+                    userInfo.setPeerId((long) i);
+                    PeopleCard newCard = new PeopleCard(userInfo, this, PeopleCard.USAGE_CATEGORY);
+                    peopleContainer.getChildren().add(newCard);
+                }
             } else {
                 for (UserInfo userInfo : currentConnectedPeer.keySet()) {
                     peopleContainer.getChildren().add(new PeopleCard(userInfo, this, PeopleCard.USAGE_CONNECTED));
@@ -281,23 +306,19 @@ public class PeopleHomeController extends DragPreviewDrawer implements Initializ
                 }
             }
         } else {
-
-            //TODO Remove once we get the real peersList
-            for (int i = 10; i < 25; i++) {
-                final UserInfo userInfo = new UserInfo();
-                userInfo.setLogin("Login " + String.valueOf(i));
-                userInfo.setLastName("LastName");
-                userInfo.setFirstName("FirstName");
-                userInfo.setPeerId((long) i);
-                PeopleCard newCard = new PeopleCard(userInfo, this, PeopleCard.USAGE_CATEGORY);
-                peopleContainer.getChildren().add(newCard);
-            }
-
             //check if user are in mCurrentCategory
-//            Contact c = new Contact();
-//            if(c.getCategoryIds().contains(mCurrentCategory.getId())){
-//                peopleContainer.getChildren().add()   ;
-//            }
+            final HashSet<Contact> contacts = mAppModel.getProfile().getContacts().getContacts();
+            for (Contact contact : contacts) {
+                //TODO improvement : user Contact as model in PeopleCard
+                //TODO Why not manage contactList in a Category ? would be far more efficient, Category only contain an id and a name...
+                if (contact.getCategoryIds().contains(c.getId())) {
+                    peopleContainer.getChildren().add(new PeopleCard(contact.getUserInfo(), this, PeopleCard.USAGE_CATEGORY));
+                }
+            }
+            //TODO include PeerId in categoy, due to category id store in contact
+            if (peopleContainer.getChildren().size() == 0) {
+                showPlaceHolder("You have no contact in \"" + c.getName() + "\". Select \"Connected\" and Drag&Drop a user to a category.");
+            }
         }
 
     }
