@@ -18,7 +18,7 @@ import java.util.LinkedHashSet;
 import java.util.ResourceBundle;
 import java.util.Set;
 
-public class PeopleDetailController extends SongSelectorController implements Initializable {
+public class PeopleDetailController extends SongSelectorController implements Initializable, PropertyChangeListener, CollectionChangeListener {
 
     public Label login;
     public Button addToFriendsButton;
@@ -40,11 +40,6 @@ public class PeopleDetailController extends SongSelectorController implements In
         seeMoreArtists.getStyleClass().add("bgRed");
         seeMoreSongs.getStyleClass().add("bgBlue");
 
-        for (int i = 0; i < 3; i++) {
-            TagCard newCard = new TagCard("Tag " + String.valueOf(i));
-            tagsContainer.getChildren().add(newCard);
-        }
-
     }
 
     public void setUserInfo(UserInfo userInfo) {
@@ -55,6 +50,7 @@ public class PeopleDetailController extends SongSelectorController implements In
         Set<String> tags = new LinkedHashSet<String>();
 
         for (Music music : mAppModel.getLocalCatalog().getMusics()) {
+            tags.addAll(music.getTags());
             artists.add(music.getArtist());
             System.out.println("Music " + music.getTitle());
             SongCard newCard = new SongCard(music, this, false);
@@ -64,6 +60,11 @@ public class PeopleDetailController extends SongSelectorController implements In
         for (String artist : artists) {
             ArtistCard newCard = new ArtistCard(artist, null);
             artistsContainer.getChildren().add(newCard);
+        }
+
+        for (String tag : tags) {
+            TagCard newCard = new TagCard(tag);
+            tagsContainer.getChildren().add(newCard);
         }
     }
 
