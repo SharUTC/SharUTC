@@ -2,6 +2,7 @@ package fr.utc.lo23.sharutc.ui;
 
 import com.google.inject.Inject;
 import fr.utc.lo23.sharutc.controler.command.profile.AddContactCommand;
+import fr.utc.lo23.sharutc.controler.command.profile.AddContactToCategoryCommand;
 import fr.utc.lo23.sharutc.controler.command.profile.CreateCategoryCommand;
 import fr.utc.lo23.sharutc.controler.command.profile.DeleteCategoryCommand;
 import fr.utc.lo23.sharutc.model.AppModel;
@@ -60,6 +61,8 @@ public class PeopleHomeController extends DragPreviewDrawer implements Initializ
     private CreateCategoryCommand createCategoryCommand;
     @Inject
     private DeleteCategoryCommand deleteCategoryCommand;
+    @Inject
+    private AddContactToCategoryCommand addContactToCategoryCommand;
 
     /**
      * Display message to the user
@@ -167,6 +170,11 @@ public class PeopleHomeController extends DragPreviewDrawer implements Initializ
             final UserInfo user = people.getModel();
             log.info(user.getLogin() + " added to " + category.getName());
             people.dropped();
+
+            //add contact to the model
+            addContactToCategoryCommand.setContact(new Contact(user));
+            addContactToCategoryCommand.setCategory(category);
+            addContactToCategoryCommand.execute();
         }
         //clean the selection
         mPeopleCardSelected.clear();
@@ -280,6 +288,7 @@ public class PeopleHomeController extends DragPreviewDrawer implements Initializ
                 userInfo.setLogin("Login " + String.valueOf(i));
                 userInfo.setLastName("LastName");
                 userInfo.setFirstName("FirstName");
+                userInfo.setPeerId((long) i);
                 PeopleCard newCard = new PeopleCard(userInfo, this, PeopleCard.USAGE_CATEGORY);
                 peopleContainer.getChildren().add(newCard);
             }
