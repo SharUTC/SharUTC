@@ -3,7 +3,12 @@ package fr.utc.lo23.sharutc.ui;
 import com.cathive.fx.guice.GuiceFXMLLoader;
 import com.cathive.fx.guice.GuiceFXMLLoader.Result;
 import com.google.inject.Inject;
+
 import fr.utc.lo23.sharutc.model.AppModel;
+
+import fr.utc.lo23.sharutc.controler.command.player.AddToPlaylistCommand;
+import fr.utc.lo23.sharutc.controler.service.PlayerService;
+
 import fr.utc.lo23.sharutc.model.domain.Music;
 import fr.utc.lo23.sharutc.model.userdata.UserInfo;
 import fr.utc.lo23.sharutc.ui.custom.PlayListListCell;
@@ -28,9 +33,12 @@ import javafx.util.Callback;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import fr.utc.lo23.sharutc.model.userdata.Category;
+import fr.utc.lo23.sharutc.util.CollectionChangeListener;
+import fr.utc.lo23.sharutc.util.CollectionEvent;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import javafx.scene.Parent;
@@ -45,6 +53,10 @@ public class MainController implements Initializable,
     private static final Logger log = LoggerFactory.getLogger(MainController.class);
     @Inject
     private GuiceFXMLLoader mFxmlLoader;
+
+    @Inject
+    private AddToPlaylistCommand mAddToPlaylistCommand;
+
     /**
      * the drag Preview
      */
@@ -66,10 +78,42 @@ public class MainController implements Initializable,
     //TODO Remove once we get a real list of Musics
     static public ArrayList<Music> population;
 
+    public ArrayList<Music> playListData;
+
+    @Inject
+    private PlayerService mPlayerService;
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         //TODO Remove once we get a real list of Musics
+        
         population = new ArrayList();
+        
+        playListData = new ArrayList<Music>();
+        mPlayerService.getPlaylist().addPropertyChangeListener(new CollectionChangeListener() {
+
+            @Override
+            public void collectionChanged(CollectionEvent ev) {
+                switch (ev.getType()) {
+                    case ADD:
+                        playListData.add(ev.getIndex(), (Music) ev.getSource());
+                        break;
+                    case REMOVE:
+                        playListData.remove(ev.getIndex());
+                        break;
+                    case CLEAR:
+                        playListData.clear();
+                        break;
+                    case UPDATE:
+                        playListData.remove(ev.getIndex());
+                        playListData.add(ev.getIndex(), (Music) ev.getSource());
+                        break;
+
+                }
+
+            }
+        });
+
         populateMusics();
 
         try {
@@ -204,18 +248,26 @@ public class MainController implements Initializable,
         //id droppable is a SongCard
         if (db.hasString() && db.getString().equals(SongCard.DROP_KEY)) {
             final SongCard droppedCard = (SongCard) dragEvent.getGestureSource();
+
             //if the card comes from SongSelectorController
             if (mCurrentLoadedRighpaneResult.getController() instanceof SongSelectorController || mCurrentLoadedRighpaneResult.getController() instanceof SearchResultController) {
                 //Add all selected song to the player
                 final ArrayList<SongCard> songs = ((SongSelectorController) mCurrentLoadedRighpaneResult.getController()).getSelectedSong();
+
+                List<Music> musics = new ArrayList<Music>();
                 for (SongCard songCard : songs) {
-                    mPlayerController.addSong(songCard.getModel());
+                    //mPlayerController.addSong(songCard.getModel());
+                    musics.add(songCard.getModel());
                     songCard.dropped();
                 }
+                mAddToPlaylistCommand.setMusics(musics);
+
             } else {
                 //only add selected song to the player
-                mPlayerController.addSong(droppedCard.getModel());
+                //mPlayerController.addSong(droppedCard.getModel());
+                mAddToPlaylistCommand.setMusic(droppedCard.getModel());
             }
+            mAddToPlaylistCommand.execute();
         }
         dragEvent.setDropCompleted(success);
         dragEvent.consume();
@@ -315,7 +367,7 @@ public class MainController implements Initializable,
         bottombar.getChildren().add(listView);
 
         final ObservableList<Music> listData = FXCollections.observableArrayList();
-        listData.addAll(population);
+        listData.addAll(playListData);
 
         listView.setItems(listData);
         listView.setCellFactory(new Callback<ListView<Music>, ListCell<Music>>() {
