@@ -95,12 +95,11 @@ public class NetworkServiceImpl implements NetworkService {
      * @param peerSocket the PeerSocket object associated to that peer
      */
     public synchronized void addPeer(long peerId, PeerSocket peerSocket) {
-        log.warn("addPeer - Not supported yet.");
         if (peerId == 0 || peerSocket == null) {
-            log.error("[NetworkService - addPeer()] - null object");
+            log.error("null object");
         } else {
             this.mPeers.put(peerId, peerSocket);
-            log.info("[NetworkService - addPeer()] - peer " + peerId + " had been added succesfully");
+            log.info("peer " + peerId + " had been added succesfully");
         }
     }
 
@@ -173,7 +172,7 @@ public class NetworkServiceImpl implements NetworkService {
      */
     @Override
     public void sendBroadcastHeartbeat() {
-        Message message = messageParser.write(MessageType.HEARTBEAT, new Object[][]{{}});
+        Message message = messageParser.write(MessageType.HEARTBEAT, null);
         sendBroadcast(message);
     }
 

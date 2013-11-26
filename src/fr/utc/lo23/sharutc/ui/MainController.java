@@ -3,6 +3,7 @@ package fr.utc.lo23.sharutc.ui;
 import com.cathive.fx.guice.GuiceFXMLLoader;
 import com.cathive.fx.guice.GuiceFXMLLoader.Result;
 import com.google.inject.Inject;
+import fr.utc.lo23.sharutc.model.AppModel;
 import fr.utc.lo23.sharutc.model.domain.Music;
 import fr.utc.lo23.sharutc.model.userdata.UserInfo;
 import fr.utc.lo23.sharutc.ui.custom.PlayListListCell;
@@ -59,6 +60,9 @@ public class MainController implements Initializable,
     public HBox bottombar;
     public Region dropOverlay;
     public Label dropOverlayLabel;
+    public Label labelMyProfile;
+    @Inject
+    private AppModel mAppModel;
     //TODO Remove once we get a real list of Musics
     static public ArrayList<Music> population;
 
@@ -83,6 +87,9 @@ public class MainController implements Initializable,
         mDragPreview.setMouseTransparent(true);
         mDragPreview.toFront();
 
+        //Set User name
+        final UserInfo currentUser = mAppModel.getProfile().getUserInfo();
+        labelMyProfile.setText(currentUser.getFirstName() + " " + currentUser.getLastName());
     }
 
     /**
