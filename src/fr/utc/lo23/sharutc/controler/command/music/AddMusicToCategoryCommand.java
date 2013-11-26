@@ -25,7 +25,7 @@ public interface AddMusicToCategoryCommand extends Command {
     public void setCategory(Category category);
 
     /**
-     *
+     * Return the music
      * @return  the music
      */
     public Music getMusic();
