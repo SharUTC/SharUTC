@@ -18,7 +18,7 @@ import java.util.LinkedHashSet;
 import java.util.ResourceBundle;
 import java.util.Set;
 
-public class PeopleDetailController extends SongSelectorController implements Initializable, PropertyChangeListener, CollectionChangeListener {
+public class PeopleDetailController extends SongSelectorController implements Initializable {
 
     public Label login;
     public Button addToFriendsButton;
