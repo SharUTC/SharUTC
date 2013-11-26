@@ -1,5 +1,6 @@
 package fr.utc.lo23.sharutc.controler.command.music;
 
+import fr.utc.lo23.sharutc.controler.command.Command;
 import fr.utc.lo23.sharutc.model.domain.Music;
 import fr.utc.lo23.sharutc.model.userdata.Category;
 
@@ -8,7 +9,7 @@ import fr.utc.lo23.sharutc.model.userdata.Category;
  * Add a music in specific category
  *
  */
-public interface AddMusicToCategoryCommand {
+public interface AddMusicToCategoryCommand extends Command {
      /**
      * Return the category
      * 
@@ -24,7 +25,7 @@ public interface AddMusicToCategoryCommand {
     public void setCategory(Category category);
 
     /**
-     *
+     * Return the music
      * @return  the music
      */
     public Music getMusic();

@@ -8,7 +8,7 @@ import fr.utc.lo23.sharutc.model.domain.Music;
 import fr.utc.lo23.sharutc.model.userdata.Category;
 
 /**
- *
+ * {@inheritDoc}
  */
 public class AddMusicToCategoryCommandImpl implements AddMusicToCategoryCommand {
 
