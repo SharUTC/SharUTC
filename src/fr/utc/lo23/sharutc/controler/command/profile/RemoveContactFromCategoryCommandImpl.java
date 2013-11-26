@@ -15,15 +15,16 @@ import org.slf4j.LoggerFactory;
  * implementation of the RemoveContactFromCategoryCommand
  */
 public class RemoveContactFromCategoryCommandImpl implements RemoveContactFromCategoryCommand {
-    
+
     private static final Logger log = LoggerFactory
             .getLogger(AddContactCommandImpl.class);
     private Contact mContact;
     private Category mCategory;
     final private UserService mUserService;
 
-     /**
+    /**
      * Constructor
+     *
      * @param userService
      */
     @Inject
@@ -69,8 +70,8 @@ public class RemoveContactFromCategoryCommandImpl implements RemoveContactFromCa
     @Override
     public void execute() {
         log.info("RemoveContactFromCategoryCommand ...");
-        mUserService.removeContactFromCategory(mContact,mCategory);
+        mUserService.removeContactFromCategory(mContact, mCategory);
+        mUserService.saveProfileFiles();
         log.info("RemoveContactFromCategoryCommand DONE");
     }
-    
 }

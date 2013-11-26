@@ -54,6 +54,7 @@ public class AddContactCommandImpl implements AddContactCommand {
         log.info("AddContactCommand ...");
         mUserService.addContact(mContact);
         appModel.getProfile().getKnownPeerList().update(mContact.getUserInfo().toPeer());
+        mUserService.saveProfileFiles();
         log.info("AddContactCommand DONE");
     }
 }

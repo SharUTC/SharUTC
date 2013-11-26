@@ -60,6 +60,7 @@ public class AddTagCommandImpl implements AddTagCommand {
     public void execute() {
         log.info("AddTagCommand ...");
         musicService.addTag(mMusic, mTag);
+        musicService.saveUserMusicFile();
         log.info("AddTagCommand DONE");
     }
 }

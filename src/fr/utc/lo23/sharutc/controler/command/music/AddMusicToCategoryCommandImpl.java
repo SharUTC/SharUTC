@@ -65,6 +65,7 @@ public class AddMusicToCategoryCommandImpl implements AddMusicToCategoryCommand 
     public void execute() {
         log.info("AddMusicToCategoryCommand...");
         mMusicService.addMusicToCategory(mMusic, mCategory);
+        mMusicService.saveUserMusicFile();
         log.info("AddMusicToCategoryCommand DONE");
     }
 }

@@ -54,6 +54,7 @@ public class DeleteContactCommandImpl implements DeleteContactCommand {
         log.info("DeleteContactCommand ...");
         mUserService.deleteContact(mContact);
         musicService.removeFromKnownPeersIfUseless(mContact.getUserInfo().toPeer());
+        mUserService.saveProfileFiles();
         log.info("DeleteContactCommand DONE");
     }
 }
