@@ -1,11 +1,12 @@
 package tests;
 
-import ch.qos.logback.classic.util.ContextInitializer;
 import com.google.inject.Inject;
 import fr.utc.lo23.sharutc.GuiceJUnitRunner;
 import fr.utc.lo23.sharutc.controler.command.music.AddToLocalCatalogCommand;
 import fr.utc.lo23.sharutc.controler.command.music.IntegrateRemoteCatalogCommand;
 import fr.utc.lo23.sharutc.controler.command.music.RemoveFromLocalCatalogCommand;
+import fr.utc.lo23.sharutc.controler.command.music.AddMusicToCategoryCommand;
+import fr.utc.lo23.sharutc.controler.command.music.RemoveMusicFromCategoryCommand;
 import fr.utc.lo23.sharutc.controler.service.FileService;
 import fr.utc.lo23.sharutc.controler.service.MusicService;
 import fr.utc.lo23.sharutc.controler.service.UserService;
@@ -15,7 +16,7 @@ import fr.utc.lo23.sharutc.model.domain.Catalog;
 import fr.utc.lo23.sharutc.model.domain.Comment;
 import fr.utc.lo23.sharutc.model.domain.Music;
 import fr.utc.lo23.sharutc.model.domain.Score;
-import fr.utc.lo23.sharutc.model.userdata.Peer;
+import fr.utc.lo23.sharutc.model.userdata.Category;
 import java.io.File;
 import java.io.IOException;
 import static java.lang.System.out;
@@ -23,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Level;
 import org.junit.After;
 import org.junit.Assert;
@@ -55,6 +57,10 @@ public class MusicServiceTest {
     private RemoveFromLocalCatalogCommand removeFromLocalCatalogCommand;
     @Inject
     private IntegrateRemoteCatalogCommand integrateRemoteCatalogCommand;
+    @Inject
+    private AddMusicToCategoryCommand addMusicToCategoryCommand;
+    @Inject
+    private RemoveMusicFromCategoryCommand removeMusicFromCategoryCommand;
     private AppModelBuilder appModelBuilder = null;
 
     @Before
@@ -138,41 +144,41 @@ public class MusicServiceTest {
         int finalLocalCatalogSize = appModel.getLocalCatalog().size();
         Assert.assertEquals("3 music files have been successfully removed from Local Catalog", 0, finalLocalCatalogSize);
     }
-    
+
     @Test
-    public void saveAndLoadUserMusicFile(){
+    public void saveAndLoadUserMusicFile() {
         Catalog catalogTest = appModel.getLocalCatalog();
         log.debug("catalogue chargé" + catalogTest.getMusics().size());
         catalogTest.getMusics().get(0).addComment(new Comment(2, "0 - Stylée", Long.MIN_VALUE, new Date()));
         catalogTest.getMusics().get(2).addComment(new Comment(3, "2 - Boarf", Long.MAX_VALUE, new Date()));
         catalogTest.getMusics().get(1).addScore(new Score(4, Long.MIN_VALUE));
-        catalogTest.getMusics().get(2).addScore(new Score(2, Long.MAX_VALUE-1));
-        
+        catalogTest.getMusics().get(2).addScore(new Score(2, Long.MAX_VALUE - 1));
+
         musicService.saveUserMusicFile();
         musicService.loadUserMusicFile();
         Catalog catalogToTest = appModel.getLocalCatalog();
         int nbMusic = catalogToTest.getMusics().size();
         Assert.assertEquals("3 music files have been successfully saved and loaded from a user music file", 3, nbMusic);
-        
+
         int nbComments = catalogToTest.getMusics().get(2).getComments().size() + catalogToTest.getMusics().get(0).getComments().size();
         Assert.assertEquals("2 comments have been successfully saved and loaded from a user music file", 2, nbComments);
-        
+
         int nbScores = catalogToTest.getMusics().get(2).getScores().size() + catalogToTest.getMusics().get(1).getScores().size();
         Assert.assertEquals("2 scores have been successfully saved and loaded from a user music file", 2, nbScores);
-        
-        int scoreTest = catalogToTest.getMusics().get(2).getScore(Long.MAX_VALUE-1).getValue(); 
+
+        int scoreTest = catalogToTest.getMusics().get(2).getScore(Long.MAX_VALUE - 1).getValue();
         Assert.assertEquals("good score value has been successfully saved and loaded from a user music file", 2, scoreTest);
-        
+
         Long peerIdComment = catalogToTest.getMusics().get(0).getComment(Long.MIN_VALUE, 2).getAuthorPeerId();
-        Assert.assertEquals("good peerId has been successfully saved and loaded from a user music file", (Long)Long.MIN_VALUE, peerIdComment);
-        
+        Assert.assertEquals("good peerId has been successfully saved and loaded from a user music file", (Long) Long.MIN_VALUE, peerIdComment);
+
     }
-    
+
     @Test
-    public void integrateRemoteCatalog(){
-        
+    public void integrateRemoteCatalog() {
+
         int initialCatalogSize = appModel.getRemoteUserCatalog().size();
-        
+
         Catalog testCatalog = new Catalog();
         List<Music> musicsTestCollection = new ArrayList<Music>();
 
@@ -195,10 +201,46 @@ public class MusicServiceTest {
         }
 
         testCatalog.addAll(musicsTestCollection);
-        
-        integrateRemoteCatalogCommand.setCatalog(testCatalog); 
+
+        integrateRemoteCatalogCommand.setCatalog(testCatalog);
         integrateRemoteCatalogCommand.execute();
-        
+
         Assert.assertEquals("musics from testCatalog have been successfully integrated", initialCatalogSize + 3, appModel.getRemoteUserCatalog().size());
+    }
+
+    @Test
+    public void addMusicToCategoryCommand() {
+
+        Category category = new Category(1, "testCategory");
+        Music music = appModel.getLocalCatalog().findMusicById(1);
+        addMusicToCategoryCommand.setCategory(category);
+        addMusicToCategoryCommand.setMusic(music);
+        addMusicToCategoryCommand.execute();
+
+        //Checks that the music is now in the category
+        Set<Integer> categoriesIdsList = music.getCategoryIds();
+
+        Assert.assertEquals("Music has been successfully added to the category", true, categoriesIdsList.contains(category.getId()));
+    }
+
+    @Test
+    public void removeMusicFromCategory() {
+        Category category = new Category(1, "testCategory");
+        Music music = appModel.getLocalCatalog().findMusicById(1);
+        addMusicToCategoryCommand.setCategory(category);
+        addMusicToCategoryCommand.setMusic(music);
+        addMusicToCategoryCommand.execute();
+
+        //Checks that the music is now in the category
+        Set<Integer> categoriesIdsList = music.getCategoryIds();
+
+        Assert.assertEquals("Music has been successfully added to the category", true, categoriesIdsList.contains(category.getId()));
+
+        removeMusicFromCategoryCommand.setCategory(category);
+        removeMusicFromCategoryCommand.setMusic(music);
+        removeMusicFromCategoryCommand.execute();
+        categoriesIdsList = music.getCategoryIds();
+        //Checks that the music is no longer in the category
+        Assert.assertEquals("Music has been successfully removed from the category", false, categoriesIdsList.contains(category.getId()));
     }
 }
