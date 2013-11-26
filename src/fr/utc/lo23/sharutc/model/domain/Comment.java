@@ -36,6 +36,11 @@ public class Comment implements Serializable {
     public Comment() {
     }
 
+    /**
+     * Constructor
+     *
+     * @param comment The comment to copie
+     */
     public Comment(Comment comment) {
         this.mIndex = new Integer(comment.mIndex);
         this.mText = comment.mText;
@@ -44,14 +49,13 @@ public class Comment implements Serializable {
         this.mAuthorName = comment.mAuthorName;
     }
 
-    //TODO there are others constructors to write here, index might be setted another way or moment
-    //
     /**
+     * Constructor
      *
-     * @param index
-     * @param text
-     * @param peerId
-     * @param creationDate
+     * @param index The index of the comment in the list of a music
+     * @param text The content of the comment
+     * @param peerId The id of the peer
+     * @param creationDate The date of the comment
      */
     public Comment(Integer index, String text, Long peerId, Date creationDate) {
         this.mIndex = index;
@@ -59,34 +63,48 @@ public class Comment implements Serializable {
         this.mAuthorPeerId = peerId;
         this.mCreationDate = creationDate;
     }
-    
+
     /**
+     * Constructor
      *
-     * @return
+     * @param text The content of the comment
+     * @param peerId The id of the peer
+     */
+    public Comment(String text, Long peerId) {
+        this(new Integer(0), text, peerId, new Date());
+    }
+
+    /**
+     * Get the index
+     *
+     * @return The index
      */
     public Integer getIndex() {
         return mIndex;
     }
 
     /**
+     * Set the index
      *
-     * @param index
+     * @param index The index
      */
     public void setIndex(Integer index) {
         this.mIndex = index;
     }
 
     /**
+     * Get the text
      *
-     * @return
+     * @return The text
      */
     public String getText() {
         return mText;
     }
 
     /**
+     * Set the text
      *
-     * @param text
+     * @return text The text
      */
     public void setText(String text) {
         String oldText = this.mText;
@@ -95,48 +113,54 @@ public class Comment implements Serializable {
     }
 
     /**
+     * Get the author id
      *
-     * @return
+     * @return The author id
      */
     public Long getAuthorPeerId() {
         return mAuthorPeerId;
     }
 
     /**
+     * Set the author id
      *
-     * @param authorPeerId
+     * @param authorPeerId The author id
      */
     public void setAuthorPeerId(Long authorPeerId) {
         this.mAuthorPeerId = authorPeerId;
     }
 
     /**
+     * Get the date of creation
      *
-     * @return
+     * @return The date of creation
      */
     public Date getCreationDate() {
         return mCreationDate;
     }
 
     /**
+     * Set the date of creation
      *
-     * @param creationDate
+     * @param creationDate The date of creation
      */
     public void setCreationDate(Date creationDate) {
         this.mCreationDate = creationDate;
     }
 
     /**
+     * Get the author's name
      *
-     * @return
+     * @return The author's name
      */
     public String getAuthorName() {
         return mAuthorName;
     }
 
     /**
+     * Set the author's name
      *
-     * @param authorName
+     * @param authorName The author's name
      */
     public void setAuthorName(String authorName) {
         this.mAuthorName = authorName;

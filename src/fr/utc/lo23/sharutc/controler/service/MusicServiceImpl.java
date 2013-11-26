@@ -301,21 +301,8 @@ public class MusicServiceImpl implements MusicService {
         if (peer == null || music == null || comment == null || comment.trim().isEmpty()) {
             throwMissingParameter();
         } else {
-            int nextIndex = 0;
-            for (Comment c : music.getComments()) {
-                if (c.getIndex() > nextIndex) {
-                    nextIndex = c.getIndex() + 1;
-                }
-            }
-
             if (!comment.isEmpty()) {
-                Comment myComment = new Comment();
-                myComment.setAuthorPeerId(peer.getId());
-                // loaded at display time only, not set at creation
-                //myComment.setAuthorName(peer.getDisplayName());
-                myComment.setText(comment);
-                myComment.setIndex(nextIndex);
-                myComment.setCreationDate(new Date());
+                Comment myComment = new Comment(comment, peer.getId());
                 music.addComment(myComment);
             }
         }
