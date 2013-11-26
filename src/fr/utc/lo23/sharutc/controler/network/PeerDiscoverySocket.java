@@ -133,7 +133,7 @@ public class PeerDiscoverySocket implements Runnable {
                 log.info("Got packet " + Arrays.toString(p.getData()));
                 String json = new String(p.getData());
                 Message msgReceived = messageParser.fromJSON(json);
-                if (msgReceived.getFromPeerId() == appModel.getProfile().getUserInfo().getPeerId()) {
+                if (msgReceived.getFromPeerId().equals(appModel.getProfile().getUserInfo().getPeerId())) {
                     continue;
                 }
                 if (msgReceived.getType() == MessageType.CONNECTION) {
