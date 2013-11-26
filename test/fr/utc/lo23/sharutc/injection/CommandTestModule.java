@@ -47,10 +47,14 @@ import fr.utc.lo23.sharutc.controler.command.music.ShowTagMapCommand;
 import fr.utc.lo23.sharutc.controler.command.music.ShowTagMapCommandImpl;
 import fr.utc.lo23.sharutc.controler.command.music.UnsetScoreCommand;
 import fr.utc.lo23.sharutc.controler.command.music.UnsetScoreCommandImpl;
+import fr.utc.lo23.sharutc.controler.command.player.AddToPlaylistCommand;
+import fr.utc.lo23.sharutc.controler.command.player.AddToPlaylistCommandImpl;
 import fr.utc.lo23.sharutc.controler.command.player.PlayIncomingMusicCommand;
 import fr.utc.lo23.sharutc.controler.command.player.PlayIncomingMusicCommandImpl;
 import fr.utc.lo23.sharutc.controler.command.player.PlayMusicCommand;
 import fr.utc.lo23.sharutc.controler.command.player.PlayMusicCommandImpl;
+import fr.utc.lo23.sharutc.controler.command.player.RemoveFromPlaylistCommand;
+import fr.utc.lo23.sharutc.controler.command.player.RemoveFromPlaylistCommandImpl;
 import fr.utc.lo23.sharutc.controler.command.player.SendMusicToPlayCommand;
 import fr.utc.lo23.sharutc.controler.command.player.SendMusicToPlayCommandImpl;
 import fr.utc.lo23.sharutc.controler.command.profile.AddContactCommand;
@@ -125,8 +129,9 @@ public class CommandTestModule extends AbstractModule {
         bind(PlayMusicCommand.class).to(PlayMusicCommandImpl.class);
         bind(SendMusicToPlayCommand.class).to(SendMusicToPlayCommandImpl.class);
         bind(PlayIncomingMusicCommand.class).to(PlayIncomingMusicCommandImpl.class);
-        // more...
-
+        bind(AddToPlaylistCommand.class).to(AddToPlaylistCommandImpl.class);
+        bind(RemoveFromPlaylistCommand.class).to(RemoveFromPlaylistCommandImpl.class);
+        
         //profile
         bind(AddContactCommand.class).to(AddContactCommandImpl.class);
         bind(AddContactToCategoryCommand.class).to(AddContactToCategoryCommandImpl.class);
