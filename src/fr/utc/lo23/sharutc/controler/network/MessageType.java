@@ -12,7 +12,7 @@ public enum MessageType {
     /**
      * Send message with the own catalog.
      */
-    MUSIC_CATALOG,
+    MUSIC_SEND_CATALOG,
     /**
      * Send message to get tag map from a peer.
      */
