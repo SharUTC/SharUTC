@@ -1,5 +1,7 @@
 package fr.utc.lo23.sharutc.ui;
 
+import com.google.inject.Inject;
+import fr.utc.lo23.sharutc.model.AppModel;
 import fr.utc.lo23.sharutc.model.domain.Music;
 import fr.utc.lo23.sharutc.model.userdata.UserInfo;
 import fr.utc.lo23.sharutc.ui.custom.card.ArtistCard;
@@ -12,7 +14,9 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.FlowPane;
 
 import java.net.URL;
+import java.util.LinkedHashSet;
 import java.util.ResourceBundle;
+import java.util.Set;
 
 public class PeopleDetailController extends SongSelectorController implements Initializable {
 
@@ -25,6 +29,8 @@ public class PeopleDetailController extends SongSelectorController implements In
     public FlowPane artistsContainer;
     public FlowPane tagsContainer;
 
+    @Inject
+    private AppModel mAppModel;
 
     private UserInfo mUserInfo;
 
@@ -34,17 +40,6 @@ public class PeopleDetailController extends SongSelectorController implements In
         seeMoreArtists.getStyleClass().add("bgRed");
         seeMoreSongs.getStyleClass().add("bgBlue");
 
-
-        for (int i = 0; i < 3; i++) {
-            final Music m = new Music();
-            m.setTitle("Music " + i);
-            SongCard newCard = new SongCard(m, this, false);
-            songsContainer.getChildren().add(newCard);
-        }
-        for (int i = 0; i < 3; i++) {
-            ArtistCard newCard = new ArtistCard("Artist " + String.valueOf(i), null);
-            artistsContainer.getChildren().add(newCard);
-        }
         for (int i = 0; i < 3; i++) {
             TagCard newCard = new TagCard("Tag " + String.valueOf(i));
             tagsContainer.getChildren().add(newCard);
@@ -55,6 +50,21 @@ public class PeopleDetailController extends SongSelectorController implements In
     public void setUserInfo(UserInfo userInfo) {
         mUserInfo = userInfo;
         login.setText(mUserInfo.getLogin());
+
+        Set<String> artists = new LinkedHashSet<String>();
+        Set<String> tags = new LinkedHashSet<String>();
+
+        for (Music music : mAppModel.getLocalCatalog().getMusics()) {
+            artists.add(music.getArtist());
+            System.out.println("Music " + music.getTitle());
+            SongCard newCard = new SongCard(music, this, false);
+            songsContainer.getChildren().add(newCard);
+        }
+
+        for (String artist : artists) {
+            ArtistCard newCard = new ArtistCard(artist, null);
+            artistsContainer.getChildren().add(newCard);
+        }
     }
 
     public void handleAddToFriendsClicked(ActionEvent actionEvent) {
