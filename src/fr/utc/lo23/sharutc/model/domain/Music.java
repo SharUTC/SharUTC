@@ -57,6 +57,7 @@ public class Music implements Serializable {
     private Integer mTrackLength;
     private String mYear;
     private List<Comment> mComments;
+    private Integer mCurrentMaxCommentIndex;
     private Set<Score> mScores;
     private Set<String> mTags;
     private Boolean mMayReadInfo;
@@ -68,6 +69,7 @@ public class Music implements Serializable {
      */
     public Music() {
         this.mComments = new ArrayList<Comment>();
+        this.mCurrentMaxCommentIndex = 0;
         this.mScores = new HashSet<Score>();
         this.mCategoryIds = new HashSet<Integer>();
         this.mCategoryIds.add(Category.PUBLIC_CATEGORY_ID);
@@ -110,6 +112,7 @@ public class Music implements Serializable {
         for (Comment comment : music.mComments) {
             this.mComments.add(comment.clone());
         }
+        this.mCurrentMaxCommentIndex = music.mCurrentMaxCommentIndex;
         this.mScores = new HashSet<Score>();
         for (Score score : music.mScores) {
             this.mScores.add(score);
@@ -145,6 +148,7 @@ public class Music implements Serializable {
         this.mFile = file;
         this.mFrames = frames;
         this.mComments = new ArrayList<Comment>();
+        this.mCurrentMaxCommentIndex = 0;
         this.mScores = new HashSet<Score>();
         this.mTags = new HashSet<String>();
         this.mTitle = title;
@@ -475,6 +479,7 @@ public class Music implements Serializable {
      * @param comment The comment
      */
     public void addComment(Comment comment) {
+        comment.setIndex(++mCurrentMaxCommentIndex);
         this.mComments.add(comment);
     }
 
