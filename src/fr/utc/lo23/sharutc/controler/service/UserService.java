@@ -5,7 +5,7 @@ import fr.utc.lo23.sharutc.model.userdata.Contact;
 import fr.utc.lo23.sharutc.model.userdata.UserInfo;
 
 /**
- *
+ * Service that provides all functions for user management
  */
 public interface UserService {
 
