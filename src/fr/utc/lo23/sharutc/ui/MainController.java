@@ -78,7 +78,7 @@ public class MainController implements Initializable,
     //TODO Remove once we get a real list of Musics
     static public ArrayList<Music> population;
 
-    public ArrayList<Music> playListData;
+    public ObservableList<Music> playListData;
 
     @Inject
     private PlayerService mPlayerService;
@@ -89,14 +89,14 @@ public class MainController implements Initializable,
         
         population = new ArrayList();
         
-        playListData = new ArrayList<Music>();
+       
         mPlayerService.getPlaylist().addPropertyChangeListener(new CollectionChangeListener() {
 
             @Override
             public void collectionChanged(CollectionEvent ev) {
                 switch (ev.getType()) {
                     case ADD:
-                        playListData.add(ev.getIndex(), (Music) ev.getSource());
+                        playListData.add(ev.getIndex(), (Music) ev.getItem());
                         break;
                     case REMOVE:
                         playListData.remove(ev.getIndex());
@@ -106,10 +106,11 @@ public class MainController implements Initializable,
                         break;
                     case UPDATE:
                         playListData.remove(ev.getIndex());
-                        playListData.add(ev.getIndex(), (Music) ev.getSource());
+                        playListData.add(ev.getIndex(), (Music) ev.getItem());
                         break;
 
                 }
+                
 
             }
         });
@@ -366,10 +367,10 @@ public class MainController implements Initializable,
         HBox.setHgrow(listView, Priority.ALWAYS);
         bottombar.getChildren().add(listView);
 
-        final ObservableList<Music> listData = FXCollections.observableArrayList();
-        listData.addAll(playListData);
+       playListData = FXCollections.observableArrayList();
+        
 
-        listView.setItems(listData);
+        listView.setItems(playListData);
         listView.setCellFactory(new Callback<ListView<Music>, ListCell<Music>>() {
             @Override
             public ListCell<Music> call(ListView<Music> p) {
