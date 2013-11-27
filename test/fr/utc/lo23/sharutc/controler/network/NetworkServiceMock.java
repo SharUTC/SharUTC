@@ -67,7 +67,7 @@ public class NetworkServiceMock extends NetworkServiceImpl implements NetworkSer
         if (messages.isEmpty()) {
             return null;
         }
-        return messages.get(0);
+        return messages.get(messages.size() - 1);
     }
 
     public Peer getPeer(int i) {
@@ -78,7 +78,7 @@ public class NetworkServiceMock extends NetworkServiceImpl implements NetworkSer
         if (peers.isEmpty()) {
             return null;
         }
-        return peers.get(0);
+        return peers.get(peers.size() - 1);
     }
 
     public void clear() {
