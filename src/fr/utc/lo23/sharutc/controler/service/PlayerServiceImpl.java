@@ -133,7 +133,7 @@ public class PlayerServiceImpl implements PlayerService, PropertyChangeListener,
     public synchronized void playerPlay() {
         log.info("playerPlay");
         if (player == null) {
-            if (mCurrentMusic == null) {
+            if (mCurrentMusic == null && !mPlaylist.isEmpty()) {
                 setCurrentMusic(mPlaylist.get(0));
             }
             if (mCurrentMusic != null) {
