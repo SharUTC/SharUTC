@@ -8,6 +8,8 @@ import com.google.inject.Inject;
 import fr.utc.lo23.sharutc.GuiceJUnitRunner;
 import fr.utc.lo23.sharutc.controler.command.account.IntegrateUserInfoCommand;
 import fr.utc.lo23.sharutc.controler.command.account.IntegrateDisconnectionCommand;
+import fr.utc.lo23.sharutc.controler.network.NetworkService;
+import fr.utc.lo23.sharutc.controler.service.FileService;
 import fr.utc.lo23.sharutc.controler.service.MusicService;
 import fr.utc.lo23.sharutc.controler.service.UserService;
 import fr.utc.lo23.sharutc.model.AppModel;
@@ -29,8 +31,8 @@ import org.slf4j.LoggerFactory;
  */
 @RunWith(GuiceJUnitRunner.class)
 @GuiceJUnitRunner.GuiceModules({ProfileConnectedPeersTestModule.class})
-
 public class ProfileConnectedPeersTest {
+
     private static final Logger log = LoggerFactory
             .getLogger(ProfileCategoriesAndContactsTest.class);
     @Inject
@@ -40,17 +42,20 @@ public class ProfileConnectedPeersTest {
     @Inject
     private MusicService musicService;
     @Inject
+    private FileService fileService;
+    @Inject
+    private NetworkService networkService;
+    @Inject
     private IntegrateUserInfoCommand integrateConnectionCommand;
     @Inject
     private IntegrateDisconnectionCommand integrateDisconnectionCommand;
-    
     private AppModelBuilder appModelBuilder = null;
-    
+
     @Before
     public void before() {
         log.trace("building appModel");
         if (appModelBuilder == null) {
-            appModelBuilder = new AppModelBuilder(appModel, musicService, userService);
+            appModelBuilder = new AppModelBuilder(appModel, musicService, userService, fileService, networkService);
         }
         appModelBuilder.mockAppModel();
     }
@@ -60,7 +65,7 @@ public class ProfileConnectedPeersTest {
         log.trace("cleaning appModel");
         appModelBuilder.clearAppModel();
     }
-    
+
     /**
      *
      */
@@ -72,34 +77,34 @@ public class ProfileConnectedPeersTest {
         newUserInfo1.setPeerId(4L);
         integrateConnectionCommand.setUserInfo(newUserInfo1);
         integrateConnectionCommand.execute();
-        
+
         //Add second user
         UserInfo newUserInfo2 = new UserInfo();
         newUserInfo2.setLogin("LocalPeer Mock (id=5)");
         newUserInfo2.setPeerId(5L);
         integrateConnectionCommand.setUserInfo(newUserInfo2);
-        integrateConnectionCommand.execute();    
-        
+        integrateConnectionCommand.execute();
+
         int activePeerListSize = appModel.getActivePeerList().getActivePeers().size();
-        
+
         out.println(appModel.getActivePeerList().toString());
         Assert.assertEquals("2 users added to the list failed.", 6, activePeerListSize);
     }
-    
+
     @Test
-    public void integrateDisconnectionCommand(){
+    public void integrateDisconnectionCommand() {
         // Removing Peer with ID = 2
         Peer removedPeer1 = new Peer(2L, "Peer Mock (id=2)");
         integrateDisconnectionCommand.setPeerId(removedPeer1.getId());
         integrateDisconnectionCommand.execute();
-        
+
         // Removing Peer with ID = 3
         Peer removedPeer2 = new Peer(3L, "Peer Mock (id=3)");
         integrateDisconnectionCommand.setPeerId(removedPeer2.getId());
         integrateDisconnectionCommand.execute();
-        
+
         int activePeerListSize = appModel.getActivePeerList().getActivePeers().size();
-        
+
         Assert.assertEquals("2 Peers removed form the connected list failed.", 2, activePeerListSize);
     }
 }

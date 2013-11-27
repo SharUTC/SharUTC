@@ -7,7 +7,9 @@ import fr.utc.lo23.sharutc.controler.command.player.SendMusicToPlayCommand;
 import fr.utc.lo23.sharutc.controler.command.search.SendMusicsCommand;
 import fr.utc.lo23.sharutc.controler.network.Message;
 import fr.utc.lo23.sharutc.controler.network.MessageParser;
+import fr.utc.lo23.sharutc.controler.network.NetworkService;
 import fr.utc.lo23.sharutc.controler.network.NetworkServiceMock;
+import fr.utc.lo23.sharutc.controler.service.FileService;
 import fr.utc.lo23.sharutc.controler.service.MusicService;
 import fr.utc.lo23.sharutc.controler.service.UserService;
 import fr.utc.lo23.sharutc.model.AppModel;
@@ -29,6 +31,7 @@ import org.slf4j.LoggerFactory;
 @RunWith(GuiceJUnitRunner.class)
 @GuiceJUnitRunner.GuiceModules({NetworkMusicDownloadTestModule.class})
 public class NetworkMusicDownloadTest {
+
     private static final Logger log = LoggerFactory
             .getLogger(NetworkMusicDownloadTest.class);
     @Inject
@@ -39,10 +42,11 @@ public class NetworkMusicDownloadTest {
     @Inject
     private MusicService musicService;
     @Inject
+    private FileService fileService;
+    @Inject
     private NetworkServiceMock networkService;
     @Inject
     private UserService userService;
-
     @Inject
     private SendMusicsCommand sendMusicsCommand;
     @Inject
@@ -57,7 +61,7 @@ public class NetworkMusicDownloadTest {
     public void before() {
         log.trace("building appModel");
         if (appModelBuilder == null) {
-            appModelBuilder = new AppModelBuilder(appModel, musicService, userService);
+            appModelBuilder = new AppModelBuilder(appModel, musicService, userService, fileService, networkService);
         }
         appModelBuilder.mockAppModel();
         networkService.clear();

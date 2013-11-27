@@ -13,6 +13,8 @@ import fr.utc.lo23.sharutc.controler.command.profile.CreateCategoryCommand;
 import fr.utc.lo23.sharutc.controler.command.profile.DeleteCategoryCommand;
 import fr.utc.lo23.sharutc.controler.command.profile.DeleteContactCommand;
 import fr.utc.lo23.sharutc.controler.command.profile.RemoveContactFromCategoryCommand;
+import fr.utc.lo23.sharutc.controler.network.NetworkService;
+import fr.utc.lo23.sharutc.controler.service.FileService;
 import fr.utc.lo23.sharutc.controler.service.MusicService;
 import fr.utc.lo23.sharutc.controler.service.UserService;
 import fr.utc.lo23.sharutc.model.AppModel;
@@ -45,6 +47,10 @@ public class ProfileCategoriesAndContactsTest {
     @Inject
     private MusicService musicService;
     @Inject
+    private FileService fileService;
+    @Inject
+    private NetworkService networkService;
+    @Inject
     private AddContactCommand addContactCommand;
     @Inject
     private AddContactToCategoryCommand addContactToCategoryCommand;
@@ -62,7 +68,7 @@ public class ProfileCategoriesAndContactsTest {
     public void before() {
         log.trace("building appModel");
         if (appModelBuilder == null) {
-            appModelBuilder = new AppModelBuilder(appModel, musicService, userService);
+            appModelBuilder = new AppModelBuilder(appModel, musicService, userService, fileService, networkService);
         }
         appModelBuilder.mockAppModel();
     }

@@ -8,7 +8,9 @@ import fr.utc.lo23.sharutc.controler.command.search.PerformMusicSearchCommand;
 import fr.utc.lo23.sharutc.controler.network.Message;
 import fr.utc.lo23.sharutc.controler.network.MessageParser;
 import fr.utc.lo23.sharutc.controler.network.MessageType;
+import fr.utc.lo23.sharutc.controler.network.NetworkService;
 import fr.utc.lo23.sharutc.controler.network.NetworkServiceMock;
+import fr.utc.lo23.sharutc.controler.service.FileService;
 import fr.utc.lo23.sharutc.controler.service.MusicService;
 import fr.utc.lo23.sharutc.controler.service.UserService;
 import fr.utc.lo23.sharutc.model.AppModel;
@@ -39,6 +41,10 @@ public class MusicSearchTest {
     @Inject
     private MusicService musicService;
     @Inject
+    private FileService fileService;
+    @Inject
+    private NetworkServiceMock networkService;
+    @Inject
     private PerformMusicSearchCommand performMusicSearchCommand;
     @Inject
     private MusicSearchCommand musicSearchCommand;
@@ -47,15 +53,13 @@ public class MusicSearchTest {
     @Inject
     private AppModelBuilder appModelBuilder = null;
     @Inject
-    private NetworkServiceMock networkService;
-    @Inject
     private MessageParser messageParser;
 
     @Before
     public void before() {
         log.trace("building appModel");
         if (appModelBuilder == null) {
-            appModelBuilder = new AppModelBuilder(appModel, musicService, userService);
+            appModelBuilder = new AppModelBuilder(appModel, musicService, userService, fileService, networkService);
         }
         appModelBuilder.mockAppModel();
         networkService.clear();

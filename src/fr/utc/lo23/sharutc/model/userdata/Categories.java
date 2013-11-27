@@ -10,7 +10,7 @@ import java.util.HashSet;
 
 /**
  * Represents a list of categories
- * 
+ *
  * Don't use index from CollectionChangeSupport (HashSet inside)
  */
 public class Categories implements Serializable {
@@ -29,7 +29,7 @@ public class Categories implements Serializable {
 
     /**
      * Return the category list
-     * 
+     *
      * @return the category list
      */
     public HashSet<Category> getCategories() {
@@ -38,7 +38,7 @@ public class Categories implements Serializable {
 
     /**
      * Set the category list
-     * 
+     *
      * @param categories - a category list
      */
     public void setCategories(HashSet<Category> categories) {
@@ -47,15 +47,16 @@ public class Categories implements Serializable {
 
     /**
      * Find the category thanks to its id given in parameter if it exists
-     * 
+     *
      * @param id
      * @return the category or null if it does not exist
      */
     public Category findCategoryById(Integer id) {
         Category category = null;
         for (Category c : mCategories) {
-            if (c.getId() == id) {
+            if (c.getId().equals(id)) {
                 category = c;
+                break;
             }
         }
         return category;
@@ -63,7 +64,7 @@ public class Categories implements Serializable {
 
     /**
      * Add a category to the category list
-     * 
+     *
      * @param category
      * @return a boolean
      */
@@ -77,7 +78,7 @@ public class Categories implements Serializable {
 
     /**
      * Add a category list
-     * 
+     *
      * @param categories - a category list
      */
     public void addAll(Collection<Category> categories) {
@@ -90,7 +91,7 @@ public class Categories implements Serializable {
 
     /**
      * Remove a category from the category list
-     * 
+     *
      * @param category
      * @return a boolean
      */
@@ -114,7 +115,7 @@ public class Categories implements Serializable {
 
     /**
      * Return the size of the category list
-     * 
+     *
      * @return the size of the category list
      */
     public int size() {
@@ -123,7 +124,7 @@ public class Categories implements Serializable {
 
     /**
      * Check if the category list contains the category given in parameter
-     * 
+     *
      * @param category
      * @return a boolean
      */
@@ -133,7 +134,7 @@ public class Categories implements Serializable {
 
     /**
      * Check if the category list is empty
-     * 
+     *
      * @return a boolean
      */
     @JsonIgnore

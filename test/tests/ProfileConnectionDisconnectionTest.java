@@ -8,7 +8,9 @@ import fr.utc.lo23.sharutc.controler.command.account.DisconnectionCommand;
 import fr.utc.lo23.sharutc.controler.network.Message;
 import fr.utc.lo23.sharutc.controler.network.MessageParser;
 import fr.utc.lo23.sharutc.controler.network.MessageType;
+import fr.utc.lo23.sharutc.controler.network.NetworkService;
 import fr.utc.lo23.sharutc.controler.network.NetworkServiceMock;
+import fr.utc.lo23.sharutc.controler.service.FileService;
 import fr.utc.lo23.sharutc.controler.service.MusicService;
 import fr.utc.lo23.sharutc.controler.service.UserService;
 import fr.utc.lo23.sharutc.model.AppModel;
@@ -40,6 +42,8 @@ public class ProfileConnectionDisconnectionTest {
     @Inject
     private MusicService musicService;
     @Inject
+    private FileService fileService;
+    @Inject
     private NetworkServiceMock networkService;
     @Inject
     private ConnectionRequestCommand connectionRequestCommand;
@@ -58,7 +62,7 @@ public class ProfileConnectionDisconnectionTest {
     public void before() {
         log.trace("building appModel");
         if (appModelBuilder == null) {
-            appModelBuilder = new AppModelBuilder(appModel, musicService, userService);
+            appModelBuilder = new AppModelBuilder(appModel, musicService, userService, fileService, networkService);
         }
         appModelBuilder.mockAppModel();
     }
@@ -169,7 +173,7 @@ public class ProfileConnectionDisconnectionTest {
         connectionRequestCommand.setLogin("tudorluchy1");
         connectionRequestCommand.setPassword("password1");
         connectionRequestCommand.execute();
-        
+
         networkService.clear();
 
         disconnectionCommand.execute();

@@ -4,6 +4,7 @@ import com.google.inject.Inject;
 import fr.utc.lo23.sharutc.GuiceJUnitRunner;
 import fr.utc.lo23.sharutc.controler.command.account.AccountCreationCommand;
 import fr.utc.lo23.sharutc.controler.command.account.ConnectionRequestCommand;
+import fr.utc.lo23.sharutc.controler.network.NetworkService;
 import fr.utc.lo23.sharutc.controler.service.FileService;
 import fr.utc.lo23.sharutc.controler.service.MusicService;
 import fr.utc.lo23.sharutc.controler.service.UserService;
@@ -38,6 +39,8 @@ public class ProfileCreateAccountTest {
     @Inject
     private FileService fileService;
     @Inject
+    private NetworkService networkService;
+    @Inject
     private AccountCreationCommand accountCreationCommand;
     @Inject
     private ConnectionRequestCommand connectionRequestCommand;
@@ -48,7 +51,7 @@ public class ProfileCreateAccountTest {
         log.trace("building appModel");
 
         if (appModelBuilder == null) {
-            appModelBuilder = new AppModelBuilder(appModel, musicService, userService);
+            appModelBuilder = new AppModelBuilder(appModel, musicService, userService, fileService, networkService);
         }/*
          appModelBuilder.mockAppModel();
          */
