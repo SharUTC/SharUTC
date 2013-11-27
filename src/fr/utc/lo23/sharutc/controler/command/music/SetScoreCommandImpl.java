@@ -3,6 +3,7 @@ package fr.utc.lo23.sharutc.controler.command.music;
 import com.google.inject.Inject;
 import fr.utc.lo23.sharutc.controler.network.NetworkService;
 import fr.utc.lo23.sharutc.controler.service.MusicService;
+import fr.utc.lo23.sharutc.controler.service.UserService;
 import fr.utc.lo23.sharutc.model.AppModel;
 import fr.utc.lo23.sharutc.model.domain.Music;
 import fr.utc.lo23.sharutc.model.userdata.Peer;
@@ -19,6 +20,7 @@ public class SetScoreCommandImpl implements SetScoreCommand {
             .getLogger(SetScoreCommandImpl.class);
     private final AppModel appModel;
     private final MusicService musicService;
+    private final UserService userService;
     private final NetworkService networkService;
     private Peer mPeer;
     private Music mMusic;
@@ -32,10 +34,11 @@ public class SetScoreCommandImpl implements SetScoreCommand {
      * @param networkService The service of the network
      */
     @Inject
-    public SetScoreCommandImpl(AppModel appModel, MusicService musicService,
+    public SetScoreCommandImpl(AppModel appModel, MusicService musicService, UserService userService,
             NetworkService networkService) {
         this.appModel = appModel;
         this.musicService = musicService;
+        this.userService = userService;
         this.networkService = networkService;
     }
 
@@ -98,6 +101,8 @@ public class SetScoreCommandImpl implements SetScoreCommand {
         } else if (appModel.getProfile().getUserInfo().getPeerId().equals(mMusic.getOwnerPeerId())) {
             musicService.setScore(mPeer, mMusic, mScore); // local
             appModel.getProfile().getKnownPeerList().update(mPeer);
+            musicService.saveUserMusicFile();
+            userService.saveProfileFiles();
         } else {
             networkService.setScore(mPeer, mMusic, mScore); // distant
         }

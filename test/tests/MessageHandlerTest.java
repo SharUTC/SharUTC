@@ -48,7 +48,7 @@ public class MessageHandlerTest {
     public void before() {
         log.trace("building appModel");
         if (appModelBuilder == null) {
-            appModelBuilder = new AppModelBuilder(appModel, musicService, userService);
+            appModelBuilder = new AppModelBuilder(appModel, musicService, userService, fileService, networkService);
         }
         appModelBuilder.mockAppModel();
     }
@@ -72,11 +72,10 @@ public class MessageHandlerTest {
         Message m = messageParser.write(MessageType.TAG_MAP, new Object[][]{{Message.TAG_MAP, tagMap}, {Message.CONVERSATION_ID, appModel.getCurrentConversationId()}});
         messageHandler.handleMessage(messageParser.toJSON(m));
         messageParser.read(m);
-        Assert.assertTrue(true);
+
         Long convId = (Long) messageParser.getValue(Message.CONVERSATION_ID);
         Peer peer = messageParser.getSource();
         Assert.assertEquals("ConvID is not good",appModel.getCurrentConversationId(), convId);
         Assert.assertEquals("SourcePeer is not good",appModel.getProfile().getUserInfo().toPeer(), peer);
-        System.out.println("peer = " + peer);
     }
 }

@@ -1,6 +1,7 @@
 package fr.utc.lo23.sharutc.controler.command.profile;
 
 import com.google.inject.Inject;
+import fr.utc.lo23.sharutc.controler.service.MusicService;
 import fr.utc.lo23.sharutc.model.AppModel;
 import fr.utc.lo23.sharutc.model.domain.Music;
 import fr.utc.lo23.sharutc.model.domain.Rights;
@@ -14,6 +15,7 @@ import org.slf4j.LoggerFactory;
 public class ManageRightsCommandImpl implements ManageRightsCommand {
 
     private static final Logger log = LoggerFactory.getLogger(ManageRightsCommandImpl.class);
+    private final MusicService musicService;
     private Category mCategory;
     private Music mMusic;
     private Boolean mMayReadInfo;
@@ -21,14 +23,15 @@ public class ManageRightsCommandImpl implements ManageRightsCommand {
     private Boolean mMayCommentAndScore;
     private final AppModel appModel;
 
-     /**
+    /**
      * Constructor
      *
      * @param appModel
      */
     @Inject
-    public ManageRightsCommandImpl(AppModel appModel) {
+    public ManageRightsCommandImpl(AppModel appModel, MusicService musicService) {
         this.appModel = appModel;
+        this.musicService = musicService;
     }
 
     @Override
@@ -84,9 +87,9 @@ public class ManageRightsCommandImpl implements ManageRightsCommand {
     @Override
     public void execute() {
         log.info("ManageRightsCommand ...");
-        
+
         appModel.getRightsList().setRights(new Rights(mCategory.getId(), mMusic.getId(), mMayReadInfo, mMayListen, mMayCommentAndScore));
-        
+        musicService.saveUserRightsListFile();
         log.info("ManageRightsCommand DONE");
     }
 }

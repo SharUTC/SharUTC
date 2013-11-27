@@ -970,6 +970,7 @@ public class MusicServiceImpl implements MusicService {
         }
         if (!keepPeer) {
             appModel.getProfile().getKnownPeerList().remove(peer);
+            userService.saveProfileFiles();
         }
     }
 }

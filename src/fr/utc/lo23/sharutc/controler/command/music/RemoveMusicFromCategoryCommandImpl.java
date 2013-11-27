@@ -16,14 +16,14 @@ public class RemoveMusicFromCategoryCommandImpl implements RemoveMusicFromCatego
             .getLogger(RemoveMusicFromCategoryCommandImpl.class);
     private Category mCategory;
     private Music mMusic;
-    final private MusicService mMusicService;
+    final private MusicService musicService;
 
     /**
      * {@inheritDoc}
      */
     @Inject
     public RemoveMusicFromCategoryCommandImpl(MusicService mMusicService) {
-        this.mMusicService = mMusicService;
+        this.musicService = mMusicService;
     }
 
     /**
@@ -64,7 +64,8 @@ public class RemoveMusicFromCategoryCommandImpl implements RemoveMusicFromCatego
      */
     public void execute() {
         log.info("RemoveMusicFromCategoryCommand...");
-        mMusicService.removeMusicFromCategory(mMusic, mCategory);
+        musicService.removeMusicFromCategory(mMusic, mCategory);
+        musicService.saveUserMusicFile();
         log.info("RemoveMusicFromCategoryCommand DONE");
     }
 }

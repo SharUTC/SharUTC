@@ -5,16 +5,19 @@ import fr.utc.lo23.sharutc.GuiceJUnitRunner;
 import fr.utc.lo23.sharutc.controler.command.account.IntegrateDisconnectionCommand;
 import fr.utc.lo23.sharutc.controler.command.account.IntegrateUserInfoAndReplyCommand;
 import fr.utc.lo23.sharutc.controler.command.account.IntegrateUserInfoCommand;
+import fr.utc.lo23.sharutc.controler.command.profile.AddContactCommand;
 import fr.utc.lo23.sharutc.controler.command.search.SendMusicsCommand;
 import fr.utc.lo23.sharutc.controler.network.Message;
 import fr.utc.lo23.sharutc.controler.network.MessageParser;
-import fr.utc.lo23.sharutc.controler.network.MessageType;
+import fr.utc.lo23.sharutc.controler.network.NetworkService;
 import fr.utc.lo23.sharutc.controler.network.NetworkServiceMock;
+import fr.utc.lo23.sharutc.controler.service.FileService;
 import fr.utc.lo23.sharutc.controler.service.MusicService;
 import fr.utc.lo23.sharutc.controler.service.UserService;
 import fr.utc.lo23.sharutc.model.AppModel;
 import fr.utc.lo23.sharutc.model.AppModelBuilder;
 import fr.utc.lo23.sharutc.model.domain.Catalog;
+import fr.utc.lo23.sharutc.model.userdata.Contact;
 import fr.utc.lo23.sharutc.model.userdata.Peer;
 import fr.utc.lo23.sharutc.model.userdata.UserInfo;
 import org.junit.After;
@@ -35,7 +38,7 @@ import org.slf4j.LoggerFactory;
 public class NetworkVariousTest {
 
     private static final Logger log = LoggerFactory
-        .getLogger(NetworkVariousTest.class);
+            .getLogger(NetworkVariousTest.class);
     @Inject
     private AppModel appModel;
     @Inject
@@ -43,11 +46,15 @@ public class NetworkVariousTest {
     @Inject
     private MusicService musicService;
     @Inject
+    private FileService fileService;
+    @Inject
     private NetworkServiceMock networkService;
     @Inject
     private IntegrateUserInfoCommand integrateUserInfoCommand;
     @Inject
     private IntegrateUserInfoAndReplyCommand integrateUserInfoAndReplyCommand;
+    @Inject
+    private AddContactCommand addContactCommand;
     @Inject
     private IntegrateDisconnectionCommand integrateDisconnectionCommand;
     @Inject
@@ -63,9 +70,10 @@ public class NetworkVariousTest {
     public void before() {
         log.trace("building appModel");
         if (appModelBuilder == null) {
-            appModelBuilder = new AppModelBuilder(appModel, musicService, userService);
+            appModelBuilder = new AppModelBuilder(appModel, musicService, userService, fileService, networkService);
         }
         appModelBuilder.mockAppModel();
+        networkService.clear();
     }
 
     /**
@@ -94,14 +102,14 @@ public class NetworkVariousTest {
         userInfo.setLastName("Luchiancenco");
         userInfo.setAge(22);
         Peer peer = userInfo.toPeer();
-        
+
         // CONNECTION
         integrateUserInfoCommand.setUserInfo(userInfo);
         integrateUserInfoCommand.execute();
         // tests
-        Assert.assertNotNull("Known doesn't peer exists", appModel.getProfile().getKnownPeerList().getPeerNameById(userInfo.getPeerId()));
-        Assert.assertNotNull("Active doesn't peer exists", appModel.getActivePeerList().getUserInfoByPeerId(userInfo.getPeerId()));
-   
+        //   Assert.assertNotNull("Known peer doesn't exists", appModel.getProfile().getKnownPeerList().getPeerNameById(userInfo.getPeerId()));
+        Assert.assertNotNull("Active peer doesn't exists", appModel.getActivePeerList().getUserInfoByPeerId(userInfo.getPeerId()));
+
         Catalog dummyCatalog = appModel.getLocalCatalog();
 
         // DOWNLOAD
@@ -113,7 +121,54 @@ public class NetworkVariousTest {
         messageParser.read(networkService.getSentMessage());
         Assert.assertEquals("Catalog sent is erroneous", dummyCatalog,
                 (Catalog) messageParser.getValue(Message.CATALOG));
-        
+
+        // DISCONNECTION
+        integrateDisconnectionCommand.setPeerId(peer.getId());
+        integrateDisconnectionCommand.execute();
+        // tests
+        Assert.assertNull("Active peer exists", appModel.getActivePeerList().getUserInfoByPeerId(peer.getId()));
+    }
+
+    /**
+     * Connection, download file, deconnection
+     */
+    @Test
+    public void downloadFileWithContact() {
+        // add first user
+        String login = "tudorluchy1";
+        String password = "password1";
+        Long peerId = 4L;
+        UserInfo userInfo = new UserInfo();
+        userInfo.setLogin(login);
+        userInfo.setPassword(password);
+        userInfo.setPeerId(peerId);
+        userInfo.setFirstName("Tudor");
+        userInfo.setLastName("Luchiancenco");
+        userInfo.setAge(22);
+        Peer peer = userInfo.toPeer();
+
+        // CONNECTION
+        integrateUserInfoCommand.setUserInfo(userInfo);
+        integrateUserInfoCommand.execute();
+
+        addContactCommand.setContact(new Contact(userInfo));
+        addContactCommand.execute();
+        // tests
+        Assert.assertNotNull("Known peer doesn't exists", appModel.getProfile().getKnownPeerList().getPeerNameById(userInfo.getPeerId()));
+        Assert.assertNotNull("Active peer doesn't exists", appModel.getActivePeerList().getUserInfoByPeerId(userInfo.getPeerId()));
+
+        Catalog dummyCatalog = appModel.getLocalCatalog();
+
+        // DOWNLOAD
+        sendMusicsCommand.setCatalog(dummyCatalog);
+        sendMusicsCommand.setPeer(peer);
+        sendMusicsCommand.execute();
+        // tests
+        Assert.assertNotNull("No message sent", networkService.getSentMessage());
+        messageParser.read(networkService.getSentMessage());
+        Assert.assertEquals("Catalog sent is erroneous", dummyCatalog,
+                (Catalog) messageParser.getValue(Message.CATALOG));
+
         // DISCONNECTION
         integrateDisconnectionCommand.setPeerId(peer.getId());
         integrateDisconnectionCommand.execute();

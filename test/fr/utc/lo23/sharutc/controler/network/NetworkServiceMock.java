@@ -16,6 +16,7 @@ import org.slf4j.LoggerFactory;
  */
 @Singleton
 public class NetworkServiceMock extends NetworkServiceImpl implements NetworkService {
+
     private static final Logger log = LoggerFactory
             .getLogger(NetworkServiceMock.class);
     private final List<Message> messages = new LinkedList<Message>();
@@ -54,9 +55,9 @@ public class NetworkServiceMock extends NetworkServiceImpl implements NetworkSer
         peers.add(null);
     }
 
-   public int size() {
-       return messages.size();
-   }
+    public int size() {
+        return messages.size();
+    }
 
     public Message getSentMessage(int i) {
         return messages.get(i);
@@ -66,7 +67,7 @@ public class NetworkServiceMock extends NetworkServiceImpl implements NetworkSer
         if (messages.isEmpty()) {
             return null;
         }
-        return messages.get(messages.size());
+        return messages.get(messages.size() - 1);
     }
 
     public Peer getPeer(int i) {
@@ -77,7 +78,7 @@ public class NetworkServiceMock extends NetworkServiceImpl implements NetworkSer
         if (peers.isEmpty()) {
             return null;
         }
-        return peers.get(peers.size());
+        return peers.get(peers.size() - 1);
     }
 
     public void clear() {

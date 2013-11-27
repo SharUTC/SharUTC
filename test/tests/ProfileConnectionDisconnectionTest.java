@@ -8,7 +8,9 @@ import fr.utc.lo23.sharutc.controler.command.account.DisconnectionCommand;
 import fr.utc.lo23.sharutc.controler.network.Message;
 import fr.utc.lo23.sharutc.controler.network.MessageParser;
 import fr.utc.lo23.sharutc.controler.network.MessageType;
+import fr.utc.lo23.sharutc.controler.network.NetworkService;
 import fr.utc.lo23.sharutc.controler.network.NetworkServiceMock;
+import fr.utc.lo23.sharutc.controler.service.FileService;
 import fr.utc.lo23.sharutc.controler.service.MusicService;
 import fr.utc.lo23.sharutc.controler.service.UserService;
 import fr.utc.lo23.sharutc.model.AppModel;
@@ -40,6 +42,8 @@ public class ProfileConnectionDisconnectionTest {
     @Inject
     private MusicService musicService;
     @Inject
+    private FileService fileService;
+    @Inject
     private NetworkServiceMock networkService;
     @Inject
     private ConnectionRequestCommand connectionRequestCommand;
@@ -58,7 +62,7 @@ public class ProfileConnectionDisconnectionTest {
     public void before() {
         log.trace("building appModel");
         if (appModelBuilder == null) {
-            appModelBuilder = new AppModelBuilder(appModel, musicService, userService);
+            appModelBuilder = new AppModelBuilder(appModel, musicService, userService, fileService, networkService);
         }
         appModelBuilder.mockAppModel();
     }
@@ -102,11 +106,11 @@ public class ProfileConnectionDisconnectionTest {
         // create account
         accountCreationCommand.setUserInfo(userInfo);
         accountCreationCommand.execute();
-        
+
         // Clean profile to try connection
         userService.cleanProfile();
         Assert.assertNull(appModel.getProfile());
-        
+
         // call command (wrong login / pass)
         connectionRequestCommand.setLogin("tudorluchy111");
         connectionRequestCommand.setPassword("password111");
@@ -117,12 +121,12 @@ public class ProfileConnectionDisconnectionTest {
         connectionRequestCommand.setLogin("tudorluchy1");
         connectionRequestCommand.setPassword("password1");
         connectionRequestCommand.execute();
-        
+
         Assert.assertNotNull(appModel.getProfile());
         Assert.assertEquals(appModel.getProfile().getUserInfo().getLogin(), login);
         Assert.assertEquals(appModel.getProfile().getUserInfo().getPassword(), password);
-        Assert.assertEquals(appModel.getProfile().getUserInfo().getFirstName() , firstName);
-        Assert.assertEquals(appModel.getProfile().getUserInfo().getLastName() , lastName);
+        Assert.assertEquals(appModel.getProfile().getUserInfo().getFirstName(), firstName);
+        Assert.assertEquals(appModel.getProfile().getUserInfo().getLastName(), lastName);
 
         // tests
         Message m = networkService.getSentMessage();
@@ -132,7 +136,7 @@ public class ProfileConnectionDisconnectionTest {
         UserInfo receivedUserInfo = (UserInfo) messageParser.getValue(Message.USER_INFO);
         Assert.assertEquals("The mesage type must be : CONNECTION", MessageType.CONNECTION, m.getType());
         Assert.assertEquals("The login don't match", login, receivedUserInfo.getLogin());
-        Assert.assertEquals("The password don't match", password, receivedUserInfo.getPassword());
+        Assert.assertNull("The password must be null", receivedUserInfo.getPassword());
         Assert.assertEquals("The peerId don't match", appModel.getProfile().getUserInfo().getPeerId(), receivedUserInfo.getPeerId());
 
     }
@@ -143,6 +147,35 @@ public class ProfileConnectionDisconnectionTest {
     // FIXME: le problème est similaire, la correction est à faire dans NetworkServiceImpl
     @Test
     public void disconnectionCommand() {
+        // add first user
+        String login = "tudorluchy1";
+        String password = "password1";
+        //  Long peerId = 4L;
+        String firstName = "Tudor";
+        String lastName = "Luchiancenco";
+
+        UserInfo userInfo = new UserInfo();
+        userInfo.setLogin(login);
+        userInfo.setPassword(password);
+        //   userInfo.setPeerId(peerId);
+        userInfo.setFirstName(firstName);
+        userInfo.setLastName(lastName);
+        userInfo.setAge(22);
+
+        // create account
+        accountCreationCommand.setUserInfo(userInfo);
+        accountCreationCommand.execute();
+
+        // Clean profile to try connection
+        userService.cleanProfile();
+        Assert.assertNull(appModel.getProfile());
+        // call command (right login / pass)
+        connectionRequestCommand.setLogin("tudorluchy1");
+        connectionRequestCommand.setPassword("password1");
+        connectionRequestCommand.execute();
+
+        networkService.clear();
+
         disconnectionCommand.execute();
 
         // tests

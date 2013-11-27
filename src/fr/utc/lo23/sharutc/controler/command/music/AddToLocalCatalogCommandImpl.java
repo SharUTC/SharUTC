@@ -49,6 +49,7 @@ public class AddToLocalCatalogCommandImpl implements AddToLocalCatalogCommand {
     public void execute() {
         log.info("AddToLocalCatalogCommand ...");
         musicService.addToLocalCatalog(mFiles);
+        musicService.saveUserMusicFile();
         log.info("AddToLocalCatalogCommand DONE");
     }
 }

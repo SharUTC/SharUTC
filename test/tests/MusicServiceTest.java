@@ -7,6 +7,7 @@ import fr.utc.lo23.sharutc.controler.command.music.IntegrateRemoteCatalogCommand
 import fr.utc.lo23.sharutc.controler.command.music.RemoveFromLocalCatalogCommand;
 import fr.utc.lo23.sharutc.controler.command.music.AddMusicToCategoryCommand;
 import fr.utc.lo23.sharutc.controler.command.music.RemoveMusicFromCategoryCommand;
+import fr.utc.lo23.sharutc.controler.network.NetworkService;
 import fr.utc.lo23.sharutc.controler.service.FileService;
 import fr.utc.lo23.sharutc.controler.service.MusicService;
 import fr.utc.lo23.sharutc.controler.service.UserService;
@@ -46,11 +47,13 @@ public class MusicServiceTest {
     @Inject
     private AppModel appModel;
     @Inject
-    private FileService fileService;
-    @Inject
     private MusicService musicService;
     @Inject
     private UserService userService;
+    @Inject
+    private FileService fileService;
+    @Inject
+    private NetworkService networkService;
     @Inject
     private AddToLocalCatalogCommand addToLocalCatalogCommand;
     @Inject
@@ -67,7 +70,7 @@ public class MusicServiceTest {
     public void before() {
         log.trace("building appModel");
         if (appModelBuilder == null) {
-            appModelBuilder = new AppModelBuilder(appModel, musicService, userService);
+            appModelBuilder = new AppModelBuilder(appModel, musicService, userService, fileService, networkService);
         }
         appModelBuilder.mockAppModel();
     }

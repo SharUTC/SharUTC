@@ -6,6 +6,8 @@ import fr.utc.lo23.sharutc.GuiceJUnitRunner.GuiceModules;
 import fr.utc.lo23.sharutc.controler.command.music.AddCommentCommand;
 import fr.utc.lo23.sharutc.controler.command.music.EditCommentCommand;
 import fr.utc.lo23.sharutc.controler.command.music.RemoveCommentCommand;
+import fr.utc.lo23.sharutc.controler.network.NetworkService;
+import fr.utc.lo23.sharutc.controler.service.FileService;
 import fr.utc.lo23.sharutc.controler.service.MusicService;
 import fr.utc.lo23.sharutc.controler.service.UserService;
 import fr.utc.lo23.sharutc.model.AppModel;
@@ -38,6 +40,10 @@ public class MusicCommentTest {
     @Inject
     private UserService userService;
     @Inject
+    private FileService fileService;
+    @Inject
+    private NetworkService networkService;
+    @Inject
     private AddCommentCommand addCommentCommand;
     @Inject
     private EditCommentCommand editCommentCommand;
@@ -49,7 +55,7 @@ public class MusicCommentTest {
     public void before() {
         log.trace("building appModel");
         if (appModelBuilder == null) {
-            appModelBuilder = new AppModelBuilder(appModel, musicService, userService);
+            appModelBuilder = new AppModelBuilder(appModel, musicService, userService, fileService, networkService);
         }
         appModelBuilder.mockAppModel();
     }

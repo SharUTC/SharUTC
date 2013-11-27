@@ -81,6 +81,7 @@ public class UnsetScoreCommandImpl implements UnsetScoreCommand {
         } else if (appModel.getProfile().getUserInfo().getPeerId().equals(mMusic.getOwnerPeerId())) {
             musicService.unsetScore(mPeer, mMusic); // local
             musicService.removeFromKnownPeersIfUseless(mPeer);
+            musicService.saveUserMusicFile();
         } else {
             networkService.unsetScore(mPeer, mMusic); // distant
         }

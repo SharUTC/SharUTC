@@ -7,7 +7,9 @@ import fr.utc.lo23.sharutc.controler.command.music.SendCatalogCommand;
 import fr.utc.lo23.sharutc.controler.network.Message;
 import fr.utc.lo23.sharutc.controler.network.MessageParser;
 import fr.utc.lo23.sharutc.controler.network.MessageType;
+import fr.utc.lo23.sharutc.controler.network.NetworkService;
 import fr.utc.lo23.sharutc.controler.network.NetworkServiceMock;
+import fr.utc.lo23.sharutc.controler.service.FileService;
 import fr.utc.lo23.sharutc.controler.service.MusicService;
 import fr.utc.lo23.sharutc.controler.service.UserService;
 import fr.utc.lo23.sharutc.model.AppModel;
@@ -30,9 +32,9 @@ import org.slf4j.LoggerFactory;
 @RunWith(GuiceJUnitRunner.class)
 @GuiceJUnitRunner.GuiceModules({NetworkCatalogTestModule.class})
 public class NetworkCatalogTest {
-    
+
     private static final Logger log = LoggerFactory
-        .getLogger(NetworkCatalogTest.class);
+            .getLogger(NetworkCatalogTest.class);
     @Inject
     private AppModel appModel;
     private AppModelBuilder appModelBuilder = null;
@@ -40,11 +42,12 @@ public class NetworkCatalogTest {
     private MusicService musicService;
     @Inject
     private UserService userService;
-    @Inject 
+    @Inject
+    private FileService fileService;
+    @Inject
     private NetworkServiceMock networkService;
     @Inject
     private MessageParser messageParser;
-    
     @Inject
     private FetchRemoteCatalogCommand fetchRemoteCatalogCommand;
     @Inject
@@ -57,9 +60,10 @@ public class NetworkCatalogTest {
     public void before() {
         log.trace("building appModel");
         if (appModelBuilder == null) {
-            appModelBuilder = new AppModelBuilder(appModel, musicService, userService);
+            appModelBuilder = new AppModelBuilder(appModel, musicService, userService, fileService, networkService);
         }
         appModelBuilder.mockAppModel();
+        networkService.clear();
     }
 
     /**
@@ -70,28 +74,28 @@ public class NetworkCatalogTest {
         log.trace("cleaning appModel");
         appModelBuilder.clearAppModel();
     }
-    
+
     @Test
-    public void fetchRemoteCatalogCommand(){
+    public void fetchRemoteCatalogCommand() {
         // Create a Peer
         Peer peerTest = new Peer();
         peerTest.setDisplayName("PeerTest");
         peerTest.setId(9875);
-        
+
         // Create a Music
         Music musicTest = new Music();
         musicTest.setFileName("MusicTest");
-        
+
         fetchRemoteCatalogCommand.setPeer(peerTest);
         fetchRemoteCatalogCommand.execute();
-        
+
         Message msgSent = networkService.getSentMessage();
         Assert.assertNotNull("No message sent", msgSent);
-        Assert.assertEquals("The mesage type must be : MUSIC_GET", MessageType.MUSIC_GET, msgSent.getType());
+        Assert.assertEquals("The mesage type must be : MUSIC_GET_CATALOG", MessageType.MUSIC_GET_CATALOG, msgSent.getType());
     }
-    
+
     @Test
-    public void sendCatalogCommand(){
+    public void sendCatalogCommand() {
         Music music = new Music();
         music.setTitle("musicTest");
 

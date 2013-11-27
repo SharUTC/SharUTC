@@ -22,16 +22,17 @@ public class AddContactToCategoryCommandImpl implements AddContactToCategoryComm
     private Category mCategory;
     final private UserService mUserService;
 
-     /**
-     * Constructor 
+    /**
+     * Constructor
+     *
      * @param userService
      */
     @Inject
     public AddContactToCategoryCommandImpl(UserService userService) {
         this.mUserService = userService;
     }
-    
-     /**
+
+    /**
      * {@inheritDoc}
      */
     @Override
@@ -39,7 +40,7 @@ public class AddContactToCategoryCommandImpl implements AddContactToCategoryComm
         return mCategory;
     }
 
-     /**
+    /**
      * {@inheritDoc}
      */
     @Override
@@ -47,7 +48,7 @@ public class AddContactToCategoryCommandImpl implements AddContactToCategoryComm
         this.mCategory = category;
     }
 
-     /**
+    /**
      * {@inheritDoc}
      */
     @Override
@@ -55,7 +56,7 @@ public class AddContactToCategoryCommandImpl implements AddContactToCategoryComm
         return mContact;
     }
 
-     /**
+    /**
      * {@inheritDoc}
      */
     @Override
@@ -63,14 +64,14 @@ public class AddContactToCategoryCommandImpl implements AddContactToCategoryComm
         this.mContact = contact;
     }
 
-     /**
+    /**
      * {@inheritDoc}
      */
     @Override
     public void execute() {
         log.info("AddContactToCategoryCommand ...");
-        mUserService.addContactToCategory(mContact,mCategory);
+        mUserService.addContactToCategory(mContact, mCategory);
+        mUserService.saveProfileFiles();
         log.info("AddContactToCategoryCommand DONE");
     }
-    
 }

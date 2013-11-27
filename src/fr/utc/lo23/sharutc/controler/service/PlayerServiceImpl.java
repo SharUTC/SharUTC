@@ -133,7 +133,7 @@ public class PlayerServiceImpl implements PlayerService, PropertyChangeListener,
     public synchronized void playerPlay() {
         log.info("playerPlay");
         if (player == null) {
-            if (mCurrentMusic == null) {
+            if (mCurrentMusic == null && !mPlaylist.isEmpty()) {
                 setCurrentMusic(mPlaylist.get(0));
             }
             if (mCurrentMusic != null) {
@@ -314,7 +314,7 @@ public class PlayerServiceImpl implements PlayerService, PropertyChangeListener,
             fetchRemoteDataThenPlay(music);
 
         } else if (music != mCurrentMusic) {
-            if (music != null && music.getFileBytes() == null || music.getFileBytes().length == 0) {
+            if (music != null && (music.getFileBytes() == null || music.getFileBytes().length == 0)) {
                 musicService.loadMusicFile(music);
             }
             Music oldMusic = this.mCurrentMusic;
@@ -497,8 +497,14 @@ public class PlayerServiceImpl implements PlayerService, PropertyChangeListener,
     }
 
     private void fetchRemoteDataThenPlay(Music music) {
-        Peer peer = appModel.getActivePeerList().getPeerByPeerId(music.getOwnerPeerId());
-        log.info("Fetching data for remote music from {}: {}", peer, music);
-        networkService.downloadMusicForPlaying(peer, music.getId());
+        if (appModel.getTmpCatalog().contains(music)) {
+            log.info("Loading data for remote music from TMP_CATALOG : {}", music);
+            Music musicWithFile = appModel.getTmpCatalog().findMusicByHash(music.getHash());
+            updateAndPlayMusic(musicWithFile);
+        } else {
+            Peer peer = appModel.getActivePeerList().getPeerByPeerId(music.getOwnerPeerId());
+            log.info("Fetching data for remote music from {}: {}", peer, music);
+            networkService.downloadMusicForPlaying(peer, music.getId());
+        }
     }
 }

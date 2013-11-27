@@ -3,6 +3,7 @@ package fr.utc.lo23.sharutc.controler.command.music;
 import com.google.inject.Inject;
 import fr.utc.lo23.sharutc.controler.network.NetworkService;
 import fr.utc.lo23.sharutc.controler.service.MusicService;
+import fr.utc.lo23.sharutc.controler.service.UserService;
 import fr.utc.lo23.sharutc.model.AppModel;
 import fr.utc.lo23.sharutc.model.domain.Music;
 import fr.utc.lo23.sharutc.model.userdata.Peer;
@@ -19,6 +20,7 @@ public class RemoveCommentCommandImpl implements RemoveCommentCommand {
             .getLogger(RemoveCommentCommandImpl.class);
     private final AppModel appModel;
     private final MusicService musicService;
+    private final UserService userService;
     private final NetworkService networkService;
     private Peer mPeer;
     private Music mMusic;
@@ -32,10 +34,11 @@ public class RemoveCommentCommandImpl implements RemoveCommentCommand {
      * @param networkService The service of the network
      */
     @Inject
-    public RemoveCommentCommandImpl(AppModel appModel, MusicService musicService,
+    public RemoveCommentCommandImpl(AppModel appModel, MusicService musicService, UserService userService,
             NetworkService networkService) {
         this.appModel = appModel;
         this.musicService = musicService;
+        this.userService = userService;
         this.networkService = networkService;
     }
 
@@ -98,6 +101,7 @@ public class RemoveCommentCommandImpl implements RemoveCommentCommand {
         } else if (appModel.getProfile().getUserInfo().getPeerId().equals(mMusic.getOwnerPeerId())) {
             musicService.removeComment(mPeer, mMusic, mCommentId); // local
             musicService.removeFromKnownPeersIfUseless(mPeer);
+            musicService.saveUserMusicFile();
         } else {
             networkService.removeComment(mPeer, mMusic, mCommentId); // distant
         }

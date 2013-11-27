@@ -5,6 +5,8 @@ import fr.utc.lo23.sharutc.GuiceJUnitRunner;
 import fr.utc.lo23.sharutc.GuiceJUnitRunner.GuiceModules;
 import fr.utc.lo23.sharutc.controler.command.music.SetScoreCommand;
 import fr.utc.lo23.sharutc.controler.command.music.UnsetScoreCommand;
+import fr.utc.lo23.sharutc.controler.network.NetworkService;
+import fr.utc.lo23.sharutc.controler.service.FileService;
 import fr.utc.lo23.sharutc.controler.service.MusicService;
 import fr.utc.lo23.sharutc.controler.service.UserService;
 import fr.utc.lo23.sharutc.model.AppModel;
@@ -37,6 +39,10 @@ public class MusicScoreTest {
     @Inject
     private MusicService musicService;
     @Inject
+    private FileService fileService;
+    @Inject
+    private NetworkService networkService;
+    @Inject
     private SetScoreCommand setScoreCommand;
     @Inject
     private UnsetScoreCommand unsetScoreCommand;
@@ -46,7 +52,7 @@ public class MusicScoreTest {
     public void before() {
         log.trace("building appModel");
         if (appModelBuilder == null) {
-            appModelBuilder = new AppModelBuilder(appModel, musicService, userService);
+            appModelBuilder = new AppModelBuilder(appModel, musicService, userService, fileService, networkService);
         }
         appModelBuilder.mockAppModel();
     }

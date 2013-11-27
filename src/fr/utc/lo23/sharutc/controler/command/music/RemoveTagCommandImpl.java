@@ -64,6 +64,7 @@ public class RemoveTagCommandImpl implements RemoveTagCommand {
     public void execute() {
         log.info("RemoveTagCommand ...");
         musicService.removeTag(mMusic, mTag);
+        musicService.saveUserMusicFile();
         log.info("RemoveTagCommand DONE");
     }
 }

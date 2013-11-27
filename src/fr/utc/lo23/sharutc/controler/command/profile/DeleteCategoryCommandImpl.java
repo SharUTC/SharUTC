@@ -20,16 +20,17 @@ public class DeleteCategoryCommandImpl implements DeleteCategoryCommand {
     private Category mCategory;
     final private UserService mUserService;
 
-     /**
+    /**
      * Constructor
+     *
      * @param userService
      */
     @Inject
     public DeleteCategoryCommandImpl(UserService userService) {
         this.mUserService = userService;
     }
-    
-     /**
+
+    /**
      * {@inheritDoc}
      */
     @Override
@@ -37,7 +38,7 @@ public class DeleteCategoryCommandImpl implements DeleteCategoryCommand {
         return mCategory;
     }
 
-     /**
+    /**
      * {@inheritDoc}
      */
     @Override
@@ -45,14 +46,14 @@ public class DeleteCategoryCommandImpl implements DeleteCategoryCommand {
         this.mCategory = category;
     }
 
-     /**
+    /**
      * {@inheritDoc}
      */
     @Override
     public void execute() {
         log.info("DeleteCategoryCommand ...");
         mUserService.deleteCategory(mCategory);
+        mUserService.saveProfileFiles();
         log.info("DeleteCategoryCommand DONE");
     }
-    
 }
