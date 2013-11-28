@@ -43,7 +43,7 @@ public class MessageParserImpl implements MessageParser {
     @Override
     public void read(Message incomingMessage) {
         this.message = incomingMessage;
-        
+
         Map<String, Object> parsedContent = message.getContent();
         if (parsedContent != null) {
             messageContent = new HashMap<String, Object>();
@@ -108,13 +108,13 @@ public class MessageParserImpl implements MessageParser {
         }
 
         Message newMessage = null;
-        try {
-            String contentAsString = content != null ? mapper.writeValueAsString(content) : "";
-            log.debug("Writing Message : content = {}", contentAsString);
-            newMessage = new Message(appModel.getProfile().getUserInfo().getPeerId(), messageType, map);
-        } catch (JsonProcessingException ex) {
-            log.error(ex.toString());
-        }
+        //try {
+        //    String contentAsString = content != null ? mapper.writeValueAsString(content) : "";
+        //    log.debug("Writing Message : content = {}", contentAsString);
+        newMessage = new Message(appModel.getProfile().getUserInfo().getPeerId(), messageType, map);
+        //} catch (JsonProcessingException ex) {
+        //    log.error(ex.toString());
+        //}
         return newMessage;
     }
 

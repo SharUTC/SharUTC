@@ -107,7 +107,7 @@ public class NetworkMusicDownloadTest {
 
     @Test
     public void sendMusicToPlayCommand() {
-        Music dummyMusic = appModel.getLocalCatalog().get(0);
+        Music dummyMusic = appModel.getLocalCatalog().get(0).clone();
         Peer dummyPeer = new Peer(42, "John Doe");
 
         sendMusicToPlayCommand.setConversationId(1337l);
