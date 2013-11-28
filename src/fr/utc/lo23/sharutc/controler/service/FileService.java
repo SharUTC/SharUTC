@@ -28,16 +28,17 @@ public interface FileService {
 
     /**
      * Unzip the file find in <i>srcPath</i> in the users folder
+     *
      * @param srcPath - path of the file to unzip
-     * @param force - <b>True</b> if the profile already exists, it overwrites it
-     *                <b>False</b> if the profile already exists, throws an Exception
+     * @param force - <b>True</b> if the profile already exists, it overwrites
+     * it
+     * <b>False</b> if the profile already exists, throws an Exception
      * @throws java.lang.Exception
      */
     public void importWholeProfile(String srcPath, boolean force) throws Exception;
 
     /**
-     * Compress the folder srcPath  into a zip
-     * and write it at destPath
+     * Compress the folder srcPath into a zip and write it at destPath
      *
      * @param srcPath path of the folder to compress
      * @param destPath path of the destination
@@ -47,12 +48,11 @@ public interface FileService {
 
     /**
      * Delete every file and forlder under <i>pathname</i>
-     * 
+     *
      * @param pathname
      */
     public void deleteFolderRecursively(String pathname);
-    
-    
+
     /**
      * Used for reading a local mp3 file and creating a new Music, increments
      * profile's counter. If reading id3tag fails, then tag values are set to
@@ -112,7 +112,7 @@ public interface FileService {
 
     public Profile readProfileFile(String login);
 
-    public void createFile(byte[] bytes, String fileName);
+    public void createMusicFile(byte[] bytes, String fileName, String login);
 
     public void createAccountFolder(String login);
 

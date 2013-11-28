@@ -103,7 +103,7 @@ public class PlayerServiceImpl implements PlayerService, PropertyChangeListener,
     @Override
     public void playOneMusic(Music music) {
         log.info("playOneMusic");
-        if (music != null && !music.getFileMissing() && music.getFileBytes() != null) {
+        if (music != null && !music.getFileMissing()) {
             mPlaylist.clear();
             mPlaylist.add(music);
             playerPlay();
