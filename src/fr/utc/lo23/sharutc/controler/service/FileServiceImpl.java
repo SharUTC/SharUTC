@@ -4,7 +4,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import static fr.utc.lo23.sharutc.controler.service.FileService.DOT_MP3;
+import static fr.utc.lo23.sharutc.controler.service.FileService.FOLDER_MUSICS;
 import static fr.utc.lo23.sharutc.controler.service.FileService.ROOT_FOLDER_TMP;
+import static fr.utc.lo23.sharutc.controler.service.FileService.ROOT_FOLDER_USERS;
 import fr.utc.lo23.sharutc.model.AppModel;
 import fr.utc.lo23.sharutc.model.domain.Music;
 import java.io.BufferedInputStream;
@@ -30,7 +32,6 @@ import org.jaudiotagger.tag.FieldKey;
 import org.jaudiotagger.tag.Tag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import static fr.utc.lo23.sharutc.controler.service.FileService.ROOT_FOLDER_USERS;
 import fr.utc.lo23.sharutc.model.domain.Catalog;
 import fr.utc.lo23.sharutc.model.userdata.Profile;
 
@@ -237,6 +238,7 @@ public class FileServiceImpl implements FileService {
 
     /**
      * {@inheritDoc}
+     *
      * @throws java.lang.Exception
      */
     @Override
@@ -402,6 +404,7 @@ public class FileServiceImpl implements FileService {
 
     /**
      * {@inheritDoc}
+     *
      * @throws java.lang.Exception
      */
     @Override
@@ -575,27 +578,28 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
-    public void createFile(byte[] bytes, String fileName) {
-        log.debug("createFile ({}) ...", fileName);
+    public void createMusicFile(byte[] bytes, String fileName, String login) {
+        String fullFileName = new StringBuilder(appFolder).append(ROOT_FOLDER_USERS).append(File.separator).append(login).append(File.separator).append(FOLDER_MUSICS).append(File.separator).append(fileName).toString();
+        log.debug("createFile ({}) ...", fullFileName);
         try {
             //convert array of bytes into file
             FileOutputStream fileOuputStream =
-                    new FileOutputStream(fileName);
+                    new FileOutputStream(fullFileName);
             fileOuputStream.write(bytes);
             fileOuputStream.close();
         } catch (IOException ex) {
-            log.error("Error while creating file '{}' from bytes", fileName, ex.toString());
-            throw new RuntimeException("Error while creating file '" + fileName + "' from bytes", ex);
+            log.error("Error while creating file '{}' from bytes", fullFileName, ex.toString());
+            throw new RuntimeException("Error while creating file '" + fullFileName + "' from bytes", ex);
         }
-        log.debug("createFile ({}) DONE", fileName);
+        log.debug("createFile ({}) DONE", fullFileName);
     }
 
     @Override
     public void createAccountFolder(String login) {
         log.debug("createAccountFolder ({}) ...", login);
-        if (!new File(appFolder + ROOT_FOLDER_USERS + File.separator + login).exists()) {
+        if (!new File(appFolder + ROOT_FOLDER_USERS + File.separator + login + File.separator + FOLDER_MUSICS).exists()) {
             log.debug("createAccountFolder ({}) : directory doesn't exist, making it", login);
-            new File(appFolder + ROOT_FOLDER_USERS + File.separator + login).mkdir();
+            new File(appFolder + ROOT_FOLDER_USERS + File.separator + login + File.separator + FOLDER_MUSICS).mkdirs();
         }
     }
 }

@@ -80,7 +80,7 @@ public class MusicServiceImpl implements MusicService {
                 if (musicFromFile != null) {
                     try {
                         byte[] bytes = fileService.getFileAsByteArray(currentFile);
-                        fileService.createFile(bytes, musicFromFile.getFileName());
+                        fileService.createMusicFile(bytes, musicFromFile.getFileName(), appModel.getProfile().getUserInfo().getLogin());
                     } catch (Exception ex) {
                         log.error("Error while copying music file to user folder ({})", ex.toString());
                         throw new RuntimeException("Error while copying music file to user folder", ex);
