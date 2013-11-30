@@ -19,7 +19,6 @@ import fr.utc.lo23.sharutc.util.Utils;
 import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -85,7 +84,7 @@ public class MusicServiceImpl implements MusicService {
                         log.error("Error while copying music file to user folder ({})", ex.toString());
                         throw new RuntimeException("Error while copying music file to user folder", ex);
                     }
-                    musicFromFile.setFileByte(null);
+                    musicFromFile.setFileBytes(null);
                     appModel.getRightsList().setRights(new Rights(Category.PUBLIC_CATEGORY_ID, musicFromFile.getId(),
                             Rights.DEFAULT_MAY_READ_INFO,
                             Rights.DEFAULT_LISTEN,
@@ -685,7 +684,7 @@ public class MusicServiceImpl implements MusicService {
                 for (int i = 0; i < byteArray.length; i++) {
                     bytes[i] = byteArray[i];
                 }
-                music.setFileByte(bytes);
+                music.setFileBytes(bytes);
             } catch (IOException ex) {
                 log.error(ex.toString());
             }
