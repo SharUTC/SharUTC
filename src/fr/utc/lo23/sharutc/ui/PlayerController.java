@@ -8,8 +8,6 @@ import fr.utc.lo23.sharutc.model.domain.Music;
 import fr.utc.lo23.sharutc.model.domain.Score;
 import fr.utc.lo23.sharutc.ui.custom.RatingStar;
 import fr.utc.lo23.sharutc.ui.custom.SliderScrollHandler;
-import fr.utc.lo23.sharutc.util.CollectionChangeListener;
-import fr.utc.lo23.sharutc.util.CollectionEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import javafx.beans.value.ChangeListener;
@@ -28,6 +26,7 @@ import org.slf4j.LoggerFactory;
 
 import java.net.URL;
 import java.util.ResourceBundle;
+import javafx.application.Platform;
 
 /**
  * FXML Controller class
@@ -37,7 +36,6 @@ public class PlayerController implements Initializable, PropertyChangeListener {
     //Images for the speaker
     private static final ImageView IC_SPEAKER = new ImageView("/fr/utc/lo23/sharutc/ui/drawable/ic_speaker.png");
     private static final ImageView IC_SPEAKER_MUTED = new ImageView("/fr/utc/lo23/sharutc/ui/drawable/ic_speaker_muted.png");
-
     private static final ImageView BT_PAUSE = new ImageView("/fr/utc/lo23/sharutc/ui/drawable/pause_button_small.png");
     private static final ImageView BT_PLAY = new ImageView("/fr/utc/lo23/sharutc/ui/drawable/play_button_small.png");
     //TODO remove once we get a real song
@@ -59,21 +57,16 @@ public class PlayerController implements Initializable, PropertyChangeListener {
     public Label currentMusicTitle;
     public Label currentMusicAlbum;
     public Label currentMusicArtist;
-
     private int mCurrentTimeInSeconds;
     private RatingStar[] mRatingStars;
     //TODO Remove once we get a real rating
     private int mSongRating = 3;
-
     @Inject
     private PlayerService mPlayerService;
-
     @Inject
     private SetScoreCommand mSetScoreCommand;
-
     @Inject
     private AppModel mAppModel;
-
     private Music currentMusic;
 
     /**
@@ -172,7 +165,7 @@ public class PlayerController implements Initializable, PropertyChangeListener {
         }
         playerCurrentTime.setText(timeInSecondsToString(mCurrentTimeInSeconds));
         playerProgressBar.setProgress(percent);
-        
+
 
     }
 
@@ -271,31 +264,39 @@ public class PlayerController implements Initializable, PropertyChangeListener {
     }
 
     @Override
-    public void propertyChange(PropertyChangeEvent evt) {
+    public void propertyChange(final PropertyChangeEvent evt) {
+        //Warning - most of the changes on the PlayerService properties
+        //are not fired from the UI thread but from the AudioPlayerThread
+        //therefore you can't update the UI directly.
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                handlePropertyChangeFromAudiPlayerThread(evt);
+            }
+        });
+    }
 
-        if (evt.getPropertyName().equals(PlayerService.Property.CURRENT_MUSIC.name())) {
+    private void handlePropertyChangeFromAudiPlayerThread(final PropertyChangeEvent evt) {
+        final String propertyName = evt.getPropertyName();
+        if (propertyName.equals(PlayerService.Property.CURRENT_MUSIC.name())) {
             Music m = (Music) evt.getNewValue();
             onCurrentMusicUpdate(m);
-        } else if (evt.getPropertyName().equals(PlayerService.Property.CURRENT_TIME.name())) {
+        } else if (propertyName.equals(PlayerService.Property.CURRENT_TIME.name())) {
             updateCurrentSongTime((Long) evt.getNewValue() / mPlayerService.getTotalTimeSec());
-        } else if (evt.getPropertyName().equals(PlayerService.Property.MUTE.name())) {
+        } else if (propertyName.equals(PlayerService.Property.MUTE.name())) {
             if ((Boolean) evt.getNewValue()) {
                 speakerButton.setGraphic(IC_SPEAKER_MUTED);
             } else {
                 speakerButton.setGraphic(IC_SPEAKER);
             }
-
-        } else if (evt.getPropertyName().equals(PlayerService.Property.PAUSE.name())) {
+        } else if (propertyName.equals(PlayerService.Property.PAUSE.name())) {
             if ((Boolean) evt.getNewValue()) {
                 buttonPlay.setGraphic(BT_PAUSE);
             } else {
                 buttonPlay.setGraphic(BT_PLAY);
             }
-
-        } else if (evt.getPropertyName().equals(PlayerService.Property.VOLUME.name())) {
-
+        } else if (propertyName.equals(PlayerService.Property.VOLUME.name())) {
             updateSpeakerLevel((Integer) evt.getOldValue() * 0.01f, (Integer) evt.getNewValue() * 0.01f);
         }
     }
-
 }
