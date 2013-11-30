@@ -67,7 +67,8 @@ public class PlayerController implements Initializable, PropertyChangeListener {
     private SetScoreCommand mSetScoreCommand;
     @Inject
     private AppModel mAppModel;
-    private Music currentMusic;
+    private Music currentMusic ;
+    private double currentPercent = 0;
 
     /**
      * Initializes the controller class.
@@ -81,6 +82,9 @@ public class PlayerController implements Initializable, PropertyChangeListener {
             public void changed(ObservableValue<? extends Number> ov, Number t, Number t1) {
                 log.info("Player Time Slider Value Changed: " + String.valueOf(t1));
                 if (currentMusic != null) {
+                    
+                    if(currentPercent==t1.doubleValue())
+                        return;
                     mPlayerService.setCurrentTimeSec(t1.longValue() * mPlayerService.getTotalTimeSec());
                 }
             }
@@ -93,6 +97,7 @@ public class PlayerController implements Initializable, PropertyChangeListener {
         speakerSlider.valueProperty().addListener(new ChangeListener<Number>() {
             @Override
             public void changed(ObservableValue<? extends Number> ov, Number oldValue, Number newValue) {
+                
                 log.info("Speaker Slider Value Change: " + String.valueOf(newValue));
                 mPlayerService.setVolume((int) (newValue.doubleValue() * 100));
 
@@ -158,6 +163,7 @@ public class PlayerController implements Initializable, PropertyChangeListener {
     }
 
     private void updateCurrentSongTime(double percent) {
+        currentPercent = percent;
         if (currentMusic != null) {
             mCurrentTimeInSeconds = (int) (mPlayerService.getTotalTimeSec() * percent);
         } else {
@@ -282,7 +288,12 @@ public class PlayerController implements Initializable, PropertyChangeListener {
             Music m = (Music) evt.getNewValue();
             onCurrentMusicUpdate(m);
         } else if (propertyName.equals(PlayerService.Property.CURRENT_TIME.name())) {
-            updateCurrentSongTime((Long) evt.getNewValue() / mPlayerService.getTotalTimeSec());
+           
+            
+            //playerTimeSlider.setValue();
+            //playerTimeSlider.setDisable(false);
+            updateCurrentSongTime(((Long) evt.getNewValue()).floatValue()/ mPlayerService.getTotalTimeSec().floatValue());
+            playerTimeSlider.valueProperty().setValue(currentPercent);
         } else if (propertyName.equals(PlayerService.Property.MUTE.name())) {
             if ((Boolean) evt.getNewValue()) {
                 speakerButton.setGraphic(IC_SPEAKER_MUTED);
