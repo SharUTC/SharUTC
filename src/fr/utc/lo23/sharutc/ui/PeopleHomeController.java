@@ -414,6 +414,8 @@ public class PeopleHomeController extends DragPreviewDrawer implements Initializ
 
     @Override
     public void onDetach() {
+        mAppModel.getProfile().getCategories().removePropertyChangeListener(this);
+        mAppModel.getActivePeerList().removePropertyChangeListener(this);
     }
 
     @Override

@@ -279,14 +279,14 @@ public class PlayerController implements Initializable, PropertyChangeListener {
         } else if (evt.getPropertyName().equals(PlayerService.Property.CURRENT_TIME.name())) {
             updateCurrentSongTime((Long) evt.getNewValue() / mPlayerService.getTotalTimeSec());
         } else if (evt.getPropertyName().equals(PlayerService.Property.MUTE.name())) {
-            if ((boolean) evt.getNewValue()) {
+            if ((Boolean) evt.getNewValue()) {
                 speakerButton.setGraphic(IC_SPEAKER_MUTED);
             } else {
                 speakerButton.setGraphic(IC_SPEAKER);
             }
 
         } else if (evt.getPropertyName().equals(PlayerService.Property.PAUSE.name())) {
-            if ((boolean) evt.getNewValue()) {
+            if ((Boolean) evt.getNewValue()) {
                 buttonPlay.setGraphic(BT_PAUSE);
             } else {
                 buttonPlay.setGraphic(BT_PLAY);
@@ -294,7 +294,7 @@ public class PlayerController implements Initializable, PropertyChangeListener {
 
         } else if (evt.getPropertyName().equals(PlayerService.Property.VOLUME.name())) {
 
-            updateSpeakerLevel((int) evt.getOldValue() * 0.01f, (int) evt.getNewValue() * 0.01f);
+            updateSpeakerLevel((Integer) evt.getOldValue() * 0.01f, (Integer) evt.getNewValue() * 0.01f);
         }
     }
 
