@@ -30,6 +30,23 @@
                         <Insets left="15" right="15"/>
                     </HBox.margin>
                 </Label>
+                <StackPane >
+                    <HBox.margin>
+                        <Insets right="10"/>
+                    </HBox.margin>
+                    <ProgressIndicator fx:id="exportProgress" progress="-1" visible="false"  />                    
+                    <Button fx:id="exportButton" styleClass="imageButton" onAction="#handleMenuButtonAction" >                        
+                        <graphic>
+                            <ImageView fitWidth="32" fitHeight="32">
+                                <image>
+                                    <Image url="/fr/utc/lo23/sharutc/ui/drawable/ic_export.png"/>
+                                </image>
+                            </ImageView>
+                        </graphic>
+                    </Button>
+                    
+                </StackPane>
+                
                 <Button fx:id="logoutButton" styleClass="imageButton" onAction="#handleMenuButtonAction" >
                     <graphic>
                         <ImageView fitWidth="25" fitHeight="25">

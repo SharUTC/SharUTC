@@ -4,10 +4,12 @@ import com.cathive.fx.guice.GuiceFXMLLoader;
 import com.cathive.fx.guice.GuiceFXMLLoader.Result;
 import com.google.inject.Inject;
 import fr.utc.lo23.sharutc.controler.command.account.DisconnectionCommand;
+import fr.utc.lo23.sharutc.controler.command.account.ExportProfileCommand;
 
 import fr.utc.lo23.sharutc.model.AppModel;
 
 import fr.utc.lo23.sharutc.controler.command.player.AddToPlaylistCommand;
+import fr.utc.lo23.sharutc.controler.service.FileService;
 import fr.utc.lo23.sharutc.controler.service.PlayerService;
 import fr.utc.lo23.sharutc.model.AppModelImpl;
 
@@ -40,11 +42,17 @@ import fr.utc.lo23.sharutc.util.CollectionChangeListener;
 import fr.utc.lo23.sharutc.util.CollectionEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
+import javafx.concurrent.Task;
+import javafx.concurrent.WorkerStateEvent;
+import javafx.event.EventHandler;
+import javafx.scene.control.ProgressIndicator;
+import javafx.stage.DirectoryChooser;
 
 public class MainController extends NavigationController implements Initializable,
         PeopleHomeController.IPeopleHomeController,
@@ -69,11 +77,13 @@ public class MainController extends NavigationController implements Initializabl
     public Button artistsbutton;
     public Button albumsbutton;
     public Button logoutButton;
+    public Button exportButton;
     public Pane rightpane;
     public HBox bottombar;
     public Region dropOverlay;
     public Label dropOverlayLabel;
     public Label labelMyProfile;
+    public ProgressIndicator exportProgress;
     @Inject
     private AppModel mAppModel;
     @Inject
@@ -85,6 +95,10 @@ public class MainController extends NavigationController implements Initializabl
     private PlayerService mPlayerService;
     private CollectionChangeListener mChangeListenerPlayList;
     private PropertyChangeListener mChangeListenerAppModel;
+    @Inject
+    private ExportProfileCommand mExportProfileCommand;
+    @Inject
+    private FileService mFileService;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -169,9 +183,50 @@ public class MainController extends NavigationController implements Initializabl
             log.debug("logout button clicked");
             mDisconnectionCommand.execute();
             return;
+        } else if (event.getSource() == exportButton) {
+            log.debug("export button clicked");
+            exportProfile();
         }
 
         attachRightpane(mCurrentLoadedRighpaneResult);
+    }
+
+    private void exportProfile() {
+        final DirectoryChooser directoryChooser = new DirectoryChooser();
+        directoryChooser.setTitle("Export Profile");
+        final File directory = directoryChooser.showDialog(exportButton.getScene().getWindow());
+
+        if (directory != null) {
+            log.debug("export file to : " + directory.getAbsolutePath());
+
+            final String usersPath = mFileService.getAppFolder() + FileService.ROOT_FOLDER_USERS;
+            final String login = mAppModel.getProfile().getUserInfo().getLogin();
+            final String dest = directory.getAbsolutePath() + File.separator + login + ".zip";
+
+            final Task<Void> exportTask = new Task<Void>() {
+                @Override
+                protected Void call() throws Exception {
+                    mExportProfileCommand.setDestFolder(dest);
+                    mExportProfileCommand.setSrcFile(usersPath + File.separator + login);
+                    mExportProfileCommand.execute();
+                    return null;
+                }
+            };
+
+            exportTask.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+                @Override
+                public void handle(WorkerStateEvent t) {
+                    exportProgress.setVisible(false);
+                    exportButton.setVisible(true);
+                    log.debug("export finished !");
+                }
+            });            
+
+            exportProgress.setVisible(true);
+            exportButton.setVisible(false);
+            new Thread(exportTask).start();
+        }
+
     }
 
     private void removeListeners() {
@@ -225,7 +280,7 @@ public class MainController extends NavigationController implements Initializabl
         removeListeners();
         mNavigationHandler.goToLoginPage();
     }
-    
+
     public void close() {
         mPlayerController.onDetach();
         removeListeners();
