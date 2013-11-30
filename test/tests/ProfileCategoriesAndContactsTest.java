@@ -264,7 +264,7 @@ public class ProfileCategoriesAndContactsTest {
 
         // A - Check if the category is deleted of categories list
 
-        Assert.assertEquals("deleteCategoryCommand failed : the categry is not deleted",
+        Assert.assertEquals("deleteCategoryCommand failed : the category is not deleted",
                 appModel.getProfile().getCategories().getCategories().size(), 1);
 
 
@@ -336,6 +336,14 @@ public class ProfileCategoriesAndContactsTest {
         addContactCommand.setContact(cCree);
         addContactCommand.execute();
 
+        Category catCree = new Category(1, "amis");
+        Category catCree2 = new Category(2, "famille");
+        addContactToCategoryCommand.setContact(cCree);
+        addContactToCategoryCommand.setCategory(catCree);
+        addContactToCategoryCommand.execute();
+        addContactToCategoryCommand.setCategory(catCree2);
+        addContactToCategoryCommand.execute();
+        
         Assert.assertTrue("deleteContactCommand failed : the test can't start",
                 appModel.getProfile().getContacts().contains(cCree));
 
