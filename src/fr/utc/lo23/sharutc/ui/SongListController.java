@@ -26,8 +26,12 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
+import javafx.application.Platform;
+import javafx.concurrent.Task;
+import javafx.concurrent.WorkerStateEvent;
 import javafx.geometry.Insets;
 import javafx.scene.control.Label;
+import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.TextAlignment;
@@ -49,6 +53,8 @@ public class SongListController extends SongSelectorController implements Initia
     public StackPane contentContainer;
     @FXML
     public Label titleLabel;
+    @FXML
+    public ProgressIndicator addNewSongProgress;
     @Inject
     public AppModel mAppModel;
     @Inject
@@ -76,10 +82,9 @@ public class SongListController extends SongSelectorController implements Initia
                 fileChooser.getExtensionFilters().add(extFilter);
                 final List<File> files = fileChooser.showOpenMultipleDialog(addNewSongButton.getScene().getWindow());
                 if (files != null && !files.isEmpty()) {
-                    log.info("import songs !");
-                    mAddToLocalCatalogCommand.setFiles(files);
-                    mAddToLocalCatalogCommand.execute();
+                    importSongs(files);
                 }
+                t.consume();
             }
         });
 
@@ -87,6 +92,32 @@ public class SongListController extends SongSelectorController implements Initia
         mAppModel.getLocalCatalog().addPropertyChangeListener(this);
 
         showTags();
+    }
+
+    public void importSongs(final List<File> files) {
+        log.debug("import started !");
+        addNewSongButton.setVisible(false);
+        addNewSongProgress.setVisible(true);
+        final Task<Void> importTask = new Task<Void>() {
+            @Override
+            protected Void call() throws Exception {
+                mAddToLocalCatalogCommand.setFiles(files);
+                mAddToLocalCatalogCommand.execute();
+                log.debug("import called !");
+                return null;
+            }
+        };
+
+        importTask.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+            @Override
+            public void handle(WorkerStateEvent t) {
+                addNewSongButton.setVisible(true);
+                addNewSongProgress.setVisible(false);
+                log.debug("import song finished");
+            }
+        });
+
+        new Thread(importTask).start();
     }
 
     public void showCatalog() {
@@ -125,7 +156,7 @@ public class SongListController extends SongSelectorController implements Initia
     }
 
     private void songAdded(Music music) {
-        if(placeHolderLabel != null) {
+        if (placeHolderLabel != null) {
             contentContainer.getChildren().remove(placeHolderLabel);
             placeHolderLabel = null;
         }
@@ -183,11 +214,18 @@ public class SongListController extends SongSelectorController implements Initia
     }
 
     @Override
-    public void collectionChanged(CollectionEvent<Music> ev) {
-        final Type eventType = ev.getType();
-        if (CollectionEvent.Type.ADD.equals(eventType)) {
-            log.info("a new music has just been added to the local catalog");
-            songAdded(ev.getItem());
-        }
+    public void collectionChanged(final CollectionEvent<Music> ev) {
+        //Essential !
+        //since the commands are not executed on the UI Thread
+        //you can't update the UI directly.
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                final Type eventType = ev.getType();
+                if (CollectionEvent.Type.ADD.equals(eventType)) {
+                    songAdded(ev.getItem());
+                }
+            }
+        });
     }
 }
