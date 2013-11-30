@@ -37,7 +37,7 @@ public class Contacts implements Serializable {
     public Contact findById(Long peerID) {
         Contact contact = null;
         for (Contact p : mContacts) {
-            if (p.getUserInfo().getPeerId() == peerID) {
+            if (p.getUserInfo().getPeerId().equals(peerID)) {
                 contact = p;
             }
         }

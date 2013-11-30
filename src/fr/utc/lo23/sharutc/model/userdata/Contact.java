@@ -123,20 +123,6 @@ public class Contact implements Serializable {
         }
         return true;
     }
-
-    
-     /**
-     * Override the method hashCode
-     * 
-     * @return the hash
-     */
-    @Override
-    public int hashCode() {
-        int hash = 5;
-        hash = 23 * hash + (this.mUserInfo != null ? this.mUserInfo.hashCode() : 0);
-        hash = 23 * hash + (this.mCategoryIds != null ? this.mCategoryIds.hashCode() : 0);
-        return hash;
-    }
     
     
      /**
