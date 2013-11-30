@@ -224,7 +224,7 @@ public class Music implements Serializable {
      *
      * @param file
      */
-    public void setFileByte(Byte[] file) {
+    public void setFileBytes(Byte[] file) {
         this.mFile = file;
     }
 

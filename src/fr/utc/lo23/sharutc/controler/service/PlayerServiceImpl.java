@@ -120,7 +120,7 @@ public class PlayerServiceImpl implements PlayerService, PropertyChangeListener,
             playerStop();
             int musicIndex = mPlaylist.indexOf(musicWithBytes);
             Music musicFromPlaylist = mPlaylist.get(musicIndex);
-            musicFromPlaylist.setFileByte(musicWithBytes.getFileBytes());
+            musicFromPlaylist.setFileBytes(musicWithBytes.getFileBytes());
             setCurrentMusic(musicFromPlaylist);
             playerPlay();
         }
