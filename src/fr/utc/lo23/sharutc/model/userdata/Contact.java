@@ -21,7 +21,7 @@ public class Contact implements Serializable {
 
     /**
      * Constructor
-     * 
+     *
      * @param userInfo
      */
     public Contact(UserInfo userInfo) {
@@ -31,7 +31,7 @@ public class Contact implements Serializable {
 
     /**
      * Return contact's UserInfo
-     * 
+     *
      * @return contact's UserInfo
      */
     public UserInfo getUserInfo() {
@@ -40,7 +40,7 @@ public class Contact implements Serializable {
 
     /**
      * Set contact's UserInfo
-     * 
+     *
      * @param mUserInfo
      */
     public void setUserInfo(UserInfo mUserInfo) {
@@ -49,7 +49,7 @@ public class Contact implements Serializable {
 
     /**
      * Return the list of the ids of the categories in which the contact is
-     * 
+     *
      * @return the list of the ids of the categories in which the contact is
      */
     public Set<Integer> getCategoryIds() {
@@ -58,16 +58,18 @@ public class Contact implements Serializable {
 
     /**
      * Set the list of the ids of the categories in which the contact is
-     * 
-     * @param categoryIds - the list of the ids of the categories in which the contact is
+     *
+     * @param categoryIds - the list of the ids of the categories in which the
+     * contact is
      */
     public void setCategoryId(Set<Integer> categoryIds) {
         this.mCategoryIds = categoryIds;
     }
 
-     /**
-     * Add a category id to the list of the ids of the categories in which the contact is
-     * 
+    /**
+     * Add a category id to the list of the ids of the categories in which the
+     * contact is
+     *
      * @param categoryId
      */
     public void addCategoryId(Integer categoryId) {
@@ -75,17 +77,18 @@ public class Contact implements Serializable {
     }
 
     /**
-     * Remove a category id from the list of the ids of the categories in which the contact is
-     * 
+     * Remove a category id from the list of the ids of the categories in which
+     * the contact is
+     *
      * @param categoryId
      */
     public void removeCategoryId(Integer categoryId) {
         mCategoryIds.remove(categoryId);
     }
 
-     /**
+    /**
      * Check if a contact is in the Public category
-     * 
+     *
      * @return a boolean
      */
     public boolean isInPublic() {
@@ -99,12 +102,24 @@ public class Contact implements Serializable {
         return isInPublic;
     }
 
-    
-     /**
+    /**
+     * Return the hashcode of this instance
+     *
+     * @return the hashcode of this instance
+     */
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 67 * hash + (this.mUserInfo != null ? this.mUserInfo.hashCode() : 0);
+        hash = 67 * hash + (this.mCategoryIds != null ? this.mCategoryIds.hashCode() : 0);
+        return hash;
+    }
+
+    /**
      * Override the method equals
-     * 
-     * @param obj
-     * @return a boolean
+     *
+     * @param obj the object test for equality
+     * @return true if both objects equals
      */
     @Override
     public boolean equals(Object obj) {
@@ -123,11 +138,10 @@ public class Contact implements Serializable {
         }
         return true;
     }
-    
-    
-     /**
+
+    /**
      * Override the method toString
-     * 
+     *
      * @return the string
      */
     @Override
