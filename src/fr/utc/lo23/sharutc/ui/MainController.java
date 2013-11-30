@@ -3,11 +3,13 @@ package fr.utc.lo23.sharutc.ui;
 import com.cathive.fx.guice.GuiceFXMLLoader;
 import com.cathive.fx.guice.GuiceFXMLLoader.Result;
 import com.google.inject.Inject;
+import fr.utc.lo23.sharutc.controler.command.account.DisconnectionCommand;
 
 import fr.utc.lo23.sharutc.model.AppModel;
 
 import fr.utc.lo23.sharutc.controler.command.player.AddToPlaylistCommand;
 import fr.utc.lo23.sharutc.controler.service.PlayerService;
+import fr.utc.lo23.sharutc.model.AppModelImpl;
 
 import fr.utc.lo23.sharutc.model.domain.Music;
 import fr.utc.lo23.sharutc.model.userdata.UserInfo;
@@ -33,17 +35,18 @@ import javafx.util.Callback;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import fr.utc.lo23.sharutc.model.userdata.Category;
+import fr.utc.lo23.sharutc.ui.navigation.NavigationController;
 import fr.utc.lo23.sharutc.util.CollectionChangeListener;
 import fr.utc.lo23.sharutc.util.CollectionEvent;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
-import java.util.logging.Level;
-import javafx.scene.Parent;
 
-public class MainController implements Initializable,
+public class MainController extends NavigationController implements Initializable,
         PeopleHomeController.IPeopleHomeController,
         SearchResultController.ISearchResultController,
         ArtistsDetailController.IArtistsDetailController,
@@ -53,10 +56,8 @@ public class MainController implements Initializable,
     private static final Logger log = LoggerFactory.getLogger(MainController.class);
     @Inject
     private GuiceFXMLLoader mFxmlLoader;
-
     @Inject
     private AddToPlaylistCommand mAddToPlaylistCommand;
-
     /**
      * the drag Preview
      */
@@ -75,46 +76,22 @@ public class MainController implements Initializable,
     public Label labelMyProfile;
     @Inject
     private AppModel mAppModel;
+    @Inject
+    private DisconnectionCommand mDisconnectionCommand;
     //TODO Remove once we get a real list of Musics
     static public ArrayList<Music> population;
-
     public ObservableList<Music> playListData;
-
     @Inject
     private PlayerService mPlayerService;
+    private CollectionChangeListener mChangeListenerPlayList;
+    private PropertyChangeListener mChangeListenerAppModel;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        //TODO Remove once we get a real list of Musics
-        
+        //TODO Remove once we get a real list of Musics        
+        addListeners();
+
         population = new ArrayList();
-        
-       
-        mPlayerService.getPlaylist().addPropertyChangeListener(new CollectionChangeListener() {
-
-            @Override
-            public void collectionChanged(CollectionEvent ev) {
-                switch (ev.getType()) {
-                    case ADD:
-                        playListData.add(ev.getIndex(), (Music) ev.getItem());
-                        break;
-                    case REMOVE:
-                        playListData.remove(ev.getIndex());
-                        break;
-                    case CLEAR:
-                        playListData.clear();
-                        break;
-                    case UPDATE:
-                        playListData.remove(ev.getIndex());
-                        playListData.add(ev.getIndex(), (Music) ev.getItem());
-                        break;
-
-                }
-                
-
-            }
-        });
-
         populateMusics();
 
         try {
@@ -189,13 +166,70 @@ public class MainController implements Initializable,
             ((AlbumsDetailController) mCurrentLoadedRighpaneResult.getController()).setInterface(this);
             ((AlbumsDetailController) mCurrentLoadedRighpaneResult.getController()).showAlbums();
         } else if (event.getSource() == logoutButton) {
-            final Parent loginRoot = mFxmlLoader.load(getClass().getResource("/fr/utc/lo23/sharutc/ui/fxml/login.fxml")).getRoot();
-            logoutButton.getScene().setRoot(loginRoot);
-            mPlayerController.onDetach();
+            log.debug("logout button clicked");
+            mDisconnectionCommand.execute();
             return;
         }
 
         attachRightpane(mCurrentLoadedRighpaneResult);
+    }
+
+    private void removeListeners() {
+        mPlayerService.getPlaylist().removePropertyChangeListener(mChangeListenerPlayList);
+        mAppModel.removePropertyChangeListener(mChangeListenerAppModel);
+    }
+
+    private void addListeners() {
+        //Listen to playlist changes
+        mChangeListenerPlayList = new CollectionChangeListener() {
+            @Override
+            public void collectionChanged(CollectionEvent ev) {
+                switch (ev.getType()) {
+                    case ADD:
+                        playListData.add(ev.getIndex(), (Music) ev.getItem());
+                        break;
+                    case REMOVE:
+                        playListData.remove(ev.getIndex());
+                        break;
+                    case CLEAR:
+                        playListData.clear();
+                        break;
+                    case UPDATE:
+                        playListData.remove(ev.getIndex());
+                        playListData.add(ev.getIndex(), (Music) ev.getItem());
+                        break;
+
+                }
+            }
+        };
+        mPlayerService.getPlaylist().addPropertyChangeListener(mChangeListenerPlayList);
+
+        //Listen to appmodel changes
+        mChangeListenerAppModel = new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent evt) {
+                final String propertyName = evt.getPropertyName();
+                if (AppModelImpl.Property.PROFILE.name().equals(propertyName)) {
+                    if (evt.getNewValue() == null) {
+                        log.debug("logout trigered");
+                        logout();
+                    }
+                }
+            }
+        };
+        mAppModel.addPropertyChangeListener(mChangeListenerAppModel);
+    }
+
+    private void logout() {
+        mPlayerController.onDetach();
+        removeListeners();
+        mNavigationHandler.goToLoginPage();
+    }
+    
+    public void close() {
+        mPlayerController.onDetach();
+        removeListeners();
+        mDisconnectionCommand.execute();
     }
 
     public void detachRightpane() {
@@ -368,8 +402,8 @@ public class MainController implements Initializable,
         HBox.setHgrow(listView, Priority.ALWAYS);
         bottombar.getChildren().add(listView);
 
-       playListData = FXCollections.observableArrayList();
-        
+        playListData = FXCollections.observableArrayList();
+
 
         listView.setItems(playListData);
         listView.setCellFactory(new Callback<ListView<Music>, ListCell<Music>>() {

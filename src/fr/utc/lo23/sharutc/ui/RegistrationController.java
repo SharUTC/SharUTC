@@ -7,6 +7,7 @@ import fr.utc.lo23.sharutc.model.AppModel;
 import fr.utc.lo23.sharutc.model.AppModelImpl;
 import fr.utc.lo23.sharutc.model.userdata.UserInfo;
 import fr.utc.lo23.sharutc.ui.custom.SharutcLogo;
+import fr.utc.lo23.sharutc.ui.navigation.NavigationController;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import javafx.event.ActionEvent;
@@ -32,7 +33,7 @@ import java.util.ResourceBundle;
  * A FXML Controller that displays a registration page.
  *
  */
-public class RegistrationController implements Initializable, PropertyChangeListener {
+public class RegistrationController extends NavigationController implements Initializable, PropertyChangeListener {
 
     private static final Logger log = LoggerFactory
             .getLogger(RegistrationController.class);
@@ -237,12 +238,7 @@ public class RegistrationController implements Initializable, PropertyChangeList
     }
 
     private void goToLoginPage() {
-        try {
-            final Parent root = mFxmlLoader.load(getClass().getResource("/fr/utc/lo23/sharutc/ui/fxml/login.fxml")).getRoot();
-            mAppModel.removePropertyChangeListener(this);
-            buttonCancel.getScene().setRoot(root);
-        } catch (IOException ex) {
-            log.error("can't load login page");
-        }
+        mAppModel.removePropertyChangeListener(this);
+        mNavigationHandler.goToLoginPage();
     }
 }

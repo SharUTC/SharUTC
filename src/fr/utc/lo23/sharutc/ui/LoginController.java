@@ -9,6 +9,8 @@ import fr.utc.lo23.sharutc.model.AppModelImpl;
 import fr.utc.lo23.sharutc.model.ErrorBus;
 import fr.utc.lo23.sharutc.model.ErrorMessage;
 import fr.utc.lo23.sharutc.ui.custom.SharutcLogo;
+import fr.utc.lo23.sharutc.ui.navigation.NavigationController;
+import fr.utc.lo23.sharutc.ui.navigation.NavigationHandler;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
@@ -39,7 +41,7 @@ import org.slf4j.LoggerFactory;
 /**
  * A FXML Controller that displays a login page.
  */
-public class LoginController implements Initializable, PropertyChangeListener {
+public class LoginController extends NavigationController implements Initializable, PropertyChangeListener {
 
     private static final Logger log = LoggerFactory
             .getLogger(LoginController.class);
@@ -99,9 +101,9 @@ public class LoginController implements Initializable, PropertyChangeListener {
         mAppModel.addPropertyChangeListener(this);
 
         //listen for changes on the Error Bus
-        mAppModel.getErrorBus().addPropertyChangeListener(this);                
+        mAppModel.getErrorBus().addPropertyChangeListener(this);
     }
-    
+
     //TODO remove after test
     public void automaticLogin(String login, String password) {
         mConnectionRequestCommand.setLogin(login);
@@ -305,27 +307,15 @@ public class LoginController implements Initializable, PropertyChangeListener {
     }
 
     private void goToRegistrationPage() {
-        try {
-            Parent root = mFxmlLoader.load(getClass().getResource("/fr/utc/lo23/sharutc/ui/fxml/registration.fxml")).getRoot();
-            mAppModel.getErrorBus().removePropertyChangeListener(this);
-            mAppModel.removePropertyChangeListener(this);
-            buttonSignUp.getScene().setRoot(root);
-        } catch (IOException ex) {
-            log.error("can't load registration page");
-        }
+        mAppModel.getErrorBus().removePropertyChangeListener(this);
+        mAppModel.removePropertyChangeListener(this);
+        mNavigationHandler.goToRegistrationPage();
     }
 
     private void goToMainPage() {
-        try {
-            final GuiceFXMLLoader.Result loadingResult = mFxmlLoader.load(getClass().getResource("/fr/utc/lo23/sharutc/ui/fxml/main.fxml"));
-            final Parent root = loadingResult.getRoot();
-            mAppModel.getErrorBus().removePropertyChangeListener(this);
-            mAppModel.removePropertyChangeListener(this);
-            buttonSignUp.getScene().setRoot(root);
-            ((MainController) loadingResult.getController()).sceneCreated();
-        } catch (IOException ex) {
-            log.error("can't load registration page");
-        }
+        mAppModel.getErrorBus().removePropertyChangeListener(this);
+        mAppModel.removePropertyChangeListener(this);
+        mNavigationHandler.goToMainPage();
     }
 
     private void importProfile(String filePath) {
