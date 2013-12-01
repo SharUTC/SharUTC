@@ -59,15 +59,13 @@ public class PlayerController implements Initializable, PropertyChangeListener {
     public Label currentMusicArtist;
     private int mCurrentTimeInSeconds;
     private RatingStar[] mRatingStars;
-    //TODO Remove once we get a real rating
-    private int mSongRating = 3;
     @Inject
     private PlayerService mPlayerService;
     @Inject
     private SetScoreCommand mSetScoreCommand;
     @Inject
     private AppModel mAppModel;
-    private Music currentMusic ;
+    private Music currentMusic;
     private double currentPercent = 0;
 
     /**
@@ -82,9 +80,10 @@ public class PlayerController implements Initializable, PropertyChangeListener {
             public void changed(ObservableValue<? extends Number> ov, Number t, Number t1) {
                 log.info("Player Time Slider Value Changed: " + String.valueOf(t1));
                 if (currentMusic != null) {
-                    
-                    if(currentPercent==t1.doubleValue())
+
+                    if (currentPercent == t1.doubleValue()) {
                         return;
+                    }
                     mPlayerService.setCurrentTimeSec(t1.longValue() * mPlayerService.getTotalTimeSec());
                 }
             }
@@ -93,11 +92,10 @@ public class PlayerController implements Initializable, PropertyChangeListener {
         playerTimeSlider.setValue(0);
         onCurrentMusicUpdate(null);
         updateCurrentSongTime(0);
-        fillRatingStar(0);
         speakerSlider.valueProperty().addListener(new ChangeListener<Number>() {
             @Override
             public void changed(ObservableValue<? extends Number> ov, Number oldValue, Number newValue) {
-                
+
                 log.info("Speaker Slider Value Change: " + String.valueOf(newValue));
                 mPlayerService.setVolume((int) (newValue.doubleValue() * 100));
 
@@ -140,8 +138,9 @@ public class PlayerController implements Initializable, PropertyChangeListener {
             currentMusicTitle.setText(currentMusic.getTitle());
             currentMusicAlbum.setText(currentMusic.getAlbum());
             currentMusicArtist.setText(currentMusic.getArtist());
-            Score score = currentMusic.getScore(mAppModel.getProfile().getUserInfo().toPeer());
+            final Score score = currentMusic.getScore(mAppModel.getProfile().getUserInfo().toPeer());
             if (score != null) {
+
                 fillRatingStar(score.getValue());
             }
         } else {
@@ -205,19 +204,21 @@ public class PlayerController implements Initializable, PropertyChangeListener {
     //*  Rating system
     //******************
     private void displayCurrentRating() {
-        fillRatingStar(mSongRating);
+        fillRatingStar(getCurrentSongScore());
+    }
+
+    private int getCurrentSongScore() {
+        int currentSongValue = 0;
+        if (currentMusic != null) {
+            final Score currentScore = currentMusic.getScore(mAppModel.getProfile().getUserInfo().toPeer());
+            if (currentScore != null) {
+                currentSongValue = currentScore.getValue();
+            }
+        }
+        return currentSongValue;
     }
 
     private void fillRatingStar(int rate) {
-
-        if (currentMusic == null) {
-            return;
-        }
-
-        mSetScoreCommand.setMusic(currentMusic);
-        mSetScoreCommand.setScore(rate);
-        mSetScoreCommand.setPeer(mAppModel.getProfile().getUserInfo().toPeer());
-        mSetScoreCommand.execute();
 
         for (int i = 0; i < 5; i++) {
             if (i < rate) {
@@ -250,23 +251,32 @@ public class PlayerController implements Initializable, PropertyChangeListener {
     }
 
     public void handleMouseClickedRatingStar(MouseEvent mouseEvent) {
+        if (currentMusic == null) return;
         final Object source = mouseEvent.getSource();
+        int newCandidateRate = 0;
+        final int currentSongScore = getCurrentSongScore();
         if (source == ratingStar5) {
-            mSongRating = 5;
+            newCandidateRate = 5;
         } else if (source == ratingStar4) {
-            mSongRating = 4;
+            newCandidateRate = 4;
         } else if (source == ratingStar3) {
-            mSongRating = 3;
+            newCandidateRate = 3;
         } else if (source == ratingStar2) {
-            mSongRating = 2;
+            newCandidateRate = 2;
         } else if (source == ratingStar1) {
-            if (mSongRating == 1) {
-                mSongRating = 0;
-            } else {
-                mSongRating = 1;
+            if (currentSongScore != 1) {
+                newCandidateRate = 1;
             }
-
         }
+
+        if (newCandidateRate != currentSongScore) {
+            log.debug("new rate : " + String.valueOf(newCandidateRate));
+            mSetScoreCommand.setMusic(currentMusic);
+            mSetScoreCommand.setScore(newCandidateRate);
+            mSetScoreCommand.setPeer(mAppModel.getProfile().getUserInfo().toPeer());
+            mSetScoreCommand.execute();
+        }
+
     }
 
     @Override
@@ -288,11 +298,11 @@ public class PlayerController implements Initializable, PropertyChangeListener {
             Music m = (Music) evt.getNewValue();
             onCurrentMusicUpdate(m);
         } else if (propertyName.equals(PlayerService.Property.CURRENT_TIME.name())) {
-           
-            
+
+
             //playerTimeSlider.setValue();
             //playerTimeSlider.setDisable(false);
-            updateCurrentSongTime(((Long) evt.getNewValue()).floatValue()/ mPlayerService.getTotalTimeSec().floatValue());
+            updateCurrentSongTime(((Long) evt.getNewValue()).floatValue() / mPlayerService.getTotalTimeSec().floatValue());
             playerTimeSlider.valueProperty().setValue(currentPercent);
         } else if (propertyName.equals(PlayerService.Property.MUTE.name())) {
             if ((Boolean) evt.getNewValue()) {
