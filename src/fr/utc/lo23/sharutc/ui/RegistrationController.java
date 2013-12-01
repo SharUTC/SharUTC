@@ -5,6 +5,8 @@ import com.google.inject.Inject;
 import fr.utc.lo23.sharutc.controler.command.account.AccountCreationCommand;
 import fr.utc.lo23.sharutc.model.AppModel;
 import fr.utc.lo23.sharutc.model.AppModelImpl;
+import fr.utc.lo23.sharutc.model.ErrorBus;
+import fr.utc.lo23.sharutc.model.ErrorMessage;
 import fr.utc.lo23.sharutc.model.userdata.UserInfo;
 import fr.utc.lo23.sharutc.ui.custom.SharutcLogo;
 import fr.utc.lo23.sharutc.ui.navigation.NavigationController;
@@ -14,7 +16,6 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -77,7 +78,8 @@ public class RegistrationController extends NavigationController implements Init
         });
 
         mAppModel.addPropertyChangeListener(this);
-
+        
+        mAppModel.getErrorBus().addPropertyChangeListener(this);
     }
 
     /**
@@ -234,11 +236,16 @@ public class RegistrationController extends NavigationController implements Init
         final String propertyName = evt.getPropertyName();
         if (AppModelImpl.Property.PROFILE.name().equals(propertyName)) {
             goToLoginPage();
+        } else if(ErrorBus.Property.APPLICATION_ERROR_MESSAGE.name().equals(propertyName)) {
+            log.info("Application Error Message Changed");
+            errorContainer.getChildren().clear();
+            errorContainer.getChildren().add(new Label(((ErrorMessage) evt.getNewValue()).getMessage()));
         }
     }
 
     private void goToLoginPage() {
         mAppModel.removePropertyChangeListener(this);
+        mAppModel.getErrorBus().removePropertyChangeListener(this);
         mNavigationHandler.goToLoginPage();
     }
 }
