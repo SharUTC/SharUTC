@@ -192,4 +192,33 @@ public class UserInfo implements Serializable {
         userInfo.setPassword(mPassword);
         return userInfo;
     }
+    
+    @Override
+    public boolean equals(Object obj){
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+
+        final UserInfo userInfo = (UserInfo) obj;
+        return (mPeerId.equals(userInfo.mPeerId) 
+                && mLogin.equals(userInfo.mLogin)
+                && mPassword.equals(userInfo.mPassword)
+                && mFirstName.equals(userInfo.mFirstName)
+                && mLastName.equals(userInfo.mLastName)
+                && mAge.equals(userInfo.mAge)
+                && mAvatarFile.getPath().equals(userInfo.mAvatarFile.getPath()));
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 97 * hash + (this.mPeerId != null ? this.mPeerId.hashCode() : 0);
+        hash = 97 * hash + (this.mLogin != null ? this.mLogin.hashCode() : 0);
+        hash = 97 * hash + (this.mPassword != null ? this.mPassword.hashCode() : 0);
+        hash = 97 * hash + (this.mFirstName != null ? this.mFirstName.hashCode() : 0);
+        hash = 97 * hash + (this.mLastName != null ? this.mLastName.hashCode() : 0);
+        hash = 97 * hash + (this.mAge != null ? this.mAge.hashCode() : 0);
+        hash = 97 * hash + (this.mAvatarFile != null ? this.mAvatarFile.hashCode() : 0);
+        return hash;
+    }
 }
