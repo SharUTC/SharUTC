@@ -5,8 +5,8 @@ import fr.utc.lo23.sharutc.util.CollectionChangeListener;
 import fr.utc.lo23.sharutc.util.CollectionChangeSupport;
 import fr.utc.lo23.sharutc.util.CollectionEvent;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 
 /**
  * Reprents a list of contact
@@ -16,7 +16,7 @@ import java.util.HashSet;
 public class Contacts implements Serializable {
 
     private static final long serialVersionUID = -8656809069835780866L;
-    private HashSet<Contact> mContacts;
+    private ArrayList<Contact> mContacts;
     @JsonIgnore
     private CollectionChangeSupport mCollectionChangeSupport = new CollectionChangeSupport(this);
 
@@ -24,7 +24,7 @@ public class Contacts implements Serializable {
      * Constructor
      */
     public Contacts() {
-        mContacts = new HashSet<Contact>();
+        mContacts = new ArrayList<Contact>();
     }
 
     /**
@@ -49,7 +49,7 @@ public class Contacts implements Serializable {
      * 
      * @return the contact list
      */
-    public HashSet<Contact> getContacts() {
+    public ArrayList<Contact> getContacts() {
         return mContacts;
     }
 

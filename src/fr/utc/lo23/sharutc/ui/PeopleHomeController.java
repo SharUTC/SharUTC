@@ -296,7 +296,7 @@ public class PeopleHomeController extends DragPreviewDrawer implements Initializ
 
         } else if (c.getId().equals(0)) {
             //display contact from all Categories
-            HashSet<Contact> allContact = mAppModel.getProfile().getContacts().getContacts();
+            ArrayList<Contact> allContact = mAppModel.getProfile().getContacts().getContacts();
             if (allContact.size() == 0) {
                 showPlaceHolder("You have no contact in \"" + c.getName() + "\". Select \"Connected\" and Drag&Drop a user to a category.");
             } else {
@@ -307,7 +307,7 @@ public class PeopleHomeController extends DragPreviewDrawer implements Initializ
             }
         } else {
             //check if user are in mCurrentCategory
-            final HashSet<Contact> contacts = mAppModel.getProfile().getContacts().getContacts();
+            final ArrayList<Contact> contacts = mAppModel.getProfile().getContacts().getContacts();
             for (Contact contact : contacts) {
                 //TODO improvement : user Contact as model in PeopleCard
                 //TODO Why not manage contactList in a Category ? would be far more efficient, Category only contain an id and a name...

@@ -12,6 +12,7 @@ import fr.utc.lo23.sharutc.model.AppModel;
 import fr.utc.lo23.sharutc.model.AppModelBuilder;
 import fr.utc.lo23.sharutc.model.userdata.Profile;
 import fr.utc.lo23.sharutc.model.userdata.UserInfo;
+import java.io.File;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -73,6 +74,7 @@ public class ProfileCreateAccountTest {
         info.setLastName("lastname");
         info.setLogin("LOGIN");
         info.setPassword("pwd");
+        info.setAvatarFile(new File(fileService.getAppFolder() + "petMe.lol"));
         accountCreationCommand.setUserInfo(info);
         accountCreationCommand.execute();
 
@@ -100,4 +102,3 @@ public class ProfileCreateAccountTest {
 
     }
 }
-
