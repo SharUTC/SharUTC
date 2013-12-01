@@ -99,15 +99,9 @@ public class ProfileCategoriesAndContactsTest {
 
         Contact cTest = new Contact(u);
         // the command automatically add the default category to the contact
-        cTest.addCategoryId(0);
+        cTest.addCategoryId(Category.PUBLIC_CATEGORY_ID);
 
-        Contact resultat = null;
-        for (Contact c : appModel.getProfile().getContacts().getContacts()) {
-            if (c.getUserInfo().getPeerId().equals(cCree.getUserInfo().getPeerId())) {
-                resultat = c;
-                break;
-            }
-        }
+        Contact resultat = appModel.getProfile().getContacts().findById(cCree.getUserInfo().getPeerId());
 
         Assert.assertEquals("addContactCommand failed", cTest, resultat);
 
@@ -264,7 +258,7 @@ public class ProfileCategoriesAndContactsTest {
 
         // A - Check if the category is deleted of categories list
 
-        Assert.assertEquals("deleteCategoryCommand failed : the categry is not deleted",
+        Assert.assertEquals("deleteCategoryCommand failed : the category is not deleted",
                 appModel.getProfile().getCategories().getCategories().size(), 1);
 
 
@@ -335,9 +329,15 @@ public class ProfileCategoriesAndContactsTest {
 
         addContactCommand.setContact(cCree);
         addContactCommand.execute();
-
         Assert.assertTrue("deleteContactCommand failed : the test can't start",
                 appModel.getProfile().getContacts().contains(cCree));
+        Category catCree = new Category(1, "amis");
+        Category catCree2 = new Category(2, "famille");
+        addContactToCategoryCommand.setContact(cCree);
+        addContactToCategoryCommand.setCategory(catCree);
+        addContactToCategoryCommand.execute();
+        addContactToCategoryCommand.setCategory(catCree2);
+        addContactToCategoryCommand.execute();
 
         deleteContactCommand.setContact(cCree);
         deleteContactCommand.execute();

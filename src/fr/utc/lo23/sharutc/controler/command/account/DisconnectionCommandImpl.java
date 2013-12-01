@@ -1,12 +1,9 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package fr.utc.lo23.sharutc.controler.command.account;
 
 import com.google.inject.Inject;
 import fr.utc.lo23.sharutc.controler.network.NetworkService;
 import fr.utc.lo23.sharutc.controler.service.MusicService;
+import fr.utc.lo23.sharutc.controler.service.PlayerService;
 import fr.utc.lo23.sharutc.controler.service.UserService;
 import fr.utc.lo23.sharutc.model.AppModel;
 import org.slf4j.Logger;
@@ -23,6 +20,7 @@ public class DisconnectionCommandImpl implements DisconnectionCommand {
     private final NetworkService networkService;
     private final MusicService musicService;
     private final AppModel appModel;
+    private final PlayerService playerService;
 
     /**
      * Construct DisconnectionCommandImpl.
@@ -33,11 +31,12 @@ public class DisconnectionCommandImpl implements DisconnectionCommand {
      * @param networkService
      */
     @Inject
-    public DisconnectionCommandImpl(AppModel appModel, UserService userService, MusicService musicService, NetworkService networkService) {
+    public DisconnectionCommandImpl(AppModel appModel, UserService userService, MusicService musicService, NetworkService networkService, PlayerService playerService) {
         this.appModel = appModel;
         this.userService = userService;
         this.musicService = musicService;
         this.networkService = networkService;
+        this.playerService = playerService;
     }
 
     /**
@@ -59,9 +58,12 @@ public class DisconnectionCommandImpl implements DisconnectionCommand {
         appModel.getRemoteUserCatalog().clear();
         appModel.getSearchResults().clear();
         appModel.getTmpCatalog().clear();
-                
+
         //Turn down network threads
         networkService.stop();
+
+        //Turn down music player if playing or not
+        playerService.playerStop();
         log.info("DisconnectionCommand DONE");
     }
 }
