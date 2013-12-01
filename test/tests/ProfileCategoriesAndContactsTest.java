@@ -339,9 +339,6 @@ public class ProfileCategoriesAndContactsTest {
         addContactToCategoryCommand.setCategory(catCree2);
         addContactToCategoryCommand.execute();
 
- Assert.assertTrue("deleteContactCommand failed : the test can't start",
-                appModel.getProfile().getContacts().contains(cCree));
-
         deleteContactCommand.setContact(cCree);
         deleteContactCommand.execute();
 
