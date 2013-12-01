@@ -54,6 +54,7 @@ public class SongDetailController extends SongSelectorController implements Init
     private RatingStar[] mMyRatingStars;
     private RatingStar[] mAverageRatingStars;
     private Music mMusic;
+    private Score mUserScore;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -82,14 +83,18 @@ public class SongDetailController extends SongSelectorController implements Init
         final SongCard songCard = new SongCard(mMusic, this, false);
         songCard.setPrefWidth(230);
         topLeftContainer.getChildren().add(songCard);
+        mUserScore = mMusic.getScore(mAppModel.getProfile().getUserInfo().getPeerId());
+        if (mUserScore != null) {
+            mUserScore.addPropertyChangeListener(this);
+        }
         displayMyRating();
-        
-        mMusic.getScore(mAppModel.getProfile().getUserInfo().getPeerId()).addPropertyChangeListener(this);
     }
 
     private void displayMyRating() {
-        final int currrentScoreValue = mMusic.getScore(mAppModel.getProfile().getUserInfo().getPeerId()).getValue();
-        fillRatingStar(currrentScoreValue, mMyRatingStars);
+        if (mUserScore != null) {
+            final int currrentScoreValue = mUserScore.getValue();
+            fillRatingStar(currrentScoreValue, mMyRatingStars);
+        }
     }
 
     private void fillRatingStar(final int rate, final RatingStar[] ratingStars) {
@@ -175,10 +180,10 @@ public class SongDetailController extends SongSelectorController implements Init
     @Override
     public void onDetach() {
         super.onDetach();
-        mMusic.getScore(mAppModel.getProfile().getUserInfo().getPeerId()).removePropertyChangeListener(this);
+        if (mUserScore != null) {
+            mUserScore.removePropertyChangeListener(this);
+        }
     }
-    
-    
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {

@@ -151,7 +151,9 @@ public class PlayerController implements Initializable, PropertyChangeListener {
                 }
                 mCurrentMusic = music;
                 mCurrentScore = mCurrentMusic.getScore(mAppModel.getProfile().getUserInfo().getPeerId());
-                mCurrentScore.addPropertyChangeListener(mPropertyChangeListenerCurrentMusicScore);
+                if(mCurrentScore != null) {
+                    mCurrentScore.addPropertyChangeListener(mPropertyChangeListenerCurrentMusicScore);
+                }                
             }
             playerMaxTime.setText(timeInSecondsToString(mPlayerService.getTotalTimeSec().intValue()));
             currentMusicTitle.setText(mCurrentMusic.getTitle());
