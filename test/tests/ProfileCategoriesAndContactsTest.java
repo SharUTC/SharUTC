@@ -123,6 +123,9 @@ public class ProfileCategoriesAndContactsTest {
 
         Contact cCree = new Contact(u);
         Category catCree = new Category(1, "amis");
+        createCategoryCommand.setCategoryName("amis");
+        createCategoryCommand.execute();
+        
         addContactToCategoryCommand.setContact(cCree);
         addContactToCategoryCommand.setCategory(catCree);
         addContactToCategoryCommand.execute();
@@ -176,6 +179,9 @@ public class ProfileCategoriesAndContactsTest {
         u3.setPeerId(3L);
         Contact cCree3 = new Contact(u3);
         Category catCree2 = new Category(2, "famille");
+        createCategoryCommand.setCategoryName("famille");
+        createCategoryCommand.execute();
+        
         addContactToCategoryCommand.setContact(cCree3);
         addContactToCategoryCommand.setCategory(catCree);
         addContactToCategoryCommand.execute();
@@ -242,9 +248,9 @@ public class ProfileCategoriesAndContactsTest {
 
         Contact cCree = new Contact(u);
         Category catCree = new Category(1, "amis");
-
         createCategoryCommand.setCategoryName("amis");
         createCategoryCommand.execute();
+        
         // Categories = {{0,PUBLIC}, {1,amis}}
         addContactToCategoryCommand.setContact(cCree);
         addContactToCategoryCommand.setCategory(catCree);
@@ -280,17 +286,23 @@ public class ProfileCategoriesAndContactsTest {
         u2.setPeerId(2L);
 
         Contact cCree2 = new Contact(u2);
+        Category catCree11 = new Category(1, "amis");
+        createCategoryCommand.setCategoryName("amis");
+        createCategoryCommand.execute();
         Category catCree2 = new Category(2, "famille");
+        createCategoryCommand.setCategoryName("famille");
+        createCategoryCommand.execute();
+        
         addContactToCategoryCommand.setContact(cCree2);
-        addContactToCategoryCommand.setCategory(catCree);
+        addContactToCategoryCommand.setCategory(catCree11);
         addContactToCategoryCommand.execute();
         addContactToCategoryCommand.setCategory(catCree2);
         addContactToCategoryCommand.execute();
 
-        deleteCategoryCommand.setCategory(catCree);
+        deleteCategoryCommand.setCategory(catCree11);
         deleteCategoryCommand.execute();
 
-        Assert.assertFalse("deleteCategoryCommand failed : the second contact is still in the category",
+        Assert.assertFalse("deleteCategoryCommand failed : the second contact is still in the category Amis",
                 cCree2.getCategoryIds().contains(1));
 
         Assert.assertFalse("deleteCategoryCommand failed : the second contact is in the category Public",
@@ -301,10 +313,11 @@ public class ProfileCategoriesAndContactsTest {
 
         // D - Check that this command does not delete the category Public
         Category catCree3 = new Category(Category.PUBLIC_CATEGORY_ID, Category.PUBLIC_CATEGORY_NAME);
-        appModel.getProfile().getCategories().getCategories().add(catCree3);
 
         Assert.assertTrue("deleteCategoryCommand failed : the test can't start",
                 appModel.getProfile().getCategories().contains(catCree3));
+        
+        int idsCount = appModel.getProfile().getCategories().size();
 
         deleteCategoryCommand.setCategory(catCree3);
         deleteCategoryCommand.execute();
@@ -312,7 +325,7 @@ public class ProfileCategoriesAndContactsTest {
         Assert.assertTrue("deleteCategoryCommand failed : the category Public is deleted (1)",
                 appModel.getProfile().getCategories().contains(catCree3));
         Assert.assertEquals("deleteCategoryCommand failed : the category Public is deleted (2)",
-                appModel.getProfile().getCategories().size(), 1);
+                appModel.getProfile().getCategories().size(), idsCount);
     }
 
     @Test
@@ -329,15 +342,25 @@ public class ProfileCategoriesAndContactsTest {
 
         addContactCommand.setContact(cCree);
         addContactCommand.execute();
+        
         Assert.assertTrue("deleteContactCommand failed : the test can't start",
                 appModel.getProfile().getContacts().contains(cCree));
+        
         Category catCree = new Category(1, "amis");
+        createCategoryCommand.setCategoryName("amis");
+        createCategoryCommand.execute();
         Category catCree2 = new Category(2, "famille");
+        createCategoryCommand.setCategoryName("famille");
+        createCategoryCommand.execute();
+        
         addContactToCategoryCommand.setContact(cCree);
         addContactToCategoryCommand.setCategory(catCree);
         addContactToCategoryCommand.execute();
         addContactToCategoryCommand.setCategory(catCree2);
         addContactToCategoryCommand.execute();
+        
+        Assert.assertTrue("deleteContactCommand failed : the test can't start",
+                appModel.getProfile().getContacts().contains(cCree));
 
         deleteContactCommand.setContact(cCree);
         deleteContactCommand.execute();
@@ -358,7 +381,12 @@ public class ProfileCategoriesAndContactsTest {
 
         Contact cCree = new Contact(u);
         Category catCree = new Category(1, "amis");
+        createCategoryCommand.setCategoryName("amis");
+        createCategoryCommand.execute();
         Category catCree2 = new Category(2, "famille");
+        createCategoryCommand.setCategoryName("famille");
+        createCategoryCommand.execute();
+        
         addContactToCategoryCommand.setContact(cCree);
         addContactToCategoryCommand.setCategory(catCree);
         addContactToCategoryCommand.execute();
@@ -428,7 +456,7 @@ public class ProfileCategoriesAndContactsTest {
         addContactCommand.execute();
 
         Category catCree3 = new Category(Category.PUBLIC_CATEGORY_ID, Category.PUBLIC_CATEGORY_NAME);
-
+        
         removeContactFromCategoryCommand.setContact(cCree3);
         removeContactFromCategoryCommand.setCategory(catCree3);
         removeContactFromCategoryCommand.execute();
