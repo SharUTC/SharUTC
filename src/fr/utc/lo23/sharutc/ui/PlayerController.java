@@ -27,6 +27,8 @@ import org.slf4j.LoggerFactory;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.application.Platform;
+import javafx.event.EventHandler;
+import javafx.scene.input.ScrollEvent;
 
 /**
  * FXML Controller class
@@ -66,7 +68,6 @@ public class PlayerController implements Initializable, PropertyChangeListener {
     @Inject
     private AppModel mAppModel;
     private Music mCurrentMusic;
-    private double mCurrentPercent = 0;
 
     /**
      * Initializes the controller class.
@@ -75,20 +76,19 @@ public class PlayerController implements Initializable, PropertyChangeListener {
     public void initialize(URL url, ResourceBundle rb) {
 
         mPlayerService.addPropertyChangeListener(this);
-        playerTimeSlider.valueProperty().addListener(new ChangeListener<Number>() {
-            @Override
-            public void changed(ObservableValue<? extends Number> ov, Number t, Number t1) {
-                log.info("Player Time Slider Value Changed: " + String.valueOf(t1));
-                if (mCurrentMusic != null) {
 
-                    if (mCurrentPercent == t1.doubleValue()) {
-                        return;
-                    }
-                    mPlayerService.setCurrentTimeSec(t1.longValue() * mPlayerService.getTotalTimeSec());
+        playerTimeSlider.setOnScroll(new SliderScrollHandler());
+        playerTimeSlider.setOnMouseReleased(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent t) {                               
+                if (mCurrentMusic != null) {
+                    log.debug("Play music from : " + String.valueOf(playerTimeSlider.getValue()));
+                    //Use a Command ?
+                    final Double requestedCurrentTime = playerTimeSlider.getValue() * mPlayerService.getTotalTimeSec();
+                    mPlayerService.setCurrentTimeSec(requestedCurrentTime.longValue());
                 }
             }
         });
-        playerTimeSlider.setOnScroll(new SliderScrollHandler());
 
         speakerSlider.valueProperty().addListener(new ChangeListener<Number>() {
             @Override
@@ -150,19 +150,19 @@ public class PlayerController implements Initializable, PropertyChangeListener {
         }
     }
 
-    private void updateCurrentSongTime(double percent) {
-        mCurrentPercent = percent;
+    private void updateCurrentSongTime(final Long currentTime) {
         if (mCurrentMusic != null) {
-            mCurrentTimeInSeconds = (int) (mPlayerService.getTotalTimeSec() * percent);
-        } else {
-            mCurrentTimeInSeconds = 0;
+            final double currentPercent = currentTime.doubleValue() / mPlayerService.getTotalTimeSec().doubleValue();
+            playerCurrentTime.setText(timeInSecondsToString(currentTime));
+            playerProgressBar.setProgress(currentPercent);
+            if(!playerTimeSlider.isValueChanging()) {
+                playerTimeSlider.setValue(currentPercent);
+            }            
         }
-        playerCurrentTime.setText(timeInSecondsToString(mCurrentTimeInSeconds));
-        playerProgressBar.setProgress(percent);
     }
 
-    private String timeInSecondsToString(int timeInSeconds) {
-        final int minutes = timeInSeconds / 60;
+    private String timeInSecondsToString(final long timeInSeconds) {
+        final long minutes = timeInSeconds / 60;
         return String.format("%02d:%02d", minutes, timeInSeconds - minutes * 60);
     }
 
@@ -286,8 +286,7 @@ public class PlayerController implements Initializable, PropertyChangeListener {
             Music m = (Music) evt.getNewValue();
             onCurrentMusicUpdate(m);
         } else if (propertyName.equals(PlayerService.Property.CURRENT_TIME.name())) {
-            updateCurrentSongTime(((Long) evt.getNewValue()).floatValue() / mPlayerService.getTotalTimeSec().floatValue());
-            playerTimeSlider.valueProperty().setValue(mCurrentPercent);
+            updateCurrentSongTime((Long) evt.getNewValue());
         } else if (propertyName.equals(PlayerService.Property.MUTE.name())) {
             if ((Boolean) evt.getNewValue()) {
                 speakerButton.setGraphic(IC_SPEAKER_MUTED);
