@@ -89,9 +89,7 @@ public class PlayerController implements Initializable, PropertyChangeListener {
             }
         });
         playerTimeSlider.setOnScroll(new SliderScrollHandler());
-        playerTimeSlider.setValue(0);
-        onCurrentMusicUpdate(null);
-        updateCurrentSongTime(0);
+        
         speakerSlider.valueProperty().addListener(new ChangeListener<Number>() {
             @Override
             public void changed(ObservableValue<? extends Number> ov, Number oldValue, Number newValue) {
@@ -102,7 +100,6 @@ public class PlayerController implements Initializable, PropertyChangeListener {
             }
         });
         speakerSlider.setOnScroll(new SliderScrollHandler());
-
         speakerSlider.setValue(mPlayerService.getVolume() * 0.01f);
 
         mRatingStars = new RatingStar[]{
@@ -112,7 +109,6 @@ public class PlayerController implements Initializable, PropertyChangeListener {
             ratingStar4,
             ratingStar5
         };
-
         displayCurrentRating();
 
     }
@@ -154,10 +150,8 @@ public class PlayerController implements Initializable, PropertyChangeListener {
 
         if (newValue == 0.0) {
             mPlayerService.setMute(true);
-            //speakerButton.setGraphic(IC_SPEAKER_MUTED);
         } else if (oldValue == 0.0) {
             mPlayerService.setMute(false);
-            // speakerButton.setGraphic(IC_SPEAKER);
         }
     }
 
