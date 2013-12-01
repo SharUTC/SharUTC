@@ -80,7 +80,7 @@ public class ConnectionRequestCommandImpl implements ConnectionRequestCommand {
      */
     @Override
     public void execute() {
-        log.info("AccountCreationCommand ...");
+        log.info("ConnectionRequestCommand ...");
 
         userService.connectionRequest(mLogin, mPassword);
         if (appModel.getProfile() != null) {
@@ -89,6 +89,6 @@ public class ConnectionRequestCommandImpl implements ConnectionRequestCommand {
             networkService.start();
             networkService.connectionBroadcast(appModel.getProfile().getUserInfo());
         }
-        log.info("AccountCreationCommand DONE");
+        log.info("ConnectionRequestCommand DONE");
     }
 }
