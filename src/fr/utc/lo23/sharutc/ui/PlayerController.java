@@ -65,8 +65,8 @@ public class PlayerController implements Initializable, PropertyChangeListener {
     private SetScoreCommand mSetScoreCommand;
     @Inject
     private AppModel mAppModel;
-    private Music currentMusic;
-    private double currentPercent = 0;
+    private Music mCurrentMusic;
+    private double mCurrentPercent = 0;
 
     /**
      * Initializes the controller class.
@@ -79,9 +79,9 @@ public class PlayerController implements Initializable, PropertyChangeListener {
             @Override
             public void changed(ObservableValue<? extends Number> ov, Number t, Number t1) {
                 log.info("Player Time Slider Value Changed: " + String.valueOf(t1));
-                if (currentMusic != null) {
+                if (mCurrentMusic != null) {
 
-                    if (currentPercent == t1.doubleValue()) {
+                    if (mCurrentPercent == t1.doubleValue()) {
                         return;
                     }
                     mPlayerService.setCurrentTimeSec(t1.longValue() * mPlayerService.getTotalTimeSec());
@@ -131,14 +131,14 @@ public class PlayerController implements Initializable, PropertyChangeListener {
     }
 
     public void onCurrentMusicUpdate(Music music) {
-        currentMusic = music;
-        if (currentMusic != null) {
+        mCurrentMusic = music;
+        if (mCurrentMusic != null) {
 
             playerMaxTime.setText(timeInSecondsToString(mPlayerService.getTotalTimeSec().intValue()));
-            currentMusicTitle.setText(currentMusic.getTitle());
-            currentMusicAlbum.setText(currentMusic.getAlbum());
-            currentMusicArtist.setText(currentMusic.getArtist());
-            final Score score = currentMusic.getScore(mAppModel.getProfile().getUserInfo().toPeer());
+            currentMusicTitle.setText(mCurrentMusic.getTitle());
+            currentMusicAlbum.setText(mCurrentMusic.getAlbum());
+            currentMusicArtist.setText(mCurrentMusic.getArtist());
+            final Score score = mCurrentMusic.getScore(mAppModel.getProfile().getUserInfo().toPeer());
             if (score != null) {
 
                 fillRatingStar(score.getValue());
@@ -162,8 +162,8 @@ public class PlayerController implements Initializable, PropertyChangeListener {
     }
 
     private void updateCurrentSongTime(double percent) {
-        currentPercent = percent;
-        if (currentMusic != null) {
+        mCurrentPercent = percent;
+        if (mCurrentMusic != null) {
             mCurrentTimeInSeconds = (int) (mPlayerService.getTotalTimeSec() * percent);
         } else {
             mCurrentTimeInSeconds = 0;
@@ -209,8 +209,8 @@ public class PlayerController implements Initializable, PropertyChangeListener {
 
     private int getCurrentSongScore() {
         int currentSongValue = 0;
-        if (currentMusic != null) {
-            final Score currentScore = currentMusic.getScore(mAppModel.getProfile().getUserInfo().toPeer());
+        if (mCurrentMusic != null) {
+            final Score currentScore = mCurrentMusic.getScore(mAppModel.getProfile().getUserInfo().toPeer());
             if (currentScore != null) {
                 currentSongValue = currentScore.getValue();
             }
@@ -251,7 +251,7 @@ public class PlayerController implements Initializable, PropertyChangeListener {
     }
 
     public void handleMouseClickedRatingStar(MouseEvent mouseEvent) {
-        if (currentMusic == null) return;
+        if (mCurrentMusic == null) return;
         final Object source = mouseEvent.getSource();
         int newCandidateRate = 0;
         final int currentSongScore = getCurrentSongScore();
@@ -271,7 +271,7 @@ public class PlayerController implements Initializable, PropertyChangeListener {
 
         if (newCandidateRate != currentSongScore) {
             log.debug("new rate : " + String.valueOf(newCandidateRate));
-            mSetScoreCommand.setMusic(currentMusic);
+            mSetScoreCommand.setMusic(mCurrentMusic);
             mSetScoreCommand.setScore(newCandidateRate);
             mSetScoreCommand.setPeer(mAppModel.getProfile().getUserInfo().toPeer());
             mSetScoreCommand.execute();
@@ -303,7 +303,7 @@ public class PlayerController implements Initializable, PropertyChangeListener {
             //playerTimeSlider.setValue();
             //playerTimeSlider.setDisable(false);
             updateCurrentSongTime(((Long) evt.getNewValue()).floatValue() / mPlayerService.getTotalTimeSec().floatValue());
-            playerTimeSlider.valueProperty().setValue(currentPercent);
+            playerTimeSlider.valueProperty().setValue(mCurrentPercent);
         } else if (propertyName.equals(PlayerService.Property.MUTE.name())) {
             if ((Boolean) evt.getNewValue()) {
                 speakerButton.setGraphic(IC_SPEAKER_MUTED);
