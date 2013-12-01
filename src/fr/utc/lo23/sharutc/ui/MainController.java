@@ -490,13 +490,15 @@ public class MainController extends NavigationController implements Initializabl
     }
 
     @Override
-    public void onSongDetailRequested(Music music) {
-        ObservableList<Node> children = rightpane.getChildren();
-        children.clear();
+    public void onSongDetailRequested(final Music music) {
         log.info("Music detail requested : " + music.getAlbum());
         try {
+            detachRightpane();
             mCurrentLoadedRighpaneResult = mFxmlLoader.load(getClass().getResource("/fr/utc/lo23/sharutc/ui/fxml/song_detail.fxml"));
-            children.add((Node) mCurrentLoadedRighpaneResult.getRoot());
+            ((SongDetailController)mCurrentLoadedRighpaneResult.getController()).init(mDragPreview);
+            ((SongDetailController)mCurrentLoadedRighpaneResult.getController()).setInterface(this);            
+            ((SongDetailController)mCurrentLoadedRighpaneResult.getController()).setMusic(music);
+            attachRightpane(mCurrentLoadedRighpaneResult);                        
         } catch (IOException e) {
             log.error(e.getMessage());
         }

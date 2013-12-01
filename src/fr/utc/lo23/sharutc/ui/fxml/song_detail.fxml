@@ -38,22 +38,37 @@
                 
                 
                 <GridPane hgap="5" vgap="2" GridPane.valignment="CENTER"   >
-                    <Label text="My rank" styleClass="rankingSystemLabel" GridPane.rowIndex="0" GridPane.columnIndex="0" />
+                    <Label text="My rate" styleClass="rankingSystemLabel" GridPane.rowIndex="0" GridPane.columnIndex="0" />
                     <HBox GridPane.rowIndex="0" GridPane.columnIndex="1">
-                        <fr.utc.lo23.sharutc.ui.custom.RatingStar />
-                        <fr.utc.lo23.sharutc.ui.custom.RatingStar />
-                        <fr.utc.lo23.sharutc.ui.custom.RatingStar />
-                        <fr.utc.lo23.sharutc.ui.custom.RatingStar />
-                        <fr.utc.lo23.sharutc.ui.custom.RatingStar />
+                        <fr.utc.lo23.sharutc.ui.custom.RatingStar fx:id="starMyRate1"
+                                                                  onMouseEntered="#handleMouseEnteredRatingStar"
+                                                                  onMouseClicked="#handleMouseClickedRatingStar"
+                                                                  onMouseExited="#handleMouseExitedRatingStar" />
+                        <fr.utc.lo23.sharutc.ui.custom.RatingStar fx:id="starMyRate2" 
+                                                                  onMouseEntered="#handleMouseEnteredRatingStar"
+                                                                  onMouseClicked="#handleMouseClickedRatingStar"
+                                                                  onMouseExited="#handleMouseExitedRatingStar" />
+                        <fr.utc.lo23.sharutc.ui.custom.RatingStar fx:id="starMyRate3"
+                                                                  onMouseEntered="#handleMouseEnteredRatingStar"
+                                                                  onMouseClicked="#handleMouseClickedRatingStar"
+                                                                  onMouseExited="#handleMouseExitedRatingStar" />
+                        <fr.utc.lo23.sharutc.ui.custom.RatingStar fx:id="starMyRate4"
+                                                                  onMouseEntered="#handleMouseEnteredRatingStar"
+                                                                  onMouseClicked="#handleMouseClickedRatingStar"
+                                                                  onMouseExited="#handleMouseExitedRatingStar" />
+                        <fr.utc.lo23.sharutc.ui.custom.RatingStar fx:id="starMyRate5"
+                                                                  onMouseEntered="#handleMouseEnteredRatingStar"
+                                                                  onMouseClicked="#handleMouseClickedRatingStar"
+                                                                  onMouseExited="#handleMouseExitedRatingStar" />
                     </HBox>
                     
                     <Label text="Average"  styleClass="rankingSystemLabel" GridPane.rowIndex="1" GridPane.columnIndex="0"  />
                     <HBox GridPane.rowIndex="1" GridPane.columnIndex="1">
-                        <fr.utc.lo23.sharutc.ui.custom.RatingStar />
-                        <fr.utc.lo23.sharutc.ui.custom.RatingStar />
-                        <fr.utc.lo23.sharutc.ui.custom.RatingStar />
-                        <fr.utc.lo23.sharutc.ui.custom.RatingStar />
-                        <fr.utc.lo23.sharutc.ui.custom.RatingStar />
+                        <fr.utc.lo23.sharutc.ui.custom.RatingStar fx:id="starAverageRate1" />
+                        <fr.utc.lo23.sharutc.ui.custom.RatingStar fx:id="starAverageRate2" />
+                        <fr.utc.lo23.sharutc.ui.custom.RatingStar fx:id="starAverageRate3" />
+                        <fr.utc.lo23.sharutc.ui.custom.RatingStar fx:id="starAverageRate4" />
+                        <fr.utc.lo23.sharutc.ui.custom.RatingStar fx:id="starAverageRate5" />
                     </HBox>
                     
                     <Label text="Owner"  styleClass="rankingSystemLabel" GridPane.rowIndex="2" GridPane.columnIndex="0" />

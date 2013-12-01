@@ -1,38 +1,151 @@
 package fr.utc.lo23.sharutc.ui;
 
+import com.google.inject.Inject;
+import fr.utc.lo23.sharutc.controler.command.music.SetScoreCommand;
+import fr.utc.lo23.sharutc.model.AppModel;
 import fr.utc.lo23.sharutc.model.domain.Comment;
 import fr.utc.lo23.sharutc.model.domain.Music;
+import fr.utc.lo23.sharutc.model.domain.Score;
 import fr.utc.lo23.sharutc.ui.custom.CommentView;
-import fr.utc.lo23.sharutc.ui.custom.card.DraggableCard;
+import fr.utc.lo23.sharutc.ui.custom.RatingStar;
 import fr.utc.lo23.sharutc.ui.custom.card.SongCard;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class SongDetailController implements Initializable, SongCard.ISongCard {
+public class SongDetailController extends SongSelectorController implements Initializable, PropertyChangeListener {
 
+    private static final Logger log = LoggerFactory.getLogger(SongDetailController.class);
     @FXML
     public VBox topLeftContainer;
     @FXML
     public VBox commentContainer;
+    @FXML
+    public RatingStar starMyRate1;
+    @FXML
+    public RatingStar starMyRate2;
+    @FXML
+    public RatingStar starMyRate3;
+    @FXML
+    public RatingStar starMyRate4;
+    @FXML
+    public RatingStar starMyRate5;
+    @FXML
+    public RatingStar starAverageRate1;
+    @FXML
+    public RatingStar starAverageRate2;
+    @FXML
+    public RatingStar starAverageRate3;
+    @FXML
+    public RatingStar starAverageRate4;
+    @FXML
+    public RatingStar starAverageRate5;
+    @Inject
+    private AppModel mAppModel;
+    @Inject
+    private SetScoreCommand mSetScoreCommand;
+    private RatingStar[] mMyRatingStars;
+    private RatingStar[] mAverageRatingStars;
+    private Music mMusic;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
 
-        final Music music = new Music();
-        music.setAlbum("Natural Mystic");
-        music.setTitle("Crazy Baldhead");
-        music.setArtist("Bob Marley");
+        mMyRatingStars = new RatingStar[]{
+            starMyRate1,
+            starMyRate2,
+            starMyRate3,
+            starMyRate4,
+            starMyRate5
+        };
 
-        final SongCard songCard = new SongCard(music, this, false);
-        songCard.setPrefWidth(230);
-        topLeftContainer.getChildren().add(songCard);
-        
+        mAverageRatingStars = new RatingStar[]{
+            starAverageRate1,
+            starAverageRate2,
+            starAverageRate3,
+            starAverageRate4,
+            starAverageRate5
+        };
         //artificialy populate with some comments
         populateCommentContainer();
+    }
+
+    public void setMusic(final Music music) {
+        mMusic = music;
+        final SongCard songCard = new SongCard(mMusic, this, false);
+        songCard.setPrefWidth(230);
+        topLeftContainer.getChildren().add(songCard);
+        displayMyRating();
+        
+        mMusic.getScore(mAppModel.getProfile().getUserInfo().getPeerId()).addPropertyChangeListener(this);
+    }
+
+    private void displayMyRating() {
+        final int currrentScoreValue = mMusic.getScore(mAppModel.getProfile().getUserInfo().getPeerId()).getValue();
+        fillRatingStar(currrentScoreValue, mMyRatingStars);
+    }
+
+    private void fillRatingStar(final int rate, final RatingStar[] ratingStars) {
+        for (int i = 0; i < 5; i++) {
+            if (i < rate) {
+                ratingStars[i].fill(true);
+            } else {
+                ratingStars[i].fill(false);
+            }
+        }
+    }
+
+    public void handleMouseEnteredRatingStar(MouseEvent mouseEvent) {
+        final Object source = mouseEvent.getSource();
+        int previewRate = 1;
+        if (source == starMyRate2) {
+            previewRate = 2;
+        } else if (source == starMyRate3) {
+            previewRate = 3;
+        } else if (source == starMyRate4) {
+            previewRate = 4;
+        } else if (source == starMyRate5) {
+            previewRate = 5;
+        }
+        fillRatingStar(previewRate, mMyRatingStars);
+    }
+
+    public void handleMouseExitedRatingStar(MouseEvent mouseEvent) {
+        displayMyRating();
+    }
+
+    public void handleMouseClickedRatingStar(MouseEvent mouseEvent) {
+        final int currrentScoreValue = mMusic.getScore(mAppModel.getProfile().getUserInfo().getPeerId()).getValue();
+        final Object source = mouseEvent.getSource();
+        int newCandidateRate = 0;
+        if (source == starMyRate5) {
+            newCandidateRate = 5;
+        } else if (source == starMyRate4) {
+            newCandidateRate = 4;
+        } else if (source == starMyRate3) {
+            newCandidateRate = 3;
+        } else if (source == starMyRate2) {
+            newCandidateRate = 2;
+        } else if (source == starMyRate1) {
+            if (currrentScoreValue != 1) {
+                newCandidateRate = 1;
+            }
+        }
+
+        if (newCandidateRate != currrentScoreValue) {
+            log.debug("new rate : " + String.valueOf(newCandidateRate));
+            mSetScoreCommand.setMusic(mMusic);
+            mSetScoreCommand.setScore(newCandidateRate);
+            mSetScoreCommand.setPeer(mAppModel.getProfile().getUserInfo().toPeer());
+            mSetScoreCommand.execute();
+        }
     }
 
     private void populateCommentContainer() {
@@ -60,37 +173,19 @@ public class SongDetailController implements Initializable, SongCard.ISongCard {
     }
 
     @Override
-    public void onPlayRequested(Music music) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void onDetach() {
+        super.onDetach();
+        mMusic.getScore(mAppModel.getProfile().getUserInfo().getPeerId()).removePropertyChangeListener(this);
     }
+    
+    
 
     @Override
-    public void onSongDetailsRequested(Music music) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void onSongCardSelected(SongCard songCard) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void onSongAddToPlayList(Music music) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void onTagEditionRequested(Music music) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void onDragStart(MouseEvent event, DraggableCard draggableCard) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void onDragStop(DraggableCard draggableCard) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void propertyChange(PropertyChangeEvent evt) {
+        final String propertyName = evt.getPropertyName();
+        if (Score.Property.VALUE.name().equals(propertyName)) {
+            log.debug("score updated");
+            displayMyRating();
+        }
     }
 }
