@@ -90,7 +90,7 @@ public class MainController extends NavigationController implements Initializabl
     private DisconnectionCommand mDisconnectionCommand;
     //TODO Remove once we get a real list of Musics
     static public ArrayList<Music> population;
-    public ObservableList<Music> playListData;
+    public ObservableList<Music> mPlayListData;
     @Inject
     private PlayerService mPlayerService;
     private CollectionChangeListener mChangeListenerPlayList;
@@ -241,17 +241,17 @@ public class MainController extends NavigationController implements Initializabl
             public void collectionChanged(CollectionEvent ev) {
                 switch (ev.getType()) {
                     case ADD:
-                        playListData.add(ev.getIndex(), (Music) ev.getItem());
+                        mPlayListData.add(ev.getIndex(), (Music) ev.getItem());
                         break;
                     case REMOVE:
-                        playListData.remove(ev.getIndex());
+                        mPlayListData.remove(ev.getIndex());
                         break;
                     case CLEAR:
-                        playListData.clear();
+                        mPlayListData.clear();
                         break;
                     case UPDATE:
-                        playListData.remove(ev.getIndex());
-                        playListData.add(ev.getIndex(), (Music) ev.getItem());
+                        mPlayListData.remove(ev.getIndex());
+                        mPlayListData.add(ev.getIndex(), (Music) ev.getItem());
                         break;
 
                 }
@@ -457,10 +457,10 @@ public class MainController extends NavigationController implements Initializabl
         HBox.setHgrow(listView, Priority.ALWAYS);
         bottombar.getChildren().add(listView);
 
-        playListData = FXCollections.observableArrayList();
+        mPlayListData = FXCollections.observableArrayList();
 
 
-        listView.setItems(playListData);
+        listView.setItems(mPlayListData);
         listView.setCellFactory(new Callback<ListView<Music>, ListCell<Music>>() {
             @Override
             public ListCell<Music> call(ListView<Music> p) {
