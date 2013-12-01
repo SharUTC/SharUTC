@@ -91,10 +91,11 @@ public class SongDetailController extends SongSelectorController implements Init
     }
 
     private void displayMyRating() {
+        int currentScoreValue = 0;
         if (mUserScore != null) {
-            final int currrentScoreValue = mUserScore.getValue();
-            fillRatingStar(currrentScoreValue, mMyRatingStars);
+            currentScoreValue = mUserScore.getValue();
         }
+        fillRatingStar(currentScoreValue, mMyRatingStars);
     }
 
     private void fillRatingStar(final int rate, final RatingStar[] ratingStars) {
@@ -127,7 +128,11 @@ public class SongDetailController extends SongSelectorController implements Init
     }
 
     public void handleMouseClickedRatingStar(MouseEvent mouseEvent) {
-        final int currrentScoreValue = mMusic.getScore(mAppModel.getProfile().getUserInfo().getPeerId()).getValue();
+        int currrentScoreValue = 0;
+        if (mUserScore != null) {
+            currrentScoreValue = mMusic.getScore(mAppModel.getProfile().getUserInfo().getPeerId()).getValue();
+        }
+
         final Object source = mouseEvent.getSource();
         int newCandidateRate = 0;
         if (source == starMyRate5) {
