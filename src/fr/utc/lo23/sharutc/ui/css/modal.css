@@ -17,6 +17,7 @@
 
 .positiveButton:hover {
     -fx-background-color: #669900;
+    -fx-text-fill: #ECF0F1;
 }
 
 .negativeButton {
@@ -26,6 +27,7 @@
 
 .negativeButton:hover {
     -fx-background-color: #CC0000;
+    -fx-text-fill: #ECF0F1;
 }
 
 .text-field {
