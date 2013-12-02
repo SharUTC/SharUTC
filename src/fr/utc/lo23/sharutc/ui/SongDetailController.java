@@ -12,6 +12,7 @@ import fr.utc.lo23.sharutc.ui.custom.card.SongCard;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -78,7 +79,7 @@ public class SongDetailController extends SongSelectorController implements Init
             starAverageRate5
         };
         //artificialy populate with some comments
-        populateCommentContainer();
+        //populateCommentContainer();
     }
 
     public void setMusic(final Music music) {
@@ -86,12 +87,20 @@ public class SongDetailController extends SongSelectorController implements Init
         setUserScore();
         displayMusicInfo();
         displayMyRating();
+        displayComments();
     }
 
     private void setUserScore() {
         mUserScore = mMusic.getScore(mAppModel.getProfile().getUserInfo().getPeerId());
         if (mUserScore != null) {
             mUserScore.addPropertyChangeListener(this);
+        }
+    }
+    
+    private void displayComments() {
+        final List<Comment> comments = mMusic.getComments();
+        for(Comment comment : comments) {
+            commentContainer.getChildren().add(new CommentView(comment));
         }
     }
 
@@ -194,7 +203,6 @@ public class SongDetailController extends SongSelectorController implements Init
         commentContainer.getChildren().add(new CommentView(comment2));
         commentContainer.getChildren().add(new CommentView(comment3));
         commentContainer.getChildren().add(new CommentView(comment1));
-
     }
 
     @Override
