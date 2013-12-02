@@ -285,7 +285,7 @@ public class PeopleHomeController extends DragPreviewDrawer implements Initializ
                     userInfo.setLastName("LastName");
                     userInfo.setFirstName("FirstName");
                     userInfo.setPeerId((long) i);
-                    PeopleCard newCard = new PeopleCard(userInfo, this, PeopleCard.USAGE_CATEGORY);
+                    PeopleCard newCard = new PeopleCard(userInfo, this, PeopleCard.USAGE_CONNECTED);
                     peopleContainer.getChildren().add(newCard);
                 }
             } else {
