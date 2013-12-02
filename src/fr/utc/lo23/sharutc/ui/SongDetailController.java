@@ -61,7 +61,8 @@ public class SongDetailController extends SongSelectorController implements Init
     private AppModel mAppModel;
     @Inject
     private SetScoreCommand mSetScoreCommand;
-    @Inject AddCommentCommand mAddCommentCommand;
+    @Inject
+    AddCommentCommand mAddCommentCommand;
     private RatingStar[] mMyRatingStars;
     private RatingStar[] mAverageRatingStars;
     private Music mMusic;
@@ -85,8 +86,6 @@ public class SongDetailController extends SongSelectorController implements Init
             starAverageRate4,
             starAverageRate5
         };
-        //artificialy populate with some comments
-        populateCommentContainer();
     }
 
     public void setMusic(final Music music) {
@@ -103,12 +102,14 @@ public class SongDetailController extends SongSelectorController implements Init
             mUserScore.addPropertyChangeListener(this);
         }
     }
-    
+
     private void showComments() {
         final List<Comment> comments = mMusic.getComments();
-        for(Comment comment : comments) {
+        for (Comment comment : comments) {
             commentContainer.getChildren().add(new CommentView(comment));
         }
+        //artificialy populate with some comments
+        populateCommentContainer();
     }
 
     private void showMusicInfo() {
@@ -138,11 +139,11 @@ public class SongDetailController extends SongSelectorController implements Init
             }
         }
     }
-    
+
     @FXML
     private void handleAddCommentAction(ActionEvent event) {
         final String comment = commentTextArea.getText().trim();
-        if(!comment.isEmpty()) {
+        if (!comment.isEmpty()) {
             log.debug("addCommentCommand : " + comment);
             mAddCommentCommand.setMusic(mMusic);
             mAddCommentCommand.setComment(comment);
@@ -152,8 +153,13 @@ public class SongDetailController extends SongSelectorController implements Init
             mAddCommentCommand.setOwnerPeer(mAppModel.getProfile().getUserInfo().toPeer());
             mAddCommentCommand.execute();
             commentTextArea.clear();
+
+            //Sad work-around, since no events are triggered when a comment is added.
+            commentContainer.getChildren().clear();
+            showComments();
+
             log.debug("addCommentCommand -- end ");
-        }        
+        }
     }
 
     public void handleMouseEnteredRatingStar(MouseEvent mouseEvent) {
@@ -203,9 +209,9 @@ public class SongDetailController extends SongSelectorController implements Init
             mSetScoreCommand.setScore(newCandidateRate);
             mSetScoreCommand.setPeer(mAppModel.getProfile().getUserInfo().toPeer());
             mSetScoreCommand.execute();
-            
+
             //Sad work-around, since no events are triggered when the very first score is set.
-            if(mUserScore == null) {
+            if (mUserScore == null) {
                 log.debug("score -- work-around");
                 setUserScore();
                 showMyRating();
@@ -233,7 +239,6 @@ public class SongDetailController extends SongSelectorController implements Init
         commentContainer.getChildren().add(new CommentView(comment1));
         commentContainer.getChildren().add(new CommentView(comment2));
         commentContainer.getChildren().add(new CommentView(comment3));
-        commentContainer.getChildren().add(new CommentView(comment1));
     }
 
     @Override
