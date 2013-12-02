@@ -14,24 +14,33 @@ import fr.utc.lo23.sharutc.ui.custom.card.SimpleCard;
 import fr.utc.lo23.sharutc.util.CollectionChangeListener;
 import fr.utc.lo23.sharutc.util.CollectionEvent;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.control.Label;
-import javafx.scene.control.ScrollPane;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.HBoxBuilder;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBoxBuilder;
 import javafx.scene.text.TextAlignment;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.net.URL;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.ResourceBundle;
 
 public class PeopleHomeController extends DragPreviewDrawer implements Initializable, PeopleCard.IPeopleCard, GroupCard.IGroupCard, CollectionChangeListener {
 
@@ -158,8 +167,7 @@ public class PeopleHomeController extends DragPreviewDrawer implements Initializ
     @Override
     public void onGroupEditionRequested(Category category) {
         log.info("onGroupEditionRequested " + category.getName());
-        mInterface.onGroupEditionRequested(category);
-        //TODO create Group Edition View
+        buildCategoryChangeName(category).show();
     }
 
     @Override
@@ -285,7 +293,7 @@ public class PeopleHomeController extends DragPreviewDrawer implements Initializ
                     userInfo.setLastName("LastName");
                     userInfo.setFirstName("FirstName");
                     userInfo.setPeerId((long) i);
-                    PeopleCard newCard = new PeopleCard(userInfo, this, PeopleCard.USAGE_CATEGORY);
+                    PeopleCard newCard = new PeopleCard(userInfo, this, PeopleCard.USAGE_CONNECTED);
                     peopleContainer.getChildren().add(newCard);
                 }
             } else {
@@ -386,6 +394,41 @@ public class PeopleHomeController extends DragPreviewDrawer implements Initializ
     }
 
     /**
+     * build a dialogBox to set the category name
+     *
+     * @param c
+     * @return
+     */
+    private Stage buildCategoryChangeName(final Category c) {
+        final Stage dialog = new Stage(StageStyle.TRANSPARENT);
+        dialog.initModality(Modality.APPLICATION_MODAL);
+        //TODO set editable true when delete issue will be solved
+        final TextField editableName = TextFieldBuilder.create().editable(false).styleClass("text-field").text(c.getName()).build();
+        dialog.setScene(
+                new Scene(
+                        VBoxBuilder.create().styleClass("modal-dialog").children(
+                                HBoxBuilder.create().styleClass("modal-dialog").children(
+                                        LabelBuilder.create().text("Category Name : ").build(),
+                                        editableName)
+                                        .build(),
+                                ButtonBuilder.create().styleClass("button").text("Save").defaultButton(true).onAction(new EventHandler<ActionEvent>() {
+                                    @Override
+                                    public void handle(ActionEvent actionEvent) {
+                                        // take action and close the dialog.
+                                        c.setName(editableName.getText());
+                                        //TODO remove when UPDATE will be fired by CollectionChangeListener
+                                        displayUserGroup();
+                                        dialog.close();
+                                    }
+                                }).build()
+                        ).build()
+                )
+        );
+        dialog.getScene().getStylesheets().add(this.getClass().getResource("/fr/utc/lo23/sharutc/ui/css/modal.css").toExternalForm());
+        return dialog;
+    }
+
+    /**
      * hide the + card used to create a new Category
      */
     private void hideAddNewGroupCard() {
@@ -427,7 +470,9 @@ public class PeopleHomeController extends DragPreviewDrawer implements Initializ
             //ADD EVENT
             if (item instanceof Category) {
                 //new category added callback
-                addNewGroupCard((Category) ev.getItem(), true);
+                final Category c = (Category) ev.getItem();
+                addNewGroupCard(c, true);
+                buildCategoryChangeName(c).show();
             } else if (item instanceof UserInfo) {
                 //new user connected
                 log.info("new user connected");
@@ -452,6 +497,12 @@ public class PeopleHomeController extends DragPreviewDrawer implements Initializ
                         }
                     }
                 }
+            }
+        } else if (type.equals(CollectionEvent.Type.UPDATE)) {
+            if (item instanceof Category) {
+                //redraw user group
+                //TODO UPDATE not fired onNameChanged
+                //displayUserGroup();
             }
         }
     }
