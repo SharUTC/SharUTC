@@ -112,9 +112,10 @@ public class Catalog implements Serializable, PropertyChangeListener {
      * @param music the music to add
      */
     public void add(int index, Music music) {
-        music.addPropertyChangeListener(this);
-        mMusics.add(index, music);
-        collectionChangeSupport.fireCollectionChanged(music, index, CollectionEvent.Type.ADD);
+        Music musicToAdd = music.clone();
+        musicToAdd.addPropertyChangeListener(this);
+        mMusics.add(index, musicToAdd);
+        collectionChangeSupport.fireCollectionChanged(musicToAdd, index, CollectionEvent.Type.ADD);
     }
 
     /**
