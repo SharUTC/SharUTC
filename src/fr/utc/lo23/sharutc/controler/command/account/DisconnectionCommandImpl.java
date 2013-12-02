@@ -62,8 +62,9 @@ public class DisconnectionCommandImpl implements DisconnectionCommand {
         //Turn down network threads
         networkService.stop();
 
-        //Turn down music player if playing or not
-        playerService.playerStop();
+        //Turn down music player by clearing its playlist
+        playerService.getPlaylist().clear();
+        
         log.info("DisconnectionCommand DONE");
     }
 }
