@@ -165,6 +165,7 @@ public class PeopleHomeController extends DragPreviewDrawer implements Initializ
         //Create a dialogBox to let the user edit the name
         DialogBoxBuilder.createEditBox("Category Name : ", category.getName(),
                 this.getClass().getResource("/fr/utc/lo23/sharutc/ui/css/modal.css").toExternalForm(),
+                groupContainer.getScene().getRoot(),
                 new DialogBoxBuilder.IEditBox() {
                     @Override
                     public void onValidate(String value) {
@@ -395,6 +396,7 @@ public class PeopleHomeController extends DragPreviewDrawer implements Initializ
                     //Create a dialogBox to let the user choose the name
                     DialogBoxBuilder.createEditBox("Category Name : ", "Category" + id,
                             this.getClass().getResource("/fr/utc/lo23/sharutc/ui/css/modal.css").toExternalForm(),
+                            groupContainer.getScene().getRoot(),
                             new DialogBoxBuilder.IEditBox() {
                                 @Override
                                 public void onValidate(String value) {
