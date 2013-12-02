@@ -199,7 +199,7 @@ public class PlayerServiceImpl implements PlayerService, PropertyChangeListener,
             player = null;
         }
         setCurrentTimeSec(0L);
-        onPause(false);
+        onPause(true);
     }
 
     /**
