@@ -101,7 +101,7 @@ public class Catalog implements Serializable, PropertyChangeListener {
      * @return true if the music was added (java norm, not used here)
      */
     public boolean add(Music music) {
-        add(mMusics.size(), music);
+        add(mMusics.size(), music.clone());
         return true;
     }
 
