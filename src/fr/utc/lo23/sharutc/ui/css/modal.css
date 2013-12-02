@@ -10,13 +10,22 @@
   -fx-background-radius: 6;
 }
 
-.button {
+.positiveButton {
     -fx-background-color: #99CC00;
     -fx-background-radius: 0;
 }
 
-.button:hover {
+.positiveButton:hover {
     -fx-background-color: #669900;
+}
+
+.negativeButton {
+    -fx-background-color: #FF4444;
+    -fx-background-radius: 0;
+}
+
+.negativeButton:hover {
+    -fx-background-color: #CC0000;
 }
 
 .text-field {
