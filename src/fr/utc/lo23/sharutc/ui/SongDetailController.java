@@ -203,6 +203,13 @@ public class SongDetailController extends SongSelectorController implements Init
             mSetScoreCommand.setScore(newCandidateRate);
             mSetScoreCommand.setPeer(mAppModel.getProfile().getUserInfo().toPeer());
             mSetScoreCommand.execute();
+            
+            //Sad work-around, since no events are triggered when the very first score is set.
+            if(mUserScore == null) {
+                log.debug("score -- work-around");
+                setUserScore();
+                showMyRating();
+            }
         }
     }
 

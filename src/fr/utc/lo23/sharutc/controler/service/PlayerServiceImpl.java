@@ -35,7 +35,7 @@ public class PlayerServiceImpl implements PlayerService, PropertyChangeListener,
     private final FileService fileService;
     private final NetworkService networkService;
     private final MusicService musicService;
-    private PlaybackListener player;
+    private static PlaybackListener player;
     private final Catalog mPlaylist;
     private Music mCurrentMusic;
     private Long mCurrentTimeSec = 0L;
@@ -88,7 +88,7 @@ public class PlayerServiceImpl implements PlayerService, PropertyChangeListener,
      * {@inheritDoc}
      */
     @Override
-    public void playMusicFromPlaylist(Music music) {
+    public synchronized void playMusicFromPlaylist(Music music) {
         log.info("playMusicFromPlaylist");
         if (music != null && mPlaylist.contains(music)) {
             playerStop();
@@ -101,7 +101,7 @@ public class PlayerServiceImpl implements PlayerService, PropertyChangeListener,
      * {@inheritDoc}
      */
     @Override
-    public void playOneMusic(Music music) {
+    public synchronized void playOneMusic(Music music) {
         log.info("playOneMusic");
         if (music != null && !music.getFileMissing()) {
             mPlaylist.clear();
@@ -114,7 +114,7 @@ public class PlayerServiceImpl implements PlayerService, PropertyChangeListener,
      * {@inheritDoc}
      */
     @Override
-    public void updateAndPlayMusic(Music musicWithBytes) {
+    public synchronized void updateAndPlayMusic(Music musicWithBytes) {
         log.info("updateAndPlayMusic");
         if (musicWithBytes != null && mPlaylist.contains(musicWithBytes)) {
             playerStop();
@@ -181,7 +181,7 @@ public class PlayerServiceImpl implements PlayerService, PropertyChangeListener,
      * {@inheritDoc}
      */
     @Override
-    public void playerPause() {
+    public synchronized void playerPause() {
         log.info("playerPause");
         if (player != null) {
             player.pauseToggle();
@@ -192,7 +192,7 @@ public class PlayerServiceImpl implements PlayerService, PropertyChangeListener,
      * {@inheritDoc}
      */
     @Override
-    public void playerStop() {
+    public synchronized void playerStop() {
         log.info("playerStop");
         if (player != null) {
             player.pause();
@@ -206,7 +206,7 @@ public class PlayerServiceImpl implements PlayerService, PropertyChangeListener,
      * {@inheritDoc}
      */
     @Override
-    public void playerNext() {
+    public synchronized void playerNext() {
         log.info("playerNext");
         // if playing then stop
         if (player != null) {
@@ -232,7 +232,7 @@ public class PlayerServiceImpl implements PlayerService, PropertyChangeListener,
      * {@inheritDoc}
      */
     @Override
-    public void playerPrevious() {
+    public synchronized void playerPrevious() {
         log.info("playerPrevious");
         // if playing then stop
         if (player != null) {
@@ -271,7 +271,7 @@ public class PlayerServiceImpl implements PlayerService, PropertyChangeListener,
      * {@inheritDoc}
      */
     @Override
-    public void setCurrentTimeSec(Long timeInSec) {
+    public synchronized void setCurrentTimeSec(Long timeInSec) {
         log.debug("setCurrentTimeSec ({}) ...", timeInSec);
         if (mCurrentMusic != null && timeInSec != null) {
             if (timeInSec <= 0L) {
@@ -305,7 +305,7 @@ public class PlayerServiceImpl implements PlayerService, PropertyChangeListener,
     /**
      * {@inheritDoc}
      */
-    private void setCurrentMusic(Music music) {
+    private synchronized void setCurrentMusic(Music music) {
         log.trace("setCurrentMusic ...");
         if (music != null
                 && (music.getFileBytes() == null || music.getFileBytes().length == 0)
@@ -401,7 +401,7 @@ public class PlayerServiceImpl implements PlayerService, PropertyChangeListener,
      * {@inheritDoc}
      */
     @Override
-    public void setVolume(int volume) {
+    public synchronized void setVolume(int volume) {
         log.debug("setVolume ({}) ...", volume);
         if (volume < VOLUME_MIN) {
             volume = VOLUME_MIN;
@@ -431,7 +431,7 @@ public class PlayerServiceImpl implements PlayerService, PropertyChangeListener,
      * {@inheritDoc}
      */
     @Override
-    public void setMute(boolean mute) {
+    public synchronized void setMute(boolean mute) {
         log.debug("setMute ({}) ...", mute);
         if (this.mute != mute) {
             this.mute = mute;
@@ -447,6 +447,7 @@ public class PlayerServiceImpl implements PlayerService, PropertyChangeListener,
      *
      * @param listener
      */
+    @Override
     public void addPropertyChangeListener(PropertyChangeListener listener) {
         propertyChangeSupport.addPropertyChangeListener(listener);
     }
@@ -455,6 +456,7 @@ public class PlayerServiceImpl implements PlayerService, PropertyChangeListener,
      *
      * @param listener
      */
+    @Override
     public void removePropertyChangeListener(PropertyChangeListener listener) {
         propertyChangeSupport.removePropertyChangeListener(listener);
     }
