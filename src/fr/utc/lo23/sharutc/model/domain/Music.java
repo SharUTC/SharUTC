@@ -542,7 +542,10 @@ public class Music implements Serializable {
      * @param score The score to add
      */
     public void addScore(Score score) {
+        int oldAverageScore = getAverageScore();
         this.mScores.add(score);
+        int averageScore = getAverageScore();
+        propertyChangeSupport.firePropertyChange(Property.SCORES.name(), oldAverageScore, averageScore);
     }
 
     /**
@@ -551,7 +554,10 @@ public class Music implements Serializable {
      * @param score The score to remove
      */
     public void removeScore(Score score) {
+        int oldAverageScore = getAverageScore();
         this.mScores.remove(score);
+        int averageScore = getAverageScore();
+        propertyChangeSupport.firePropertyChange(Property.SCORES.name(), oldAverageScore, averageScore);
     }
 
     /**
@@ -685,6 +691,19 @@ public class Music implements Serializable {
         mFileMissing = null;
     }
 
+    private int getAverageScore() {
+        int averageScore = 0;
+        if (mScores != null && !mScores.isEmpty()) {
+            int i = 0;
+            while (mScores.iterator().hasNext()) {
+                averageScore += mScores.iterator().next().getValue();
+                i++;
+            }
+            averageScore /= (i != 0 ? i : 1);
+        }
+        return averageScore;
+    }
+
     /**
      *
      */
@@ -729,7 +748,11 @@ public class Music implements Serializable {
         /**
          *
          */
-        CATEGORY_IDS
+        CATEGORY_IDS,
+        /**
+         *
+         */
+        SCORES
     }
 
     @Override
