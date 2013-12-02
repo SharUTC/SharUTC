@@ -15,6 +15,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import org.slf4j.Logger;
@@ -23,6 +24,8 @@ import org.slf4j.LoggerFactory;
 public class SongDetailController extends SongSelectorController implements Initializable, PropertyChangeListener {
 
     private static final Logger log = LoggerFactory.getLogger(SongDetailController.class);
+    @FXML
+    public Button addRemoveButton;
     @FXML
     public VBox topLeftContainer;
     @FXML
@@ -80,14 +83,26 @@ public class SongDetailController extends SongSelectorController implements Init
 
     public void setMusic(final Music music) {
         mMusic = music;
-        final SongCard songCard = new SongCard(mMusic, this, false);
-        songCard.setPrefWidth(230);
-        topLeftContainer.getChildren().add(songCard);
+        setUserScore();
+        displayMusicInfo();
+        displayMyRating();
+    }
+
+    private void setUserScore() {
         mUserScore = mMusic.getScore(mAppModel.getProfile().getUserInfo().getPeerId());
         if (mUserScore != null) {
             mUserScore.addPropertyChangeListener(this);
         }
-        displayMyRating();
+    }
+
+    private void displayMusicInfo() {
+        final SongCard songCard = new SongCard(mMusic, this, false);
+        songCard.setPrefWidth(230);
+        topLeftContainer.getChildren().add(songCard);
+
+        if (mAppModel.getLocalCatalog().contains(mMusic)) {
+            addRemoveButton.setText("Remove");
+        }
     }
 
     private void displayMyRating() {
