@@ -18,19 +18,16 @@ public class PlayListCard extends SimpleCard {
     @FXML
     public Label musicTitle;
     public Label musicArtist;
-    
+
     public PlayListCard(Music music) {
         super("/fr/utc/lo23/sharutc/ui/fxml/play_list_card.fxml");
         getStyleClass().add("playListCard");
         setPrefWidth(150);
         setAlignment(Pos.TOP_LEFT);
-        
-        
-            musicArtist.setText(music.getAlbum());
-            musicTitle.setText(music.getTitle());
-    }
 
-   
+        musicArtist.setText(music.getAlbum());
+        musicTitle.setText(music.getTitle());
+    }
 
     public void setIsPlaying(boolean isPlaying) {
         if (isPlaying) {

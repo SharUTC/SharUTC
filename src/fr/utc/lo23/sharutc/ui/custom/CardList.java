@@ -81,6 +81,11 @@ public class CardList extends VBox {
 
     }
 
+    public void clear(){
+       childs.clear();
+       content.getChildren().clear();
+    }
+    
     private void refreshListVisibility() {
         if (showAll) {
             for (int i = content.getChildren().size(); i < childs.size(); i++) {

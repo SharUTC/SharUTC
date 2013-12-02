@@ -81,7 +81,7 @@ public class SearchResultController extends SongSelectorController implements Ri
                 u.setLastName(peer.getLastName());
             }
         }
-        
+        /*
         
         UserInfo u = new UserInfo();
         u.setFirstName("bob");
@@ -106,7 +106,7 @@ public class SearchResultController extends SongSelectorController implements Ri
 
         card = new AlbumCard("Album", "Artist", this);
         this.addChild(card);
-
+ */
     }
 
     public void setInterface(ISearchResultController i) {
@@ -157,7 +157,10 @@ public class SearchResultController extends SongSelectorController implements Ri
                 }
                 break;
             case CLEAR:
-                log.info("Search Clear");
+                songList.clear();
+                artistList.clear();
+                albumList.clear();
+                friendList.clear();
                 break;
 
         }

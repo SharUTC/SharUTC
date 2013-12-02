@@ -9,6 +9,7 @@ import fr.utc.lo23.sharutc.controler.command.account.ExportProfileCommand;
 import fr.utc.lo23.sharutc.model.AppModel;
 
 import fr.utc.lo23.sharutc.controler.command.player.AddToPlaylistCommand;
+import fr.utc.lo23.sharutc.controler.command.player.PlayMusicCommand;
 import fr.utc.lo23.sharutc.controler.service.FileService;
 import fr.utc.lo23.sharutc.controler.service.PlayerService;
 import fr.utc.lo23.sharutc.model.AppModelImpl;
@@ -52,6 +53,7 @@ import javafx.concurrent.Task;
 import javafx.concurrent.WorkerStateEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.ProgressIndicator;
+import javafx.scene.input.MouseEvent;
 import javafx.stage.DirectoryChooser;
 
 public class MainController extends NavigationController implements Initializable,
@@ -97,6 +99,7 @@ public class MainController extends NavigationController implements Initializabl
     private PropertyChangeListener mChangeListenerAppModel;
     @Inject
     private ExportProfileCommand mExportProfileCommand;
+    
     @Inject
     private FileService mFileService;
 
@@ -220,7 +223,7 @@ public class MainController extends NavigationController implements Initializabl
                     exportButton.setVisible(true);
                     log.debug("export finished !");
                 }
-            });            
+            });
 
             exportProgress.setVisible(true);
             exportButton.setVisible(false);
@@ -239,7 +242,9 @@ public class MainController extends NavigationController implements Initializabl
         mChangeListenerPlayList = new CollectionChangeListener() {
             @Override
             public void collectionChanged(CollectionEvent ev) {
+                log.info("Playlist Change : " + ev.getType());
                 switch (ev.getType()) {
+
                     case ADD:
                         mPlayListData.add(ev.getIndex(), (Music) ev.getItem());
                         break;
@@ -459,8 +464,17 @@ public class MainController extends NavigationController implements Initializabl
 
         mPlayListData = FXCollections.observableArrayList();
 
-
         listView.setItems(mPlayListData);
+        listView.setOnMouseClicked(new EventHandler<MouseEvent>() {
+
+            @Override
+            public void handle(MouseEvent event) {
+                if(event.getClickCount()>1){
+                    mPlayerService.playMusicFromPlaylist((Music) listView.getSelectionModel().getSelectedItem());
+                }
+                
+            }
+        });
         listView.setCellFactory(new Callback<ListView<Music>, ListCell<Music>>() {
             @Override
             public ListCell<Music> call(ListView<Music> p) {
@@ -495,10 +509,10 @@ public class MainController extends NavigationController implements Initializabl
         try {
             detachRightpane();
             mCurrentLoadedRighpaneResult = mFxmlLoader.load(getClass().getResource("/fr/utc/lo23/sharutc/ui/fxml/song_detail.fxml"));
-            ((SongDetailController)mCurrentLoadedRighpaneResult.getController()).init(mDragPreview);
-            ((SongDetailController)mCurrentLoadedRighpaneResult.getController()).setInterface(this);            
-            ((SongDetailController)mCurrentLoadedRighpaneResult.getController()).setMusic(music);
-            attachRightpane(mCurrentLoadedRighpaneResult);                        
+            ((SongDetailController) mCurrentLoadedRighpaneResult.getController()).init(mDragPreview);
+            ((SongDetailController) mCurrentLoadedRighpaneResult.getController()).setInterface(this);
+            ((SongDetailController) mCurrentLoadedRighpaneResult.getController()).setMusic(music);
+            attachRightpane(mCurrentLoadedRighpaneResult);
         } catch (IOException e) {
             log.error(e.getMessage());
         }

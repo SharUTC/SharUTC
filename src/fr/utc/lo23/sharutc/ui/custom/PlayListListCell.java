@@ -10,7 +10,10 @@ import javafx.scene.control.ListCell;
 
 public class PlayListListCell extends ListCell<Music> {
 
-    
+    public PlayListListCell(){
+        super();
+        
+    }
     
     @Override
     protected void updateItem(Music music, boolean bln) {

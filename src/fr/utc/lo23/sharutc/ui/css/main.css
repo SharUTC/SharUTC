@@ -366,6 +366,11 @@
     -fx-text-fill: #ECF0F1;
 }
 
+#playList .playListCardPlaying {
+     -fx-background-color: rgba(51,181,229,0.5);
+}
+
+
 .placeHolderLabel {
     -fx-text-fill: #7F8C8D;
     -fx-font-size: 25px;
