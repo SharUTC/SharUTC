@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+
+<VBox xmlns:fx="http://javafx.com/fxml"
+      fx:controller="fr.utc.lo23.sharutc.ui.GroupRightController" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS">
+     <HBox>
+        <VBox alignment="CENTER_LEFT">
+            <Label text="Edit right of group : " styleClass="panetitle"/>
+        </VBox>
+        <VBox  alignment="CENTER_RIGHT">
+            <Label fx:id="Group" styleClass="panesubtitle"/>    
+        </VBox>
+       </HBox>   
+    <ScrollPane xmlns:fx="http://javafx.com/fxml" styleClass="myScrollPane"
+                VBox.vgrow="ALWAYS" fitToWidth="true" fitToHeight="true">   
+         
+        <FlowPane GridPane.hgrow="ALWAYS"
+                  GridPane.vgrow="ALWAYS" fx:id="songsContainer"
+                  prefHeight="-1.0" prefWidth="-1.0"
+                  prefWrapLength="230.0" vgap="10.0"
+                  hgap="10.0">
+            <padding>
+                <javafx.geometry.Insets bottom="5" left="5" right="5" top="5"/>
+            </padding>
+        </FlowPane>
+    </ScrollPane>                
+
+        
+</VBox>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<fx:root type="fr.utc.lo23.sharutc.ui.custom.CommentView"
+         xmlns:fx="http://javafx.com/fxml">
+    <VBox styleClass="commentTitleContainer" >
+        <VBox.margin>
+            <javafx.geometry.Insets top="5" bottom="5" />
+        </VBox.margin>
+        <Label fx:id="commentTitle"  styleClass="commentTitle" />
+    </VBox>
+    
+    <Label fx:id="commentContent" styleClass="commentContent" wrapText="true" >
+        <VBox.margin>
+            <javafx.geometry.Insets left="20" top="3" bottom="5" />
+        </VBox.margin>
+    </Label>
+</fx:root>

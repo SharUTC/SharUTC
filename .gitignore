@@ -1,11 +1,13 @@
-nbproject/private/
+nbproject/*
 build/
 nbbuild/
 dist/
 nbdist/
 nbactions.xml
 nb-configuration.xml
-
+build.xml
+nbbuild.xml
+.DS_Store
 # Class Files #
 *.class
 
@@ -15,3 +17,13 @@ nb-configuration.xml
 
 # Logging Files #
 *.log
+
+# IntelliJIDEA #
+.idea
+out/production/
+out/test/
+*.iml
+
+# SharUTC : user profile and songs#
+users/
+*.mp3
