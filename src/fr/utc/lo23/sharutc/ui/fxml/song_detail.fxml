@@ -107,7 +107,7 @@
         <VBox.margin>
             <javafx.geometry.Insets bottom="8" />
         </VBox.margin>
-        <Button fx:id="addCommentButton" text="Comment" >
+        <Button fx:id="addCommentButton" text="Comment" onAction="#handleAddCommentAction" >
             <HBox.margin>
                 <javafx.geometry.Insets right="8" />
             </HBox.margin>

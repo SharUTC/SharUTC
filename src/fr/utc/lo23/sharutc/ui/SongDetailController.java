@@ -1,11 +1,13 @@
 package fr.utc.lo23.sharutc.ui;
 
 import com.google.inject.Inject;
+import fr.utc.lo23.sharutc.controler.command.music.AddCommentCommand;
 import fr.utc.lo23.sharutc.controler.command.music.SetScoreCommand;
 import fr.utc.lo23.sharutc.model.AppModel;
 import fr.utc.lo23.sharutc.model.domain.Comment;
 import fr.utc.lo23.sharutc.model.domain.Music;
 import fr.utc.lo23.sharutc.model.domain.Score;
+import fr.utc.lo23.sharutc.model.userdata.Peer;
 import fr.utc.lo23.sharutc.ui.custom.CommentView;
 import fr.utc.lo23.sharutc.ui.custom.RatingStar;
 import fr.utc.lo23.sharutc.ui.custom.card.SongCard;
@@ -14,9 +16,11 @@ import java.beans.PropertyChangeListener;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.scene.control.TextArea;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import org.slf4j.Logger;
@@ -25,6 +29,8 @@ import org.slf4j.LoggerFactory;
 public class SongDetailController extends SongSelectorController implements Initializable, PropertyChangeListener {
 
     private static final Logger log = LoggerFactory.getLogger(SongDetailController.class);
+    @FXML
+    public TextArea commentTextArea;
     @FXML
     public Button addRemoveButton;
     @FXML
@@ -55,6 +61,7 @@ public class SongDetailController extends SongSelectorController implements Init
     private AppModel mAppModel;
     @Inject
     private SetScoreCommand mSetScoreCommand;
+    @Inject AddCommentCommand mAddCommentCommand;
     private RatingStar[] mMyRatingStars;
     private RatingStar[] mAverageRatingStars;
     private Music mMusic;
@@ -79,7 +86,7 @@ public class SongDetailController extends SongSelectorController implements Init
             starAverageRate5
         };
         //artificialy populate with some comments
-        //populateCommentContainer();
+        populateCommentContainer();
     }
 
     public void setMusic(final Music music) {
@@ -130,6 +137,23 @@ public class SongDetailController extends SongSelectorController implements Init
                 ratingStars[i].fill(false);
             }
         }
+    }
+    
+    @FXML
+    private void handleAddCommentAction(ActionEvent event) {
+        final String comment = commentTextArea.getText().trim();
+        if(!comment.isEmpty()) {
+            log.debug("addCommentCommand : " + comment);
+            mAddCommentCommand.setMusic(mMusic);
+            mAddCommentCommand.setComment(comment);
+            mAddCommentCommand.setAuthorPeer(mAppModel.getProfile().getUserInfo().toPeer());
+            //TODO retrieve the OwnerPeer
+            //mAddCommentCommand.setOwnerPeer(mMusic.getOwnerPeerId());
+            mAddCommentCommand.setOwnerPeer(mAppModel.getProfile().getUserInfo().toPeer());
+            mAddCommentCommand.execute();
+            commentTextArea.clear();
+            log.debug("addCommentCommand -- end ");
+        }        
     }
 
     public void handleMouseEnteredRatingStar(MouseEvent mouseEvent) {
