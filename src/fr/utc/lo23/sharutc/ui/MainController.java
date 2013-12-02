@@ -9,7 +9,6 @@ import fr.utc.lo23.sharutc.controler.command.account.ExportProfileCommand;
 import fr.utc.lo23.sharutc.model.AppModel;
 
 import fr.utc.lo23.sharutc.controler.command.player.AddToPlaylistCommand;
-import fr.utc.lo23.sharutc.controler.command.player.PlayMusicCommand;
 import fr.utc.lo23.sharutc.controler.service.FileService;
 import fr.utc.lo23.sharutc.controler.service.PlayerService;
 import fr.utc.lo23.sharutc.model.AppModelImpl;

@@ -205,7 +205,6 @@ public class PlayerController implements Initializable, PropertyChangeListener {
         } else {
             mPlayerService.playerPause();
         }
-
     }
 
     public void handleSpeakerAction(ActionEvent actionEvent) {
@@ -320,9 +319,9 @@ public class PlayerController implements Initializable, PropertyChangeListener {
             }
         } else if (propertyName.equals(PlayerService.Property.PAUSE.name())) {
             if ((Boolean) evt.getNewValue()) {
-                buttonPlay.setGraphic(BT_PAUSE);
-            } else {
                 buttonPlay.setGraphic(BT_PLAY);
+            } else {
+                buttonPlay.setGraphic(BT_PAUSE);
             }
         } else if (propertyName.equals(PlayerService.Property.VOLUME.name())) {
             updateSpeakerLevel((Integer) evt.getOldValue() * 0.01f, (Integer) evt.getNewValue() * 0.01f);
