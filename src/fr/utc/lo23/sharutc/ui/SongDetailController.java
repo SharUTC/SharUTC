@@ -85,9 +85,9 @@ public class SongDetailController extends SongSelectorController implements Init
     public void setMusic(final Music music) {
         mMusic = music;
         setUserScore();
-        displayMusicInfo();
-        displayMyRating();
-        displayComments();
+        showMusicInfo();
+        showMyRating();
+        showComments();
     }
 
     private void setUserScore() {
@@ -97,14 +97,14 @@ public class SongDetailController extends SongSelectorController implements Init
         }
     }
     
-    private void displayComments() {
+    private void showComments() {
         final List<Comment> comments = mMusic.getComments();
         for(Comment comment : comments) {
             commentContainer.getChildren().add(new CommentView(comment));
         }
     }
 
-    private void displayMusicInfo() {
+    private void showMusicInfo() {
         final SongCard songCard = new SongCard(mMusic, this, false);
         songCard.setPrefWidth(230);
         topLeftContainer.getChildren().add(songCard);
@@ -114,7 +114,7 @@ public class SongDetailController extends SongSelectorController implements Init
         }
     }
 
-    private void displayMyRating() {
+    private void showMyRating() {
         int currentScoreValue = 0;
         if (mUserScore != null) {
             currentScoreValue = mUserScore.getValue();
@@ -148,7 +148,7 @@ public class SongDetailController extends SongSelectorController implements Init
     }
 
     public void handleMouseExitedRatingStar(MouseEvent mouseEvent) {
-        displayMyRating();
+        showMyRating();
     }
 
     public void handleMouseClickedRatingStar(MouseEvent mouseEvent) {
@@ -218,7 +218,7 @@ public class SongDetailController extends SongSelectorController implements Init
         final String propertyName = evt.getPropertyName();
         if (Score.Property.VALUE.name().equals(propertyName)) {
             log.debug("score updated");
-            displayMyRating();
+            showMyRating();
         }
     }
 }
