@@ -13,26 +13,21 @@ import fr.utc.lo23.sharutc.ui.custom.card.PeopleCard;
 import fr.utc.lo23.sharutc.ui.custom.card.SimpleCard;
 import fr.utc.lo23.sharutc.util.CollectionChangeListener;
 import fr.utc.lo23.sharutc.util.CollectionEvent;
+import fr.utc.lo23.sharutc.util.DialogBoxBuilder;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.FlowPane;
-import javafx.scene.layout.HBoxBuilder;
 import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBoxBuilder;
 import javafx.scene.text.TextAlignment;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -165,9 +160,21 @@ public class PeopleHomeController extends DragPreviewDrawer implements Initializ
     }
 
     @Override
-    public void onGroupEditionRequested(Category category) {
+    public void onGroupEditionRequested(final Category category) {
         log.info("onGroupEditionRequested " + category.getName());
-        buildCategoryChangeName(category).show();
+        //Create a dialogBox to let the user edit the name
+        DialogBoxBuilder.createEditBox("Category Name : ", category.getName(),
+                this.getClass().getResource("/fr/utc/lo23/sharutc/ui/css/modal.css").toExternalForm(),
+                new DialogBoxBuilder.IEditBox() {
+                    @Override
+                    public void onValidate(String value) {
+                        //set the new name
+                        category.setName(value);
+                        //TODO remove when UPDATE will be fired
+                        //TODO need fix, can't delete category after edition. Need to relaunch the app.
+                        //displayUserGroup();
+                    }
+                }).show();
     }
 
     @Override
@@ -385,47 +392,21 @@ public class PeopleHomeController extends DragPreviewDrawer implements Initializ
                     //create a new group
                     final int id = mAppModel.getProfile().getCategories().size();
                     log.info("group creation requested " + id);
-                    createCategoryCommand.setCategoryName("Category" + id);
-                    createCategoryCommand.execute();
+                    //Create a dialogBox to let the user choose the name
+                    DialogBoxBuilder.createEditBox("Category Name : ", "Category" + id,
+                            this.getClass().getResource("/fr/utc/lo23/sharutc/ui/css/modal.css").toExternalForm(),
+                            new DialogBoxBuilder.IEditBox() {
+                                @Override
+                                public void onValidate(String value) {
+                                    //create the category with the entered name
+                                    createCategoryCommand.setCategoryName(value);
+                                    createCategoryCommand.execute();
+                                }
+                            }).show();
                 }
             }
         });
         groupContainer.getChildren().add(mCreateNewGroupCard);
-    }
-
-    /**
-     * build a dialogBox to set the category name
-     *
-     * @param c
-     * @return
-     */
-    private Stage buildCategoryChangeName(final Category c) {
-        final Stage dialog = new Stage(StageStyle.TRANSPARENT);
-        dialog.initModality(Modality.APPLICATION_MODAL);
-        //TODO set editable true when delete issue will be solved
-        final TextField editableName = TextFieldBuilder.create().editable(false).styleClass("text-field").text(c.getName()).build();
-        dialog.setScene(
-                new Scene(
-                        VBoxBuilder.create().styleClass("modal-dialog").children(
-                                HBoxBuilder.create().styleClass("modal-dialog").children(
-                                        LabelBuilder.create().text("Category Name : ").build(),
-                                        editableName)
-                                        .build(),
-                                ButtonBuilder.create().styleClass("button").text("Save").defaultButton(true).onAction(new EventHandler<ActionEvent>() {
-                                    @Override
-                                    public void handle(ActionEvent actionEvent) {
-                                        // take action and close the dialog.
-                                        c.setName(editableName.getText());
-                                        //TODO remove when UPDATE will be fired by CollectionChangeListener
-                                        displayUserGroup();
-                                        dialog.close();
-                                    }
-                                }).build()
-                        ).build()
-                )
-        );
-        dialog.getScene().getStylesheets().add(this.getClass().getResource("/fr/utc/lo23/sharutc/ui/css/modal.css").toExternalForm());
-        return dialog;
     }
 
     /**
@@ -472,7 +453,6 @@ public class PeopleHomeController extends DragPreviewDrawer implements Initializ
                 //new category added callback
                 final Category c = (Category) ev.getItem();
                 addNewGroupCard(c, true);
-                buildCategoryChangeName(c).show();
             } else if (item instanceof UserInfo) {
                 //new user connected
                 log.info("new user connected");
