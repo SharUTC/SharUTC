@@ -26,4 +26,12 @@
             <javafx.geometry.Insets left="5" right="5" />
         </VBox.margin>
     </Label>
+     <VBox alignment="CENTER_RIGHT">
+        
+                    <ImageView fx:id="deleteButton" fitWidth="30" fitHeight="30">
+                        <image>
+                            <Image url="@../drawable/ic_delete.png"/>
+                        </image>
+                    </ImageView>
+     </VBox>
 </fx:root>

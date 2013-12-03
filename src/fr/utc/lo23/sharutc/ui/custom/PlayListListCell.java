@@ -8,7 +8,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 
 
-public class PlayListListCell extends ListCell<Music> {
+public class PlayListListCell extends ListCell<PlayListMusic> {
 
     public PlayListListCell(){
         super();
@@ -16,10 +16,10 @@ public class PlayListListCell extends ListCell<Music> {
     }
     
     @Override
-    protected void updateItem(Music music, boolean bln) {
-        super.updateItem(music, bln);
-        if(music != null) {
-            setGraphic(new PlayListCard(music));
+    protected void updateItem(PlayListMusic musicl, boolean bln) {
+        super.updateItem(musicl, bln);
+        if(musicl != null) {
+            setGraphic(new PlayListCard(musicl));
         }        
     }
     

@@ -6,6 +6,7 @@ import fr.utc.lo23.sharutc.controler.service.PlayerService;
 import fr.utc.lo23.sharutc.model.AppModel;
 import fr.utc.lo23.sharutc.model.domain.Music;
 import fr.utc.lo23.sharutc.model.domain.Score;
+import fr.utc.lo23.sharutc.ui.custom.PlayListMusic;
 import fr.utc.lo23.sharutc.ui.custom.RatingStar;
 import fr.utc.lo23.sharutc.ui.custom.SliderScrollHandler;
 import java.beans.PropertyChangeEvent;
@@ -27,6 +28,7 @@ import org.slf4j.LoggerFactory;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.application.Platform;
+import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.scene.input.ScrollEvent;
 
@@ -70,6 +72,7 @@ public class PlayerController implements Initializable, PropertyChangeListener {
     private Music mCurrentMusic;
     private Score mCurrentScore;
     private PropertyChangeListener mPropertyChangeListenerCurrentMusicScore;
+    private ObservableList<PlayListMusic> mPlayListData;
 
     /**
      * Initializes the controller class.
@@ -200,11 +203,8 @@ public class PlayerController implements Initializable, PropertyChangeListener {
     }
 
     public void handlePlayAction(ActionEvent actionEvent) {
-        if (mPlayerService.isPause()) {
+        
             mPlayerService.playerPlay();
-        } else {
-            mPlayerService.playerPause();
-        }
     }
 
     public void handleSpeakerAction(ActionEvent actionEvent) {
@@ -309,6 +309,15 @@ public class PlayerController implements Initializable, PropertyChangeListener {
         if (propertyName.equals(PlayerService.Property.CURRENT_MUSIC.name())) {
             Music m = (Music) evt.getNewValue();
             onCurrentMusicUpdate(m);
+            //TODO get current index
+            int index = 0;
+            for(int i =0; i<mPlayListData.size(); i++){
+                
+                ((PlayListMusic)mPlayListData.get(i)).setPlaying(i==index);
+            }
+            
+            
+            
         } else if (propertyName.equals(PlayerService.Property.CURRENT_TIME.name())) {
             updateCurrentSongTime((Long) evt.getNewValue());
         } else if (propertyName.equals(PlayerService.Property.MUTE.name())) {
@@ -326,5 +335,9 @@ public class PlayerController implements Initializable, PropertyChangeListener {
         } else if (propertyName.equals(PlayerService.Property.VOLUME.name())) {
             updateSpeakerLevel((Integer) evt.getOldValue() * 0.01f, (Integer) evt.getNewValue() * 0.01f);
         }
+    }
+
+    void setPlayList(ObservableList<PlayListMusic> mPlayListData) {
+        this.mPlayListData = mPlayListData;
     }
 }

@@ -12,6 +12,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
 
 import java.util.ArrayList;
+import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -84,6 +85,7 @@ public class SongSelectorController extends DragPreviewDrawer implements SongCar
     @Override
     public void onPlayRequested(Music music) {
         log.info("onPlayRequested: " + music.getTitle());
+        
         mPlayMusicCommand.setMusic(music);
         mPlayMusicCommand.execute();
        
@@ -100,7 +102,9 @@ public class SongSelectorController extends DragPreviewDrawer implements SongCar
     @Override
     public void onSongAddToPlayList(Music music) {
         log.info("onSongAddToPlayList: " + music.getTitle());
-        mAddToPlaylistCommand.setMusic(music);
+        List<Music> musics = new ArrayList<Music>();
+        musics.add(music);
+        mAddToPlaylistCommand.setMusics(musics);
         mAddToPlaylistCommand.execute();
     }
 

@@ -3,6 +3,7 @@ package fr.utc.lo23.sharutc.ui;
 import com.cathive.fx.guice.GuiceFXMLLoader;
 import com.cathive.fx.guice.GuiceFXMLLoader.Result;
 import com.google.inject.Inject;
+import com.sun.javafx.scene.control.skin.ButtonSkin;
 import fr.utc.lo23.sharutc.controler.command.account.DisconnectionCommand;
 import fr.utc.lo23.sharutc.controler.command.account.ExportProfileCommand;
 
@@ -37,6 +38,7 @@ import javafx.util.Callback;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import fr.utc.lo23.sharutc.model.userdata.Category;
+import fr.utc.lo23.sharutc.ui.custom.PlayListMusic;
 import fr.utc.lo23.sharutc.ui.navigation.NavigationController;
 import fr.utc.lo23.sharutc.util.CollectionChangeListener;
 import fr.utc.lo23.sharutc.util.CollectionEvent;
@@ -52,6 +54,7 @@ import javafx.concurrent.Task;
 import javafx.concurrent.WorkerStateEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.ProgressIndicator;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.DirectoryChooser;
 
@@ -91,7 +94,7 @@ public class MainController extends NavigationController implements Initializabl
     private DisconnectionCommand mDisconnectionCommand;
     //TODO Remove once we get a real list of Musics
     static public ArrayList<Music> population;
-    public ObservableList<Music> mPlayListData;
+    public ObservableList<PlayListMusic> mPlayListData;
     @Inject
     private PlayerService mPlayerService;
     private CollectionChangeListener mChangeListenerPlayList;
@@ -113,10 +116,11 @@ public class MainController extends NavigationController implements Initializabl
         try {
             final Result loadingResult = mFxmlLoader.load(getClass().getResource("/fr/utc/lo23/sharutc/ui/fxml/player.fxml"));
             mPlayerController = loadingResult.getController();
+            
             bottombar.getChildren().add((Node) loadingResult.getRoot());
 
             initializePlayList();
-
+            mPlayerController.setPlayList(mPlayListData);
         } catch (IOException exception) {
         }
 
@@ -245,7 +249,7 @@ public class MainController extends NavigationController implements Initializabl
                 switch (ev.getType()) {
 
                     case ADD:
-                        mPlayListData.add(ev.getIndex(), (Music) ev.getItem());
+                        mPlayListData.add(ev.getIndex(), new PlayListMusic((Music) ev.getItem()));
                         break;
                     case REMOVE:
                         mPlayListData.remove(ev.getIndex());
@@ -255,7 +259,7 @@ public class MainController extends NavigationController implements Initializabl
                         break;
                     case UPDATE:
                         mPlayListData.remove(ev.getIndex());
-                        mPlayListData.add(ev.getIndex(), (Music) ev.getItem());
+                        mPlayListData.add(ev.getIndex(), new PlayListMusic((Music) ev.getItem()));
                         break;
 
                 }
@@ -464,19 +468,31 @@ public class MainController extends NavigationController implements Initializabl
         mPlayListData = FXCollections.observableArrayList();
 
         listView.setItems(mPlayListData);
-        listView.setOnMouseClicked(new EventHandler<MouseEvent>() {
+      
+        
+        listView.setOnMouseClicked(new EventHandler<MouseEvent>(){
 
             @Override
             public void handle(MouseEvent event) {
-                if(event.getClickCount()>1){
-                    mPlayerService.playMusicFromPlaylist((Music) listView.getSelectionModel().getSelectedItem());
+                final Object target = event.getTarget();
+                if(target instanceof ImageView){
+                    
+                    ImageView skin = (ImageView) target;
+                    if(skin.getId().equals("deleteButton")){
+                        mPlayListData.remove(listView.getSelectionModel().getSelectedIndex());
+                    }
+                     
+                }else if(event.getClickCount()>1){
+                    mPlayerService.playMusicFromPlaylist(((PlayListMusic) listView.getSelectionModel().getSelectedItem()).music);
                 }
-                
             }
-        });
-        listView.setCellFactory(new Callback<ListView<Music>, ListCell<Music>>() {
+        
+        
+    });
+        
+        listView.setCellFactory(new Callback<ListView<PlayListMusic>, ListCell<PlayListMusic>>() {
             @Override
-            public ListCell<Music> call(ListView<Music> p) {
+            public ListCell<PlayListMusic> call(ListView<PlayListMusic> p) {
                 return new PlayListListCell();
             }
         });
