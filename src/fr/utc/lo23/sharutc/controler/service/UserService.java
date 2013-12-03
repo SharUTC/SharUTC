@@ -45,6 +45,14 @@ public interface UserService {
      * @param category
      */
     public void deleteCategory(Category category);
+    
+    /**
+     * It allows users to set a category name
+     * 
+     * @param oldCategoryId
+     * @param newCategoryName
+     */
+    public void setCategoryName(Integer oldCategoryId, String newCategoryName);
 
     /**
      * Add a contact to a specified category

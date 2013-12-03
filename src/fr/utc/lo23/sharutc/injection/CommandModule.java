@@ -69,6 +69,8 @@ import fr.utc.lo23.sharutc.controler.command.profile.DeleteCategoryCommand;
 import fr.utc.lo23.sharutc.controler.command.profile.DeleteCategoryCommandImpl;
 import fr.utc.lo23.sharutc.controler.command.profile.DeleteContactCommand;
 import fr.utc.lo23.sharutc.controler.command.profile.DeleteContactCommandImpl;
+import fr.utc.lo23.sharutc.controler.command.profile.EditCategoryNameCommand;
+import fr.utc.lo23.sharutc.controler.command.profile.EditCategoryNameCommandImpl;
 import fr.utc.lo23.sharutc.controler.command.profile.ManageRightsCommand;
 import fr.utc.lo23.sharutc.controler.command.profile.ManageRightsCommandImpl;
 import fr.utc.lo23.sharutc.controler.command.profile.RemoveContactFromCategoryCommand;
@@ -141,6 +143,7 @@ public class CommandModule extends AbstractModule {
         bind(CreateCategoryCommand.class).to(CreateCategoryCommandImpl.class);
         bind(DeleteCategoryCommand.class).to(DeleteCategoryCommandImpl.class);
         bind(DeleteContactCommand.class).to(DeleteContactCommandImpl.class);
+        bind(EditCategoryNameCommand.class).to(EditCategoryNameCommandImpl.class);
         bind(RemoveContactFromCategoryCommand.class).to(RemoveContactFromCategoryCommandImpl.class);
         bind(ManageRightsCommand.class).to(ManageRightsCommandImpl.class);
         // more...

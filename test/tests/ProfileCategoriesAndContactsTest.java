@@ -12,6 +12,7 @@ import fr.utc.lo23.sharutc.controler.command.profile.AddContactToCategoryCommand
 import fr.utc.lo23.sharutc.controler.command.profile.CreateCategoryCommand;
 import fr.utc.lo23.sharutc.controler.command.profile.DeleteCategoryCommand;
 import fr.utc.lo23.sharutc.controler.command.profile.DeleteContactCommand;
+import fr.utc.lo23.sharutc.controler.command.profile.EditCategoryNameCommand;
 import fr.utc.lo23.sharutc.controler.command.profile.RemoveContactFromCategoryCommand;
 import fr.utc.lo23.sharutc.controler.network.NetworkService;
 import fr.utc.lo23.sharutc.controler.service.FileService;
@@ -62,6 +63,8 @@ public class ProfileCategoriesAndContactsTest {
     private DeleteContactCommand deleteContactCommand;
     @Inject
     private RemoveContactFromCategoryCommand removeContactFromCategoryCommand;
+    @Inject
+    private EditCategoryNameCommand editCategoryNameCommand;
     private AppModelBuilder appModelBuilder = null;
 
     @Before
@@ -467,5 +470,63 @@ public class ProfileCategoriesAndContactsTest {
         Assert.assertEquals("removeContactFromCategoryCommand failed : C - number of categoris for the contacts is wrong",
                 cCree3.getCategoryIds().size(), 1);
 
+    }
+    
+    @Test
+    public void editCategoryNameCommand() {
+
+        createCategoryCommand.setCategoryName("amis");
+        createCategoryCommand.execute();
+        
+        // A - Check if the category name is changed
+        editCategoryNameCommand.setCategoryId(1);
+        editCategoryNameCommand.setCategoryName("famille");
+        editCategoryNameCommand.execute();
+        
+        Category catTest = new Category(1, "famille");
+        Category resultat = appModel.getProfile().getCategories().findCategoryById(1);
+        
+        Assert.assertEquals("editCategoryNameCommand failed : the category name is not changed", catTest, resultat);
+        Assert.assertEquals("editCategoryNameCommand failed : the category name is not changed", resultat.getName(), "famille");
+        
+        
+        // B - Check if the new name already exists
+        
+        // category {1, famille}
+        // category {2, amis}
+        createCategoryCommand.setCategoryName("amis");
+        createCategoryCommand.execute();
+        
+        Category catTest2 = new Category(1, "famille");
+        Category resultat2 = appModel.getProfile().getCategories().findCategoryById(1);
+        
+        Assert.assertEquals("editCategoryNameCommand failed : the test can't start", catTest2, resultat2);
+        
+        Category catTest3 = new Category(2, "amis");
+        Category resultat3 = appModel.getProfile().getCategories().findCategoryById(2);
+        
+        Assert.assertEquals("editCategoryNameCommand failed : the test can't start", catTest3, resultat3);
+        
+        editCategoryNameCommand.setCategoryId(2);
+        editCategoryNameCommand.setCategoryName("famille");
+        editCategoryNameCommand.execute();
+        
+        Category resultat4 = appModel.getProfile().getCategories().findCategoryById(2);
+        
+        Assert.assertEquals("editCategoryNameCommand failed : B - the category name has been changed (1)", catTest3, resultat4);
+        Assert.assertEquals("editCategoryNameCommand failed : B - the category name has been changed (2)", resultat4.getName(), "amis");
+        
+        
+        // C - Check that we can't change the name of the category Public
+        
+        editCategoryNameCommand.setCategoryId(Category.PUBLIC_CATEGORY_ID);
+        editCategoryNameCommand.setCategoryName("collegues");
+        editCategoryNameCommand.execute();
+        
+        Category catTest4 = new Category(Category.PUBLIC_CATEGORY_ID, Category.PUBLIC_CATEGORY_NAME);
+        Category resultat5 = appModel.getProfile().getCategories().findCategoryById(Category.PUBLIC_CATEGORY_ID);
+        
+        Assert.assertEquals("editCategoryNameCommand failed : C - the category name has been changed (1)", catTest4, resultat5);
+        Assert.assertEquals("editCategoryNameCommand failed : C - the category name has been changed (2)", resultat5.getName(), Category.PUBLIC_CATEGORY_NAME);
     }
 }

@@ -133,6 +133,21 @@ public class Categories implements Serializable {
     public boolean contains(Category category) {
         return mCategories.contains(category);
     }
+    
+     /**
+     * Check if the category name already exists
+     *
+     * @param categoryName
+     * @return a boolean
+     */
+    public boolean isNamePresent(String categoryName) {
+        for (Category c : mCategories) {
+            if (c.getName().equals(categoryName)) {
+                return true;
+            }
+        }
+        return false;
+    }
 
     /**
      * Check if the category list is empty
