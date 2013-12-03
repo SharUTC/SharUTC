@@ -2,13 +2,14 @@ package fr.utc.lo23.sharutc.controler.network;
 
 import fr.utc.lo23.sharutc.model.AppModel;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Listen to new TCP connection and instanciate new PeerSocket to handle them.
+ * Listen to new TCP connection and instantiate new PeerSocket to handle them.
  * <p>
  * This class bind a ServerSocket to the given port and listen on it.
  * Each new TCP connection is handled separately in a new instance of PeerSocket
@@ -78,7 +79,7 @@ public class ListenThread implements Runnable {
     /**
      * Main listening loop.
      * <p>
-     * Loop on the ServerSocket accept() method and instanciate a new PeerSocket
+     * Loop on the ServerSocket accept() method and instantiate a new PeerSocket
      * for each new connection.
      * The newly created PeerSocket is then started in a new thread with
      * start().
@@ -87,24 +88,21 @@ public class ListenThread implements Runnable {
      */
     @Override
     public void run() {
-        while (!mThreadShouldStop) {
-            long peerID = appModel.getProfile().getUserInfo().getPeerId();
-            try {
-                mServerSocket = new ServerSocket(mPort);
-                log.info("Started listening on port " + mPort);
+        try {
+            mServerSocket = new ServerSocket(mPort);
+            log.info("Started listening on port " + mPort);
 
-                while (mServerSocket.isBound()) {
-                    Socket clientSocket = mServerSocket.accept();
-                    PeerSocket ps = new PeerSocket(clientSocket, peerID, messageHandler, messageParser, networkService);
-                    ps.start();
-                }
-                if (!mServerSocket.isClosed()) {
-                    mServerSocket.close();
-                }
-            } catch (IOException ex) {
-                if (!mThreadShouldStop) {
-                    log.error(ex.toString());
-                }
+            while (mServerSocket.isBound()) {
+                Socket clientSocket = mServerSocket.accept();
+                PeerSocket ps = new PeerSocket(clientSocket, null, messageHandler, messageParser, networkService);
+                ps.start();
+            }
+            if (!mServerSocket.isClosed()) {
+                mServerSocket.close();
+            }
+        } catch (IOException ex) {
+            if (!mThreadShouldStop) {
+                log.error(ex.toString());
             }
         }
     }

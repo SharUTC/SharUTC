@@ -152,7 +152,9 @@ public class NetworkServiceImpl implements NetworkService {
      */
     protected synchronized void sendUnicast(Message message, Peer peer) {
         if (peer != null && mPeers.containsKey(peer.getId())) {
+            log.debug("before sendUnicast "+message.toString()+" | peer "+peer.getId());
             mPeers.get(peer.getId()).send(message);
+            log.debug("after sendUnicast ");
         } else {
             log.error("Peer " + (peer != null ? peer.getId() : "null") + " not connected");
         }

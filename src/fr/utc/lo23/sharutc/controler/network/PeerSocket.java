@@ -44,7 +44,28 @@ public class PeerSocket implements Runnable {
         } catch (IOException e) {
             log.error(e.toString());
         }
-
+        if (peerId == null) {
+            String json = null;
+            try {
+                json = (String) mIn.readObject();
+            } catch (ClassNotFoundException ex) {
+                log.error(ex.toString());
+            } catch (IOException ex) {
+                log.error(ex.toString());
+            }
+            Message msg= messageParser.fromJSON(json);
+            if (msg.getType() == MessageType.CONNECTION_RESPONSE) {
+                log.debug("Received connection_response");
+                if (msg.getFromPeerId() == null) {
+                    log.error("Received connection response with peerId = null !");
+                }
+                peerId = msg.getFromPeerId();
+                messageHandler.handleMessage(json);
+            } else {
+                log.error("First message on Socket must be CONNECTION_RESPONSE");
+            }
+        }
+        
         // add this new PeerSocket to the PeerSocket list
         this.networkService.addPeer(peerId, this);
     }
