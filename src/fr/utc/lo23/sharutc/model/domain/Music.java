@@ -11,6 +11,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -695,8 +696,9 @@ public class Music implements Serializable {
         int averageScore = 0;
         if (mScores != null && !mScores.isEmpty()) {
             int i = 0;
-            while (mScores.iterator().hasNext()) {
-                averageScore += mScores.iterator().next().getValue();
+            Iterator<Score> iter = mScores.iterator();
+            while (iter.hasNext()) {
+                averageScore += iter.next().getValue();
                 i++;
             }
             averageScore /= (i != 0 ? i : 1);
