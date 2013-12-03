@@ -94,7 +94,7 @@ public class SongDetailController extends SongSelectorController implements Init
         setUserScore();
         showMusicInfo();
         showMyRating();
-        showAverageRating();        
+        showAverageRating();
         showComments();
     }
 
@@ -123,16 +123,16 @@ public class SongDetailController extends SongSelectorController implements Init
             addRemoveButton.setText("Remove");
         }
     }
-    
+
     private void showAverageRating() {
-       final Set<Score> scores =  mMusic.getScores();
-       if(scores != null) {
-           int averageScore = 0;
-           for(Score score : scores) {
-               averageScore += score.getValue();
-           }
-           fillRatingStar(averageScore / scores.size(), mAverageRatingStars);
-       }
+        final Set<Score> scores = mMusic.getScores();
+        if (scores != null && scores.size() > 0) {
+            int averageScore = 0;
+            for (Score score : scores) {
+                averageScore += score.getValue();
+            }
+            fillRatingStar(averageScore / scores.size(), mAverageRatingStars);
+        }
     }
 
     private void showMyRating() {
@@ -164,11 +164,11 @@ public class SongDetailController extends SongSelectorController implements Init
             mAddCommentCommand.setAuthorPeer(myPeer);
 
             Peer ownerPeer = myPeer;
-            if(!mMusic.getOwnerPeerId().equals(myPeer.getId())){
+            if (!mMusic.getOwnerPeerId().equals(myPeer.getId())) {
                 log.debug("not my music !");
                 ownerPeer = mAppModel.getActivePeerList().getPeerByPeerId(mMusic.getOwnerPeerId());
             }
-            
+
             if (ownerPeer != null) {
                 mAppModel.getActivePeerList().getPeerByPeerId(Long.MIN_VALUE);
                 mAddCommentCommand.setOwnerPeer(ownerPeer);
