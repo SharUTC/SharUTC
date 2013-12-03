@@ -302,6 +302,7 @@ public class MusicServiceImpl implements MusicService {
         } else {
             if (!comment.isEmpty()) {
                 Comment myComment = new Comment(comment, peer.getId());
+                myComment.setAuthorName(peer.getDisplayName());
                 music.addComment(myComment);
             }
         }

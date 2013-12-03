@@ -32,6 +32,7 @@ public class AddCommentCommandImpl implements AddCommentCommand {
      *
      * @param appModel The model of the application
      * @param musicService The service of musics
+     * @param userService The service for user
      * @param networkService The service of the network
      */
     @Inject

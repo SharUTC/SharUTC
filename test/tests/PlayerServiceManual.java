@@ -18,6 +18,7 @@ import fr.utc.lo23.sharutc.model.userdata.UserInfo;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
+import java.io.IOException;
 import java.util.Scanner;
 
 public class PlayerServiceManual implements PropertyChangeListener {
@@ -56,7 +57,7 @@ public class PlayerServiceManual implements PropertyChangeListener {
         String TEST_MP3_FOLDER = "";
         try {
             TEST_MP3_FOLDER = new File(".").getCanonicalPath() + File.separator + "test" + File.separator + "mp3" + File.separator;
-        } catch (Exception ex) {
+        } catch (IOException ex) {
             System.err.println(ex.toString());
         }
         String[] filenames = {"14 - End Credit Score.mp3", "Air - Moon Safari - Sexy Boy.mp3", "Sting & The Police - The Very Best Of Sting & The Police - 17 - Roxanne.mp3"};
