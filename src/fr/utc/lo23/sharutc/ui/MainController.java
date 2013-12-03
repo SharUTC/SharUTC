@@ -10,6 +10,7 @@ import fr.utc.lo23.sharutc.controler.command.account.ExportProfileCommand;
 import fr.utc.lo23.sharutc.model.AppModel;
 
 import fr.utc.lo23.sharutc.controler.command.player.AddToPlaylistCommand;
+import fr.utc.lo23.sharutc.controler.command.player.RemoveFromPlaylistCommand;
 import fr.utc.lo23.sharutc.controler.service.FileService;
 import fr.utc.lo23.sharutc.controler.service.PlayerService;
 import fr.utc.lo23.sharutc.model.AppModelImpl;
@@ -102,6 +103,9 @@ public class MainController extends NavigationController implements Initializabl
     @Inject
     private ExportProfileCommand mExportProfileCommand;
     
+      @Inject
+    private RemoveFromPlaylistCommand mRemoveFromPlaylistCommand;
+      
     @Inject
     private FileService mFileService;
 
@@ -476,10 +480,10 @@ public class MainController extends NavigationController implements Initializabl
             public void handle(MouseEvent event) {
                 final Object target = event.getTarget();
                 if(target instanceof ImageView){
-                    
                     ImageView skin = (ImageView) target;
                     if(skin.getId().equals("deleteButton")){
-                        mPlayListData.remove(listView.getSelectionModel().getSelectedIndex());
+                        mRemoveFromPlaylistCommand.setMusicIndex(listView.getSelectionModel().getSelectedIndex());
+                        mRemoveFromPlaylistCommand.execute();
                     }
                      
                 }else if(event.getClickCount()>1){
