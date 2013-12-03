@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
+<?import java.net.URL?>
+<AnchorPane xmlns:fx="http://javafx.com/fxml" fx:controller="fr.utc.lo23.sharutc.ui.MainController" prefWidth="800"
+            prefHeight="600">
+    <VBox id="gridPane" AnchorPane.topAnchor="0" AnchorPane.bottomAnchor="0" AnchorPane.rightAnchor="0"
+          AnchorPane.leftAnchor="0">
+
+        <GridPane id="topbar" minHeight="50" GridPane.hgrow="ALWAYS"
+                  alignment="CENTER_LEFT">
+            <Label text="SharUTC" fx:id="sharUtcTitle" minWidth="200" alignment="CENTER"/>
+            <TextField GridPane.columnIndex="1" minWidth="400" GridPane.hgrow="ALWAYS"
+                       promptText="Search a song, an artist..." onAction="#handleTextEntered">
+                <GridPane.margin>
+                    <Insets left="10" right="5"/>
+                </GridPane.margin>
+            </TextField>
+
+            <HBox GridPane.columnIndex="2" fx:id="topBarRightPart" alignment="CENTER" minHeight="40">
+                <GridPane.margin>
+                    <Insets left="15" right="5"/>
+                </GridPane.margin>
+                <Label fx:id="labelMyProfile" text="Alexandre Masciulli" minWidth="100" alignment="CENTER">
+                    <HBox.margin>
+                        <Insets left="15" right="15"/>
+                    </HBox.margin>
+                </Label>
+                <StackPane >
+                    <HBox.margin>
+                        <Insets right="10"/>
+                    </HBox.margin>
+                    <ProgressIndicator fx:id="exportProgress" progress="-1" visible="false"  />                    
+                    <Button fx:id="exportButton" styleClass="imageButton" onAction="#handleMenuButtonAction" >                        
+                        <graphic>
+                            <ImageView fitWidth="32" fitHeight="32">
+                                <image>
+                                    <Image url="/fr/utc/lo23/sharutc/ui/drawable/ic_export.png"/>
+                                </image>
+                            </ImageView>
+                        </graphic>
+                    </Button>
+                    
+                </StackPane>
+                
+                <Button fx:id="logoutButton" styleClass="imageButton" onAction="#handleMenuButtonAction" >
+                    <graphic>
+                        <ImageView fitWidth="25" fitHeight="25">
+                            <image>
+                                <Image url="/fr/utc/lo23/sharutc/ui/drawable/ic_logout.png"/>
+                            </image>
+                        </ImageView>
+                    </graphic>
+                </Button>
+            </HBox>
+
+
+        </GridPane>
+
+        <GridPane VBox.vgrow="ALWAYS">
+            <VBox id="leftpane" GridPane.vgrow="ALWAYS">
+                <Button minWidth="200" minHeight="40" text="Songs" onAction="#handleMenuButtonAction"
+                        fx:id="songsbutton"/>
+                <Button minWidth="200" minHeight="40" text="People" onAction="#handleMenuButtonAction"
+                        fx:id="peoplebutton"/>
+                <Button minWidth="200" minHeight="40" text="Artists" onAction="#handleMenuButtonAction"
+                        fx:id="artistsbutton"/>
+                <Button minWidth="200" minHeight="40" text="Albums" onAction="#handleMenuButtonAction"
+                        fx:id="albumsbutton"/>
+            </VBox>
+
+            <GridPane fx:id="rightpane" GridPane.columnIndex="1" GridPane.vgrow="ALWAYS" GridPane.hgrow="ALWAYS">
+                <GridPane.margin>
+                    <Insets>
+                        <left>8</left>
+                        <right>8</right>
+                    </Insets>
+                </GridPane.margin>
+            </GridPane>
+        </GridPane>
+
+        <StackPane onDragOver="#handleBottomBarDragOver"
+                   onDragDropped="#handleBottomBarDragDropped" onDragExited="#handleBottomBarDragExited"
+                   onDragEntered="#handleBottomBarDragEntered">
+            <stylesheets>
+                <URL value="@../css/drop.css"/>
+            </stylesheets>
+
+            <HBox fx:id="bottombar" minHeight="150" maxHeight="200" >
+                <padding>
+                    <Insets bottom="5" left="5" right="5" top="5"/>
+                </padding>
+            </HBox>
+            <Region fx:id="dropOverlay" visible="false"/>
+            <Label fx:id="dropOverlayLabel" text="Add To The PlayList" visible="false"
+                   StackPane.alignment="CENTER"/>
+        </StackPane>
+
+    </VBox>
+</AnchorPane>

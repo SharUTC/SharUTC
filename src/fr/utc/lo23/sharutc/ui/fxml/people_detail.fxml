@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.*?>
+
+<?import javafx.scene.control.Button?>
+
+
+<ScrollPane xmlns:fx="http://javafx.com/fxml" fx:controller="fr.utc.lo23.sharutc.ui.PeopleDetailController"  styleClass="myScrollPane"
+            GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS" fitToWidth="true" fitToHeight="true" vbarPolicy="AS_NEEDED">
+    <GridPane>
+        <Label fx:id="login" styleClass="panetitle" GridPane.rowIndex="0"/>
+        <AnchorPane GridPane.rowIndex="1" GridPane.hgrow="ALWAYS" maxWidth="700">
+            <ImageView fitWidth="150" fitHeight="150">
+                <image>
+                    <Image url="@../drawable/avatar_default.png"/>
+                </image>
+            </ImageView>
+            <Button text="Add to friends" fx:id="addToFriendsButton" onAction="#handleAddToFriendsClicked" AnchorPane.rightAnchor="10" styleClass="rectButton"/>
+        </AnchorPane>
+        <AnchorPane GridPane.rowIndex="2" GridPane.hgrow="ALWAYS" maxWidth="700">
+            <Label text="Songs" styleClass="panesubtitle"/>
+            <Button text="See more" fx:id="seeMoreSongs" onAction="#handleSeeMoreFriendsClicked" AnchorPane.rightAnchor="10" styleClass="rectButton" />
+        </AnchorPane>
+        <FlowPane
+                GridPane.rowIndex="3"
+                fx:id="songsContainer"
+                minHeight="150" prefWidth="-1.0"
+                orientation="VERTICAL"
+                prefWrapLength="230.0" vgap="10.0"
+                hgap="10.0">
+            <padding>
+                <javafx.geometry.Insets bottom="5" left="5" right="5" top="10"/>
+            </padding>
+        </FlowPane>
+        <AnchorPane GridPane.rowIndex="4" GridPane.hgrow="ALWAYS" maxWidth="700">
+            <Label text="Artists" styleClass="panesubtitle"/>
+            <Button text="See more" fx:id="seeMoreArtists" onAction="#handleSeeMoreArtistsClicked" AnchorPane.rightAnchor="10" styleClass="rectButton"/>
+        </AnchorPane>
+        <FlowPane
+                GridPane.rowIndex="5"
+                fx:id="artistsContainer"
+                minHeight="100"
+                prefHeight="100" prefWidth="-1.0"
+                orientation="VERTICAL"
+                prefWrapLength="230.0" vgap="10.0"
+                hgap="10.0">
+            <padding>
+                <javafx.geometry.Insets bottom="5" left="5" right="5" top="10"/>
+            </padding>
+        </FlowPane>
+        <AnchorPane GridPane.rowIndex="6" GridPane.hgrow="ALWAYS" maxWidth="700">
+            <Label text="Tags" styleClass="panesubtitle"/>
+            <Button text="See more" fx:id="seeMoreTags" onAction="#handleSeeMoreTagsClicked" AnchorPane.rightAnchor="10" styleClass="rectButton"/>
+        </AnchorPane>
+        <FlowPane
+                GridPane.rowIndex="7"
+                fx:id="tagsContainer"
+                minHeight="100"
+                prefHeight="100" prefWidth="-1.0"
+                orientation="VERTICAL"
+                prefWrapLength="230.0" vgap="10.0"
+                hgap="10.0">
+            <padding>
+                <javafx.geometry.Insets bottom="5" left="5" right="5" top="10"/>
+            </padding>
+        </FlowPane>
+    </GridPane>
+</ScrollPane>
