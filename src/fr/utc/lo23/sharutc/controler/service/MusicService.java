@@ -145,10 +145,17 @@ public interface MusicService {
      *
      * @param peer
      * @param criteria
-     * @return
+     * @return Catalog
      */
     public Catalog searchMusic(Peer peer, SearchCriteria criteria);
 
+    /**
+     * 
+     * @param peer
+     * @param criteria
+     * @return Catalog
+     */
+    public Catalog searchLocalMusic(SearchCriteria criteria);
     /**
      *
      * @param catalog

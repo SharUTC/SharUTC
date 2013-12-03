@@ -466,14 +466,14 @@ public class MusicServiceImpl implements MusicService {
             throwMissingParameter();
         } else {
             /*
-             * Algorithme de recherche :
-             * # Récupération des catégories associées aux contact qui demande
-             * # Pour chaque musique du catalogue
-             * #    Récupération des catégories associées à cette musique
-             * #    Filtrage des deux ensembles d'ids
-             * #        Pour chaque catégorie restante :
-             * #            Si public (0, exclusif) : vérification des droits pour cette musique et cette catégorie dans RightsList
-             * #            Si autre(s) : chargement de l'ensemble des droits dispos pour cette musique et cette catégorie via RightsList, on recherche les différents objets Rights tant qu'on ne trouve pas de valeur à *true*.
+             * Searching algorithm :
+             * # Recovery of the categories associated in contact which asks
+             * # For each music of the catalog
+             * #    Recovery of the categories associated in this music
+             * #    Filtering of both sets of IDs
+             * #        For each remaining category :
+             * #            If public (0, exclusive) : check of the rights for this music and this category in RightsList
+             * #            If other(s) : load of all the available rights for this music and this category using RightsList as long as a value "true" is not found
              */
 
             catalogResult = new Catalog();
@@ -486,7 +486,7 @@ public class MusicServiceImpl implements MusicService {
                     for (Music music : appModel.getLocalCatalog().getMusics()) {
                         // only deal with needed musics
                         if (musicMatchesSearchCriteria(music, criteria)) {
-
+                            //Pour l'autre fonction --> addtoCatalog
                             // searching for useful categories only
                             Set<Integer> matchingCategoryIds = getAllMatchingCategoryIds(music, contactCategoryIds);
 
@@ -587,6 +587,33 @@ public class MusicServiceImpl implements MusicService {
             }
         }
         log.debug("searchMusic DONE");
+        return catalogResult;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Catalog searchLocalMusic(SearchCriteria criteria) {
+        log.debug("searchLocalMusic ... ({} : {})",
+                criteria != null ? criteria.getSearch() : "");
+        Catalog catalogResult = null;
+        if (criteria == null) {
+            throwMissingParameter();
+        } else {
+            catalogResult = new Catalog();
+            if (criteria.getSearch() != null && criteria.getSearch().trim().length() > 0) {
+                // looping on whole catalog, searching for matching music informations
+                for (Music music : appModel.getLocalCatalog().getMusics()) {
+                    // only deal with needed musics
+                    if (musicMatchesSearchCriteria(music, criteria)) {
+                        //Pour l'autre fonction --> addtoCatalog
+                        catalogResult.add(music.clone());
+                    }
+                }
+            }
+        }
+        log.debug("searchLocalMusic DONE");
         return catalogResult;
     }
 
