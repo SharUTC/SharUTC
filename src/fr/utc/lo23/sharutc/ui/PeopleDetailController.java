@@ -1,6 +1,7 @@
 package fr.utc.lo23.sharutc.ui;
 
 import com.google.inject.Inject;
+import fr.utc.lo23.sharutc.controler.command.music.FetchRemoteCatalogCommand;
 import fr.utc.lo23.sharutc.model.AppModel;
 import fr.utc.lo23.sharutc.model.domain.Music;
 import fr.utc.lo23.sharutc.model.userdata.UserInfo;
@@ -14,9 +15,7 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.FlowPane;
 
 import java.net.URL;
-import java.util.LinkedHashSet;
-import java.util.ResourceBundle;
-import java.util.Set;
+import java.util.*;
 
 public class PeopleDetailController extends SongSelectorController implements Initializable {
 
@@ -31,6 +30,9 @@ public class PeopleDetailController extends SongSelectorController implements In
 
     @Inject
     private AppModel mAppModel;
+
+    @Inject
+    private FetchRemoteCatalogCommand fetchRemoteCatalogCommand;
 
     private UserInfo mUserInfo;
 
@@ -49,22 +51,32 @@ public class PeopleDetailController extends SongSelectorController implements In
         Set<String> artists = new LinkedHashSet<String>();
         Set<String> tags = new LinkedHashSet<String>();
 
-        for (Music music : mAppModel.getLocalCatalog().getMusics()) {
-            tags.addAll(music.getTags());
-            artists.add(music.getArtist());
-            System.out.println("Music " + music.getTitle());
-            SongCard newCard = new SongCard(music, this, false);
-            songsContainer.getChildren().add(newCard);
-        }
+        //TODO : this is a hack to get current user's music
+        userInfo.setPeerId(mAppModel.getProfile().getUserInfo().getPeerId());
 
-        for (String artist : artists) {
-            ArtistCard newCard = new ArtistCard(artist, null);
-            artistsContainer.getChildren().add(newCard);
-        }
+        if(userInfo.getPeerId() == mAppModel.getProfile().getUserInfo().getPeerId()) {
+            List<Music> musics = mAppModel.getLocalCatalog().getMusics();
 
-        for (String tag : tags) {
-            TagCard newCard = new TagCard(tag);
-            tagsContainer.getChildren().add(newCard);
+            for (Music music : musics) {
+                tags.addAll(music.getTags());
+                artists.add(music.getArtist());
+                System.out.println("Music " + music.getTitle());
+                SongCard newCard = new SongCard(music, this, false);
+                songsContainer.getChildren().add(newCard);
+            }
+
+            for (String artist : artists) {
+                ArtistCard newCard = new ArtistCard(artist, null);
+                artistsContainer.getChildren().add(newCard);
+            }
+
+            for (String tag : tags) {
+                TagCard newCard = new TagCard(tag);
+                tagsContainer.getChildren().add(newCard);
+            }
+        } else {
+            fetchRemoteCatalogCommand.setPeer(userInfo.toPeer());
+            fetchRemoteCatalogCommand.execute();
         }
     }
 
