@@ -152,11 +152,21 @@ public class PeopleHomeController extends DragPreviewDrawer implements Initializ
     }
 
     @Override
-    public void onGroupDeletionRequested(GroupCard g) {
+    public void onGroupDeletionRequested(final GroupCard g) {
         log.info("onGroupDeletionRequested " + g.getModel().getName());
         mAskForDeletionCard = g;
-        deleteCategoryCommand.setCategory(g.getModel());
-        deleteCategoryCommand.execute();
+        DialogBoxBuilder.createConfirmBox("Would you want to delete the category " + g.getModel().getName()+" ?",
+                this.getClass().getResource("/fr/utc/lo23/sharutc/ui/css/modal.css").toExternalForm(),
+                groupContainer.getScene().getRoot(),
+                new DialogBoxBuilder.IConfirmBox() {
+                    @Override
+                    public void onChoiceMade(boolean answer) {
+                        if (answer) {
+                            deleteCategoryCommand.setCategory(g.getModel());
+                            deleteCategoryCommand.execute();
+                        }
+                    }
+                }).show();
     }
 
     @Override
