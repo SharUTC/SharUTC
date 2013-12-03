@@ -17,9 +17,6 @@ public interface FileService {
     public static final String ROOT_FOLDER_USERS = "users";
     public static final String ROOT_FOLDER_TMP = "tmp";
     public static final String FOLDER_MUSICS = "musics";
-    public static final String JSON_MUSICS = FOLDER_MUSICS + File.separator + "musics.json";
-    public static final String JSON_PROFILE = "profile.json";
-    public static final String JSON_RIGHTS = "rights.json";
     public static final String DOT_MP3 = ".mp3";
     public static final String[] AUTHORIZED_MUSIC_FILE_TYPE = {"mp3"};
     public static final int MIN_FILENAME_LENGTH = 1;

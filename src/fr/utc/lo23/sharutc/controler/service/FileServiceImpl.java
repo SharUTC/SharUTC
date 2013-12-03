@@ -7,6 +7,9 @@ import static fr.utc.lo23.sharutc.controler.service.FileService.DOT_MP3;
 import static fr.utc.lo23.sharutc.controler.service.FileService.FOLDER_MUSICS;
 import static fr.utc.lo23.sharutc.controler.service.FileService.ROOT_FOLDER_TMP;
 import static fr.utc.lo23.sharutc.controler.service.FileService.ROOT_FOLDER_USERS;
+import static fr.utc.lo23.sharutc.controler.service.SharUTCFile.CATALOG;
+import static fr.utc.lo23.sharutc.controler.service.SharUTCFile.PROFILE;
+import static fr.utc.lo23.sharutc.controler.service.SharUTCFile.RIGHTSLIST;
 import fr.utc.lo23.sharutc.model.AppModel;
 import fr.utc.lo23.sharutc.model.domain.Music;
 import java.io.BufferedInputStream;
@@ -105,7 +108,6 @@ public class FileServiceImpl implements FileService {
         boolean musicJsonExists = false;
         boolean profileJsonExists = false;
         boolean rightsJsonExists = false;
-        boolean musicFolderExists = false;
 
         ZipFile zf = new ZipFile(srcPath);
         Enumeration entries = zf.entries();
@@ -113,20 +115,17 @@ public class FileServiceImpl implements FileService {
         while (entries.hasMoreElements()) {
             ZipEntry ze = (ZipEntry) entries.nextElement();
             String entryName = ze.getName();
-            if (entryName.equals(JSON_MUSICS)) {
+            if (entryName.equals(CATALOG.getFilename())) {
                 musicJsonExists = true;
-            } else if (entryName.equals(JSON_PROFILE)) {
+            } else if (entryName.equals(PROFILE.getFilename())) {
                 profileJsonExists = true;
-            } else if (entryName.equals(JSON_RIGHTS)) {
+            } else if (entryName.equals(RIGHTSLIST.getFilename())) {
                 rightsJsonExists = true;
-            } else if (entryName.indexOf(File.separator) != -1
-                    && entryName.substring(0, entryName.indexOf(File.separator)).equals(FOLDER_MUSICS)) {
-                musicFolderExists = true;
             }
         }
 
         if (!musicJsonExists || !profileJsonExists
-                || !rightsJsonExists || !musicFolderExists) {
+                || !rightsJsonExists) {
             throw new Exception("Corrupted zip file");
         }
 
