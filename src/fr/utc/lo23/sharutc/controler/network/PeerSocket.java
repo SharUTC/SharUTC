@@ -44,6 +44,9 @@ public class PeerSocket implements Runnable {
         } catch (IOException e) {
             log.error(e.toString());
         }
+        if (peerId == null) {
+            log.error("peerId is null");
+        }
 
         // add this new PeerSocket to the PeerSocket list
         this.networkService.addPeer(peerId, this);
