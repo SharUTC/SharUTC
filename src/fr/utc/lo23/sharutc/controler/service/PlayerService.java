@@ -41,6 +41,14 @@ public interface PlayerService {
      * @param index the music to remove from playlist
      */
     public void removeFromPlaylist(Integer index);
+    
+    /**
+     * Removes the given music from playlist if exist, else do nothing, update
+     * ui via listener on playlist
+     *
+     * @param music the music to remove from playlist
+     */
+    public void removeFromPlaylist(Music music);
 
     /**
      * Changes the currently selected music in playlist, if music is found, and
