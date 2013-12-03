@@ -56,7 +56,7 @@ public class PlayMusicCommandImpl implements PlayMusicCommand {
         } else {
             // remove all musics from playlist
             for (Music m : playerService.getPlaylist().getMusics()) {
-                playerService.removeFromPlaylist(m);
+                //playerService.removeFromPlaylist(m);
             }
             // add music to update ui before file has arrived
             playerService.addToPlaylist(mMusic);
