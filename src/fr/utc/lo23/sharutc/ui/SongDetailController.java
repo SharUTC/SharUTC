@@ -16,6 +16,7 @@ import java.beans.PropertyChangeListener;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.Set;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -93,6 +94,7 @@ public class SongDetailController extends SongSelectorController implements Init
         setUserScore();
         showMusicInfo();
         showMyRating();
+        showAverageRating();        
         showComments();
     }
 
@@ -120,6 +122,17 @@ public class SongDetailController extends SongSelectorController implements Init
         if (mAppModel.getLocalCatalog().contains(mMusic)) {
             addRemoveButton.setText("Remove");
         }
+    }
+    
+    private void showAverageRating() {
+       final Set<Score> scores =  mMusic.getScores();
+       if(scores != null) {
+           int averageScore = 0;
+           for(Score score : scores) {
+               averageScore += score.getValue();
+           }
+           fillRatingStar(averageScore / scores.size(), mAverageRatingStars);
+       }
     }
 
     private void showMyRating() {
@@ -265,6 +278,7 @@ public class SongDetailController extends SongSelectorController implements Init
         if (Score.Property.VALUE.name().equals(propertyName)) {
             log.debug("score updated");
             showMyRating();
+            showAverageRating();
         }
     }
 }
