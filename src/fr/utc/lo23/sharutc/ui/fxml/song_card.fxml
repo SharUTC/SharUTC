@@ -1,0 +1,45 @@
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<fx:root type="fr.utc.lo23.sharutc.ui.custom.card.SongCard"
+         xmlns:fx="http://javafx.com/fxml">
+    <HBox>
+        <VBox alignment="CENTER_LEFT">
+            <Label fx:id="songTitle" text="New York New York" styleClass="largeTextGreyBold"/>
+            <Label fx:id="songArtist" text="Frank Sinatra" styleClass="largeTextGrey"/>
+        </VBox>
+        <VBox fx:id="buttonContainer" alignment="CENTER_RIGHT" HBox.hgrow="ALWAYS">
+            <Button fx:id="addToPlayListButton" styleClass="imageButton" visible="false" onAction="#handleSongCardButtonAction">
+                <graphic>
+                    <ImageView fitWidth="30" fitHeight="30">
+                        <image>
+                            <Image url="@../drawable/ic_add_to_playlist.png"/>
+                        </image>
+                    </ImageView>
+                </graphic>
+            </Button>
+            <Button fx:id="tagEditionButton" styleClass="imageButton" visible="false"
+                    onAction="#handleSongCardButtonAction">
+                <graphic>
+                    <ImageView fitWidth="30" fitHeight="30">
+                        <image>
+                            <Image url="@../drawable/ic_tag.png"/>
+                        </image>
+                    </ImageView>
+                </graphic>
+            </Button>
+            <Button fx:id="detailButton" styleClass="imageButton" visible="false"
+                    onAction="#handleSongCardButtonAction">
+                <graphic>
+                    <ImageView fitWidth="30" fitHeight="30">
+                        <image>
+                            <Image url="@../drawable/ic_details.png"/>
+                        </image>
+                    </ImageView>
+                </graphic>
+            </Button>
+        </VBox>
+    </HBox>
+</fx:root>
+

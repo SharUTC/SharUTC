@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.collections.*?>
+
+<?import javafx.scene.control.cell.*?>
+
+<?import fr.utc.lo23.sharutc.ui.*?>
+<VBox   xmlns:fx="http://javafx.com/fxml" fx:controller="fr.utc.lo23.sharutc.ui.SearchResultController" prefWidth="-1.0" GridPane.hgrow="ALWAYS" fx:id="gridpane">
+    
+    
+</VBox>

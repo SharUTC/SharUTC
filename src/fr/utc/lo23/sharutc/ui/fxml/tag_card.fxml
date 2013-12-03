@@ -1,0 +1,17 @@
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import java.net.URL?>
+
+<fx:root type="fr.utc.lo23.sharutc.ui.custom.card.TagCard"
+         xmlns:fx="http://javafx.com/fxml" minWidth="180" minHeight="100" maxHeight="100" >
+    <StackPane>
+        <VBox alignment="CENTER" StackPane.alignment="CENTER">
+            <Label fx:id="tagNameLabel" styleClass="largeTextGreyBold"/>
+            <Label fx:id="tagWeightLabel" text="53" styleClass="largeTextGrey"/>
+        </VBox>
+    </StackPane>
+</fx:root>
+
