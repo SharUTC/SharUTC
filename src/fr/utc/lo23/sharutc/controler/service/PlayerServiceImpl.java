@@ -106,6 +106,7 @@ public class PlayerServiceImpl implements PlayerService, PropertyChangeListener,
         if (music != null && !music.getFileMissing()) {
             mPlaylist.clear();
             mPlaylist.add(music);
+            setCurrentTimeSec(0L);
             playerPlay();
         }
     }
