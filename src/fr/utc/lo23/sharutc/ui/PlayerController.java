@@ -30,7 +30,6 @@ import java.util.ResourceBundle;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
-import javafx.scene.input.ScrollEvent;
 
 /**
  * FXML Controller class
@@ -120,9 +119,9 @@ public class PlayerController implements Initializable, PropertyChangeListener {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 final String propertyName = evt.getPropertyName();
-                if(Score.Property.VALUE.name().equals(propertyName)) {
+                if (Score.Property.VALUE.name().equals(propertyName)) {
                     displayCurrentRating();
-                }   
+                }
             }
         };
 
@@ -130,9 +129,9 @@ public class PlayerController implements Initializable, PropertyChangeListener {
 
     public void onDetach() {
         mPlayerService.removePropertyChangeListener(this);
-        if(mCurrentScore != null) {
+        if (mCurrentScore != null) {
             mCurrentScore.removePropertyChangeListener(mPropertyChangeListenerCurrentMusicScore);
-        }        
+        }
     }
 
     /**
@@ -154,17 +153,30 @@ public class PlayerController implements Initializable, PropertyChangeListener {
                 }
                 mCurrentMusic = music;
                 mCurrentScore = mCurrentMusic.getScore(mAppModel.getProfile().getUserInfo().getPeerId());
-                if(mCurrentScore != null) {
+                if (mCurrentScore != null) {
                     mCurrentScore.addPropertyChangeListener(mPropertyChangeListenerCurrentMusicScore);
-                }                
+                }
             }
             playerMaxTime.setText(timeInSecondsToString(mPlayerService.getTotalTimeSec().intValue()));
             currentMusicTitle.setText(mCurrentMusic.getTitle());
             currentMusicAlbum.setText(mCurrentMusic.getAlbum());
             currentMusicArtist.setText(mCurrentMusic.getArtist());
+            playerProgressBar.setProgress(0d);
+            playerTimeSlider.setValue(0d);
             displayCurrentRating();
         } else {
+            mCurrentMusic = null;
+            playerProgressBar.setProgress(0d);
+            playerTimeSlider.setValue(0d);
             playerMaxTime.setText(timeInSecondsToString(0));
+            playerCurrentTime.setText(timeInSecondsToString(0));
+            currentMusicAlbum.setText("");
+            currentMusicArtist.setText("");
+            currentMusicTitle.setText("");
+            if (mCurrentScore != null) {
+                mCurrentScore.removePropertyChangeListener(mPropertyChangeListenerCurrentMusicScore);
+                mCurrentScore = null;
+            }
         }
     }
 
@@ -179,13 +191,15 @@ public class PlayerController implements Initializable, PropertyChangeListener {
     }
 
     private void updateCurrentSongTime(final Long currentTime) {
-        if (mCurrentMusic != null) {
+        if (mCurrentMusic != null && currentTime != 0l) {
+            log.debug("current Time : " + String.valueOf(currentTime));
             final double currentPercent = currentTime.doubleValue() / mPlayerService.getTotalTimeSec().doubleValue();
             playerCurrentTime.setText(timeInSecondsToString(currentTime));
             playerProgressBar.setProgress(currentPercent);
             if (!playerTimeSlider.isValueChanging()) {
                 playerTimeSlider.setValue(currentPercent);
             }
+
         }
     }
 
@@ -203,8 +217,8 @@ public class PlayerController implements Initializable, PropertyChangeListener {
     }
 
     public void handlePlayAction(ActionEvent actionEvent) {
-        
-            mPlayerService.playerPlay();
+
+        mPlayerService.playerPlay();
     }
 
     public void handleSpeakerAction(ActionEvent actionEvent) {
@@ -306,18 +320,16 @@ public class PlayerController implements Initializable, PropertyChangeListener {
 
     private void handlePropertyChangeFromAudiPlayerThread(final PropertyChangeEvent evt) {
         final String propertyName = evt.getPropertyName();
+        log.debug("PropertyChangeEvent Name : " + propertyName);
         if (propertyName.equals(PlayerService.Property.CURRENT_MUSIC.name())) {
             Music m = (Music) evt.getNewValue();
             onCurrentMusicUpdate(m);
             //TODO get current index
             int index = 0;
-            for(int i =0; i<mPlayListData.size(); i++){
-                
-                ((PlayListMusic)mPlayListData.get(i)).setPlaying(i==index);
+            for (int i = 0; i < mPlayListData.size(); i++) {
+
+                ((PlayListMusic) mPlayListData.get(i)).setPlaying(i == index);
             }
-            
-            
-            
         } else if (propertyName.equals(PlayerService.Property.CURRENT_TIME.name())) {
             updateCurrentSongTime((Long) evt.getNewValue());
         } else if (propertyName.equals(PlayerService.Property.MUTE.name())) {
