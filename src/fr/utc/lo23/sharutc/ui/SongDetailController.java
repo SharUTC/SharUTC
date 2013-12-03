@@ -147,16 +147,27 @@ public class SongDetailController extends SongSelectorController implements Init
             log.debug("addCommentCommand : " + comment);
             mAddCommentCommand.setMusic(mMusic);
             mAddCommentCommand.setComment(comment);
-            mAddCommentCommand.setAuthorPeer(mAppModel.getProfile().getUserInfo().toPeer());
-            //TODO retrieve the OwnerPeer
-            //mAddCommentCommand.setOwnerPeer(mMusic.getOwnerPeerId());
-            mAddCommentCommand.setOwnerPeer(mAppModel.getProfile().getUserInfo().toPeer());
-            mAddCommentCommand.execute();
-            commentTextArea.clear();
+            final Peer myPeer = mAppModel.getProfile().getUserInfo().toPeer();
+            mAddCommentCommand.setAuthorPeer(myPeer);
 
-            //Sad work-around, since no events are triggered when a comment is added.
-            commentContainer.getChildren().clear();
-            showComments();
+            Peer ownerPeer = myPeer;
+            if(!mMusic.getOwnerPeerId().equals(myPeer.getId())){
+                log.debug("not my music !");
+                ownerPeer = mAppModel.getActivePeerList().getPeerByPeerId(mMusic.getOwnerPeerId());
+            }
+            
+            if (ownerPeer != null) {
+                mAppModel.getActivePeerList().getPeerByPeerId(Long.MIN_VALUE);
+                mAddCommentCommand.setOwnerPeer(ownerPeer);
+                mAddCommentCommand.execute();
+                commentTextArea.clear();
+                //Sad work-around, since no events are triggered when a comment is added.
+                commentContainer.getChildren().clear();
+                showComments();
+            } else {
+                commentTextArea.clear();
+                commentTextArea.setText("user not connected anymore");
+            }
 
             log.debug("addCommentCommand -- end ");
         }
@@ -229,7 +240,6 @@ public class SongDetailController extends SongSelectorController implements Init
         comment2.setAuthorName("Amelia");
         comment2.setIndex(2);
         comment2.setText("Sick !");
-
 
         final Comment comment3 = new Comment();
         comment3.setAuthorName("PainInTheNeck");
