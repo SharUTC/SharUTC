@@ -9,7 +9,6 @@ import javafx.scene.control.ButtonBuilder;
 import javafx.scene.control.LabelBuilder;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextFieldBuilder;
-import javafx.scene.effect.BoxBlur;
 import javafx.scene.effect.ColorAdjust;
 import javafx.scene.layout.HBoxBuilder;
 import javafx.scene.layout.VBoxBuilder;
@@ -36,7 +35,7 @@ public class DialogBoxBuilder {
         final TextField editableName = TextFieldBuilder.create().editable(true).styleClass("text-field").text(hint).build();
 
         //set effect
-        root.setEffect(new ColorAdjust(0, 0, -0.5, -0.5));
+        applyEffect(true, root);
 
         dialog.setScene(
                 new Scene(
@@ -52,7 +51,7 @@ public class DialogBoxBuilder {
                                         callback.onValidate(editableName.getText());
 
                                         //remove effect
-                                        root.setEffect(null);
+                                        applyEffect(false, root);
                                         dialog.close();
                                     }
                                 }).build()
@@ -77,7 +76,7 @@ public class DialogBoxBuilder {
         dialog.initModality(Modality.APPLICATION_MODAL);
 
         //set effect
-        root.setEffect(new BoxBlur());
+        applyEffect(true, root);
 
         dialog.setScene(
                 new Scene(
@@ -88,7 +87,7 @@ public class DialogBoxBuilder {
                                             @Override
                                             public void handle(ActionEvent actionEvent) {
                                                 callback.onChoiceMade(true);
-                                                root.setEffect(null);
+                                                applyEffect(false, root);
                                                 dialog.close();
                                             }
                                         }
@@ -97,7 +96,7 @@ public class DialogBoxBuilder {
                                             @Override
                                             public void handle(ActionEvent actionEvent) {
                                                 callback.onChoiceMade(false);
-                                                root.setEffect(null);
+                                                applyEffect(false, root);
                                                 dialog.close();
                                             }
                                         }
@@ -109,6 +108,21 @@ public class DialogBoxBuilder {
         );
         dialog.getScene().getStylesheets().add(style);
         return dialog;
+    }
+
+    /**
+     * set effect to the Parent view
+     *
+     * @param apply true if effect has to be displayed, false if effect has to be hidden
+     * @param root  parent view on which the effect will be applied
+     */
+    private static void applyEffect(boolean apply, Parent root) {
+        if (apply) {
+            root.setEffect(new ColorAdjust(0, 0, -0.5, -0.5));
+        } else {
+            root.setEffect(null);
+        }
+
     }
 
     /**
