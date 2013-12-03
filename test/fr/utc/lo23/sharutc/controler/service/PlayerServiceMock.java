@@ -28,8 +28,8 @@ public class PlayerServiceMock extends PlayerServiceImpl implements PlayerServic
     }
 
     @Override
-    public void removeFromPlaylist(Music music) {
-        super.removeFromPlaylist(music);
+    public void removeFromPlaylist(Integer musicIndex) {
+        super.removeFromPlaylist(musicIndex);
     }
 
     @Override

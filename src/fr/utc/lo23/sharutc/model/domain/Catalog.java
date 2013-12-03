@@ -161,6 +161,19 @@ public class Catalog implements Serializable, PropertyChangeListener {
      * Remove a given music from this catalog if it exists, send updates
      * (REMOVE) with removed Id
      *
+     * @param index the index of the music to remove
+     * @return true if the music was removed, else false
+     */
+    public boolean removeAt(Integer index) {
+        if(index < 0 || index > mMusics.size()) return false;
+        Music music = mMusics.get(index);
+        return remove(music);
+    }
+    
+    /**
+     * Remove a given music from this catalog if it exists, send updates
+     * (REMOVE) with removed Id
+     *
      * @param music the music to remove
      * @return true if the music was removed, else false
      */
