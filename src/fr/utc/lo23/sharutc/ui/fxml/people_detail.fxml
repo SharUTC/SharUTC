@@ -12,16 +12,15 @@
 <?import javafx.scene.control.Button?>
 
 
+<?import javafx.geometry.Insets?>
 <ScrollPane xmlns:fx="http://javafx.com/fxml" fx:controller="fr.utc.lo23.sharutc.ui.PeopleDetailController"  styleClass="myScrollPane"
             GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS" fitToWidth="true" fitToHeight="true" vbarPolicy="AS_NEEDED">
     <GridPane>
-        <Label fx:id="login" styleClass="panetitle" GridPane.rowIndex="0"/>
+        <padding>
+            <javafx.geometry.Insets top="10"/>
+        </padding>
         <AnchorPane GridPane.rowIndex="1" GridPane.hgrow="ALWAYS" maxWidth="700">
-            <ImageView fitWidth="150" fitHeight="150">
-                <image>
-                    <Image url="@../drawable/avatar_default.png"/>
-                </image>
-            </ImageView>
+            <Label fx:id="login" styleClass="panetitle" GridPane.rowIndex="0"/>
             <Button text="Add to friends" fx:id="addToFriendsButton" onAction="#handleAddToFriendsClicked" AnchorPane.rightAnchor="10" styleClass="rectButton"/>
         </AnchorPane>
         <AnchorPane GridPane.rowIndex="2" GridPane.hgrow="ALWAYS" maxWidth="700">
