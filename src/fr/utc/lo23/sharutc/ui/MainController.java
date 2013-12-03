@@ -3,7 +3,6 @@ package fr.utc.lo23.sharutc.ui;
 import com.cathive.fx.guice.GuiceFXMLLoader;
 import com.cathive.fx.guice.GuiceFXMLLoader.Result;
 import com.google.inject.Inject;
-import com.sun.javafx.scene.control.skin.ButtonSkin;
 import fr.utc.lo23.sharutc.controler.command.account.DisconnectionCommand;
 import fr.utc.lo23.sharutc.controler.command.account.ExportProfileCommand;
 
@@ -64,7 +63,8 @@ public class MainController extends NavigationController implements Initializabl
         SearchResultController.ISearchResultController,
         ArtistsDetailController.IArtistsDetailController,
         AlbumsDetailController.IAlbumsDetailController,
-        SongSelectorController.ISongListController {
+        SongSelectorController.ISongListController,
+        SongDetailController.ISongDetailController {
 
     private static final Logger log = LoggerFactory.getLogger(MainController.class);
     @Inject
@@ -102,10 +102,8 @@ public class MainController extends NavigationController implements Initializabl
     private PropertyChangeListener mChangeListenerAppModel;
     @Inject
     private ExportProfileCommand mExportProfileCommand;
-    
-      @Inject
+    @Inject
     private RemoveFromPlaylistCommand mRemoveFromPlaylistCommand;
-      
     @Inject
     private FileService mFileService;
 
@@ -120,7 +118,7 @@ public class MainController extends NavigationController implements Initializabl
         try {
             final Result loadingResult = mFxmlLoader.load(getClass().getResource("/fr/utc/lo23/sharutc/ui/fxml/player.fxml"));
             mPlayerController = loadingResult.getController();
-            
+
             bottombar.getChildren().add((Node) loadingResult.getRoot());
 
             initializePlayList();
@@ -472,28 +470,25 @@ public class MainController extends NavigationController implements Initializabl
         mPlayListData = FXCollections.observableArrayList();
 
         listView.setItems(mPlayListData);
-      
-        
-        listView.setOnMouseClicked(new EventHandler<MouseEvent>(){
 
+
+        listView.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
                 final Object target = event.getTarget();
-                if(target instanceof ImageView){
+                if (target instanceof ImageView) {
                     ImageView skin = (ImageView) target;
-                    if(skin.getId().equals("deleteButton")){
+                    if (skin.getId().equals("deleteButton")) {
                         mRemoveFromPlaylistCommand.setMusicIndex(listView.getSelectionModel().getSelectedIndex());
                         mRemoveFromPlaylistCommand.execute();
                     }
-                     
-                }else if(event.getClickCount()>1){
+
+                } else if (event.getClickCount() > 1) {
                     mPlayerService.playMusicFromPlaylist(((PlayListMusic) listView.getSelectionModel().getSelectedItem()).music);
                 }
             }
-        
-        
-    });
-        
+        });
+
         listView.setCellFactory(new Callback<ListView<PlayListMusic>, ListCell<PlayListMusic>>() {
             @Override
             public ListCell<PlayListMusic> call(ListView<PlayListMusic> p) {
@@ -534,6 +529,20 @@ public class MainController extends NavigationController implements Initializabl
             attachRightpane(mCurrentLoadedRighpaneResult);
         } catch (IOException e) {
             log.error(e.getMessage());
+        }
+    }
+
+    @Override
+    public void onSongRemovedFromLocalCatalog() {
+        try {
+            detachRightpane();
+            mCurrentLoadedRighpaneResult = mFxmlLoader.load(getClass().getResource("/fr/utc/lo23/sharutc/ui/fxml/song_list.fxml"));
+            ((DragPreviewDrawer) mCurrentLoadedRighpaneResult.getController()).init(mDragPreview);
+            ((SongListController) mCurrentLoadedRighpaneResult.getController()).setInterface(this);
+            ((SongListController) mCurrentLoadedRighpaneResult.getController()).showCatalog();
+            attachRightpane(mCurrentLoadedRighpaneResult);
+        } catch (IOException ex) {
+            log.error(ex.getMessage());
         }
     }
 }

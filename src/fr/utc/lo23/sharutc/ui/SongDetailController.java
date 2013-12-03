@@ -2,6 +2,7 @@ package fr.utc.lo23.sharutc.ui;
 
 import com.google.inject.Inject;
 import fr.utc.lo23.sharutc.controler.command.music.AddCommentCommand;
+import fr.utc.lo23.sharutc.controler.command.music.RemoveFromLocalCatalogCommand;
 import fr.utc.lo23.sharutc.controler.command.music.SetScoreCommand;
 import fr.utc.lo23.sharutc.model.AppModel;
 import fr.utc.lo23.sharutc.model.domain.Comment;
@@ -11,13 +12,18 @@ import fr.utc.lo23.sharutc.model.userdata.Peer;
 import fr.utc.lo23.sharutc.ui.custom.CommentView;
 import fr.utc.lo23.sharutc.ui.custom.RatingStar;
 import fr.utc.lo23.sharutc.ui.custom.card.SongCard;
+import fr.utc.lo23.sharutc.util.CollectionChangeListener;
+import fr.utc.lo23.sharutc.util.CollectionEvent;
+import fr.utc.lo23.sharutc.util.CollectionEvent.Type;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.Set;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -27,7 +33,7 @@ import javafx.scene.layout.VBox;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class SongDetailController extends SongSelectorController implements Initializable, PropertyChangeListener {
+public class SongDetailController extends SongSelectorController implements Initializable, PropertyChangeListener, CollectionChangeListener<Music> {
 
     private static final Logger log = LoggerFactory.getLogger(SongDetailController.class);
     @FXML
@@ -63,11 +69,14 @@ public class SongDetailController extends SongSelectorController implements Init
     @Inject
     private SetScoreCommand mSetScoreCommand;
     @Inject
+    private RemoveFromLocalCatalogCommand mRemoveFromLocalCatalogCommand;
+    @Inject
     AddCommentCommand mAddCommentCommand;
     private RatingStar[] mMyRatingStars;
     private RatingStar[] mAverageRatingStars;
     private Music mMusic;
     private Score mUserScore;
+    private ISongDetailController mInteface;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -87,6 +96,13 @@ public class SongDetailController extends SongSelectorController implements Init
             starAverageRate4,
             starAverageRate5
         };
+
+        mAppModel.getLocalCatalog().addPropertyChangeListener(this);
+    }
+
+    public void setInterface(ISongDetailController i) {
+        super.setInterface(i);
+        mInteface = i;
     }
 
     public void setMusic(final Music music) {
@@ -121,6 +137,14 @@ public class SongDetailController extends SongSelectorController implements Init
 
         if (mAppModel.getLocalCatalog().contains(mMusic)) {
             addRemoveButton.setText("Remove");
+            addRemoveButton.setOnAction(new EventHandler<ActionEvent>() {
+                @Override
+                public void handle(ActionEvent t) {
+                    log.debug("remove button clicked");
+                    mRemoveFromLocalCatalogCommand.setMusics(Arrays.asList(mMusic));
+                    mRemoveFromLocalCatalogCommand.execute();
+                }
+            });
         }
     }
 
@@ -271,6 +295,7 @@ public class SongDetailController extends SongSelectorController implements Init
         if (mUserScore != null) {
             mUserScore.removePropertyChangeListener(this);
         }
+        mAppModel.getLocalCatalog().removePropertyChangeListener(this);
     }
 
     @Override
@@ -281,5 +306,19 @@ public class SongDetailController extends SongSelectorController implements Init
             showMyRating();
             showAverageRating();
         }
+    }
+
+    @Override
+    public void collectionChanged(CollectionEvent<Music> ev) {
+        final Type type = ev.getType();
+        if (CollectionEvent.Type.REMOVE.equals(type)) {
+            log.info("remove music from local catalog");
+            mInteface.onSongRemovedFromLocalCatalog();
+        }
+    }
+
+    public interface ISongDetailController extends ISongListController {
+
+        public void onSongRemovedFromLocalCatalog();
     }
 }
