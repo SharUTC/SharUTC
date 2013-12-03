@@ -88,6 +88,22 @@ public class PlayerServiceImpl implements PlayerService, PropertyChangeListener,
      * {@inheritDoc}
      */
     @Override
+    public void removeFromPlaylist(Music music) {
+        if (music != null) {
+            if (mPlaylist.remove(music)) {
+                log.debug("removeFromPlaylist : music removed");
+            } else {
+                log.error("removeFromPlaylist : music NOT removed, not found");
+            }
+        } else {
+            log.warn("removeFromPlaylist : music parameter is null");
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public synchronized void playMusicFromPlaylist(Music music) {
         log.info("playMusicFromPlaylist");
         if (music != null && mPlaylist.contains(music)) {
