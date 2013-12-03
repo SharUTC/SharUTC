@@ -7,10 +7,11 @@ import fr.utc.lo23.sharutc.controler.command.account.ImportProfileCommand;
 import fr.utc.lo23.sharutc.controler.network.NetworkService;
 import fr.utc.lo23.sharutc.controler.service.FileService;
 import static fr.utc.lo23.sharutc.controler.service.FileService.FOLDER_MUSICS;
-import static fr.utc.lo23.sharutc.controler.service.FileService.JSON_MUSICS;
-import static fr.utc.lo23.sharutc.controler.service.FileService.JSON_PROFILE;
-import static fr.utc.lo23.sharutc.controler.service.FileService.JSON_RIGHTS;
 import fr.utc.lo23.sharutc.controler.service.MusicService;
+import fr.utc.lo23.sharutc.controler.service.SharUTCFile;
+import static fr.utc.lo23.sharutc.controler.service.SharUTCFile.CATALOG;
+import static fr.utc.lo23.sharutc.controler.service.SharUTCFile.PROFILE;
+import static fr.utc.lo23.sharutc.controler.service.SharUTCFile.RIGHTSLIST;
 import fr.utc.lo23.sharutc.controler.service.UserService;
 import fr.utc.lo23.sharutc.model.AppModel;
 import fr.utc.lo23.sharutc.model.AppModelBuilder;
@@ -71,7 +72,7 @@ public class ProfileImportExportTest {
 
         String musicJsonPath = usersPath + File.separator + userName + File.separator + "musics//musics.json";
         String profileJsonPath = usersPath + File.separator + userName + File.separator + "profile.json";
-        String rightsJsonPath = usersPath + File.separator + userName + File.separator + "rights.json";
+        String rightsJsonPath = usersPath + File.separator + userName + File.separator + "rightslist.json";
 
         try {
             new File(musicJsonPath).createNewFile();
@@ -100,9 +101,8 @@ public class ProfileImportExportTest {
 
         Assert.assertTrue("The zip of the profile has not been created",
                 new File(dest).exists());
-        //TODO Test what is inside the zip
 
-        //chech the structure of the file
+        //check the structure of the file
         boolean musicJsonExists = false;
         boolean profileJsonExists = false;
         boolean rightsJsonExists = false;
@@ -115,18 +115,18 @@ public class ProfileImportExportTest {
             while (entries.hasMoreElements()) {
                 ZipEntry ze = (ZipEntry) entries.nextElement();
                 String entryName = ze.getName();
-                if (entryName.equals(JSON_MUSICS)) {
+                if (entryName.equals(CATALOG.getFilename())) {
                     musicJsonExists = true;
-                } else if (entryName.equals(JSON_PROFILE)) {
+                } else if (entryName.equals(PROFILE.getFilename())) {
                     profileJsonExists = true;
-                } else if (entryName.equals(JSON_RIGHTS)) {
+                } else if (entryName.equals(RIGHTSLIST.getFilename())) {
                     rightsJsonExists = true;
                 }
             }
 
             Assert.assertTrue("music json has not been zipped", musicJsonExists);
             Assert.assertTrue("profile json has not been zipped", profileJsonExists);
-            Assert.assertTrue("rights json has not been zipped", rightsJsonExists);
+            Assert.assertTrue("rightslist json has not been zipped", rightsJsonExists);
 
         } catch (IOException ex) {
             java.util.logging.Logger.getLogger(ProfileImportExportTest.class.getName()).log(Level.SEVERE, null, ex);
@@ -147,11 +147,11 @@ public class ProfileImportExportTest {
 
             String musicJsonPath = usersPath + File.separator + userName + File.separator + "musics\\musics.json";
             String profileJsonPath = usersPath + File.separator + userName + File.separator + "profile.json";
-            String rightsJsonPath = usersPath + File.separator + userName + File.separator + "rights.json";
+            String rightsJsonPath = usersPath + File.separator + userName + File.separator + "rightslist.json";
 
             Assert.assertTrue("musics.json has not been created", new File(musicJsonPath).exists());
             Assert.assertTrue("profile.json has not been created", new File(profileJsonPath).exists());
-            Assert.assertTrue("rights.json has not been created", new File(rightsJsonPath).exists());
+            Assert.assertTrue("rightslist.json has not been created", new File(rightsJsonPath).exists());
 
 
             //test an import on an already existing profile
