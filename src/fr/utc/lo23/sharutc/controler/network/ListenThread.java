@@ -76,32 +76,6 @@ public class ListenThread implements Runnable {
         }
     }
 
-    private long handleNewConnection(Socket socket) {
-        Long peerId = null;
-        try {
-            ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
-            String json = null;
-            try {
-                json = (String) in.readObject();
-            } catch (ClassNotFoundException ex) {
-                log.error(ex.toString());
-            }
-            Message msg= messageParser.fromJSON(json);
-            if (msg.getType() == MessageType.CONNECTION_RESPONSE) {
-                if (msg.getFromPeerId() == null) {
-                    log.error("Received connection response with peerId = null !");
-                }
-                peerId = msg.getFromPeerId();
-                messageHandler.handleMessage(json);
-            } else {
-                log.error("First message on Socket must be CONNECTION_RESPONSE");
-            }
-        } catch (IOException ex) {
-            log.error(ex.toString());
-        }
-        return peerId;
-    }
-
     /**
      * Main listening loop.
      * <p>
@@ -120,8 +94,7 @@ public class ListenThread implements Runnable {
 
             while (mServerSocket.isBound()) {
                 Socket clientSocket = mServerSocket.accept();
-                long peerId = handleNewConnection(clientSocket);
-                PeerSocket ps = new PeerSocket(clientSocket, peerId, messageHandler, messageParser, networkService);
+                PeerSocket ps = new PeerSocket(clientSocket, null, messageHandler, messageParser, networkService);
                 ps.start();
             }
             if (!mServerSocket.isClosed()) {
