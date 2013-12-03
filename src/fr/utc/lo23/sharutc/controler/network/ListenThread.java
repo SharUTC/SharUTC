@@ -24,9 +24,9 @@ public class ListenThread implements Runnable {
     private final MessageHandler messageHandler;
     private final MessageParser messageParser;
 
-    private Thread mThread;
     private final int mPort;
     private ServerSocket mServerSocket;
+    private Thread mThread;
     private volatile boolean mThreadShouldStop = false;
 
     /**
@@ -46,14 +46,21 @@ public class ListenThread implements Runnable {
         this.messageHandler = messageHandler;
         this.messageParser = messageParser;
         this.networkService = networkService;
+
+        this.mThreadShouldStop = false;
+        this.mThread = null;
     }
 
     /**
      * Starts the listenThread.
      */
     public void start() {
-        mThread = new Thread(this);
-        mThread.start();
+        if (mThread == null) {
+            mThread = new Thread(this);
+            mThread.start();
+        } else {
+            log.warn("Can't start ListenThread: already running.");
+        }
     }
 
     /**
@@ -80,22 +87,24 @@ public class ListenThread implements Runnable {
      */
     @Override
     public void run() {
-        long peerID = appModel.getProfile().getUserInfo().getPeerId();
-        try {
-            mServerSocket = new ServerSocket(mPort);
-            log.info("Started listening on port " + mPort);
+        while (!mThreadShouldStop) {
+            long peerID = appModel.getProfile().getUserInfo().getPeerId();
+            try {
+                mServerSocket = new ServerSocket(mPort);
+                log.info("Started listening on port " + mPort);
 
-            while (mServerSocket.isBound()) {
-                Socket clientSocket = mServerSocket.accept();
-                PeerSocket ps = new PeerSocket(clientSocket, peerID, messageHandler, messageParser, networkService);
-                ps.start();
-            }
-            if (!mServerSocket.isClosed()) {
-                mServerSocket.close();
-            }
-        } catch (IOException ex) {
-            if (!mThreadShouldStop) {
-                log.error(ex.toString());
+                while (mServerSocket.isBound()) {
+                    Socket clientSocket = mServerSocket.accept();
+                    PeerSocket ps = new PeerSocket(clientSocket, peerID, messageHandler, messageParser, networkService);
+                    ps.start();
+                }
+                if (!mServerSocket.isClosed()) {
+                    mServerSocket.close();
+                }
+            } catch (IOException ex) {
+                if (!mThreadShouldStop) {
+                    log.error(ex.toString());
+                }
             }
         }
     }

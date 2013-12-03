@@ -62,9 +62,9 @@ public interface PlayerService {
      * Replace the actual music in playlist by this one, and play it to simulate
      * local file behaviour
      *
-     * @param musicToPlay the music to play
+     * @param musicWithBytes the music to play
      */
-    public void updateAndPlayMusic(Music musicToPlay);
+    public void updateAndPlayMusic(Music musicWithBytes);
 
     /**
      * Play currently selected music (and for which file is present)
@@ -140,10 +140,10 @@ public interface PlayerService {
      * by the user. Music doesn't require to be played to set the value but at
      * least one music must be selected in playlist
      *
-     * @param currentTimeSec the time in the music, must be positive and lower
+     * @param timeInSec the time in the music, must be positive and lower
      * than music total duration
      */
-    public void setCurrentTimeSec(Long currentTimeSec);
+    public void setCurrentTimeSec(Long timeInSec);
 
     /**
      * Return the current music duration in seconds
@@ -153,15 +153,24 @@ public interface PlayerService {
      */
     public Long getTotalTimeSec();
 
+    /**
+     * Get if paused
+     * 
+     * @return If is paused
+     */
     public boolean isPause();
 
     /**
-     * {@inheritDoc}
+     * Adds a property change listener
+     *
+     * @param listener a property change listener
      */
     public void addPropertyChangeListener(PropertyChangeListener listener);
 
     /**
-     * {@inheritDoc}
+     * Removes a property change listener
+     * 
+     * @param listener a property change listener.
      */
     public void removePropertyChangeListener(PropertyChangeListener listener);
 
@@ -174,18 +183,22 @@ public interface PlayerService {
          *
          */
         CURRENT_TIME,
+        
         /**
          *
          */
         CURRENT_MUSIC,
+        
         /**
          *
          */
         VOLUME,
+        
         /**
          *
          */
         MUTE,
+        
         /**
          *
          */
