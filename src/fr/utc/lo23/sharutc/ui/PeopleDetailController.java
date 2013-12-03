@@ -2,8 +2,10 @@ package fr.utc.lo23.sharutc.ui;
 
 import com.google.inject.Inject;
 import fr.utc.lo23.sharutc.controler.command.music.FetchRemoteCatalogCommand;
+import fr.utc.lo23.sharutc.controler.command.profile.AddContactToCategoryCommand;
 import fr.utc.lo23.sharutc.model.AppModel;
 import fr.utc.lo23.sharutc.model.domain.Music;
+import fr.utc.lo23.sharutc.model.userdata.Contact;
 import fr.utc.lo23.sharutc.model.userdata.UserInfo;
 import fr.utc.lo23.sharutc.ui.custom.card.ArtistCard;
 import fr.utc.lo23.sharutc.ui.custom.card.SongCard;
@@ -33,6 +35,8 @@ public class PeopleDetailController extends SongSelectorController implements In
 
     @Inject
     private FetchRemoteCatalogCommand fetchRemoteCatalogCommand;
+    @Inject
+    private AddContactToCategoryCommand addContactToCategoryCommand;
 
     private UserInfo mUserInfo;
 
@@ -50,9 +54,6 @@ public class PeopleDetailController extends SongSelectorController implements In
 
         Set<String> artists = new LinkedHashSet<String>();
         Set<String> tags = new LinkedHashSet<String>();
-
-        //TODO : this is a hack to get current user's music
-        userInfo.setPeerId(mAppModel.getProfile().getUserInfo().getPeerId());
 
         if(userInfo.getPeerId() == mAppModel.getProfile().getUserInfo().getPeerId()) {
             List<Music> musics = mAppModel.getLocalCatalog().getMusics();
@@ -81,6 +82,9 @@ public class PeopleDetailController extends SongSelectorController implements In
     }
 
     public void handleAddToFriendsClicked(ActionEvent actionEvent) {
+        addContactToCategoryCommand.setContact(new Contact(mUserInfo));
+        addContactToCategoryCommand.setCategory(mAppModel.getProfile().getCategories().findCategoryById(0));
+        addContactToCategoryCommand.execute();
 
     }
 
