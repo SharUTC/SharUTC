@@ -66,6 +66,8 @@ public class PeopleHomeController extends DragPreviewDrawer implements Initializ
     private CreateCategoryCommand createCategoryCommand;
     @Inject
     private DeleteCategoryCommand deleteCategoryCommand;
+  //  @Inject
+  //  private EditCategoryCommand editCategoryCommand;
     @Inject
     private AddContactToCategoryCommand addContactToCategoryCommand;
 
@@ -180,6 +182,10 @@ public class PeopleHomeController extends DragPreviewDrawer implements Initializ
                     @Override
                     public void onValidate(String value) {
                         //set the new name
+                        
+                  //      editCategoryCommand.setCategory(category);
+                  //      editCategoryCommand.setNewname(value);
+                 //       editCategoryCommand.execute();
                         category.setName(value);
                         //TODO remove when UPDATE will be fired
                         //TODO need fix, can't delete category after edition. Need to relaunch the app.

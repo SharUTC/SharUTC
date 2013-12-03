@@ -29,13 +29,16 @@ public class SongCardRight extends SimpleCard implements EventHandler<Event> {
     public CheckBox checkBoxComment;
     
 
-    public SongCardRight(Music m, ISongCardRight i, boolean isOwned) {
+    public SongCardRight(Music m, ISongCardRight i, boolean isOwned , boolean mayListen, boolean mayReadInfo , boolean mayComment) {
         super("/fr/utc/lo23/sharutc/ui/fxml/song_card_right.fxml");
         mModel = m;
         mInterface = i;
         songTitle.setText(mModel.getTitle());
         songArtist.setText(mModel.getArtist());
         mIsOwned = isOwned;
+        checkBoxEdit.setSelected(mayListen);
+        checkBoxRead.setSelected(mayReadInfo);
+        checkBoxComment.setSelected(mayComment);
         
     }
      @FXML
@@ -43,9 +46,9 @@ public class SongCardRight extends SimpleCard implements EventHandler<Event> {
         final Object source = event.getSource();
         if (source.equals(checkBoxEdit)) {
             if (checkBoxEdit.isSelected())
-                 mInterface.handleCheckBoxEditClicked(mModel,true);
+                 mInterface.handleCheckBoxListenClicked(mModel,true);
             else 
-                mInterface.handleCheckBoxEditClicked(mModel,false);    
+                mInterface.handleCheckBoxListenClicked(mModel,false);    
         } else if (source.equals(checkBoxRead)) {
             if (checkBoxRead.isSelected())
                 mInterface.handleCheckBoxReadClicked(mModel,true);
@@ -78,7 +81,7 @@ public class SongCardRight extends SimpleCard implements EventHandler<Event> {
     
      public interface ISongCardRight  {
          
-        public void handleCheckBoxEditClicked(Music m,boolean boxstate);
+        public void handleCheckBoxListenClicked(Music m,boolean boxstate);
         public void handleCheckBoxReadClicked(Music m ,boolean boxstate);
         public void handleCheckBoxCommentClicked(Music m ,boolean boxstate);
     }

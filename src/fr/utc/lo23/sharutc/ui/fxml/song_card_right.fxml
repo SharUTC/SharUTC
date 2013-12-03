@@ -20,8 +20,8 @@
                 <javafx.geometry.Insets bottom="5" left="5" right="5" top="5"/>
         </padding>
         <VBox fx:id="buttonContainer" alignment="CENTER_RIGHT" HBox.hgrow="ALWAYS">
-                <CheckBox fx:id="checkBoxRead" styleClass="imageButton" text=" R" onAction="#handleSongCardRightCheckBoxAction" />                
-                <CheckBox fx:id="checkBoxEdit" styleClass="imageButton" text=" E" onAction="#handleSongCardRightCheckBoxAction" />
+                <CheckBox fx:id="checkBoxRead" styleClass="imageButton" text=" RI" onAction="#handleSongCardRightCheckBoxAction" />                
+                <CheckBox fx:id="checkBoxEdit" styleClass="imageButton" text=" RS" onAction="#handleSongCardRightCheckBoxAction" />
                 <CheckBox fx:id="checkBoxComment" styleClass="imageButton" text=" C" onAction="#handleSongCardRightCheckBoxAction" />
         </VBox>
        
