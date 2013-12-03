@@ -365,6 +365,9 @@ public class PlayerServiceImpl implements PlayerService, PropertyChangeListener,
         propertyChangeSupport.firePropertyChange(Property.PAUSE.name(), !pause, pause);
     }
 
+    /**
+     * Manage the ending of the music
+     */
     private void onMusicEnd() {
         player = null;
         if (mPlaylist.indexOf(mCurrentMusic) < (mPlaylist.size() - 1)) {
@@ -375,6 +378,11 @@ public class PlayerServiceImpl implements PlayerService, PropertyChangeListener,
         }
     }
 
+    /**
+     * Manage update of current time
+     * 
+     * @param currentTimeSec The new current time in seconds
+     */
     private void onCurrentTimeUpdate(Long currentTimeSec) {
         Long oldTimeSec = mCurrentTimeSec;
         this.mCurrentTimeSec = currentTimeSec;
@@ -442,30 +450,36 @@ public class PlayerServiceImpl implements PlayerService, PropertyChangeListener,
         }
         log.debug("setMute ({}) DONE", mute);
     }
-
+    
     /**
-     *
-     * @param listener
+     * {@inheritDoc} 
      */
     @Override
     public void addPropertyChangeListener(PropertyChangeListener listener) {
         propertyChangeSupport.addPropertyChangeListener(listener);
     }
-
+    
     /**
-     *
-     * @param listener
+     * {@inheritDoc}
      */
     @Override
     public void removePropertyChangeListener(PropertyChangeListener listener) {
         propertyChangeSupport.removePropertyChangeListener(listener);
     }
 
+    /**
+     * Manage emptying of the playlist
+     */
     private void onPlaylistClear() {
         playerStop();
         setCurrentMusic(null);
     }
 
+    /**
+     * Manage the music removal of the playlist
+     * 
+     * @param ev 
+     */
     private void onPlaylistRemove(CollectionEvent<Music> ev) {
         Music currentMusic;
         if (mPlaylist.isEmpty()) {
@@ -492,12 +506,20 @@ public class PlayerServiceImpl implements PlayerService, PropertyChangeListener,
         setCurrentMusic(currentMusic);
     }
 
+    /**
+     * Manage the music addition to the playlist
+     */
     private void onPlaylistAdd() {
         if (mPlaylist.size() == 1) {
             setCurrentMusic(mPlaylist.get(0));
         }
     }
 
+    /**
+     * Load remote music the play
+     * 
+     * @param music The music to load and play
+     */
     private void fetchRemoteDataThenPlay(Music music) {
         if (appModel.getTmpCatalog().contains(music)) {
             log.info("Loading data for remote music from TMP_CATALOG : {}", music);
