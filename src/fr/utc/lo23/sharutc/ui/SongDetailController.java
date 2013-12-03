@@ -239,6 +239,7 @@ public class SongDetailController extends SongSelectorController implements Init
                 log.debug("score -- work-around");
                 setUserScore();
                 showMyRating();
+                showAverageRating();
             }
         }
     }
