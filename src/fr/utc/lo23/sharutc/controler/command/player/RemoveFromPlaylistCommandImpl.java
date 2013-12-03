@@ -16,7 +16,7 @@ public class RemoveFromPlaylistCommandImpl implements RemoveFromPlaylistCommand 
     private static final Logger log = LoggerFactory
             .getLogger(RemoveFromPlaylistCommandImpl.class);
     private final PlayerService playerService;
-    private List<Music> mPlaylist;
+    private List<Integer> mPlaylist;
 
     @Inject
     public RemoveFromPlaylistCommandImpl(PlayerService playerService) {
@@ -27,7 +27,7 @@ public class RemoveFromPlaylistCommandImpl implements RemoveFromPlaylistCommand 
      * {@inheritDoc}
      */
     @Override
-    public List<Music> getMusics(){
+    public List<Integer> getMusicsIndex(){
         return mPlaylist;
     }
 
@@ -35,19 +35,19 @@ public class RemoveFromPlaylistCommandImpl implements RemoveFromPlaylistCommand 
      * {@inheritDoc}
      */
     @Override
-    public void setMusics(List<Music> musics){
-        mPlaylist = musics;
+    public void setMusicsIndex(List<Integer> musicsIndex){
+        mPlaylist = musicsIndex;
     }
     
     /**
      * {@inheritDoc}
      */
     @Override
-    public void setMusic(Music music){
+    public void setMusicIndex(Integer musicIndex){
         if(mPlaylist == null){
-            mPlaylist = new ArrayList<Music>();
+            mPlaylist = new ArrayList<Integer>();
         }
-        mPlaylist.add(music);
+        mPlaylist.add(musicIndex);
     }
 
     /**
@@ -60,8 +60,8 @@ public class RemoveFromPlaylistCommandImpl implements RemoveFromPlaylistCommand 
         System.out.println(mPlaylist);
         
         if(mPlaylist != null){
-            for (Music m : mPlaylist) {
-                playerService.removeFromPlaylist(m);
+            for (Integer index : mPlaylist) {
+                playerService.removeFromPlaylist(index);
             }
         }
 

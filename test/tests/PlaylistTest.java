@@ -97,7 +97,7 @@ public class PlaylistTest {
         Music removedMusic = appModel.getLocalCatalog().get(0);
 
 
-        removeFromPlaylistCommand.setMusic(removedMusic);
+        removeFromPlaylistCommand.setMusicIndex(0);
         removeFromPlaylistCommand.execute();
 
         Assert.assertNotNull("removeFromPlaylistCommand failed", playerService.getPlaylist().getMusics());
@@ -121,7 +121,7 @@ public class PlaylistTest {
         Music removedMusic = appModel.getLocalCatalog().get(appModel.getLocalCatalog().size() - 1);
 
 
-        removeFromPlaylistCommand.setMusic(removedMusic);
+        removeFromPlaylistCommand.setMusicIndex(appModel.getLocalCatalog().size() - 1);
         removeFromPlaylistCommand.execute();
 
         Assert.assertNotNull("removeFromPlaylistCommand failed", playerService.getPlaylist().getMusics());
