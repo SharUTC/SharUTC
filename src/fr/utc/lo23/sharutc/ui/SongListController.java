@@ -1,15 +1,21 @@
 package fr.utc.lo23.sharutc.ui;
 
 import com.google.inject.Inject;
+import fr.utc.lo23.sharutc.controler.command.music.AddTagCommand;
 import fr.utc.lo23.sharutc.controler.command.music.AddToLocalCatalogCommand;
+import fr.utc.lo23.sharutc.controler.service.MusicService;
 import fr.utc.lo23.sharutc.model.AppModel;
 import fr.utc.lo23.sharutc.model.domain.Catalog;
 import fr.utc.lo23.sharutc.model.domain.Music;
+import fr.utc.lo23.sharutc.model.domain.TagMap;
+import fr.utc.lo23.sharutc.ui.custom.HorizontalScrollHandler;
+import fr.utc.lo23.sharutc.ui.custom.card.SimpleCard;
 import fr.utc.lo23.sharutc.ui.custom.card.SongCard;
 import fr.utc.lo23.sharutc.ui.custom.card.TagCard;
 import fr.utc.lo23.sharutc.util.CollectionChangeListener;
 import fr.utc.lo23.sharutc.util.CollectionEvent;
 import fr.utc.lo23.sharutc.util.CollectionEvent.Type;
+import fr.utc.lo23.sharutc.util.DialogBoxBuilder;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -24,23 +30,29 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.ResourceBundle;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.concurrent.WorkerStateEvent;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.TextAlignment;
 
 public class SongListController extends SongSelectorController implements Initializable,
-        CollectionChangeListener<Music> {
+        CollectionChangeListener<Music>, TagCard.ITagCard {
 
     private static final Logger log = LoggerFactory
             .getLogger(SongListController.class);
+    private static final String VIRTUAL_TAG_MY_SONGS = "My Songs";
+    private static final String VIRTUAL_TAG_ALL_SONGS = "All Songs";
     @FXML
     public Button addNewSongButton;
     @FXML
@@ -58,7 +70,11 @@ public class SongListController extends SongSelectorController implements Initia
     @Inject
     public AppModel mAppModel;
     @Inject
+    private MusicService musicService;
+    @Inject
     private AddToLocalCatalogCommand mAddToLocalCatalogCommand;
+    @Inject
+    private AddTagCommand mAddTagCommand;
     private Label placeHolderLabel;
 
     @Override
@@ -71,6 +87,7 @@ public class SongListController extends SongSelectorController implements Initia
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
         tagScrollPane.getStyleClass().add("myScrollPaneWithTopBorder");
+        HorizontalScrollHandler scrollHandler = new HorizontalScrollHandler(tagScrollPane);
 
         addNewSongButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
@@ -121,36 +138,57 @@ public class SongListController extends SongSelectorController implements Initia
     }
 
     public void showLocalCatalog() {
-        showLocalCatalog(null);
+        titleLabel.setText("Manage your song list");
+        showMusics(mAppModel.getLocalCatalog().getMusics());
     }
 
-    public void showLocalCatalog(String albumFilter) {
+    public void showLocalCatalogWithTagFilter(String tagFilter) {
         final Catalog catalog = mAppModel.getLocalCatalog();
         ArrayList<Music> musics = new ArrayList<Music>();
 
-        if (albumFilter != null) {
-            titleLabel.setText(albumFilter + " Album");
+        titleLabel.setText("Songs with tag : " + tagFilter);
+
+        for (final Music m : catalog.getMusics()) {
+            if (m.getTags().contains(tagFilter)) {
+                musics.add(m);
+            }
         }
+        showMusics(musics);
+    }
+
+    public void showLocalCatalogWithAlbumFilter(String albumFilter) {
+        final Catalog catalog = mAppModel.getLocalCatalog();
+        ArrayList<Music> musics = new ArrayList<Music>();
+
+        titleLabel.setText(albumFilter + " Album");
 
         for (final Music m : catalog.getMusics()) {
             if (albumFilter == null || albumFilter.equals(m.getAlbum())) {
                 musics.add(m);
             }
         }
+        showMusics(musics);
+    }
 
+    private void showMusics(List<Music> musics) {
         songsContainer.getChildren().clear();
         if (musics.isEmpty()) {
-            placeHolderLabel = new Label("You have no songs. Please use the \"Add\" button in the left top corner.");
-            placeHolderLabel.getStyleClass().add("placeHolderLabel");
-            placeHolderLabel.setWrapText(true);
-            placeHolderLabel.setTextAlignment(TextAlignment.CENTER);
-            contentContainer.getChildren().add(placeHolderLabel);
+            if (placeHolderLabel == null) {
+                placeHolderLabel = new Label("You have no songs. Please use the \"Add\" button in the left top corner.");
+                placeHolderLabel.getStyleClass().add("placeHolderLabel");
+                placeHolderLabel.setWrapText(true);
+                placeHolderLabel.setTextAlignment(TextAlignment.CENTER);
+                contentContainer.getChildren().add(placeHolderLabel);
+            }
         } else {
+            if (placeHolderLabel != null) {
+                contentContainer.getChildren().remove(placeHolderLabel);
+                placeHolderLabel = null;
+            }
             for (Music m : musics) {
                 songsContainer.getChildren().add(new SongCard(m, this, true));
             }
         }
-
     }
 
     private void songAdded(Music music) {
@@ -190,20 +228,55 @@ public class SongListController extends SongSelectorController implements Initia
         tagContainer.getChildren().clear();
 
         //The "virtual" "All songs" tag
-        showTagCard(new TagCard("All Songs"));
+        showSimpleCard(new TagCard(VIRTUAL_TAG_ALL_SONGS, this));
 
         //The "virtual" "My Songs" tag
-        showTagCard(new TagCard("My Songs"));
+        showSimpleCard(new TagCard(VIRTUAL_TAG_MY_SONGS, this));
 
-        //TODO remove when we get the real tags
-        for (int i = 0; i < 5; i++) {
-            showTagCard(new TagCard("Tag " + String.valueOf(i)));
+        //For the moment, we retrieve only the local tag map
+        final TagMap localTagMap = musicService.getLocalTagMap();
+        final HashMap<String, Integer> tagHashMap = localTagMap.getMap();
+        for (Entry<String, Integer> tag : tagHashMap.entrySet()) {
+            showSimpleCard(new TagCard(tag.getKey(), this));
         }
+
+        showAddTagCard();
     }
 
-    private void showTagCard(TagCard tagCard) {
-        HBox.setMargin(tagCard, new Insets(0, 5, 0, 5));
-        tagContainer.getChildren().add(tagCard);
+    private void showAddTagCard() {
+        final SimpleCard addTagCard = new SimpleCard("/fr/utc/lo23/sharutc/ui/fxml/simple_card.fxml",
+                180, 100, Pos.CENTER);
+        addTagCard.setMinWidth(180);
+        addTagCard.setMinHeight(100);
+        addTagCard.setMaxHeight(100);
+        final Label plusText = new Label("+");
+        plusText.getStyleClass().addAll("plusText");
+        addTagCard.getChildren().addAll(plusText);
+        addTagCard.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent t) {
+                DialogBoxBuilder.createEditBox("Category Name : ", "New Tag",
+                        this.getClass().getResource("/fr/utc/lo23/sharutc/ui/css/modal.css").toExternalForm(),
+                        songsContainer.getScene().getRoot(),
+                        new DialogBoxBuilder.IEditBox() {
+                    @Override
+                    public void onValidate(String newTagName) {
+                        log.debug("add a new tag -> " + newTagName);
+                        if (!newTagName.isEmpty()) {
+                            final TagCard newTagCard = new TagCard(newTagName, SongListController.this);
+                            HBox.setMargin(newTagCard, new Insets(0, 5, 0, 5));
+                            tagContainer.getChildren().add(tagContainer.getChildren().indexOf(addTagCard), newTagCard);
+                        }
+                    }
+                }).show();
+            }
+        });
+        showSimpleCard(addTagCard);
+    }
+
+    private void showSimpleCard(SimpleCard simpleCard) {
+        HBox.setMargin(simpleCard, new Insets(0, 5, 0, 5));
+        tagContainer.getChildren().add(simpleCard);
     }
 
     @Override
@@ -225,5 +298,28 @@ public class SongListController extends SongSelectorController implements Initia
                 }
             }
         });
+    }
+
+    @Override
+    public void onTagSelected(String tagName) {
+        log.debug("tag selected : " + tagName);
+        if (tagName.equals(VIRTUAL_TAG_ALL_SONGS) || tagName.equals(VIRTUAL_TAG_MY_SONGS)) {
+            showLocalCatalog();
+        } else {
+            showLocalCatalogWithTagFilter(tagName);
+        }
+    }
+
+    @Override
+    public void onMusicDropOnTag(String tagName) {
+        log.debug("music drop on tag : " + tagName);
+        if (!tagName.equals(VIRTUAL_TAG_ALL_SONGS) && !tagName.equals(VIRTUAL_TAG_MY_SONGS)) {
+            for (SongCard selectedSongCard : mSongCardSelected) {
+                mAddTagCommand.setMusic(selectedSongCard.getModel());
+                mAddTagCommand.setTag(tagName);
+                mAddTagCommand.execute();
+                log.debug("add tag : " + tagName);
+            }
+        }
     }
 }

@@ -2,6 +2,8 @@ package fr.utc.lo23.sharutc.ui;
 
 import com.google.inject.Inject;
 import fr.utc.lo23.sharutc.controler.command.music.AddCommentCommand;
+import fr.utc.lo23.sharutc.controler.command.music.EditCommentCommand;
+import fr.utc.lo23.sharutc.controler.command.music.RemoveCommentCommand;
 import fr.utc.lo23.sharutc.controler.command.music.RemoveFromLocalCatalogCommand;
 import fr.utc.lo23.sharutc.controler.command.music.SetScoreCommand;
 import fr.utc.lo23.sharutc.model.AppModel;
@@ -16,7 +18,6 @@ import fr.utc.lo23.sharutc.ui.custom.card.SongCard;
 import fr.utc.lo23.sharutc.util.CollectionChangeListener;
 import fr.utc.lo23.sharutc.util.CollectionEvent;
 import fr.utc.lo23.sharutc.util.CollectionEvent.Type;
-import fr.utc.lo23.sharutc.util.DialogBoxBuilder;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.net.URL;
@@ -74,6 +75,10 @@ public class SongDetailController extends SongSelectorController implements Init
     private RemoveFromLocalCatalogCommand mRemoveFromLocalCatalogCommand;
     @Inject
     AddCommentCommand mAddCommentCommand;
+    @Inject
+    private RemoveCommentCommand mRemoveCommentCommand;
+    @Inject
+    private EditCommentCommand mEditCommentCommand;
     private RatingStar[] mMyRatingStars;
     private RatingStar[] mAverageRatingStars;
     private Music mMusic;
@@ -203,9 +208,11 @@ public class SongDetailController extends SongSelectorController implements Init
             if (ownerPeer != null) {
                 mAppModel.getActivePeerList().getPeerByPeerId(Long.MIN_VALUE);
                 mAddCommentCommand.setOwnerPeer(ownerPeer);
+                //The command doesn't work as intended because of a bug with the
+                //Comment Indexes -> Demande #135
                 mAddCommentCommand.execute();
                 commentTextArea.clear();
-                //Sad work-around, since no events are triggered when a comment is added.
+                //Update UI directly, since no events are triggered when a comment is added.
                 commentContainer.getChildren().clear();
                 showComments();
             } else {
@@ -265,7 +272,7 @@ public class SongDetailController extends SongSelectorController implements Init
             mSetScoreCommand.setPeer(mAppModel.getProfile().getUserInfo().toPeer());
             mSetScoreCommand.execute();
 
-            //Sad work-around, since no events are triggered when the very first score is set.
+            //Update UI directly, since no events are triggered when the very first score is set.
             if (mUserScore == null) {
                 log.debug("score -- work-around");
                 setUserScore();
@@ -325,24 +332,33 @@ public class SongDetailController extends SongSelectorController implements Init
     }
 
     @Override
-    public void onCommentEditionRequest(Comment comment) {
-        log.debug("comment edition requested !");        
+    public void onCommentEditionRequest(final Comment comment, final String newCommentText) {
+        log.debug("comment edition requested !");
+        mEditCommentCommand.setMusic(mMusic);
+        mEditCommentCommand.setAuthorPeer(mAppModel.getProfile().getUserInfo().toPeer());
+        mEditCommentCommand.setOwnerPeer(mAppModel.getProfile().getUserInfo().toPeer());
+        mEditCommentCommand.setCommentId(comment.getIndex());
+        mEditCommentCommand.setComment(newCommentText);
+        //The command doesn't work as intended because of a bug with the
+        //Comment Indexes -> Demande #135
+        mEditCommentCommand.execute();
+        //Update UI directly, since no events are triggered when a comment is deleted
+        commentContainer.getChildren().clear();
+        showComments();
     }
 
     @Override
-    public void onCommentDeletionRequest(Comment comment) {
+    public void onCommentDeletionRequest(final Comment comment) {
         log.debug("comment deletion requested !");
-        DialogBoxBuilder.createConfirmBox("Do you really want to delete the comment ?",
-                this.getClass().getResource("/fr/utc/lo23/sharutc/ui/css/modal.css").toExternalForm(),
-                commentTextArea.getScene().getRoot(),
-                new DialogBoxBuilder.IConfirmBox() {
-            @Override
-            public void onChoiceMade(boolean answer) {
-                if (answer) {
-                    log.debug("deletion validated !");
-                }
-            }
-        }).show();
+        mRemoveCommentCommand.setCommentId(comment.getIndex());
+        mRemoveCommentCommand.setMusic(mMusic);
+        mRemoveCommentCommand.setPeer(mAppModel.getProfile().getUserInfo().toPeer());
+        //The command doesn't work as intended because of a bug with the
+        //Comment Indexes -> Demande #135
+        mRemoveCommentCommand.execute();
+        //Update UI directly, since no events are triggered when a comment is deleted
+        commentContainer.getChildren().clear();
+        showComments();
     }
 
     public interface ISongDetailController extends ISongListController {

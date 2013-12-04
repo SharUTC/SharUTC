@@ -48,7 +48,7 @@
     -fx-opacity: 0.7;
 }
 
-#commentTextArea {
+.commentTextArea {
     -fx-background-radius: 0;
     -fx-border-radius: 0;
     -fx-border-width: 4px;

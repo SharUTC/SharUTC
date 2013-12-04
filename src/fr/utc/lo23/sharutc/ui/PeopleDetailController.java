@@ -21,8 +21,13 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.Set;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class PeopleDetailController extends SongSelectorController implements Initializable {
+public class PeopleDetailController extends SongSelectorController implements Initializable, TagCard.ITagCard {
+    
+    private static final Logger log = LoggerFactory
+            .getLogger(SongListController.class);
 
     public Label login;
     public Button addToFriendsButton;
@@ -80,7 +85,7 @@ public class PeopleDetailController extends SongSelectorController implements In
             }
 
             for (String tag : tags) {
-                TagCard newCard = new TagCard(tag);
+                TagCard newCard = new TagCard(tag, this);
                 tagsContainer.getChildren().add(newCard);
             }
         } else {
@@ -108,5 +113,15 @@ public class PeopleDetailController extends SongSelectorController implements In
 
     public void handleSeeMoreTagsClicked(ActionEvent actionEvent) {
 
+    }
+
+    @Override
+    public void onTagSelected(String tagName) {
+        log.debug("tag selected : " + tagName);
+    }
+
+    @Override
+    public void onMusicDropOnTag(String tagName) {
+        log.debug("music dropped on tag : " + tagName);
     }
 }
