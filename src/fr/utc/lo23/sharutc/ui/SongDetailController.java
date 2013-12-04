@@ -10,6 +10,7 @@ import fr.utc.lo23.sharutc.model.domain.Music;
 import fr.utc.lo23.sharutc.model.domain.Score;
 import fr.utc.lo23.sharutc.model.userdata.Peer;
 import fr.utc.lo23.sharutc.ui.custom.CommentView;
+import fr.utc.lo23.sharutc.ui.custom.CommentView.IComment;
 import fr.utc.lo23.sharutc.ui.custom.RatingStar;
 import fr.utc.lo23.sharutc.ui.custom.card.SongCard;
 import fr.utc.lo23.sharutc.util.CollectionChangeListener;
@@ -33,7 +34,7 @@ import javafx.scene.layout.VBox;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class SongDetailController extends SongSelectorController implements Initializable, PropertyChangeListener, CollectionChangeListener<Music> {
+public class SongDetailController extends SongSelectorController implements Initializable, PropertyChangeListener, CollectionChangeListener<Music>, IComment {
 
     private static final Logger log = LoggerFactory.getLogger(SongDetailController.class);
     @FXML
@@ -124,7 +125,12 @@ public class SongDetailController extends SongSelectorController implements Init
     private void showComments() {
         final List<Comment> comments = mMusic.getComments();
         for (Comment comment : comments) {
-            commentContainer.getChildren().add(new CommentView(comment));
+            if (comment.getAuthorPeerId().equals(mAppModel.getProfile().getUserInfo().getPeerId())) {
+                commentContainer.getChildren().add(new CommentView(comment, this));
+            } else {
+                commentContainer.getChildren().add(new CommentView(comment));
+            }
+
         }
         //artificialy populate with some comments
         populateCommentContainer();
@@ -315,6 +321,16 @@ public class SongDetailController extends SongSelectorController implements Init
             log.info("remove music from local catalog");
             mInteface.onSongRemovedFromLocalCatalog();
         }
+    }
+
+    @Override
+    public void onEditComment(Comment comment) {
+        log.debug("edit comment !");
+    }
+
+    @Override
+    public void onDeleteComment(Comment comment) {
+        log.debug("delete comment !");
     }
 
     public interface ISongDetailController extends ISongListController {
