@@ -16,6 +16,7 @@ import fr.utc.lo23.sharutc.ui.custom.card.SongCard;
 import fr.utc.lo23.sharutc.util.CollectionChangeListener;
 import fr.utc.lo23.sharutc.util.CollectionEvent;
 import fr.utc.lo23.sharutc.util.CollectionEvent.Type;
+import fr.utc.lo23.sharutc.util.DialogBoxBuilder;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.net.URL;
@@ -324,13 +325,24 @@ public class SongDetailController extends SongSelectorController implements Init
     }
 
     @Override
-    public void onEditComment(Comment comment) {
-        log.debug("edit comment !");
+    public void onCommentEditionRequest(Comment comment) {
+        log.debug("comment edition requested !");        
     }
 
     @Override
-    public void onDeleteComment(Comment comment) {
-        log.debug("delete comment !");
+    public void onCommentDeletionRequest(Comment comment) {
+        log.debug("comment deletion requested !");
+        DialogBoxBuilder.createConfirmBox("Do you really want to delete the comment ?",
+                this.getClass().getResource("/fr/utc/lo23/sharutc/ui/css/modal.css").toExternalForm(),
+                commentTextArea.getScene().getRoot(),
+                new DialogBoxBuilder.IConfirmBox() {
+            @Override
+            public void onChoiceMade(boolean answer) {
+                if (answer) {
+                    log.debug("deletion validated !");
+                }
+            }
+        }).show();
     }
 
     public interface ISongDetailController extends ISongListController {

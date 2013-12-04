@@ -47,7 +47,7 @@ public class CommentView extends VBox {
         buttonDeleteComment.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent t) {
-                iComment.onDeleteComment(mComment);
+                iComment.onCommentDeletionRequest(mComment);
             }
         });
 
@@ -55,15 +55,15 @@ public class CommentView extends VBox {
         buttonEditComment.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent t) {
-                iComment.onEditComment(mComment);
+                iComment.onCommentEditionRequest(mComment);
             }
         });
     }
 
     public interface IComment {
 
-        public void onEditComment(Comment comment);
+        public void onCommentEditionRequest(Comment comment);
 
-        public void onDeleteComment(Comment comment);
+        public void onCommentDeletionRequest(Comment comment);
     }
 }
