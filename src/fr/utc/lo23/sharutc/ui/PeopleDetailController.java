@@ -58,6 +58,7 @@ public class PeopleDetailController extends SongSelectorController implements In
         seeMoreSongs.getStyleClass().add("bgBlue");
 
         mAppModel.getProfile().getContacts().addPropertyChangeListener(this);
+        mAppModel.getRemoteUserCatalog().addPropertyChangeListener(this);
 
     }
 
@@ -155,6 +156,7 @@ public class PeopleDetailController extends SongSelectorController implements In
     public void collectionChanged(CollectionEvent ev) {
         final CollectionEvent.Type type = ev.getType();
         final Object item = ev.getItem();
+        log.info("collectionChanged : Object " + item.getClass() + " | type : " + type.name());
         if (type.equals(CollectionEvent.Type.ADD)) {
             //ADD EVENT
             if (item instanceof Contact) {
@@ -164,6 +166,24 @@ public class PeopleDetailController extends SongSelectorController implements In
                     public void run() {
                         //hide addToFriend button
                         addToFriendsButton.setVisible(false);
+                    }
+                });
+            } else if (item instanceof Music) {
+                //user added to friend
+                Platform.runLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        //add song card
+                        SongCard newSongCard = new SongCard((Music) item, PeopleDetailController.this, false);
+                        songsContainer.getChildren().add(newSongCard);
+                        //add related artist  card
+                        ArtistCard newArtistCard = new ArtistCard(((Music) item).getArtist(), null);
+                        artistsContainer.getChildren().add(newArtistCard);
+                        //add tag card
+                        for (String tag : ((Music) item).getTags()) {
+                            TagCard newCard = new TagCard(tag, PeopleDetailController.this);
+                            tagsContainer.getChildren().add(newCard);
+                        }
                     }
                 });
             }
