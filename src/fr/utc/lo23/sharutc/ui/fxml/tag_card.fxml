@@ -6,12 +6,21 @@
 <?import java.net.URL?>
 
 <fx:root type="fr.utc.lo23.sharutc.ui.custom.card.TagCard"
-         xmlns:fx="http://javafx.com/fxml" minWidth="180" minHeight="100" maxHeight="100" >
+         xmlns:fx="http://javafx.com/fxml" minWidth="180" minHeight="100" maxHeight="100" >    
     <StackPane>
+        <stylesheets>
+            <URL value="@../css/drop.css"/>
+        </stylesheets>
+
         <VBox alignment="CENTER" StackPane.alignment="CENTER">
             <Label fx:id="tagNameLabel" styleClass="largeTextGreyBold"/>
             <Label fx:id="tagWeightLabel" text="53" styleClass="largeTextGrey"/>
         </VBox>
+
+        <Region fx:id="dropOverlay"/>
+        <Label fx:id="dropOverlayLabel" text="Add"
+               StackPane.alignment="CENTER"/>
     </StackPane>
+    
 </fx:root>
 
