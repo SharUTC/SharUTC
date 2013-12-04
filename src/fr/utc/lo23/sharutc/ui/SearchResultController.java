@@ -36,7 +36,7 @@ public class SearchResultController extends SongSelectorController implements Ri
     private static final Logger log = LoggerFactory
             .getLogger(SearchResultController.class);
     @FXML
-    public VBox gridpane;
+    public VBox scrollPaneContent;
     private String mCurrentCriteriaSearch;
     private CardList mSongList;
     private CardList mFriendList;
@@ -63,10 +63,10 @@ public class SearchResultController extends SongSelectorController implements Ri
         mArtistNameFound = new ArrayList<String>();
         mAlbumNameFound = new ArrayList<String>();
 
-        gridpane.getChildren().add(mSongList);
-        gridpane.getChildren().add(mFriendList);
-        gridpane.getChildren().add(mArtistList);
-        gridpane.getChildren().add(mAlbumList);
+        scrollPaneContent.getChildren().add(mSongList);
+        scrollPaneContent.getChildren().add(mFriendList);
+        scrollPaneContent.getChildren().add(mArtistList);
+        scrollPaneContent.getChildren().add(mAlbumList);
 
     }
 
