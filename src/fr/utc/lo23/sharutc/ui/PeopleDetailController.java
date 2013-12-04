@@ -56,6 +56,7 @@ public class PeopleDetailController extends SongSelectorController implements In
         Set<String> tags = new LinkedHashSet<String>();
 
         if(userInfo.getPeerId() == mAppModel.getProfile().getUserInfo().getPeerId()) {
+            //the current user info
             List<Music> musics = mAppModel.getLocalCatalog().getMusics();
 
             for (Music music : musics) {

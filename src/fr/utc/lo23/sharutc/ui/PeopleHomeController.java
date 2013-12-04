@@ -511,13 +511,11 @@ public class PeopleHomeController extends DragPreviewDrawer implements Initializ
          */
         void onPeopleDetailRequested(UserInfo user);
 
-        void onGroupEditionRequested(Category category);
-
         /**
-         * display group details
+         * display right edition view for the selected category
+         *
+         * @param category
          */
-        void onGroupDetailRequested();
-
         void onGroupRightsRequested(Category category);
     }
 }
