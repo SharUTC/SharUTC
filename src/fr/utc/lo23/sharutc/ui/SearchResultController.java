@@ -157,6 +157,9 @@ public class SearchResultController extends SongSelectorController implements Ri
 
     @Override
     public void collectionChanged(CollectionEvent ev) {
+        //Since the MusicSearchCommand is executed on another Thread
+        //this method will not be called from the UI Thread.
+        //You can't directly update the UI from there.
         log.debug("collectionChanged -> " + ev.getType().name());
         switch (ev.getType()) {
             case ADD:
