@@ -208,6 +208,8 @@ public class SongDetailController extends SongSelectorController implements Init
             if (ownerPeer != null) {
                 mAppModel.getActivePeerList().getPeerByPeerId(Long.MIN_VALUE);
                 mAddCommentCommand.setOwnerPeer(ownerPeer);
+                //The command doesn't work as intended because of a bug with the
+                //Comment Indexes -> Demande #135
                 mAddCommentCommand.execute();
                 commentTextArea.clear();
                 //Update UI directly, since no events are triggered when a comment is added.
@@ -337,6 +339,8 @@ public class SongDetailController extends SongSelectorController implements Init
         mEditCommentCommand.setOwnerPeer(mAppModel.getProfile().getUserInfo().toPeer());
         mEditCommentCommand.setCommentId(comment.getIndex());
         mEditCommentCommand.setComment(newCommentText);
+        //The command doesn't work as intended because of a bug with the
+        //Comment Indexes -> Demande #135
         mEditCommentCommand.execute();
         //Update UI directly, since no events are triggered when a comment is deleted
         commentContainer.getChildren().clear();
@@ -349,6 +353,8 @@ public class SongDetailController extends SongSelectorController implements Init
         mRemoveCommentCommand.setCommentId(comment.getIndex());
         mRemoveCommentCommand.setMusic(mMusic);
         mRemoveCommentCommand.setPeer(mAppModel.getProfile().getUserInfo().toPeer());
+        //The command doesn't work as intended because of a bug with the
+        //Comment Indexes -> Demande #135
         mRemoveCommentCommand.execute();
         //Update UI directly, since no events are triggered when a comment is deleted
         commentContainer.getChildren().clear();
