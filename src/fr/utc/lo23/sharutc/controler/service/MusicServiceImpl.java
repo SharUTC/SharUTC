@@ -396,14 +396,14 @@ public class MusicServiceImpl implements MusicService {
      */
     @Override
     public void saveUserMusicFile() {
-        log.debug("saveUserMusicFiles ...");
+        log.debug("saveUserMusicFile ...");
         Catalog localCatalog = appModel.getLocalCatalog();
         if (localCatalog != null) {
             fileService.saveToFile(SharUTCFile.CATALOG, localCatalog);
         } else {
             log.warn("Can't save current music Catalog(null)");
         }
-        log.debug("saveUserMusicFiles DONE");
+        log.debug("saveUserMusicFile DONE");
     }
 
     /**
@@ -441,7 +441,7 @@ public class MusicServiceImpl implements MusicService {
      */
     @Override
     public void loadUserMusicFile() {
-        log.debug("loadUserMusicFiles ...");
+        log.debug("loadUserMusicFile ...");
 
         Catalog catalog = fileService.readFile(SharUTCFile.CATALOG, Catalog.class);
         if (catalog != null) {
@@ -450,7 +450,7 @@ public class MusicServiceImpl implements MusicService {
             log.warn("loadUserMusicFiles : no catalog loaded");
         }
 
-        log.debug("loadUserMusicFiles DONE");
+        log.debug("loadUserMusicFile DONE");
     }
 
     /**
