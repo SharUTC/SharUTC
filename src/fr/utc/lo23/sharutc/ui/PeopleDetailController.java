@@ -10,6 +10,9 @@ import fr.utc.lo23.sharutc.model.userdata.UserInfo;
 import fr.utc.lo23.sharutc.ui.custom.card.ArtistCard;
 import fr.utc.lo23.sharutc.ui.custom.card.SongCard;
 import fr.utc.lo23.sharutc.ui.custom.card.TagCard;
+import fr.utc.lo23.sharutc.util.CollectionChangeListener;
+import fr.utc.lo23.sharutc.util.CollectionEvent;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -24,7 +27,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 import java.util.Set;
 
-public class PeopleDetailController extends SongSelectorController implements Initializable, TagCard.ITagCard {
+public class PeopleDetailController extends SongSelectorController implements Initializable, TagCard.ITagCard, CollectionChangeListener {
 
     private static final Logger log = LoggerFactory
             .getLogger(SongListController.class);
@@ -53,6 +56,8 @@ public class PeopleDetailController extends SongSelectorController implements In
         addToFriendsButton.getStyleClass().add("bgGreen");
         seeMoreArtists.getStyleClass().add("bgRed");
         seeMoreSongs.getStyleClass().add("bgBlue");
+
+        mAppModel.getProfile().getContacts().addPropertyChangeListener(this);
 
     }
 
@@ -144,5 +149,24 @@ public class PeopleDetailController extends SongSelectorController implements In
     @Override
     public void onMusicDropOnTag(String tagName) {
         log.debug("music dropped on tag : " + tagName);
+    }
+
+    @Override
+    public void collectionChanged(CollectionEvent ev) {
+        final CollectionEvent.Type type = ev.getType();
+        final Object item = ev.getItem();
+        if (type.equals(CollectionEvent.Type.ADD)) {
+            //ADD EVENT
+            if (item instanceof Contact) {
+                //user added to friend
+                Platform.runLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        //hide addToFriend button
+                        addToFriendsButton.setVisible(false);
+                    }
+                });
+            }
+        }
     }
 }
