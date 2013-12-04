@@ -9,6 +9,7 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.File;
 import java.net.URL;
+import java.util.logging.Level;
 import javazoom.jl.decoder.JavaLayerException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,7 +52,7 @@ public class PlaybackListenerImpl implements Runnable, PlaybackListener {
                 log.info("Music has end");
                 propertyChangeSupport.firePropertyChange(PlaybackListenerImpl.Property.MUSIC_END.name(), null, null);
             }
-        } catch (JavaLayerException ex) {
+        } catch (Exception ex) {
             log.error(ex.toString());
         }
     }
@@ -61,14 +62,14 @@ public class PlaybackListenerImpl implements Runnable, PlaybackListener {
      */
     @Override
     public void play() {
+        log.info("__play");
         if (player == null) {
-            playerInitialize();
+            playerInitializeWithPlayerServiceTimeAndVolume();
+            playerThread = new Thread(this, "AudioPlayerThread");
+            playerThread.start();
+        } else {
+            player.unpause();
         }
-        if (playerThread != null) {
-            playerThread.stop();
-        }
-        playerThread = new Thread(this, "AudioPlayerThread");
-        playerThread.start();
     }
 
     /**
@@ -76,11 +77,17 @@ public class PlaybackListenerImpl implements Runnable, PlaybackListener {
      */
     @Override
     public void pause() {
+        log.info("__pause");
         if (player != null && playerThread != null) {
             player.pause();
+        }
+    }
 
-            playerThread.stop();
-            playerThread = null;
+    @Override
+    public void stop() {
+        log.info("__stop");
+        if (player != null && playerThread != null) {
+            player.stop();
         }
     }
 
@@ -89,14 +96,14 @@ public class PlaybackListenerImpl implements Runnable, PlaybackListener {
      */
     @Override
     public void pauseToggle() {
-        if (player == null || player != null && player.isPaused) {
+        if (player == null || player != null && player.paused) {
             play();
         } else {
             pause();
         }
     }
 
-    private void playerInitialize() {
+    private void playerInitializeWithPlayerServiceTimeAndVolume() {
         try {
             String urlAsString = "file:///" + filePath;
             music = fileService.fakeMusicFromFile(new File(filePath));
@@ -129,13 +136,7 @@ public class PlaybackListenerImpl implements Runnable, PlaybackListener {
         log.debug("Setting current Frame : ...");
         if (player != null && music != null) {
             int indexCurrentFrame = timeToFrame(timeSec);
-            if (playerThread != null && !player.isPaused) {
-                pause();
-                player.setCurrentFrame(indexCurrentFrame);
-                play();
-            } else {
-                player.setCurrentFrame(indexCurrentFrame);
-            }
+            player.changeCurrentFrame(indexCurrentFrame);
         } else {
             log.warn("Setting current Frame : player is null");
         }
@@ -173,21 +174,7 @@ public class PlaybackListenerImpl implements Runnable, PlaybackListener {
      * {@inheritDoc}
      */
     @Override
-    public void playbackStarted(PlayerEvent playerEvent) {
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void playbackPaused(PlayerEvent playerEvent) {
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void playbackFinished(PlayerEvent playerEvent) {
+    public void playbackEvent(PlayerEvent playerEvent) {
     }
 
     /**

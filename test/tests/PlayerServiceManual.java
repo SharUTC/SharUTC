@@ -64,6 +64,7 @@ public class PlayerServiceManual implements PropertyChangeListener {
         try {
             for (String mp3File : filenames) {
                 Music music = fileService.createMusicFromFile(new File(TEST_MP3_FOLDER + mp3File));
+                music.setOwnerPeerId(0L);
                 playerService.addToPlaylist(music);
                 System.out.println("Added : " + music.getTitle() + " from artist " + music.getArtist());
             }
@@ -111,7 +112,7 @@ public class PlayerServiceManual implements PropertyChangeListener {
                     break;
                 case PAUSE:
                     System.out.println("PAUSE");
-                    playerService.playerPause();
+                    playerService.playerPlay();
                     break;
                 case STOP:
                     System.out.println("STOP");

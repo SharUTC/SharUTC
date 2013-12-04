@@ -15,31 +15,12 @@ public interface PlaybackListener {
     public Music getMusic();
 
     /**
-     * Called each time a sound starts to play, at music start and at pause/play
-     * during music. Nothing is passed via parameters and nothing is done in
-     * PlaybackListener method, this allows the client to decide what to do at
-     * playing
-     *
-     * @param event
-     */
-    public void playbackStarted(PlayerEvent event);
-
-    /**
      * Called each time the player is paused. Current time is passed via
      * parameters , this allows the client to decide what to do at pause
      *
      * @param event
      */
-    public void playbackPaused(PlayerEvent event);
-
-    /**
-     * Called only when a music reaches the end of bytes at playing. Nothing is
-     * passed via parameters and nothing is done in PlaybackListener method,
-     * this allows the client to decide what to do at music end
-     *
-     * @param event
-     */
-    public void playbackFinished(PlayerEvent event);
+    public void playbackEvent(PlayerEvent event);
 
     /**
      * Called internally by Mp3Player to inform higher level classes of position
@@ -56,9 +37,14 @@ public interface PlaybackListener {
     public void play();
 
     /**
-     * Pauses the player and destroy its thread
+     *
      */
     public void pause();
+
+    /**
+     *
+     */
+    public void stop();
 
     /**
      * Invoque pause() if player is playing or play()

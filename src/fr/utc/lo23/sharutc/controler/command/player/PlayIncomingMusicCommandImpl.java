@@ -43,7 +43,6 @@ public class PlayIncomingMusicCommandImpl implements PlayIncomingMusicCommand {
     public void execute() {
         log.info("PlayIncomingMusicCommand ...");
 
-        playerService.playerStop();
         playerService.updateAndPlayMusic(mMusic);
 
         log.info("PlayIncomingMusicCommand DONE");

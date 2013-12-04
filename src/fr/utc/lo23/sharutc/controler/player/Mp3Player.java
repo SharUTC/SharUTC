@@ -26,133 +26,168 @@ public class Mp3Player {
     private AudioDevice audioDevice;
     private boolean isClosed = false;
     private boolean isComplete = false;
-    private PlaybackListener listener;
-    private int frameIndexCurrent;
-    public boolean isPaused;
+    private final PlaybackListener listener;
+    private int frameIndexCurrent = 0;
+    public boolean paused = false;
     private Float gain = null;
+    private boolean stillFramesToRead = true;
+    private Integer newCurrentFrameIndex;
+    private boolean turnDownThread;
 
-    public Mp3Player(URL urlToStreamFrom, PlaybackListener listener) throws JavaLayerException {
+    public Mp3Player(URL urlToStreamFrom, final PlaybackListener listener) throws Exception {
         this.urlToStreamFrom = urlToStreamFrom;
         this.listener = listener;
     }
 
-    public void pause() {
-        isPaused = true;
-        if (listener != null) {
-            listener.playbackPaused(new PlayerEvent(this, PlayerEventType.PAUSED, frameToTime(frameIndexCurrent)));
-        }
-        close();
-    }
-
-    public boolean resume() throws JavaLayerException {
+    public boolean resume() throws Exception {
         return play(frameIndexCurrent);
     }
 
-    public boolean play() throws JavaLayerException {
+    public boolean play() throws Exception {
         return play(0);
     }
 
-    public boolean play(int frameIndexStart) throws JavaLayerException {
+    public boolean play(int frameIndexStart) throws Exception {
         return play(frameIndexStart, listener.getMusic().getFrames().intValue(), CORRECTION_FACTOR_FRAMES);
     }
 
-    public boolean play(int frameIndexStart, int frameIndexFinal, int correctionFactorInFrames) throws JavaLayerException {
-        try {
-            bitstream = new Bitstream(
-                    urlToStreamFrom.openStream());
-        } catch (IOException ex) {
-            log.error("failed to create bitsream");
-        }
-
+    public boolean play(int frameIndexStart, int frameIndexFinal, int correctionFactorInFrames) throws Exception {
+        bitstream = new Bitstream(urlToStreamFrom.openStream());
         audioDevice = FactoryRegistry.systemRegistry().createAudioDevice();
         decoder = new Decoder();
         audioDevice.open(decoder);
 
-        boolean shouldContinueReadingFrames = true;
-
-        isPaused = false;
-        frameIndexCurrent = 0;
-
-        while (!isComplete && shouldContinueReadingFrames == true
+        while (!isComplete && stillFramesToRead
                 && frameIndexCurrent < frameIndexStart - correctionFactorInFrames) {
-            shouldContinueReadingFrames = skipFrame();
-            updateCurrentFrameIndex();
+            stillFramesToRead = skipFrame();
+            updateCurrentFrameIndex(false);
         }
 
-        if (listener != null) {
-            listener.playbackStarted(
-                    new PlayerEvent(this, PlayerEventType.STARTED, audioDevice.getPosition()));
-        }
+        listener.playbackEvent(new PlayerEvent(this, PlayerEventType.STARTED, audioDevice.getPosition()));
 
         if (frameIndexFinal < 0) {
             frameIndexFinal = Integer.MAX_VALUE;
         }
 
-        while (shouldContinueReadingFrames == true
+        while (!turnDownThread && stillFramesToRead
                 && frameIndexCurrent < frameIndexFinal) {
-            if (isPaused == true) {
-                shouldContinueReadingFrames = false;
+            if (paused) {
                 try {
-                    Thread.sleep(1);
+                    Thread.sleep(10);
                 } catch (Exception ex) {
                     log.error(ex.toString());
                 }
             } else {
-
-                shouldContinueReadingFrames = decodeFrame();
+                if (newCurrentFrameIndex != null) {
+                    reload(newCurrentFrameIndex.intValue(), correctionFactorInFrames);
+                    newCurrentFrameIndex = null;
+                }
+                stillFramesToRead = decodeFrame();
                 if (gain != null) {
                     getMasterGainControl().setValue(gain);
                     gain = null;
                 }
-                updateCurrentFrameIndex();
+                updateCurrentFrameIndex(true);
             }
         }
 
-        // last frame, ensure all data flushed to the audio device.
+        // last frame played, ensure all data flushed to the audio device.
         if (audioDevice != null) {
             audioDevice.flush();
 
             synchronized (this) {
                 isComplete = (isClosed == false);
-                close();
+                closeAudioDeviceAndBitStream();
             }
 
             // report to listener
             if (listener != null) {
-                listener.playbackFinished(
-                        new PlayerEvent(
-                        this,
-                        PlayerEventType.STOPPED, audioDevice != null
-                        ? audioDevice.getPosition() : 0));
+                if (!turnDownThread && isComplete) {
+                    listener.playbackEvent(
+                            new PlayerEvent(
+                            this,
+                            PlayerEventType.STOPPED, audioDevice != null
+                            ? audioDevice.getPosition() : 0));
+                } else {
+                    listener.playbackEvent(new PlayerEvent(this, PlayerEventType.PAUSED, frameToTime(frameIndexCurrent)));
+                }
+
             }
         }
-        return shouldContinueReadingFrames;
+        if (turnDownThread) {
+            stillFramesToRead = true;
+        }
+        log.info("End of AudioPlayerThread");
+        return stillFramesToRead;
     }
 
+    private void reload(int frameIndexStart, int correctionFactorInFrames) {
+        log.info("reloading bitstream...");
+        try {
+            closeAudioDeviceAndBitStream();
+            try {
+                bitstream = new Bitstream(
+                        urlToStreamFrom.openStream());
+            } catch (IOException ex) {
+                log.error("failed to create bitsream");
+            }
+            frameIndexCurrent = 0;
+            audioDevice = FactoryRegistry.systemRegistry().createAudioDevice();
+            decoder = new Decoder();
+            audioDevice.open(decoder);
+
+            while (!isComplete && stillFramesToRead == true
+                    && frameIndexCurrent < frameIndexStart - correctionFactorInFrames) {
+                stillFramesToRead = skipFrame();
+                updateCurrentFrameIndex(false);
+            }
+        } catch (Exception ex) {
+            log.error(ex.toString());
+        }
+        log.info("reloading bitstream DONE");
+
+    }
+
+    /**
+     * Bloque le thread en cours
+     */
+    public void pause() {
+        paused = true;
+        listener.playbackEvent(new PlayerEvent(this, PlayerEventType.PAUSED, audioDevice.getPosition()));
+    }
+
+    /**
+     * reprend la lecture, player est en pause dans un while
+     */
+    public void unpause() {
+        paused = false;
+        listener.playbackEvent(new PlayerEvent(this, PlayerEventType.STARTED, audioDevice.getPosition()));
+    }
+
+    /**
+     * met fin au thread en cours avant la fin de la musique
+     */
     public void stop() {
-        listener.playbackFinished(
-                new PlayerEvent(
-                this,
-                PlayerEventType.STOPPED,
-                audioDevice.getPosition()));
-        close();
+        turnDownThread = true;
     }
 
-    public synchronized void close() {
+    public synchronized void closeAudioDeviceAndBitStream() {
         if (audioDevice != null) {
-            isClosed = true;
-
             audioDevice.close();
             audioDevice = null;
+        }
+        if (bitstream != null) {
             try {
                 bitstream.close();
+                bitstream = null;
             } catch (Exception ex) {
                 log.error(ex.toString());
             }
         }
+        isClosed = true;
     }
 
-    protected boolean decodeFrame() throws JavaLayerException {
+    private boolean decodeFrame() throws JavaLayerException {
         boolean continueDecoding = true;
         try {
             if (audioDevice != null) {
@@ -179,22 +214,21 @@ public class Mp3Player {
         return continueDecoding;
     }
 
-    protected boolean skipFrame() throws JavaLayerException {
-        boolean returnValue = false;
-
+    private boolean skipFrame() throws JavaLayerException {
+        boolean skipped = false;
         Header header = bitstream.readFrame();
-
         if (header != null) {
             bitstream.closeFrame();
-            returnValue = true;
+            skipped = true;
         }
-
-        return returnValue;
+        return skipped;
     }
 
-    private void updateCurrentFrameIndex() {
+    private void updateCurrentFrameIndex(boolean propagateToUI) {
         frameIndexCurrent++;
-        listener.setCurrentFrameIndex(frameIndexCurrent);
+        if (propagateToUI) {
+            listener.setCurrentFrameIndex(frameIndexCurrent);
+        }
     }
 
     public FloatControl getMasterGainControl() {
@@ -207,11 +241,11 @@ public class Mp3Player {
         return floatControl;
     }
 
-    public void setCurrentFrame(int indexCurrentFrame) {
-        this.frameIndexCurrent = indexCurrentFrame;
+    public void changeCurrentFrame(int newCurrentFrameIndex) {
+        this.newCurrentFrameIndex = new Integer(newCurrentFrameIndex);
     }
 
-    void setGain(float gain) {
+    public void setGain(float gain) {
         this.gain = gain;
     }
 

@@ -48,11 +48,6 @@ public class PlayerServiceMock extends PlayerServiceImpl implements PlayerServic
     }
 
     @Override
-    public void playerPause() {
-        super.playerPause();
-    }
-
-    @Override
     public void playerStop() {
         super.playerStop();
     }

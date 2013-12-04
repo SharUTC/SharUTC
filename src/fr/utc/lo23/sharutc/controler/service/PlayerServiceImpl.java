@@ -158,21 +158,22 @@ public class PlayerServiceImpl implements PlayerService, PropertyChangeListener,
                     File tmpFile = fileService.buildTmpMusicFile(mCurrentMusic.getFileBytes());
                     player = new PlaybackListenerImpl(this, this, fileService, tmpFile.getCanonicalPath()) {
                         @Override
-                        public void playbackStarted(PlayerEvent playerEvent) {
-                            log.debug("playbackStarted");
-                            onPause(false);
-                        }
+                        public void playbackEvent(PlayerEvent playerEvent) {
 
-                        @Override
-                        public void playbackPaused(PlayerEvent playerEvent) {
-                            log.debug("playbackPaused");
-                            onPause(true);
-                        }
-
-                        @Override
-                        public void playbackFinished(PlayerEvent playerEvent) {
-                            log.debug("playbackFinished");
-                            onMusicEnd();
+                            switch (playerEvent.eventType) {
+                                case STARTED:
+                                    log.debug("playbackStarted");
+                                    onPause(false);
+                                    break;
+                                case PAUSED:
+                                    log.debug("playbackPaused");
+                                    onPause(true);
+                                    break;
+                                case STOPPED:
+                                    log.debug("playbackFinished");
+                                    onMusicEnd();
+                                    break;
+                            }
                         }
                     };
                     player.play();
@@ -197,22 +198,10 @@ public class PlayerServiceImpl implements PlayerService, PropertyChangeListener,
     /**
      * {@inheritDoc}
      */
-    @Override
-    public synchronized void playerPause() {
-        log.info("playerPause");
-        if (player != null) {
-            player.pauseToggle();
-        }
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     public synchronized void playerStop() {
         log.info("playerStop");
         if (player != null) {
-            player.pause();
+            player.stop();
             player = null;
         }
         setCurrentTimeSec(0L);
@@ -397,7 +386,7 @@ public class PlayerServiceImpl implements PlayerService, PropertyChangeListener,
 
     /**
      * Manage update of current time
-     * 
+     *
      * @param currentTimeSec The new current time in seconds
      */
     private void onCurrentTimeUpdate(Long currentTimeSec) {
@@ -467,15 +456,15 @@ public class PlayerServiceImpl implements PlayerService, PropertyChangeListener,
         }
         log.debug("setMute ({}) DONE", mute);
     }
-    
+
     /**
-     * {@inheritDoc} 
+     * {@inheritDoc}
      */
     @Override
     public void addPropertyChangeListener(PropertyChangeListener listener) {
         propertyChangeSupport.addPropertyChangeListener(listener);
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -494,8 +483,8 @@ public class PlayerServiceImpl implements PlayerService, PropertyChangeListener,
 
     /**
      * Manage the music removal of the playlist
-     * 
-     * @param ev 
+     *
+     * @param ev
      */
     private void onPlaylistRemove(CollectionEvent<Music> ev) {
         Music currentMusic;
@@ -506,7 +495,7 @@ public class PlayerServiceImpl implements PlayerService, PropertyChangeListener,
             // currentMusic was removed
             if (mCurrentMusic.equals(ev.getItem())) {
                 playerStop();
-                // auto select next (=id removed) if possible for current music or previous 
+                // auto select next (=id removed) if possible for current music or previous
                 // list is NOT EMPTY, mPlaylist has already changed
                 if (mPlaylist.size() == ev.getIndex()) {
                     // deleted : last of playlist, no next, use previous
@@ -534,7 +523,7 @@ public class PlayerServiceImpl implements PlayerService, PropertyChangeListener,
 
     /**
      * Load remote music the play
-     * 
+     *
      * @param music The music to load and play
      */
     private void fetchRemoteDataThenPlay(Music music) {

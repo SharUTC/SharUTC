@@ -41,7 +41,7 @@ public interface PlayerService {
      * @param index the music to remove from playlist
      */
     public void removeFromPlaylist(Integer index);
-    
+
     /**
      * Removes the given music from playlist if exist, else do nothing, update
      * ui via listener on playlist
@@ -78,16 +78,6 @@ public interface PlayerService {
      * Play currently selected music (and for which file is present)
      */
     public void playerPlay();
-
-    /**
-     * Pause currently playing music or do nothing
-     */
-    public void playerPause();
-
-    /**
-     * Stop currently playing music or do nothing
-     */
-    public void playerStop();
 
     /**
      * Play the next music if it exists in playlist, restart at beginning of the
@@ -148,8 +138,8 @@ public interface PlayerService {
      * by the user. Music doesn't require to be played to set the value but at
      * least one music must be selected in playlist
      *
-     * @param timeInSec the time in the music, must be positive and lower
-     * than music total duration
+     * @param timeInSec the time in the music, must be positive and lower than
+     * music total duration
      */
     public void setCurrentTimeSec(Long timeInSec);
 
@@ -163,7 +153,7 @@ public interface PlayerService {
 
     /**
      * Get if paused
-     * 
+     *
      * @return If is paused
      */
     public boolean isPause();
@@ -177,7 +167,7 @@ public interface PlayerService {
 
     /**
      * Removes a property change listener
-     * 
+     *
      * @param listener a property change listener.
      */
     public void removePropertyChangeListener(PropertyChangeListener listener);
@@ -191,22 +181,18 @@ public interface PlayerService {
          *
          */
         CURRENT_TIME,
-        
         /**
          *
          */
         CURRENT_MUSIC,
-        
         /**
          *
          */
         VOLUME,
-        
         /**
          *
          */
         MUTE,
-        
         /**
          *
          */
