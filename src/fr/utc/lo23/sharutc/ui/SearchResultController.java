@@ -87,7 +87,7 @@ public class SearchResultController extends SongSelectorController implements Ri
     public void searchAll(final String criteriaString) {
         log.debug("search all -> " + criteriaString);
         clearPreviousSearch();
-        mCurrentCriteriaSearch = criteriaString;
+        mCurrentCriteriaSearch = criteriaString.toLowerCase();
         searchMusic(mCurrentCriteriaSearch);
     }
 
