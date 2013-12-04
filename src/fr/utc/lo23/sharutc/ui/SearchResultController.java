@@ -16,7 +16,6 @@ import fr.utc.lo23.sharutc.ui.custom.card.UserCard;
 import fr.utc.lo23.sharutc.util.CollectionChangeListener;
 import fr.utc.lo23.sharutc.util.CollectionEvent;
 import static fr.utc.lo23.sharutc.util.CollectionEvent.Type.ADD;
-import static fr.utc.lo23.sharutc.util.CollectionEvent.Type.CLEAR;
 import javafx.fxml.Initializable;
 
 import java.net.URL;
@@ -69,19 +68,6 @@ public class SearchResultController extends SongSelectorController implements Ri
         gridpane.getChildren().add(mArtistList);
         gridpane.getChildren().add(mAlbumList);
 
-
-        ActivePeerList peers = mAppModel.getActivePeerList();
-        //TODO adapte to the last master modification
-        HashMap<UserInfo, Date> peerList = peers.getActivePeers();
-        for (UserInfo peer : peerList.keySet()) {
-            if (peer.getFirstName().contains(mCurrentCriteriaSearch) || peer.getLastName().contains(mCurrentCriteriaSearch)
-                    || mCurrentCriteriaSearch.contains(peer.getFirstName()) || mCurrentCriteriaSearch.contains(peer.getLastName())) {
-                UserInfo u = new UserInfo();
-                u.setPeerId(peer.getPeerId());
-                u.setFirstName(peer.getFirstName());
-                u.setLastName(peer.getLastName());
-            }
-        }
     }
 
     public void searchAll(final String criteriaString) {
@@ -89,6 +75,7 @@ public class SearchResultController extends SongSelectorController implements Ri
         clearPreviousSearch();
         mCurrentCriteriaSearch = criteriaString.toLowerCase();
         searchMusic(mCurrentCriteriaSearch);
+        searchPeople(mCurrentCriteriaSearch);
     }
 
     private void searchMusic(final String criteriaString) {
@@ -104,6 +91,23 @@ public class SearchResultController extends SongSelectorController implements Ri
             }
         };
         new Thread(searchMusicTask).start();
+    }
+
+    private void searchPeople(final String criteriaString) {
+        log.debug("search people -> " + criteriaString);
+        ActivePeerList peers = mAppModel.getActivePeerList();
+        final HashMap<UserInfo, Date> userInfoList = peers.getActivePeers();
+        for (UserInfo userInfo : userInfoList.keySet()) {
+            log.debug("peer " + userInfo.getFirstName() + " " + userInfo.getLastName() + " " + userInfo.getLogin());
+            if (userInfo.getFirstName().toLowerCase().contains(criteriaString)
+                    || userInfo.getLastName().toLowerCase().contains(criteriaString)
+                    || userInfo.getLogin().toLowerCase().contains(criteriaString)
+                    || criteriaString.contains(userInfo.getFirstName().toLowerCase())
+                    || criteriaString.contains(userInfo.getLastName().toLowerCase())
+                    || criteriaString.contains(userInfo.getLogin().toLowerCase())) {
+                addChild(new UserCard(userInfo, this));
+            }
+        }
     }
 
     private void clearPreviousSearch() {
