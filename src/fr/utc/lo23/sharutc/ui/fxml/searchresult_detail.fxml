@@ -10,7 +10,10 @@
 <?import javafx.scene.control.cell.*?>
 
 <?import fr.utc.lo23.sharutc.ui.*?>
-<VBox   xmlns:fx="http://javafx.com/fxml" fx:controller="fr.utc.lo23.sharutc.ui.SearchResultController" prefWidth="-1.0" GridPane.hgrow="ALWAYS" fx:id="gridpane">
-    
-    
-</VBox>
+<ScrollPane xmlns:fx="http://javafx.com/fxml"
+                fx:controller="fr.utc.lo23.sharutc.ui.SearchResultController" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS" styleClass="myScrollPane"
+                fitToWidth="true" fitToHeight="true" VBox.vgrow="ALWAYS" >
+    <VBox fx:id="scrollPaneContent" >
+            
+    </VBox>
+</ScrollPane>    
