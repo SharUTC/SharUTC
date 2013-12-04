@@ -18,9 +18,35 @@
         <VBox HBox.hgrow="ALWAYS" alignment="CENTER_LEFT"  >
             <Label fx:id="commentTitle"  styleClass="commentTitle" />
         </VBox>
-        <Button fx:id="buttonEditComment" styleClass="imageButton" visible="false" >
+        
+        <Button fx:id="buttonAcceptComment" styleClass="imageButton" visible="false" >
             <HBox.margin>
                 <javafx.geometry.Insets  right="7"/>
+            </HBox.margin>
+            <graphic>
+                <ImageView fitWidth="25" fitHeight="25">
+                    <image>
+                        <Image url="@../drawable/ic_accept.png"/>
+                    </image>
+                </ImageView>
+            </graphic>
+        </Button> 
+    
+        <Button fx:id="buttonCancelComment" styleClass="imageButton" visible="false" >
+            <HBox.margin>
+                <javafx.geometry.Insets  right="5"/>
+            </HBox.margin>
+            <graphic>
+                <ImageView fitWidth="25" fitHeight="25">
+                    <image>
+                        <Image url="@../drawable/ic_cancel.png"/>
+                    </image>
+                </ImageView>
+            </graphic>
+        </Button> 
+        <Button fx:id="buttonEditComment" styleClass="imageButton" visible="false" >
+            <HBox.margin>
+                <javafx.geometry.Insets  right="5"/>
             </HBox.margin>
             <graphic>
                 <ImageView fitWidth="25" fitHeight="25">

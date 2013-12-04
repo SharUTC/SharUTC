@@ -112,7 +112,7 @@
                 <javafx.geometry.Insets right="8" />
             </HBox.margin>
         </Button>
-        <TextArea fx:id="commentTextArea" promptText="type your comment" HBox.hgrow="ALWAYS" prefRowCount="3"/>
+        <TextArea fx:id="commentTextArea" styleClass="commentTextArea" promptText="type your comment" HBox.hgrow="ALWAYS" prefRowCount="3"/>
     </HBox>
 
 
