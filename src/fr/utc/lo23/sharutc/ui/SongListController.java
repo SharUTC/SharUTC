@@ -138,16 +138,29 @@ public class SongListController extends SongSelectorController implements Initia
     }
 
     public void showLocalCatalog() {
+        titleLabel.setText("Manage your song list");
         showMusics(mAppModel.getLocalCatalog().getMusics());
+    }
+
+    public void showLocalCatalogWithTagFilter(String tagFilter) {
+        final Catalog catalog = mAppModel.getLocalCatalog();
+        ArrayList<Music> musics = new ArrayList<Music>();
+
+        titleLabel.setText("Songs with tag : " + tagFilter);
+
+        for (final Music m : catalog.getMusics()) {
+            if (m.getTags().contains(tagFilter)) {
+                musics.add(m);
+            }
+        }
+        showMusics(musics);
     }
 
     public void showLocalCatalogWithAlbumFilter(String albumFilter) {
         final Catalog catalog = mAppModel.getLocalCatalog();
         ArrayList<Music> musics = new ArrayList<Music>();
 
-        if (albumFilter != null) {
-            titleLabel.setText(albumFilter + " Album");
-        }
+        titleLabel.setText(albumFilter + " Album");
 
         for (final Music m : catalog.getMusics()) {
             if (albumFilter == null || albumFilter.equals(m.getAlbum())) {
@@ -160,12 +173,18 @@ public class SongListController extends SongSelectorController implements Initia
     private void showMusics(List<Music> musics) {
         songsContainer.getChildren().clear();
         if (musics.isEmpty()) {
-            placeHolderLabel = new Label("You have no songs. Please use the \"Add\" button in the left top corner.");
-            placeHolderLabel.getStyleClass().add("placeHolderLabel");
-            placeHolderLabel.setWrapText(true);
-            placeHolderLabel.setTextAlignment(TextAlignment.CENTER);
-            contentContainer.getChildren().add(placeHolderLabel);
+            if (placeHolderLabel == null) {
+                placeHolderLabel = new Label("You have no songs. Please use the \"Add\" button in the left top corner.");
+                placeHolderLabel.getStyleClass().add("placeHolderLabel");
+                placeHolderLabel.setWrapText(true);
+                placeHolderLabel.setTextAlignment(TextAlignment.CENTER);
+                contentContainer.getChildren().add(placeHolderLabel);
+            }
         } else {
+            if (placeHolderLabel != null) {
+                contentContainer.getChildren().remove(placeHolderLabel);
+                placeHolderLabel = null;
+            }
             for (Music m : musics) {
                 songsContainer.getChildren().add(new SongCard(m, this, true));
             }
@@ -284,6 +303,11 @@ public class SongListController extends SongSelectorController implements Initia
     @Override
     public void onTagSelected(String tagName) {
         log.debug("tag selected : " + tagName);
+        if (tagName.equals(VIRTUAL_TAG_ALL_SONGS) || tagName.equals(VIRTUAL_TAG_MY_SONGS)) {
+            showLocalCatalog();
+        } else {
+            showLocalCatalogWithTagFilter(tagName);
+        }
     }
 
     @Override
