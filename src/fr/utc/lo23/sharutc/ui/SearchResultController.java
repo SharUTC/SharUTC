@@ -15,12 +15,16 @@ import fr.utc.lo23.sharutc.ui.custom.card.SongCard;
 import fr.utc.lo23.sharutc.ui.custom.card.UserCard;
 import fr.utc.lo23.sharutc.util.CollectionChangeListener;
 import fr.utc.lo23.sharutc.util.CollectionEvent;
+import static fr.utc.lo23.sharutc.util.CollectionEvent.Type.ADD;
+import static fr.utc.lo23.sharutc.util.CollectionEvent.Type.CLEAR;
 import javafx.fxml.Initializable;
 
 import java.net.URL;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.ResourceBundle;
+import javafx.application.Platform;
+import javafx.concurrent.Task;
 import javafx.scene.layout.VBox;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,7 +34,7 @@ public class SearchResultController extends SongSelectorController implements Ri
     private static final Logger log = LoggerFactory
             .getLogger(SearchResultController.class);
     public VBox gridpane;
-    private String search;
+    private String mCurrentCriteriaSearch;
     private CardList songList;
     private CardList friendList;
     private CardList artistList;
@@ -43,9 +47,6 @@ public class SearchResultController extends SongSelectorController implements Ri
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-
-
-
         //listen for changes on the AppModel
         mAppModel.getSearchResults().addPropertyChangeListener(this);
 
@@ -59,54 +60,40 @@ public class SearchResultController extends SongSelectorController implements Ri
         gridpane.getChildren().add(artistList);
         gridpane.getChildren().add(albumList);
 
-        if (resourceBundle != null) {
-            search = resourceBundle.getString("search");
-        } else {
-            search = "";
-        }
 
-        SearchCriteria critera = new SearchCriteria(search);
-        mMusicSearchCommand.setSearchCriteria(critera);
-        mMusicSearchCommand.execute();
-        
         ActivePeerList peers = mAppModel.getActivePeerList();
         //TODO adapte to the last master modification
         HashMap<UserInfo, Date> peerList = peers.getActivePeers();
-        for(UserInfo peer : peerList.keySet()){
-            if(peer.getFirstName().contains(search)||peer.getLastName().contains(search)
-                    ||search.contains(peer.getFirstName())||search.contains(peer.getLastName())){
+        for (UserInfo peer : peerList.keySet()) {
+            if (peer.getFirstName().contains(mCurrentCriteriaSearch) || peer.getLastName().contains(mCurrentCriteriaSearch)
+                    || mCurrentCriteriaSearch.contains(peer.getFirstName()) || mCurrentCriteriaSearch.contains(peer.getLastName())) {
                 UserInfo u = new UserInfo();
                 u.setPeerId(peer.getPeerId());
                 u.setFirstName(peer.getFirstName());
                 u.setLastName(peer.getLastName());
             }
         }
-        /*
-        
-        UserInfo u = new UserInfo();
-        u.setFirstName("bob");
-        addChild(new UserCard(u, this));
-        addChild(new UserCard(u, this));
-        addChild(new UserCard(u, this));
-        addChild(new UserCard(u, this));
-        addChild(new UserCard(u, this));
-        addChild(new UserCard(u, this));
+    }
 
-        final Music m = new Music();
-        m.setFileName("Music ");
-        m.setTitle("music");
-        m.setAlbum("Album");
-        m.setArtist("Artist");
-        SongCard newCard = new SongCard(m, this, true);
+    public void searchAll(final String criteriaString) {
+        log.debug("search all -> " + criteriaString);
+        mCurrentCriteriaSearch = criteriaString;
+        searchMusic(mCurrentCriteriaSearch);
+    }
 
-        addChild(newCard);
-
-        SimpleCard card = new ArtistCard("Artist ", this);
-        this.addChild(card);
-
-        card = new AlbumCard("Album", "Artist", this);
-        this.addChild(card);
- */
+    private void searchMusic(final String criteriaString) {
+        //execute an asynchronous search
+        final Task<Void> searchMusicTask = new Task<Void>() {
+            @Override
+            protected Void call() throws Exception {
+                log.debug("search music -> " + criteriaString);
+                SearchCriteria critera = new SearchCriteria(criteriaString);
+                mMusicSearchCommand.setSearchCriteria(critera);
+                mMusicSearchCommand.execute();
+                return null;
+            }
+        };
+        new Thread(searchMusicTask).start();
     }
 
     public void setInterface(ISearchResultController i) {
@@ -116,7 +103,6 @@ public class SearchResultController extends SongSelectorController implements Ri
     public void addChild(SimpleCard card) {
         if (card instanceof UserCard) {
             friendList.addChild(card);
-
         } else if (card instanceof SongCard) {
             songList.addChild(card);
         } else if (card instanceof ArtistCard) {
@@ -143,28 +129,42 @@ public class SearchResultController extends SongSelectorController implements Ri
 
     @Override
     public void collectionChanged(CollectionEvent ev) {
-        switch (ev.getType()) {
-            case ADD:
-                Music m = ((Music) ev.getSource());
-                if (m.getAlbum().contains(search)) {
-                    albumList.addChild(new AlbumCard(m, this));
-                }
-                if (m.getArtist().contains(search)) {
-                    artistList.addChild(new ArtistCard(m.getArtist(), this));
-                }
-                if (m.getTitle().contains(search)) {
-                    songList.addChild(new SongCard(m, this, mAppModel.getProfile().getUserInfo().getPeerId() == m.getOwnerPeerId()));
-                }
-                break;
-            case CLEAR:
-                songList.clear();
-                artistList.clear();
-                albumList.clear();
-                friendList.clear();
-                break;
+        log.debug("collectionChanged -> " + ev.getType().name());
+        handleCollectionEventOnUiThread(ev);
 
-        }
+    }
 
+    public void handleCollectionEventOnUiThread(final CollectionEvent ev) {
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                switch (ev.getType()) {
+                    case ADD:
+                        Music m = ((Music) ev.getItem());
+                        log.debug("add music " + m.getTitle() + " " + m.getArtist() + " " + m.getAlbum());
+                        if (m.getAlbum().toLowerCase().contains(mCurrentCriteriaSearch)) {
+                            log.debug("add music -- album");
+                            albumList.addChild(new AlbumCard(m, SearchResultController.this));
+                        }
+                        if (m.getArtist().toLowerCase().contains(mCurrentCriteriaSearch)) {
+                            log.debug("add music -- artist");
+                            artistList.addChild(new ArtistCard(m.getArtist(), SearchResultController.this));
+                        }
+                        if (m.getTitle().toLowerCase().contains(mCurrentCriteriaSearch)) {
+                            log.debug("add music -- song");
+                            songList.addChild(new SongCard(m, SearchResultController.this, mAppModel.getProfile().getUserInfo().getPeerId() == m.getOwnerPeerId()));
+                        }
+                        break;
+                    case CLEAR:
+                        songList.clear();
+                        artistList.clear();
+                        albumList.clear();
+                        friendList.clear();
+                        break;
+
+                }
+            }
+        });
     }
 
     @Override

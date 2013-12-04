@@ -54,6 +54,7 @@ import javafx.concurrent.Task;
 import javafx.concurrent.WorkerStateEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.ProgressIndicator;
+import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.DirectoryChooser;
@@ -89,6 +90,7 @@ public class MainController extends NavigationController implements Initializabl
     public Label dropOverlayLabel;
     public Label labelMyProfile;
     public ProgressIndicator exportProgress;
+    public TextField textFieldSearch;
     @Inject
     private AppModel mAppModel;
     @Inject
@@ -318,6 +320,7 @@ public class MainController extends NavigationController implements Initializabl
         mCurrentLoadedRighpaneResult = mFxmlLoader.load(getClass().getResource("/fr/utc/lo23/sharutc/ui/fxml/searchresult_detail.fxml"));
         ((SearchResultController) mCurrentLoadedRighpaneResult.getController()).setInterface(this);
         ((SearchResultController) mCurrentLoadedRighpaneResult.getController()).init(mDragPreview);
+        ((SearchResultController) mCurrentLoadedRighpaneResult.getController()).searchAll(textFieldSearch.getText());        
         attachRightpane(mCurrentLoadedRighpaneResult);
 
     }
