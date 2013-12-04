@@ -14,6 +14,7 @@ import fr.utc.lo23.sharutc.ui.custom.card.SimpleCard;
 import fr.utc.lo23.sharutc.util.CollectionChangeListener;
 import fr.utc.lo23.sharutc.util.CollectionEvent;
 import fr.utc.lo23.sharutc.util.DialogBoxBuilder;
+import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -470,11 +471,14 @@ public class PeopleHomeController extends DragPreviewDrawer implements Initializ
                 addNewGroupCard(c, true);
             } else if (item instanceof UserInfo) {
                 //new user connected
-                log.info("new user connected");
-                //TODO modified from another thread
-//                final UserInfo newConnectedUser = (UserInfo) item;
-//                PeopleCard newCard = new PeopleCard(newConnectedUser, this, PeopleCard.USAGE_CONNECTED);
-//                peopleContainer.getChildren().add(newCard);
+                Platform.runLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        final UserInfo newConnectedUser = (UserInfo) item;
+                        PeopleCard newCard = new PeopleCard(newConnectedUser, PeopleHomeController.this, PeopleCard.USAGE_CONNECTED);
+                        peopleContainer.getChildren().add(newCard);
+                    }
+                });
             }
         } else if (type.equals(CollectionEvent.Type.REMOVE)) {
             //REMOVE EVENT
@@ -484,14 +488,19 @@ public class PeopleHomeController extends DragPreviewDrawer implements Initializ
             } else if (item instanceof UserInfo) {
                 //user disconnected callback
                 log.info("one user disconnected");
-                ObservableList<Node> children = peopleContainer.getChildren();
+                final ObservableList<Node> children = peopleContainer.getChildren();
                 for (Node n : children) {
                     if (n instanceof PeopleCard) {
                         final PeopleCard userCard = (PeopleCard) n;
-                        //TODO equals between two UserInfo doesn't work here
-//                        if (((PeopleCard) n).getModel().equals(item)) {
-//                            children.remove(userCard);
-//                        }
+                        //TODO equals between two UserInfo doesn't work here, use only peerId
+                        if (((PeopleCard) n).getModel().getPeerId().equals(((UserInfo) item).getPeerId())) {
+                            Platform.runLater(new Runnable() {
+                                @Override
+                                public void run() {
+                                    children.remove(userCard);
+                                }
+                            });
+                        }
                     }
                 }
             }
