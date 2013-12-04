@@ -183,7 +183,7 @@ public class NetworkServiceImpl implements NetworkService {
      */
     @Override
     public void sendUnicastGetCatalog(Peer peer) {
-        Message message = messageParser.write(MessageType.MUSIC_GET_CATALOG, new Object[][]{{Message.CONVERSATION_ID, appModel.getCurrentConversationId()}});
+        Message message = messageParser.write(MessageType.MUSIC_GET_CATALOG, new Object[][]{{Message.CONVERSATION_ID, appModel.getNextConversationId()}});
         sendUnicast(message, peer);
     }
 
@@ -201,7 +201,7 @@ public class NetworkServiceImpl implements NetworkService {
      */
     @Override
     public void sendBroadcastGetTagMap() {
-        Message message = messageParser.write(MessageType.TAG_GET_MAP, new Object[][]{{Message.CONVERSATION_ID, appModel.getCurrentConversationId()}});
+        Message message = messageParser.write(MessageType.TAG_GET_MAP, new Object[][]{{Message.CONVERSATION_ID, appModel.getNextConversationId()}});
         sendBroadcast(message);
     }
 
@@ -265,7 +265,7 @@ public class NetworkServiceImpl implements NetworkService {
      */
     @Override
     public void searchRequestBroadcast(SearchCriteria criteria) {
-        Message message = messageParser.write(MessageType.MUSIC_SEARCH, new Object[][]{{Message.SEARCH, criteria}, {Message.CONVERSATION_ID, appModel.getCurrentConversationId()}});
+        Message message = messageParser.write(MessageType.MUSIC_SEARCH, new Object[][]{{Message.SEARCH, criteria}, {Message.CONVERSATION_ID, appModel.getNextConversationId()}});
         sendBroadcast(message);
     }
 
@@ -301,7 +301,7 @@ public class NetworkServiceImpl implements NetworkService {
      */
     @Override
     public void downloadMusicForPlaying(Peer peer, long musicId) {
-        Message message = messageParser.write(MessageType.MUSIC_GET_TO_PLAY, new Object[][]{{Message.MUSIC_ID, musicId}, {Message.CONVERSATION_ID, appModel.getCurrentConversationId()}});
+        Message message = messageParser.write(MessageType.MUSIC_GET_TO_PLAY, new Object[][]{{Message.MUSIC_ID, musicId}, {Message.CONVERSATION_ID, appModel.getNextConversationId()}});
         sendUnicast(message, peer);
     }
 

@@ -96,11 +96,6 @@ public class NetworkCatalogTest {
 
     @Test
     public void sendCatalogCommand() {
-        Music music = new Music();
-        music.setTitle("musicTest");
-
-        appModel.getLocalCatalog().add(music);
-
         Long conversationId = 0L;
         sendCatalogCommand.setConversationId(conversationId);
         sendCatalogCommand.setPeer(appModel.getActivePeerList().getPeerByPeerId(1L));
