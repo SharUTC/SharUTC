@@ -469,9 +469,10 @@ public class PeopleHomeController extends DragPreviewDrawer implements Initializ
             } else if (item instanceof UserInfo) {
                 //new user connected
                 log.info("new user connected");
-                final UserInfo newConnectedUser = (UserInfo) item;
-                PeopleCard newCard = new PeopleCard(newConnectedUser, this, PeopleCard.USAGE_CONNECTED);
-                peopleContainer.getChildren().add(newCard);
+                //TODO modified from another thread
+//                final UserInfo newConnectedUser = (UserInfo) item;
+//                PeopleCard newCard = new PeopleCard(newConnectedUser, this, PeopleCard.USAGE_CONNECTED);
+//                peopleContainer.getChildren().add(newCard);
             }
         } else if (type.equals(CollectionEvent.Type.REMOVE)) {
             //REMOVE EVENT
@@ -485,9 +486,10 @@ public class PeopleHomeController extends DragPreviewDrawer implements Initializ
                 for (Node n : children) {
                     if (n instanceof PeopleCard) {
                         final PeopleCard userCard = (PeopleCard) n;
-                        if (((PeopleCard) n).getModel().equals(item)) {
-                            children.remove(userCard);
-                        }
+                        //TODO equals between two UserInfo doesn't work here
+//                        if (((PeopleCard) n).getModel().equals(item)) {
+//                            children.remove(userCard);
+//                        }
                     }
                 }
             }
