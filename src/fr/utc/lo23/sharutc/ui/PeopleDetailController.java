@@ -15,17 +15,17 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.FlowPane;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.net.URL;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.Set;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class PeopleDetailController extends SongSelectorController implements Initializable, TagCard.ITagCard {
-    
+
     private static final Logger log = LoggerFactory
             .getLogger(SongListController.class);
 
@@ -89,11 +89,32 @@ public class PeopleDetailController extends SongSelectorController implements In
                 tagsContainer.getChildren().add(newCard);
             }
         } else {
+            if (isFriend(mUserInfo)) {
+                //hide add to friend button if already in friend list
+                addToFriendsButton.setVisible(false);
+            }
             login.setText(mUserInfo.getLogin());
             //TODO launch network stuff on new thread
             fetchRemoteCatalogCommand.setPeer(userInfo.toPeer());
             fetchRemoteCatalogCommand.execute();
         }
+    }
+
+    /**
+     * Check is the user is in the contact list
+     *
+     * @param userInfo
+     * @return
+     */
+    private boolean isFriend(UserInfo userInfo) {
+        boolean isFriendOfMine = false;
+        for (Contact contact : mAppModel.getProfile().getContacts().getContacts()) {
+            if (contact.getUserInfo().getPeerId().equals(userInfo.getPeerId())) {
+                isFriendOfMine = true;
+                break;
+            }
+        }
+        return isFriendOfMine;
     }
 
     public void handleAddToFriendsClicked(ActionEvent actionEvent) {
