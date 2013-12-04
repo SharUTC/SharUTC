@@ -120,11 +120,11 @@ public class SongListController extends SongSelectorController implements Initia
         new Thread(importTask).start();
     }
 
-    public void showCatalog() {
-        showCatalog(null);
+    public void showLocalCatalog() {
+        showLocalCatalog(null);
     }
 
-    public void showCatalog(String albumFilter) {
+    public void showLocalCatalog(String albumFilter) {
         final Catalog catalog = mAppModel.getLocalCatalog();
         ArrayList<Music> musics = new ArrayList<Music>();
 
@@ -150,8 +150,6 @@ public class SongListController extends SongSelectorController implements Initia
                 songsContainer.getChildren().add(new SongCard(m, this, true));
             }
         }
-
-
 
     }
 

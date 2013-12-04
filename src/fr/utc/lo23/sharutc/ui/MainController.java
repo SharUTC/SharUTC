@@ -175,7 +175,7 @@ public class MainController extends NavigationController implements Initializabl
             mCurrentLoadedRighpaneResult = mFxmlLoader.load(getClass().getResource("/fr/utc/lo23/sharutc/ui/fxml/song_list.fxml"));
             ((DragPreviewDrawer) mCurrentLoadedRighpaneResult.getController()).init(mDragPreview);
             ((SongListController) mCurrentLoadedRighpaneResult.getController()).setInterface(this);
-            ((SongListController) mCurrentLoadedRighpaneResult.getController()).showCatalog();
+            ((SongListController) mCurrentLoadedRighpaneResult.getController()).showLocalCatalog();
         } else if (event.getSource() == peoplebutton) {
             mCurrentLoadedRighpaneResult = mFxmlLoader.load(getClass().getResource("/fr/utc/lo23/sharutc/ui/fxml/people_home.fxml"));
             ((PeopleHomeController) mCurrentLoadedRighpaneResult.getController()).setInterface(this);
@@ -452,7 +452,7 @@ public class MainController extends NavigationController implements Initializabl
             mCurrentLoadedRighpaneResult = mFxmlLoader.load(getClass().getResource("/fr/utc/lo23/sharutc/ui/fxml/song_list.fxml"));
             ((DragPreviewDrawer) mCurrentLoadedRighpaneResult.getController()).init(mDragPreview);
             ((SongListController) mCurrentLoadedRighpaneResult.getController()).setInterface(this);
-            ((SongListController) mCurrentLoadedRighpaneResult.getController()).showCatalog(albumName);
+            ((SongListController) mCurrentLoadedRighpaneResult.getController()).showLocalCatalog(albumName);
             attachRightpane(mCurrentLoadedRighpaneResult);
         } catch (IOException e) {
             log.error(e.getMessage());
@@ -539,7 +539,7 @@ public class MainController extends NavigationController implements Initializabl
             mCurrentLoadedRighpaneResult = mFxmlLoader.load(getClass().getResource("/fr/utc/lo23/sharutc/ui/fxml/song_list.fxml"));
             ((DragPreviewDrawer) mCurrentLoadedRighpaneResult.getController()).init(mDragPreview);
             ((SongListController) mCurrentLoadedRighpaneResult.getController()).setInterface(this);
-            ((SongListController) mCurrentLoadedRighpaneResult.getController()).showCatalog();
+            ((SongListController) mCurrentLoadedRighpaneResult.getController()).showLocalCatalog();
             attachRightpane(mCurrentLoadedRighpaneResult);
         } catch (IOException ex) {
             log.error(ex.getMessage());
