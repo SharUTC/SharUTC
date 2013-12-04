@@ -20,8 +20,10 @@ import static fr.utc.lo23.sharutc.util.CollectionEvent.Type.CLEAR;
 import javafx.fxml.Initializable;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.ResourceBundle;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
@@ -39,8 +41,9 @@ public class SearchResultController extends SongSelectorController implements Ri
     private String mCurrentCriteriaSearch;
     private CardList mSongList;
     private CardList mFriendList;
-    private CardList mArtistList;
+    private CardList mArtistList;  
     private CardList mAlbumList;
+    private List<String> mArtistNameFound;
     private ISearchResultController mInterface;
     @Inject
     private AppModel mAppModel;
@@ -56,6 +59,8 @@ public class SearchResultController extends SongSelectorController implements Ri
         mFriendList = new CardList("Friends", "bgGreen");
         mArtistList = new CardList("Artists", "bgRed");
         mAlbumList = new CardList("Albums", "bgOrange");
+        
+        mArtistNameFound = new ArrayList<String>();
 
         gridpane.getChildren().add(mSongList);
         gridpane.getChildren().add(mFriendList);
@@ -79,6 +84,7 @@ public class SearchResultController extends SongSelectorController implements Ri
 
     public void searchAll(final String criteriaString) {
         log.debug("search all -> " + criteriaString);
+        mArtistNameFound.clear();
         mCurrentCriteriaSearch = criteriaString;
         searchMusic(mCurrentCriteriaSearch);
     }
@@ -148,8 +154,9 @@ public class SearchResultController extends SongSelectorController implements Ri
                             log.debug("add music -- album");
                             mAlbumList.addChild(new AlbumCard(m, SearchResultController.this));
                         }
-                        if (m.getArtist().toLowerCase().contains(mCurrentCriteriaSearch)) {
+                        if (m.getArtist().toLowerCase().contains(mCurrentCriteriaSearch) && !mArtistNameFound.contains(m.getArtist())) {
                             log.debug("add music -- artist");
+                            mArtistNameFound.add(m.getArtist());
                             mArtistList.addChild(new ArtistCard(m.getArtist(), SearchResultController.this));
                         }
                         if (m.getTitle().toLowerCase().contains(mCurrentCriteriaSearch)) {
