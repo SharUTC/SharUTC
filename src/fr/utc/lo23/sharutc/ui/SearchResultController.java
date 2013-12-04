@@ -63,10 +63,8 @@ public class SearchResultController extends SongSelectorController implements Ri
         mArtistNameFound = new ArrayList<String>();
         mAlbumNameFound = new ArrayList<String>();
 
-        scrollPaneContent.getChildren().add(mSongList);
-        scrollPaneContent.getChildren().add(mFriendList);
-        scrollPaneContent.getChildren().add(mArtistList);
-        scrollPaneContent.getChildren().add(mAlbumList);
+        scrollPaneContent.getChildren().addAll(mSongList,
+                mFriendList, mArtistList, mAlbumList);
 
     }
 
