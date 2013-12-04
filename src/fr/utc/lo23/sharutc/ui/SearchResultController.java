@@ -25,6 +25,7 @@ import java.util.HashMap;
 import java.util.ResourceBundle;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
+import javafx.fxml.FXML;
 import javafx.scene.layout.VBox;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,12 +34,13 @@ public class SearchResultController extends SongSelectorController implements Ri
 
     private static final Logger log = LoggerFactory
             .getLogger(SearchResultController.class);
+    @FXML
     public VBox gridpane;
     private String mCurrentCriteriaSearch;
-    private CardList songList;
-    private CardList friendList;
-    private CardList artistList;
-    private CardList albumList;
+    private CardList mSongList;
+    private CardList mFriendList;
+    private CardList mArtistList;
+    private CardList mAlbumList;
     private ISearchResultController mInterface;
     @Inject
     private AppModel mAppModel;
@@ -50,15 +52,15 @@ public class SearchResultController extends SongSelectorController implements Ri
         //listen for changes on the AppModel
         mAppModel.getSearchResults().addPropertyChangeListener(this);
 
-        songList = new CardList("Songs", "bgBlue");
-        friendList = new CardList("Friends", "bgGreen");
-        artistList = new CardList("Artists", "bgRed");
-        albumList = new CardList("Albums", "bgOrange");
+        mSongList = new CardList("Songs", "bgBlue");
+        mFriendList = new CardList("Friends", "bgGreen");
+        mArtistList = new CardList("Artists", "bgRed");
+        mAlbumList = new CardList("Albums", "bgOrange");
 
-        gridpane.getChildren().add(songList);
-        gridpane.getChildren().add(friendList);
-        gridpane.getChildren().add(artistList);
-        gridpane.getChildren().add(albumList);
+        gridpane.getChildren().add(mSongList);
+        gridpane.getChildren().add(mFriendList);
+        gridpane.getChildren().add(mArtistList);
+        gridpane.getChildren().add(mAlbumList);
 
 
         ActivePeerList peers = mAppModel.getActivePeerList();
@@ -102,13 +104,13 @@ public class SearchResultController extends SongSelectorController implements Ri
 
     public void addChild(SimpleCard card) {
         if (card instanceof UserCard) {
-            friendList.addChild(card);
+            mFriendList.addChild(card);
         } else if (card instanceof SongCard) {
-            songList.addChild(card);
+            mSongList.addChild(card);
         } else if (card instanceof ArtistCard) {
-            artistList.addChild(card);
+            mArtistList.addChild(card);
         } else if (card instanceof AlbumCard) {
-            albumList.addChild(card);
+            mAlbumList.addChild(card);
         }
     }
 
@@ -144,22 +146,22 @@ public class SearchResultController extends SongSelectorController implements Ri
                         log.debug("add music " + m.getTitle() + " " + m.getArtist() + " " + m.getAlbum());
                         if (m.getAlbum().toLowerCase().contains(mCurrentCriteriaSearch)) {
                             log.debug("add music -- album");
-                            albumList.addChild(new AlbumCard(m, SearchResultController.this));
+                            mAlbumList.addChild(new AlbumCard(m, SearchResultController.this));
                         }
                         if (m.getArtist().toLowerCase().contains(mCurrentCriteriaSearch)) {
                             log.debug("add music -- artist");
-                            artistList.addChild(new ArtistCard(m.getArtist(), SearchResultController.this));
+                            mArtistList.addChild(new ArtistCard(m.getArtist(), SearchResultController.this));
                         }
                         if (m.getTitle().toLowerCase().contains(mCurrentCriteriaSearch)) {
                             log.debug("add music -- song");
-                            songList.addChild(new SongCard(m, SearchResultController.this, mAppModel.getProfile().getUserInfo().getPeerId() == m.getOwnerPeerId()));
+                            mSongList.addChild(new SongCard(m, SearchResultController.this, mAppModel.getProfile().getUserInfo().getPeerId() == m.getOwnerPeerId()));
                         }
                         break;
                     case CLEAR:
-                        songList.clear();
-                        artistList.clear();
-                        albumList.clear();
-                        friendList.clear();
+                        mSongList.clear();
+                        mArtistList.clear();
+                        mAlbumList.clear();
+                        mFriendList.clear();
                         break;
 
                 }
