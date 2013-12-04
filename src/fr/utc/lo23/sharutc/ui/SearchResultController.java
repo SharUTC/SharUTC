@@ -41,7 +41,7 @@ public class SearchResultController extends SongSelectorController implements Ri
     private String mCurrentCriteriaSearch;
     private CardList mSongList;
     private CardList mFriendList;
-    private CardList mArtistList;  
+    private CardList mArtistList;
     private CardList mAlbumList;
     private List<String> mArtistNameFound;
     private List<String> mAlbumNameFound;
@@ -60,7 +60,7 @@ public class SearchResultController extends SongSelectorController implements Ri
         mFriendList = new CardList("Friends", "bgGreen");
         mArtistList = new CardList("Artists", "bgRed");
         mAlbumList = new CardList("Albums", "bgOrange");
-        
+
         mArtistNameFound = new ArrayList<String>();
         mAlbumNameFound = new ArrayList<String>();
 
@@ -86,8 +86,7 @@ public class SearchResultController extends SongSelectorController implements Ri
 
     public void searchAll(final String criteriaString) {
         log.debug("search all -> " + criteriaString);
-        mArtistNameFound.clear();
-        mAlbumNameFound.clear();
+        clearPreviousSearch();
         mCurrentCriteriaSearch = criteriaString;
         searchMusic(mCurrentCriteriaSearch);
     }
@@ -105,6 +104,15 @@ public class SearchResultController extends SongSelectorController implements Ri
             }
         };
         new Thread(searchMusicTask).start();
+    }
+
+    private void clearPreviousSearch() {
+        mArtistNameFound.clear();
+        mAlbumNameFound.clear();
+        mSongList.clear();
+        mArtistList.clear();
+        mAlbumList.clear();
+        mFriendList.clear();
     }
 
     public void setInterface(ISearchResultController i) {
@@ -168,13 +176,6 @@ public class SearchResultController extends SongSelectorController implements Ri
                             mSongList.addChild(new SongCard(m, SearchResultController.this, mAppModel.getProfile().getUserInfo().getPeerId() == m.getOwnerPeerId()));
                         }
                         break;
-                    case CLEAR:
-                        mSongList.clear();
-                        mArtistList.clear();
-                        mAlbumList.clear();
-                        mFriendList.clear();
-                        break;
-
                 }
             }
         });
