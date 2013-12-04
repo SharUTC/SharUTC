@@ -6,11 +6,13 @@ import fr.utc.lo23.sharutc.model.AppModel;
 import fr.utc.lo23.sharutc.model.domain.Catalog;
 import fr.utc.lo23.sharutc.model.domain.Music;
 import fr.utc.lo23.sharutc.ui.custom.HorizontalScrollHandler;
+import fr.utc.lo23.sharutc.ui.custom.card.SimpleCard;
 import fr.utc.lo23.sharutc.ui.custom.card.SongCard;
 import fr.utc.lo23.sharutc.ui.custom.card.TagCard;
 import fr.utc.lo23.sharutc.util.CollectionChangeListener;
 import fr.utc.lo23.sharutc.util.CollectionEvent;
 import fr.utc.lo23.sharutc.util.CollectionEvent.Type;
+import fr.utc.lo23.sharutc.util.DialogBoxBuilder;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -31,9 +33,11 @@ import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.concurrent.WorkerStateEvent;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.TextAlignment;
 
@@ -42,6 +46,8 @@ public class SongListController extends SongSelectorController implements Initia
 
     private static final Logger log = LoggerFactory
             .getLogger(SongListController.class);
+    private static final String VIRTUAL_TAG_MY_SONGS = "My Songs";
+    private static final String VIRTUAL_TAG_ALL_SONGS = "All Songs";
     @FXML
     public Button addNewSongButton;
     @FXML
@@ -152,7 +158,6 @@ public class SongListController extends SongSelectorController implements Initia
                 songsContainer.getChildren().add(new SongCard(m, this, true));
             }
         }
-
     }
 
     private void songAdded(Music music) {
@@ -192,20 +197,53 @@ public class SongListController extends SongSelectorController implements Initia
         tagContainer.getChildren().clear();
 
         //The "virtual" "All songs" tag
-        showTagCard(new TagCard("All Songs", this));
+        showSimpleCard(new TagCard(VIRTUAL_TAG_ALL_SONGS, this));
 
         //The "virtual" "My Songs" tag
-        showTagCard(new TagCard("My Songs", this));
+        showSimpleCard(new TagCard(VIRTUAL_TAG_MY_SONGS, this));
 
         //TODO remove when we get the real tags
         for (int i = 0; i < 5; i++) {
-            showTagCard(new TagCard("Tag " + String.valueOf(i), this));
+            showSimpleCard(new TagCard("Tag " + String.valueOf(i), this));
         }
+
+        showAddTagCard();
     }
 
-    private void showTagCard(TagCard tagCard) {
-        HBox.setMargin(tagCard, new Insets(0, 5, 0, 5));
-        tagContainer.getChildren().add(tagCard);
+    private void showAddTagCard() {
+        final SimpleCard addTagCard = new SimpleCard("/fr/utc/lo23/sharutc/ui/fxml/simple_card.fxml",
+                180, 100, Pos.CENTER);
+        addTagCard.setMinWidth(180);
+        addTagCard.setMinHeight(100);
+        addTagCard.setMaxHeight(100);
+        final Label plusText = new Label("+");
+        plusText.getStyleClass().addAll("plusText");
+        addTagCard.getChildren().addAll(plusText);
+        addTagCard.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent t) {
+                DialogBoxBuilder.createEditBox("Category Name : ", "New Tag",
+                        this.getClass().getResource("/fr/utc/lo23/sharutc/ui/css/modal.css").toExternalForm(),
+                        songsContainer.getScene().getRoot(),
+                        new DialogBoxBuilder.IEditBox() {
+                    @Override
+                    public void onValidate(String newTagName) {
+                        log.debug("add a new tag -> " + newTagName);
+                        if (!newTagName.isEmpty()) {
+                            final TagCard newTagCard = new TagCard(newTagName, SongListController.this);
+                            HBox.setMargin(newTagCard, new Insets(0, 5, 0, 5));
+                            tagContainer.getChildren().add(tagContainer.getChildren().indexOf(addTagCard), newTagCard);
+                        }
+                    }
+                }).show();
+            }
+        });
+        showSimpleCard(addTagCard);
+    }
+
+    private void showSimpleCard(SimpleCard simpleCard) {
+        HBox.setMargin(simpleCard, new Insets(0, 5, 0, 5));
+        tagContainer.getChildren().add(simpleCard);
     }
 
     @Override
