@@ -690,7 +690,7 @@ public class Music implements Serializable {
 
     public void cleanForPreview() {
         mCategoryIds.clear();
-        mFileMissing = null;
+        mFileMissing = false;
     }
 
     private int getAverageScore() {

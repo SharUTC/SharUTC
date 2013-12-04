@@ -11,20 +11,19 @@ import org.slf4j.LoggerFactory;
 /**
  * Listen to new TCP connection and instantiate new PeerSocket to handle them.
  * <p>
- * This class bind a ServerSocket to the given port and listen on it.
- * Each new TCP connection is handled separately in a new instance of PeerSocket
- * running in a separate thread.
+ * This class bind a ServerSocket to the given port and listen on it. Each new
+ * TCP connection is handled separately in a new instance of PeerSocket running
+ * in a separate thread.
  *
  * @see PeerSocket
  */
 public class ListenThread implements Runnable {
-    private static final Logger log = LoggerFactory.getLogger(PeerDiscoverySocket.class);
 
+    private static final Logger log = LoggerFactory.getLogger(PeerDiscoverySocket.class);
     private final AppModel appModel;
     private final NetworkService networkService;
     private final MessageHandler messageHandler;
     private final MessageParser messageParser;
-
     private final int mPort;
     private ServerSocket mServerSocket;
     private Thread mThread;
@@ -39,9 +38,7 @@ public class ListenThread implements Runnable {
      * @param messageParser the injected MessageParser instance
      * @param networkService the injected NetworkService instance
      */
-    public ListenThread(int port, AppModel appModel, MessageHandler
-            messageHandler, MessageParser messageParser, NetworkService
-            networkService) {
+    public ListenThread(int port, AppModel appModel, MessageHandler messageHandler, MessageParser messageParser, NetworkService networkService) {
         this.mPort = port;
         this.appModel = appModel;
         this.messageHandler = messageHandler;
@@ -57,7 +54,7 @@ public class ListenThread implements Runnable {
      */
     public void start() {
         if (mThread == null) {
-            mThread = new Thread(this);
+            mThread = new Thread(this, "ListenThread");
             mThread.start();
         } else {
             log.warn("Can't start ListenThread: already running.");
@@ -80,9 +77,8 @@ public class ListenThread implements Runnable {
      * Main listening loop.
      * <p>
      * Loop on the ServerSocket accept() method and instantiate a new PeerSocket
-     * for each new connection.
-     * The newly created PeerSocket is then started in a new thread with
-     * start().
+     * for each new connection. The newly created PeerSocket is then started in
+     * a new thread with start().
      *
      * @see PeerSocket
      */

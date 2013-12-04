@@ -88,7 +88,7 @@ public class SearchResultController extends SongSelectorController implements Ri
                 return null;
             }
         };
-        new Thread(searchMusicTask).start();
+        new Thread(searchMusicTask, "Search Music").start();
     }
 
     private void searchPeople(final String criteriaString) {

@@ -55,9 +55,8 @@ public class PlayMusicCommandImpl implements PlayMusicCommand {
             playerService.playOneMusic(mMusic);
         } else {
             // remove all musics from playlist
-            for (Music m : playerService.getPlaylist().getMusics()) {
-                playerService.removeFromPlaylist(m);
-            }
+            playerService.clearPlaylist();
+
             // add music to update ui before file has arrived
             playerService.addToPlaylist(mMusic);
             // file is remote, music.id belongs to the remote peer

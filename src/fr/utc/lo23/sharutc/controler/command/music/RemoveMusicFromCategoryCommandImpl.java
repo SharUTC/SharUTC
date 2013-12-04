@@ -66,6 +66,7 @@ public class RemoveMusicFromCategoryCommandImpl implements RemoveMusicFromCatego
         log.info("RemoveMusicFromCategoryCommand...");
         musicService.removeMusicFromCategory(mMusic, mCategory);
         musicService.saveUserMusicFile();
+        musicService.saveUserRightsListFile();
         log.info("RemoveMusicFromCategoryCommand DONE");
     }
 }

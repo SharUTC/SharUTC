@@ -51,6 +51,11 @@ public interface PlayerService {
     public void removeFromPlaylist(Music music);
 
     /**
+     * Removes all musics from playlist
+     */
+    public void clearPlaylist();
+
+    /**
      * Changes the currently selected music in playlist, if music is found, and
      * play it . Updates ui
      *

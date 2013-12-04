@@ -8,7 +8,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Simple thread which periodically call NetworkService.sendBroadcastHeartbeat().
+ * Simple thread which periodically call
+ * NetworkService.sendBroadcastHeartbeat().
+ *
  * @see NetworkService.sendBroadcastHeartbeat()
  */
 public class HeartbeatThread implements Runnable {
@@ -18,19 +20,19 @@ public class HeartbeatThread implements Runnable {
     private final NetworkService mNetworkService;
     private Thread mThread;
     private volatile boolean mThreadShouldStop = false;
-    
-    public HeartbeatThread(NetworkService nws){
+
+    public HeartbeatThread(NetworkService nws) {
         this.mNetworkService = nws;
         this.mThreadShouldStop = false;
         this.mThread = null;
     }
-    
+
     /**
      * Start the thread.
      */
     public void start() {
         if (mThread == null) {
-            mThread = new Thread(this);
+            mThread = new Thread(this, "HeartbeatThread");
             mThread.start();
         } else {
             log.warn("Can't start HeartbeatThread: already running.");
@@ -44,7 +46,7 @@ public class HeartbeatThread implements Runnable {
         mThreadShouldStop = true;
         mThread.interrupt();
     }
-    
+
     /**
      * Testing TCP connection with known and connected peers.
      */

@@ -16,14 +16,14 @@ public class AddMusicToCategoryCommandImpl implements AddMusicToCategoryCommand 
             .getLogger(AddMusicToCategoryCommandImpl.class);
     private Category mCategory;
     private Music mMusic;
-    final private MusicService mMusicService;
+    private final MusicService musicService;
 
     /**
      * {@inheritDoc}
      */
     @Inject
-    public AddMusicToCategoryCommandImpl(MusicService mMusicService) {
-        this.mMusicService = mMusicService;
+    public AddMusicToCategoryCommandImpl(MusicService musicService) {
+        this.musicService = musicService;
     }
 
     /**
@@ -62,10 +62,12 @@ public class AddMusicToCategoryCommandImpl implements AddMusicToCategoryCommand 
     /**
      * {@inheritDoc}
      */
+    @Override
     public void execute() {
         log.info("AddMusicToCategoryCommand...");
-        mMusicService.addMusicToCategory(mMusic, mCategory);
-        mMusicService.saveUserMusicFile();
+        musicService.addMusicToCategory(mMusic, mCategory);
+        musicService.saveUserMusicFile();
+        musicService.saveUserRightsListFile();
         log.info("AddMusicToCategoryCommand DONE");
     }
 }

@@ -50,6 +50,7 @@ public class RemoveFromLocalCatalogCommandImpl implements RemoveFromLocalCatalog
         log.info("RemoveFromLocalCatalogCommand ...");
         musicService.removeFromLocalCatalog(mMusics);
         musicService.saveUserMusicFile();
+        musicService.saveUserRightsListFile();
         log.info("RemoveFromLocalCatalogCommand DONE");
     }
 }
