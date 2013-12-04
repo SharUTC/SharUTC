@@ -5,6 +5,7 @@ import fr.utc.lo23.sharutc.controler.command.music.AddToLocalCatalogCommand;
 import fr.utc.lo23.sharutc.model.AppModel;
 import fr.utc.lo23.sharutc.model.domain.Catalog;
 import fr.utc.lo23.sharutc.model.domain.Music;
+import fr.utc.lo23.sharutc.ui.custom.HorizontalScrollHandler;
 import fr.utc.lo23.sharutc.ui.custom.card.SongCard;
 import fr.utc.lo23.sharutc.ui.custom.card.TagCard;
 import fr.utc.lo23.sharutc.util.CollectionChangeListener;
@@ -71,6 +72,7 @@ public class SongListController extends SongSelectorController implements Initia
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
         tagScrollPane.getStyleClass().add("myScrollPaneWithTopBorder");
+        HorizontalScrollHandler scrollHandler = new HorizontalScrollHandler(tagScrollPane);
 
         addNewSongButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
