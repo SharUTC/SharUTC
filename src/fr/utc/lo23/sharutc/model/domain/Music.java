@@ -458,7 +458,8 @@ public class Music implements Serializable {
     public Comment getComment(Long peerId, Integer commentIndex) {
         Comment comment = null;
         for (Comment tmpComment : getComments()) {
-            if (tmpComment.getAuthorPeerId().equals(peerId)) {
+            if (tmpComment.getAuthorPeerId().equals(peerId) &&
+                    tmpComment.getIndex().equals(commentIndex)) {
                 comment = tmpComment;
             }
         }
@@ -472,7 +473,9 @@ public class Music implements Serializable {
      */
     public void setComments(List<Comment> comments) {
         this.mComments = comments;
-        this.mCurrentMaxCommentIndex = this.mComments.size();
+        for (Comment tmpComment : getComments()) {
+            this.mCurrentMaxCommentIndex = Math.max(tmpComment.getIndex(), this.mCurrentMaxCommentIndex);
+        }
     }
 
     /**
