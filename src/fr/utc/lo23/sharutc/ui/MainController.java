@@ -129,6 +129,13 @@ public class MainController extends NavigationController implements Initializabl
         //Set User name
         final UserInfo currentUser = mAppModel.getProfile().getUserInfo();
         labelMyProfile.setText(currentUser.getFirstName() + " " + currentUser.getLastName());
+        labelMyProfile.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                //show the details of the user
+                MainController.this.onPeopleDetailRequested(mAppModel.getProfile().getUserInfo());
+            }
+        });
     }
 
     /**
