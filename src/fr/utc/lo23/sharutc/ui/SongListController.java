@@ -1,6 +1,7 @@
 package fr.utc.lo23.sharutc.ui;
 
 import com.google.inject.Inject;
+import fr.utc.lo23.sharutc.controler.command.music.AddTagCommand;
 import fr.utc.lo23.sharutc.controler.command.music.AddToLocalCatalogCommand;
 import fr.utc.lo23.sharutc.model.AppModel;
 import fr.utc.lo23.sharutc.model.domain.Catalog;
@@ -66,6 +67,8 @@ public class SongListController extends SongSelectorController implements Initia
     public AppModel mAppModel;
     @Inject
     private AddToLocalCatalogCommand mAddToLocalCatalogCommand;
+    @Inject
+    private AddTagCommand mAddTagCommand;
     private Label placeHolderLabel;
 
     @Override
@@ -275,5 +278,13 @@ public class SongListController extends SongSelectorController implements Initia
     @Override
     public void onMusicDropOnTag(String tagName) {
         log.debug("music drop on tag : " + tagName);
+        if (!tagName.equals(VIRTUAL_TAG_ALL_SONGS) && !tagName.equals(VIRTUAL_TAG_MY_SONGS)) {
+            for (SongCard selectedSongCard : mSongCardSelected) {
+                mAddTagCommand.setMusic(selectedSongCard.getModel());
+                mAddTagCommand.setTag(tagName);
+                mAddTagCommand.execute();
+                log.debug("add tag : " + tagName);
+            }
+        }
     }
 }
