@@ -478,7 +478,8 @@ public class ProfileCategoriesAndContactsTest {
         createCategoryCommand.setCategoryName("amis");
         createCategoryCommand.execute();
         
-        // A - Check if the category name is changed
+        // A0 - Check if the category name is changed
+        // category{1,famille}
         editCategoryNameCommand.setCategoryId(1);
         editCategoryNameCommand.setCategoryName("famille");
         editCategoryNameCommand.execute();
@@ -490,28 +491,68 @@ public class ProfileCategoriesAndContactsTest {
         Assert.assertEquals("editCategoryNameCommand failed : the category name is not changed", resultat.getName(), "famille");
         
         
+        // A1 - Check if after renaming, a contact can be added in this category
+        UserInfo u = new UserInfo();
+        u.setAge(22);
+        u.setFirstName("Mathilde");
+        u.setLastName("ALL");
+        u.setLogin("mathilde");
+        u.setPassword("ccc");
+        u.setPeerId(1L);
+
+        Contact cCree = new Contact(u);
+        
+        addContactToCategoryCommand.setContact(cCree);
+        addContactToCategoryCommand.setCategory(resultat);
+        addContactToCategoryCommand.execute();
+
+        
+        Contact cTest = new Contact(u);
+        cTest.addCategoryId(1);
+        
+        Assert.assertEquals("editCategoryNameCommand failed : the contact was not added to the renamed category",
+                cCree, cTest);
+        
+        Assert.assertTrue("editCategoryNameCommand failed : the contact was not added to the renamed category",
+                cCree.getCategoryIds().contains(1));
+        
+        
+        // A2 - Check if we can delete the category after renaming it
+        
+        Assert.assertEquals("editCategoryNameCommand failed : the test can't start",
+                appModel.getProfile().getCategories().getCategories().size(), 2);
+        
+        deleteCategoryCommand.setCategory(resultat);
+        deleteCategoryCommand.execute();
+        
+        Assert.assertEquals("editCategoryNameCommand failed : the category is not deleted after renaming it",
+                appModel.getProfile().getCategories().getCategories().size(), 1); 
+        
+        
         // B - Check if the new name already exists
         
-        // category {1, famille}
-        // category {2, amis}
+        // category {2, famille}
+        createCategoryCommand.setCategoryName("famille");
+        createCategoryCommand.execute();
+        // category {3, amis}
         createCategoryCommand.setCategoryName("amis");
         createCategoryCommand.execute();
         
-        Category catTest2 = new Category(1, "famille");
-        Category resultat2 = appModel.getProfile().getCategories().findCategoryById(1);
+        Category catTest2 = new Category(2, "famille");
+        Category resultat2 = appModel.getProfile().getCategories().findCategoryById(2);
         
         Assert.assertEquals("editCategoryNameCommand failed : the test can't start", catTest2, resultat2);
         
-        Category catTest3 = new Category(2, "amis");
-        Category resultat3 = appModel.getProfile().getCategories().findCategoryById(2);
+        Category catTest3 = new Category(3, "amis");
+        Category resultat3 = appModel.getProfile().getCategories().findCategoryById(3);
         
         Assert.assertEquals("editCategoryNameCommand failed : the test can't start", catTest3, resultat3);
         
-        editCategoryNameCommand.setCategoryId(2);
+        editCategoryNameCommand.setCategoryId(3);
         editCategoryNameCommand.setCategoryName("famille");
         editCategoryNameCommand.execute();
         
-        Category resultat4 = appModel.getProfile().getCategories().findCategoryById(2);
+        Category resultat4 = appModel.getProfile().getCategories().findCategoryById(3);
         
         Assert.assertEquals("editCategoryNameCommand failed : B - the category name has been changed (1)", catTest3, resultat4);
         Assert.assertEquals("editCategoryNameCommand failed : B - the category name has been changed (2)", resultat4.getName(), "amis");
