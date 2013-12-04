@@ -437,7 +437,7 @@ public class MainController extends NavigationController implements Initializabl
             mCurrentLoadedRighpaneResult = mFxmlLoader.load(getClass().getResource("/fr/utc/lo23/sharutc/ui/fxml/song_list.fxml"));
             ((DragPreviewDrawer) mCurrentLoadedRighpaneResult.getController()).init(mDragPreview);
             ((SongListController) mCurrentLoadedRighpaneResult.getController()).setInterface(this);
-            ((SongListController) mCurrentLoadedRighpaneResult.getController()).showLocalCatalog(albumName);
+            ((SongListController) mCurrentLoadedRighpaneResult.getController()).showLocalCatalogWithAlbumFilter(albumName);
             attachRightpane(mCurrentLoadedRighpaneResult);
         } catch (IOException e) {
             log.error(e.getMessage());

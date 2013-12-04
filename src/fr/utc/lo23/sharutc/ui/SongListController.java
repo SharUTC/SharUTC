@@ -138,10 +138,10 @@ public class SongListController extends SongSelectorController implements Initia
     }
 
     public void showLocalCatalog() {
-        showLocalCatalog(null);
+        showMusics(mAppModel.getLocalCatalog().getMusics());
     }
 
-    public void showLocalCatalog(String albumFilter) {
+    public void showLocalCatalogWithAlbumFilter(String albumFilter) {
         final Catalog catalog = mAppModel.getLocalCatalog();
         ArrayList<Music> musics = new ArrayList<Music>();
 
@@ -154,7 +154,10 @@ public class SongListController extends SongSelectorController implements Initia
                 musics.add(m);
             }
         }
+        showMusics(musics);
+    }
 
+    private void showMusics(List<Music> musics) {
         songsContainer.getChildren().clear();
         if (musics.isEmpty()) {
             placeHolderLabel = new Label("You have no songs. Please use the \"Add\" button in the left top corner.");
@@ -214,10 +217,10 @@ public class SongListController extends SongSelectorController implements Initia
         //For the moment, we retrieve only the local tag map
         final TagMap localTagMap = musicService.getLocalTagMap();
         final HashMap<String, Integer> tagHashMap = localTagMap.getMap();
-        for(Entry<String, Integer> tag : tagHashMap.entrySet()) {
-            showSimpleCard(new TagCard(tag.getKey(), this));            
+        for (Entry<String, Integer> tag : tagHashMap.entrySet()) {
+            showSimpleCard(new TagCard(tag.getKey(), this));
         }
-        
+
         showAddTagCard();
     }
 
