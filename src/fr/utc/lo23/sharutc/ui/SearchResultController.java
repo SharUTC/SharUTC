@@ -131,6 +131,15 @@ public class SearchResultController extends SongSelectorController implements Ri
         }
     }
 
+    private void addChildFromOtherThread(final SimpleCard card) {
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                addChild(card);
+            }
+        });
+    }
+
     @Override
     public void onPeopleDetailsRequested(UserInfo userInfo) {
         mInterface.onPeopleDetailRequested(userInfo);
@@ -149,36 +158,27 @@ public class SearchResultController extends SongSelectorController implements Ri
     @Override
     public void collectionChanged(CollectionEvent ev) {
         log.debug("collectionChanged -> " + ev.getType().name());
-        handleCollectionEventOnUiThread(ev);
-
-    }
-
-    public void handleCollectionEventOnUiThread(final CollectionEvent ev) {
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                switch (ev.getType()) {
-                    case ADD:
-                        Music m = ((Music) ev.getItem());
-                        log.debug("add music " + m.getTitle() + " " + m.getArtist() + " " + m.getAlbum());
-                        if (m.getAlbum().toLowerCase().contains(mCurrentCriteriaSearch) && !mAlbumNameFound.contains(m.getAlbum())) {
-                            log.debug("add music -- album");
-                            mAlbumNameFound.add(m.getAlbum());
-                            mAlbumList.addChild(new AlbumCard(m, SearchResultController.this));
-                        }
-                        if (m.getArtist().toLowerCase().contains(mCurrentCriteriaSearch) && !mArtistNameFound.contains(m.getArtist())) {
-                            log.debug("add music -- artist");
-                            mArtistNameFound.add(m.getArtist());
-                            mArtistList.addChild(new ArtistCard(m.getArtist(), SearchResultController.this));
-                        }
-                        if (m.getTitle().toLowerCase().contains(mCurrentCriteriaSearch)) {
-                            log.debug("add music -- song");
-                            mSongList.addChild(new SongCard(m, SearchResultController.this, mAppModel.getProfile().getUserInfo().getPeerId() == m.getOwnerPeerId()));
-                        }
-                        break;
+        switch (ev.getType()) {
+            case ADD:
+                Music m = ((Music) ev.getItem());
+                log.debug("add music " + m.getTitle() + " " + m.getArtist() + " " + m.getAlbum());
+                if (m.getAlbum().toLowerCase().contains(mCurrentCriteriaSearch) && !mAlbumNameFound.contains(m.getAlbum())) {
+                    log.debug("add music -- album");
+                    mAlbumNameFound.add(m.getAlbum());
+                    addChildFromOtherThread(new AlbumCard(m, SearchResultController.this));
                 }
-            }
-        });
+                if (m.getArtist().toLowerCase().contains(mCurrentCriteriaSearch) && !mArtistNameFound.contains(m.getArtist())) {
+                    log.debug("add music -- artist");
+                    mArtistNameFound.add(m.getArtist());
+                    addChildFromOtherThread(new ArtistCard(m.getArtist(), SearchResultController.this));
+                }
+                if (m.getTitle().toLowerCase().contains(mCurrentCriteriaSearch)) {
+                    log.debug("add music -- song");
+                    addChildFromOtherThread(new SongCard(m, SearchResultController.this, mAppModel.getProfile().getUserInfo().getPeerId() == m.getOwnerPeerId()));
+                }
+                break;
+        }
+
     }
 
     @Override
