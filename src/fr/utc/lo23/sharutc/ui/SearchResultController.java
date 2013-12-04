@@ -44,6 +44,7 @@ public class SearchResultController extends SongSelectorController implements Ri
     private CardList mArtistList;  
     private CardList mAlbumList;
     private List<String> mArtistNameFound;
+    private List<String> mAlbumNameFound;
     private ISearchResultController mInterface;
     @Inject
     private AppModel mAppModel;
@@ -61,6 +62,7 @@ public class SearchResultController extends SongSelectorController implements Ri
         mAlbumList = new CardList("Albums", "bgOrange");
         
         mArtistNameFound = new ArrayList<String>();
+        mAlbumNameFound = new ArrayList<String>();
 
         gridpane.getChildren().add(mSongList);
         gridpane.getChildren().add(mFriendList);
@@ -85,6 +87,7 @@ public class SearchResultController extends SongSelectorController implements Ri
     public void searchAll(final String criteriaString) {
         log.debug("search all -> " + criteriaString);
         mArtistNameFound.clear();
+        mAlbumNameFound.clear();
         mCurrentCriteriaSearch = criteriaString;
         searchMusic(mCurrentCriteriaSearch);
     }
@@ -150,8 +153,9 @@ public class SearchResultController extends SongSelectorController implements Ri
                     case ADD:
                         Music m = ((Music) ev.getItem());
                         log.debug("add music " + m.getTitle() + " " + m.getArtist() + " " + m.getAlbum());
-                        if (m.getAlbum().toLowerCase().contains(mCurrentCriteriaSearch)) {
+                        if (m.getAlbum().toLowerCase().contains(mCurrentCriteriaSearch) && !mAlbumNameFound.contains(m.getAlbum())) {
                             log.debug("add music -- album");
+                            mAlbumNameFound.add(m.getAlbum());
                             mAlbumList.addChild(new AlbumCard(m, SearchResultController.this));
                         }
                         if (m.getArtist().toLowerCase().contains(mCurrentCriteriaSearch) && !mArtistNameFound.contains(m.getArtist())) {
