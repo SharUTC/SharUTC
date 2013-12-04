@@ -117,7 +117,7 @@ public class SongListController extends SongSelectorController implements Initia
             }
         });
 
-        new Thread(importTask).start();
+        new Thread(importTask, "Import Songs").start();
     }
 
     public void showLocalCatalog() {

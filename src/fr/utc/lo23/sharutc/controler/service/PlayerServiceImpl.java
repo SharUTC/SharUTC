@@ -104,6 +104,16 @@ public class PlayerServiceImpl implements PlayerService, PropertyChangeListener,
      * {@inheritDoc}
      */
     @Override
+    public void clearPlaylist() {
+        for (int i = 0; i < mPlaylist.size(); i++) {
+            mPlaylist.removeAt(i);
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public synchronized void playMusicFromPlaylist(Music music) {
         log.info("playMusicFromPlaylist");
         if (music != null && mPlaylist.contains(music)) {

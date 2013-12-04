@@ -234,7 +234,7 @@ public class MainController extends NavigationController implements Initializabl
 
             exportProgress.setVisible(true);
             exportButton.setVisible(false);
-            new Thread(exportTask).start();
+            new Thread(exportTask, "Profile Export").start();
         }
 
     }

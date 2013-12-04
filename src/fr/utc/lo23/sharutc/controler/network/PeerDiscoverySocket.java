@@ -14,14 +14,13 @@ import org.slf4j.LoggerFactory;
  * Listen to incoming UDP multicast and provide methods to send some.
  */
 public class PeerDiscoverySocket implements Runnable {
-    private static final Logger log = LoggerFactory
-        .getLogger(PeerDiscoverySocket.class);
 
+    private static final Logger log = LoggerFactory
+            .getLogger(PeerDiscoverySocket.class);
     private final AppModel appModel;
     private final MessageHandler messageHandler;
     private final MessageParser messageParser;
     private final NetworkService networkService;
-
     private final InetAddress mGroup;
     private final int mPort;
     private MulticastSocket mSocket;
@@ -63,7 +62,7 @@ public class PeerDiscoverySocket implements Runnable {
      */
     public void start() {
         if (mThread == null) {
-            mThread = new Thread(this);
+            mThread = new Thread(this, "PeerDiscoverySocket");
             mThread.start();
         } else {
             log.warn("Can't start PeerDiscoverySocket: already running.");

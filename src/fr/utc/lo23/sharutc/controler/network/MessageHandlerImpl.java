@@ -30,25 +30,23 @@ import org.slf4j.LoggerFactory;
  */
 @Singleton
 public class MessageHandlerImpl implements MessageHandler {
+
     private static final Logger log = LoggerFactory
             .getLogger(MessageHandlerImpl.class);
-
     private final AppModel appModel;
     private final MessageParser messageParser;
     private final MusicService musicService;
     private final UserService userService;
-
     private Command command = null;
 
     @Inject
     public MessageHandlerImpl(AppModel appModel, MessageParser messageParser,
-                              MusicService musicService, UserService userService) {
+            MusicService musicService, UserService userService) {
         this.appModel = appModel;
         this.messageParser = messageParser;
         this.musicService = musicService;
         this.userService = userService;
     }
-
     // all command interfaces used by network service
     @Inject
     private AddCommentCommand addCommentCommand;
@@ -94,8 +92,9 @@ public class MessageHandlerImpl implements MessageHandler {
     @Override
     public void handleMessage(String string) {
         command = null;
-        log.info("handleMessage : {}", string);
-        Message incomingMessage = messageParser.fromJSON(string);
+        log.info("handleMessage ...");
+        //log.info("handleMessage : {}", string); // slow down computers when message contains a mp3 file
+        final Message incomingMessage = messageParser.fromJSON(string);
         if (incomingMessage != null) {
             try {
                 messageParser.read(incomingMessage);
@@ -219,12 +218,13 @@ public class MessageHandlerImpl implements MessageHandler {
                         log.warn("Missing command : {}", incomingMessage.getType().name());
                         break;
                 }
-                if (command != null) {
-                    Thread thread = new Thread() {
+                final Command commandToExecute = command;
+                if (commandToExecute != null) {
+                    Thread thread = new Thread(commandToExecute.getClass().getSimpleName()) {
                         @Override
                         public void run() {
-                            log.info("Running new command : {}", command.getClass().getName());
-                            command.execute();
+                            log.info("Running new command : {}", commandToExecute.getClass().getName());
+                            commandToExecute.execute();
                         }
                     };
                     thread.start();
@@ -237,9 +237,11 @@ public class MessageHandlerImpl implements MessageHandler {
     }
 
     /**
-     * chek if the current conversation id is equal to the message conversation id
+     * chek if the current conversation id is equal to the message conversation
+     * id
      *
-     * @return true if the current conversation id is equal to the message conversation id, else false.
+     * @return true if the current conversation id is equal to the message
+     * conversation id, else false.
      */
     private boolean isMessageForCurrentConversation() {
         return appModel.getCurrentConversationId().equals(messageParser.getValue(Message.CONVERSATION_ID));

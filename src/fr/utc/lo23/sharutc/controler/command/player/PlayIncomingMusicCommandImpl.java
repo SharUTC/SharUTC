@@ -42,9 +42,13 @@ public class PlayIncomingMusicCommandImpl implements PlayIncomingMusicCommand {
     @Override
     public void execute() {
         log.info("PlayIncomingMusicCommand ...");
-
-        playerService.updateAndPlayMusic(mMusic);
-
+        mMusic.setFileMissing(mMusic.getFileBytes() == null || mMusic.getFileBytes().length <= 0);
+        if (mMusic.getFileMissing()) {
+            log.warn("File is missing for music : {}", mMusic);
+            // playerService.updateMissingFile(mMusic);
+        } else {
+            playerService.updateAndPlayMusic(mMusic);
+        }
         log.info("PlayIncomingMusicCommand DONE");
     }
 }

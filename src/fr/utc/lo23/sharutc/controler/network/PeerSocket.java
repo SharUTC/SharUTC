@@ -8,12 +8,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class PeerSocket implements Runnable {
-    private static final Logger log = LoggerFactory.getLogger(PeerDiscoverySocket.class);
 
+    private static final Logger log = LoggerFactory.getLogger(PeerDiscoverySocket.class);
     private final MessageHandler messageHandler;
     private final MessageParser messageParser;
     private final NetworkServiceImpl networkService;
-
     private boolean mFailureHandled = false;
     private final Socket mSocket;
     private Thread mThread;
@@ -53,7 +52,7 @@ public class PeerSocket implements Runnable {
             } catch (IOException ex) {
                 log.error(ex.toString());
             }
-            Message msg= messageParser.fromJSON(json);
+            Message msg = messageParser.fromJSON(json);
             if (msg.getType() == MessageType.CONNECTION_RESPONSE) {
                 log.debug("Received connection_response");
                 if (msg.getFromPeerId() == null) {
@@ -65,7 +64,7 @@ public class PeerSocket implements Runnable {
                 log.error("First message on Socket must be CONNECTION_RESPONSE");
             }
         }
-        
+
         // add this new PeerSocket to the PeerSocket list
         this.networkService.addPeer(peerId, this);
     }
@@ -76,7 +75,7 @@ public class PeerSocket implements Runnable {
     public void start() {
         // start thread
         if (mThread == null) {
-            mThread = new Thread(this);
+            mThread = new Thread(this, "PeerSocket");
             mThread.start();
         } else {
             log.warn("Can't start PeerSocket: already running.");
