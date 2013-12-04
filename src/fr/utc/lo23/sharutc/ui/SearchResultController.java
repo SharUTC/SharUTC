@@ -56,7 +56,7 @@ public class SearchResultController extends SongSelectorController implements Ri
         mAppModel.getSearchResults().addPropertyChangeListener(this);
 
         mSongList = new CardList("Songs", "bgBlue");
-        mFriendList = new CardList("Friends", "bgGreen");
+        mFriendList = new CardList("People", "bgGreen");
         mArtistList = new CardList("Artists", "bgRed");
         mAlbumList = new CardList("Albums", "bgOrange");
 
