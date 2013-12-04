@@ -104,7 +104,7 @@ public class Comment implements Serializable {
     /**
      * Set the text
      *
-     * @return text The text
+     * @param text The text
      */
     public void setText(String text) {
         String oldText = this.mText;

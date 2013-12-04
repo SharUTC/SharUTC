@@ -472,6 +472,7 @@ public class Music implements Serializable {
      */
     public void setComments(List<Comment> comments) {
         this.mComments = comments;
+        this.mCurrentMaxCommentIndex = this.mComments.size();
     }
 
     /**
