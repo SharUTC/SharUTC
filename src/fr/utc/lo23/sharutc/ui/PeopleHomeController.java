@@ -46,7 +46,6 @@ public class PeopleHomeController extends DragPreviewDrawer implements Initializ
      * Card selected by the user
      */
     private ArrayList<PeopleCard> mPeopleCardSelected;
-
     @FXML
     public FlowPane peopleContainer;
     @FXML
@@ -71,19 +70,16 @@ public class PeopleHomeController extends DragPreviewDrawer implements Initializ
     private EditCategoryNameCommand editCategoryNameCommand;
     @Inject
     private AddContactToCategoryCommand addContactToCategoryCommand;
-
     /**
      * Display message to the user
      */
     private Label placeHolderLabel;
-
     /**
      * Manage Category
      */
     private Category mCurrentCategory;
     private GroupCard mVirtualConnectedGroup;
     private GroupCard mAskForDeletionCard;
-
     /**
      * + card for create a new category
      */
@@ -158,18 +154,18 @@ public class PeopleHomeController extends DragPreviewDrawer implements Initializ
     public void onGroupDeletionRequested(final GroupCard g) {
         log.info("onGroupDeletionRequested " + g.getModel().getName());
         mAskForDeletionCard = g;
-        DialogBoxBuilder.createConfirmBox("Would you want to delete the category " + g.getModel().getName() + " ?",
+        DialogBoxBuilder.createConfirmBox("Do you want to delete the category " + g.getModel().getName() + " ?",
                 this.getClass().getResource("/fr/utc/lo23/sharutc/ui/css/modal.css").toExternalForm(),
                 groupContainer.getScene().getRoot(),
                 new DialogBoxBuilder.IConfirmBox() {
-                    @Override
-                    public void onChoiceMade(boolean answer) {
-                        if (answer) {
-                            deleteCategoryCommand.setCategory(g.getModel());
-                            deleteCategoryCommand.execute();
-                        }
-                    }
-                }).show();
+            @Override
+            public void onChoiceMade(boolean answer) {
+                if (answer) {
+                    deleteCategoryCommand.setCategory(g.getModel());
+                    deleteCategoryCommand.execute();
+                }
+            }
+        }).show();
     }
 
     @Override
@@ -180,16 +176,16 @@ public class PeopleHomeController extends DragPreviewDrawer implements Initializ
                 this.getClass().getResource("/fr/utc/lo23/sharutc/ui/css/modal.css").toExternalForm(),
                 groupContainer.getScene().getRoot(),
                 new DialogBoxBuilder.IEditBox() {
-                    @Override
-                    public void onValidate(String value) {
-                        //set the new name
-                        editCategoryNameCommand.setCategoryId(category.getId());
-                        editCategoryNameCommand.setCategoryName(value);
-                        editCategoryNameCommand.execute();
-                        //TODO remove when UPDATE will be fired
-                        displayUserGroup();
-                    }
-                }).show();
+            @Override
+            public void onValidate(String value) {
+                //set the new name
+                editCategoryNameCommand.setCategoryId(category.getId());
+                editCategoryNameCommand.setCategoryName(value);
+                editCategoryNameCommand.execute();
+                //TODO remove when UPDATE will be fired
+                displayUserGroup();
+            }
+        }).show();
     }
 
     @Override
@@ -385,7 +381,9 @@ public class PeopleHomeController extends DragPreviewDrawer implements Initializ
         hideAddNewGroupCard();
         final GroupCard newGroupCard = new GroupCard(category, PeopleHomeController.this);
         //need some improvement, remove mouse enter behaviour which display buttons for edition
-        if (!editable) newGroupCard.setOnMouseEntered(null);
+        if (!editable) {
+            newGroupCard.setOnMouseEntered(null);
+        }
         groupContainer.getChildren().add(newGroupCard);
         displayAddNewGroupCard();
 
@@ -412,13 +410,13 @@ public class PeopleHomeController extends DragPreviewDrawer implements Initializ
                             this.getClass().getResource("/fr/utc/lo23/sharutc/ui/css/modal.css").toExternalForm(),
                             groupContainer.getScene().getRoot(),
                             new DialogBoxBuilder.IEditBox() {
-                                @Override
-                                public void onValidate(String value) {
-                                    //create the category with the entered name
-                                    createCategoryCommand.setCategoryName(value);
-                                    createCategoryCommand.execute();
-                                }
-                            }).show();
+                        @Override
+                        public void onValidate(String value) {
+                            //create the category with the entered name
+                            createCategoryCommand.setCategoryName(value);
+                            createCategoryCommand.execute();
+                        }
+                    }).show();
                 }
             }
         });

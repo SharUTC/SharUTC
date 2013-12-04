@@ -5,15 +5,41 @@
 <?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import java.net.URL?>
+<?import javafx.scene.image.*?>
 
 <fx:root type="fr.utc.lo23.sharutc.ui.custom.CommentView"
          xmlns:fx="http://javafx.com/fxml">
-    <VBox styleClass="commentTitleContainer" >
-        <VBox.margin>
+    
+    <HBox styleClass="commentTitleContainer" alignment="CENTER_LEFT" >
+        <HBox.margin>
             <javafx.geometry.Insets top="5" bottom="5" />
-        </VBox.margin>
-        <Label fx:id="commentTitle"  styleClass="commentTitle" />
-    </VBox>
+        </HBox.margin>
+        <VBox HBox.hgrow="ALWAYS" alignment="CENTER_LEFT"  >
+            <Label fx:id="commentTitle"  styleClass="commentTitle" />
+        </VBox>
+        <Button fx:id="buttonEditComment" styleClass="imageButton" visible="false" >
+            <HBox.margin>
+                <javafx.geometry.Insets  right="7"/>
+            </HBox.margin>
+            <graphic>
+                <ImageView fitWidth="25" fitHeight="25">
+                    <image>
+                        <Image url="@../drawable/ic_edit.png"/>
+                    </image>
+                </ImageView>
+            </graphic>
+        </Button>        
+        <Button fx:id="buttonDeleteComment" styleClass="imageButton" visible="false">
+            <graphic>
+                <ImageView fitWidth="25" fitHeight="25">
+                    <image>
+                        <Image url="@../drawable/ic_delete.png"/>
+                    </image>
+                </ImageView>
+            </graphic>
+        </Button>
+    </HBox>
     
     <Label fx:id="commentContent" styleClass="commentContent" wrapText="true" >
         <VBox.margin>
