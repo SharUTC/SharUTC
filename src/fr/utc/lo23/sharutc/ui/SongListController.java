@@ -3,9 +3,11 @@ package fr.utc.lo23.sharutc.ui;
 import com.google.inject.Inject;
 import fr.utc.lo23.sharutc.controler.command.music.AddTagCommand;
 import fr.utc.lo23.sharutc.controler.command.music.AddToLocalCatalogCommand;
+import fr.utc.lo23.sharutc.controler.service.MusicService;
 import fr.utc.lo23.sharutc.model.AppModel;
 import fr.utc.lo23.sharutc.model.domain.Catalog;
 import fr.utc.lo23.sharutc.model.domain.Music;
+import fr.utc.lo23.sharutc.model.domain.TagMap;
 import fr.utc.lo23.sharutc.ui.custom.HorizontalScrollHandler;
 import fr.utc.lo23.sharutc.ui.custom.card.SimpleCard;
 import fr.utc.lo23.sharutc.ui.custom.card.SongCard;
@@ -28,7 +30,9 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.ResourceBundle;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
@@ -65,6 +69,8 @@ public class SongListController extends SongSelectorController implements Initia
     public ProgressIndicator addNewSongProgress;
     @Inject
     public AppModel mAppModel;
+    @Inject
+    private MusicService musicService;
     @Inject
     private AddToLocalCatalogCommand mAddToLocalCatalogCommand;
     @Inject
@@ -205,11 +211,13 @@ public class SongListController extends SongSelectorController implements Initia
         //The "virtual" "My Songs" tag
         showSimpleCard(new TagCard(VIRTUAL_TAG_MY_SONGS, this));
 
-        //TODO remove when we get the real tags
-        for (int i = 0; i < 5; i++) {
-            showSimpleCard(new TagCard("Tag " + String.valueOf(i), this));
+        //For the moment, we retrieve only the local tag map
+        final TagMap localTagMap = musicService.getLocalTagMap();
+        final HashMap<String, Integer> tagHashMap = localTagMap.getMap();
+        for(Entry<String, Integer> tag : tagHashMap.entrySet()) {
+            showSimpleCard(new TagCard(tag.getKey(), this));            
         }
-
+        
         showAddTagCard();
     }
 
