@@ -71,6 +71,8 @@ import fr.utc.lo23.sharutc.controler.command.profile.DeleteCategoryCommand;
 import fr.utc.lo23.sharutc.controler.command.profile.DeleteCategoryCommandImpl;
 import fr.utc.lo23.sharutc.controler.command.profile.DeleteContactCommand;
 import fr.utc.lo23.sharutc.controler.command.profile.DeleteContactCommandImpl;
+import fr.utc.lo23.sharutc.controler.command.profile.EditCategoryNameCommand;
+import fr.utc.lo23.sharutc.controler.command.profile.EditCategoryNameCommandImpl;
 import fr.utc.lo23.sharutc.controler.command.profile.ManageRightsCommand;
 import fr.utc.lo23.sharutc.controler.command.profile.ManageRightsCommandImpl;
 import fr.utc.lo23.sharutc.controler.command.profile.RemoveContactFromCategoryCommand;
@@ -170,6 +172,7 @@ class TestModule extends AbstractModule {
 
         bind(CreateCategoryCommand.class).to(CreateCategoryCommandImpl.class);
         bind(DeleteCategoryCommand.class).to(DeleteCategoryCommandImpl.class);
+        bind(EditCategoryNameCommand.class).to(EditCategoryNameCommandImpl.class);
 
         bind(AddContactToCategoryCommand.class).to(AddContactToCategoryCommandImpl.class);
         bind(RemoveContactFromCategoryCommand.class).to(RemoveContactFromCategoryCommandImpl.class);

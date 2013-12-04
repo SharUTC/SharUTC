@@ -66,8 +66,8 @@ public class PeopleHomeController extends DragPreviewDrawer implements Initializ
     private CreateCategoryCommand createCategoryCommand;
     @Inject
     private DeleteCategoryCommand deleteCategoryCommand;
-  //  @Inject
-  //  private EditCategoryCommand editCategoryCommand;
+    @Inject
+    private EditCategoryNameCommand editCategoryNameCommand;
     @Inject
     private AddContactToCategoryCommand addContactToCategoryCommand;
 
@@ -157,7 +157,7 @@ public class PeopleHomeController extends DragPreviewDrawer implements Initializ
     public void onGroupDeletionRequested(final GroupCard g) {
         log.info("onGroupDeletionRequested " + g.getModel().getName());
         mAskForDeletionCard = g;
-        DialogBoxBuilder.createConfirmBox("Would you want to delete the category " + g.getModel().getName()+" ?",
+        DialogBoxBuilder.createConfirmBox("Would you want to delete the category " + g.getModel().getName() + " ?",
                 this.getClass().getResource("/fr/utc/lo23/sharutc/ui/css/modal.css").toExternalForm(),
                 groupContainer.getScene().getRoot(),
                 new DialogBoxBuilder.IConfirmBox() {
@@ -182,14 +182,11 @@ public class PeopleHomeController extends DragPreviewDrawer implements Initializ
                     @Override
                     public void onValidate(String value) {
                         //set the new name
-                        
-                  //      editCategoryCommand.setCategory(category);
-                  //      editCategoryCommand.setNewname(value);
-                 //       editCategoryCommand.execute();
-                        category.setName(value);
+                        editCategoryNameCommand.setCategoryId(category.getId());
+                        editCategoryNameCommand.setCategoryName(value);
+                        editCategoryNameCommand.execute();
                         //TODO remove when UPDATE will be fired
-                        //TODO need fix, can't delete category after edition. Need to relaunch the app.
-                        //displayUserGroup();
+                        displayUserGroup();
                     }
                 }).show();
     }

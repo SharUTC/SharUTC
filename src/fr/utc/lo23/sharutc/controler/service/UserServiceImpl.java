@@ -105,13 +105,8 @@ public class UserServiceImpl implements UserService {
          * (since there are IDs), we consider that a user can't create two categories
          *  with the same name.
          */
-        boolean present = false;
-        for (Category c : getProfile().getCategories().getCategories()) {
-            if (c.getName().equals(categoryName)) {
-                present = true;
-                break;
-            }
-        }
+        boolean present = getProfile().getCategories().isNamePresent(categoryName);
+        
         if (!present) {
             Category c = new Category(getProfile().getNewCategoryId(), categoryName);
             getProfile().getCategories().add(c);
@@ -140,6 +135,47 @@ public class UserServiceImpl implements UserService {
         } else {
             log.warn("Can't delete Public category ");
             ErrorMessage nErrorMessage = new ErrorMessage("Can't delete Public category");
+            appModel.getErrorBus().pushErrorMessage(nErrorMessage);
+        }
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void setCategoryName(Integer categoryId, String newCategoryName) {
+        //Check if the category is not the category Public
+        if (categoryId != Category.PUBLIC_CATEGORY_ID) {
+            
+            Category category = appModel.getProfile().getCategories().findCategoryById(categoryId);
+
+            //Check if the category exists
+            if (category != null) {
+                /*
+                * check that the name of the category does not exist
+                * Indeed, even if it will be possible to have two categories with the same name
+                * (since there are IDs), we consider that a user can't create two categories
+                *  with the same name.
+                */
+               boolean present = getProfile().getCategories().isNamePresent(newCategoryName);
+
+               if (!present) {
+                   category.setName(newCategoryName);
+               } else {
+                   log.warn("This category name already exists, you can't rename the category");
+                   ErrorMessage nErrorMessage = new ErrorMessage("This category name already exists, you can't rename the category");
+                   appModel.getErrorBus().pushErrorMessage(nErrorMessage);
+               }
+               
+            } else {
+                log.warn("This category does not exist");
+                ErrorMessage nErrorMessage = new ErrorMessage("This category does not exist");
+                appModel.getErrorBus().pushErrorMessage(nErrorMessage);
+            }
+            
+        } else {
+            log.warn("You can't rename the category Public");
+            ErrorMessage nErrorMessage = new ErrorMessage("You can't rename the category Public");
             appModel.getErrorBus().pushErrorMessage(nErrorMessage);
         }
     }

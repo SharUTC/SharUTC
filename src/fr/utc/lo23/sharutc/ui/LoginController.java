@@ -10,7 +10,6 @@ import fr.utc.lo23.sharutc.model.ErrorBus;
 import fr.utc.lo23.sharutc.model.ErrorMessage;
 import fr.utc.lo23.sharutc.ui.custom.SharutcLogo;
 import fr.utc.lo23.sharutc.ui.navigation.NavigationController;
-import fr.utc.lo23.sharutc.ui.navigation.NavigationHandler;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
@@ -22,7 +21,6 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
@@ -319,6 +317,7 @@ public class LoginController extends NavigationController implements Initializab
     }
 
     private void importProfile(String filePath) {
+        errorContainer.getChildren().clear();
         mImportProfileCommand.setPath(filePath);
         mImportProfileCommand.execute();
     }
