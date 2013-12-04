@@ -37,7 +37,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.text.TextAlignment;
 
 public class SongListController extends SongSelectorController implements Initializable,
-        CollectionChangeListener<Music> {
+        CollectionChangeListener<Music>, TagCard.ITagCard {
 
     private static final Logger log = LoggerFactory
             .getLogger(SongListController.class);
@@ -190,14 +190,14 @@ public class SongListController extends SongSelectorController implements Initia
         tagContainer.getChildren().clear();
 
         //The "virtual" "All songs" tag
-        showTagCard(new TagCard("All Songs"));
+        showTagCard(new TagCard("All Songs", this));
 
         //The "virtual" "My Songs" tag
-        showTagCard(new TagCard("My Songs"));
+        showTagCard(new TagCard("My Songs", this));
 
         //TODO remove when we get the real tags
         for (int i = 0; i < 5; i++) {
-            showTagCard(new TagCard("Tag " + String.valueOf(i)));
+            showTagCard(new TagCard("Tag " + String.valueOf(i), this));
         }
     }
 
@@ -225,5 +225,15 @@ public class SongListController extends SongSelectorController implements Initia
                 }
             }
         });
+    }
+
+    @Override
+    public void onTagSelected(String tagName) {
+        log.debug("tag selected : " + tagName);
+    }
+
+    @Override
+    public void onMusicDropOnTag(String tagName) {
+        log.debug("music drop on tag : " + tagName);
     }
 }
