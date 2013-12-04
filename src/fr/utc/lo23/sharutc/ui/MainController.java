@@ -5,43 +5,44 @@ import com.cathive.fx.guice.GuiceFXMLLoader.Result;
 import com.google.inject.Inject;
 import fr.utc.lo23.sharutc.controler.command.account.DisconnectionCommand;
 import fr.utc.lo23.sharutc.controler.command.account.ExportProfileCommand;
-
-import fr.utc.lo23.sharutc.model.AppModel;
-
 import fr.utc.lo23.sharutc.controler.command.player.AddToPlaylistCommand;
 import fr.utc.lo23.sharutc.controler.command.player.RemoveFromPlaylistCommand;
 import fr.utc.lo23.sharutc.controler.service.FileService;
 import fr.utc.lo23.sharutc.controler.service.PlayerService;
+import fr.utc.lo23.sharutc.model.AppModel;
 import fr.utc.lo23.sharutc.model.AppModelImpl;
-
 import fr.utc.lo23.sharutc.model.domain.Music;
+import fr.utc.lo23.sharutc.model.userdata.Category;
 import fr.utc.lo23.sharutc.model.userdata.UserInfo;
 import fr.utc.lo23.sharutc.ui.custom.PlayListListCell;
+import fr.utc.lo23.sharutc.ui.custom.PlayListMusic;
 import fr.utc.lo23.sharutc.ui.custom.card.SongCard;
+import fr.utc.lo23.sharutc.ui.navigation.NavigationController;
+import fr.utc.lo23.sharutc.util.CollectionChangeListener;
+import fr.utc.lo23.sharutc.util.CollectionEvent;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
+import javafx.concurrent.WorkerStateEvent;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Orientation;
 import javafx.geometry.Point2D;
 import javafx.scene.Node;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListCell;
-import javafx.scene.control.ListView;
+import javafx.scene.control.*;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.*;
+import javafx.stage.DirectoryChooser;
 import javafx.util.Callback;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import fr.utc.lo23.sharutc.model.userdata.Category;
-import fr.utc.lo23.sharutc.ui.custom.PlayListMusic;
-import fr.utc.lo23.sharutc.ui.navigation.NavigationController;
-import fr.utc.lo23.sharutc.util.CollectionChangeListener;
-import fr.utc.lo23.sharutc.util.CollectionEvent;
+
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
@@ -50,13 +51,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
-import javafx.concurrent.Task;
-import javafx.concurrent.WorkerStateEvent;
-import javafx.event.EventHandler;
-import javafx.scene.control.ProgressIndicator;
-import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
-import javafx.stage.DirectoryChooser;
 
 public class MainController extends NavigationController implements Initializable,
         PeopleHomeController.IPeopleHomeController,
@@ -89,6 +83,7 @@ public class MainController extends NavigationController implements Initializabl
     public Label dropOverlayLabel;
     public Label labelMyProfile;
     public ProgressIndicator exportProgress;
+    public TextField textFieldSearch;
     @Inject
     private AppModel mAppModel;
     @Inject
@@ -134,6 +129,13 @@ public class MainController extends NavigationController implements Initializabl
         //Set User name
         final UserInfo currentUser = mAppModel.getProfile().getUserInfo();
         labelMyProfile.setText(currentUser.getFirstName() + " " + currentUser.getLastName());
+        labelMyProfile.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                //show the details of the user
+                MainController.this.onPeopleDetailRequested(mAppModel.getProfile().getUserInfo());
+            }
+        });
     }
 
     /**
@@ -175,7 +177,7 @@ public class MainController extends NavigationController implements Initializabl
             mCurrentLoadedRighpaneResult = mFxmlLoader.load(getClass().getResource("/fr/utc/lo23/sharutc/ui/fxml/song_list.fxml"));
             ((DragPreviewDrawer) mCurrentLoadedRighpaneResult.getController()).init(mDragPreview);
             ((SongListController) mCurrentLoadedRighpaneResult.getController()).setInterface(this);
-            ((SongListController) mCurrentLoadedRighpaneResult.getController()).showCatalog();
+            ((SongListController) mCurrentLoadedRighpaneResult.getController()).showLocalCatalog();
         } else if (event.getSource() == peoplebutton) {
             mCurrentLoadedRighpaneResult = mFxmlLoader.load(getClass().getResource("/fr/utc/lo23/sharutc/ui/fxml/people_home.fxml"));
             ((PeopleHomeController) mCurrentLoadedRighpaneResult.getController()).setInterface(this);
@@ -318,6 +320,7 @@ public class MainController extends NavigationController implements Initializabl
         mCurrentLoadedRighpaneResult = mFxmlLoader.load(getClass().getResource("/fr/utc/lo23/sharutc/ui/fxml/searchresult_detail.fxml"));
         ((SearchResultController) mCurrentLoadedRighpaneResult.getController()).setInterface(this);
         ((SearchResultController) mCurrentLoadedRighpaneResult.getController()).init(mDragPreview);
+        ((SearchResultController) mCurrentLoadedRighpaneResult.getController()).searchAll(textFieldSearch.getText());
         attachRightpane(mCurrentLoadedRighpaneResult);
 
     }
@@ -396,24 +399,6 @@ public class MainController extends NavigationController implements Initializabl
     }
 
     @Override
-    public void onGroupDetailRequested() {
-    }
-
-    @Override
-    public void onGroupEditionRequested(Category category) {
-        ObservableList<Node> children = rightpane.getChildren();
-        children.clear();
-        log.info("Group Edition requested : " + category.getName());
-        try {
-            mCurrentLoadedRighpaneResult = mFxmlLoader.load(getClass().getResource("/fr/utc/lo23/sharutc/ui/fxml/group_edit.fxml"));
-            ((GroupEditController) mCurrentLoadedRighpaneResult.getController()).setGroupInfo(category);
-            children.add((Node) mCurrentLoadedRighpaneResult.getRoot());
-        } catch (IOException e) {
-            log.error(e.getMessage());
-        }
-    }
-
-    @Override
     public void onGroupRightsRequested(Category category) {
         ObservableList<Node> children = rightpane.getChildren();
         children.clear();
@@ -452,7 +437,7 @@ public class MainController extends NavigationController implements Initializabl
             mCurrentLoadedRighpaneResult = mFxmlLoader.load(getClass().getResource("/fr/utc/lo23/sharutc/ui/fxml/song_list.fxml"));
             ((DragPreviewDrawer) mCurrentLoadedRighpaneResult.getController()).init(mDragPreview);
             ((SongListController) mCurrentLoadedRighpaneResult.getController()).setInterface(this);
-            ((SongListController) mCurrentLoadedRighpaneResult.getController()).showCatalog(albumName);
+            ((SongListController) mCurrentLoadedRighpaneResult.getController()).showLocalCatalog(albumName);
             attachRightpane(mCurrentLoadedRighpaneResult);
         } catch (IOException e) {
             log.error(e.getMessage());
@@ -539,7 +524,7 @@ public class MainController extends NavigationController implements Initializabl
             mCurrentLoadedRighpaneResult = mFxmlLoader.load(getClass().getResource("/fr/utc/lo23/sharutc/ui/fxml/song_list.fxml"));
             ((DragPreviewDrawer) mCurrentLoadedRighpaneResult.getController()).init(mDragPreview);
             ((SongListController) mCurrentLoadedRighpaneResult.getController()).setInterface(this);
-            ((SongListController) mCurrentLoadedRighpaneResult.getController()).showCatalog();
+            ((SongListController) mCurrentLoadedRighpaneResult.getController()).showLocalCatalog();
             attachRightpane(mCurrentLoadedRighpaneResult);
         } catch (IOException ex) {
             log.error(ex.getMessage());

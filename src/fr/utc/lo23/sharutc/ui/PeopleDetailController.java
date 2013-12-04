@@ -17,7 +17,10 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.FlowPane;
 
 import java.net.URL;
-import java.util.*;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.ResourceBundle;
+import java.util.Set;
 
 public class PeopleDetailController extends SongSelectorController implements Initializable {
 
@@ -50,12 +53,17 @@ public class PeopleDetailController extends SongSelectorController implements In
 
     public void setUserInfo(UserInfo userInfo) {
         mUserInfo = userInfo;
-        login.setText(mUserInfo.getLogin());
 
         Set<String> artists = new LinkedHashSet<String>();
         Set<String> tags = new LinkedHashSet<String>();
 
-        if(userInfo.getPeerId() == mAppModel.getProfile().getUserInfo().getPeerId()) {
+        if (userInfo.getPeerId() == mAppModel.getProfile().getUserInfo().getPeerId()) {
+            //the current user info
+            login.setText("Your profile");
+
+            //hide add to friends
+            addToFriendsButton.setVisible(false);
+
             List<Music> musics = mAppModel.getLocalCatalog().getMusics();
 
             for (Music music : musics) {
@@ -76,6 +84,8 @@ public class PeopleDetailController extends SongSelectorController implements In
                 tagsContainer.getChildren().add(newCard);
             }
         } else {
+            login.setText(mUserInfo.getLogin());
+            //TODO launch network stuff on new thread
             fetchRemoteCatalogCommand.setPeer(userInfo.toPeer());
             fetchRemoteCatalogCommand.execute();
         }

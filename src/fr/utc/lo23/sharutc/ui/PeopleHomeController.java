@@ -14,6 +14,7 @@ import fr.utc.lo23.sharutc.ui.custom.card.SimpleCard;
 import fr.utc.lo23.sharutc.util.CollectionChangeListener;
 import fr.utc.lo23.sharutc.util.CollectionEvent;
 import fr.utc.lo23.sharutc.util.DialogBoxBuilder;
+import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -45,7 +46,6 @@ public class PeopleHomeController extends DragPreviewDrawer implements Initializ
      * Card selected by the user
      */
     private ArrayList<PeopleCard> mPeopleCardSelected;
-
     @FXML
     public FlowPane peopleContainer;
     @FXML
@@ -70,19 +70,16 @@ public class PeopleHomeController extends DragPreviewDrawer implements Initializ
     private EditCategoryNameCommand editCategoryNameCommand;
     @Inject
     private AddContactToCategoryCommand addContactToCategoryCommand;
-
     /**
      * Display message to the user
      */
     private Label placeHolderLabel;
-
     /**
      * Manage Category
      */
     private Category mCurrentCategory;
     private GroupCard mVirtualConnectedGroup;
     private GroupCard mAskForDeletionCard;
-
     /**
      * + card for create a new category
      */
@@ -157,18 +154,18 @@ public class PeopleHomeController extends DragPreviewDrawer implements Initializ
     public void onGroupDeletionRequested(final GroupCard g) {
         log.info("onGroupDeletionRequested " + g.getModel().getName());
         mAskForDeletionCard = g;
-        DialogBoxBuilder.createConfirmBox("Would you want to delete the category " + g.getModel().getName() + " ?",
+        DialogBoxBuilder.createConfirmBox("Do you want to delete the category " + g.getModel().getName() + " ?",
                 this.getClass().getResource("/fr/utc/lo23/sharutc/ui/css/modal.css").toExternalForm(),
                 groupContainer.getScene().getRoot(),
                 new DialogBoxBuilder.IConfirmBox() {
-                    @Override
-                    public void onChoiceMade(boolean answer) {
-                        if (answer) {
-                            deleteCategoryCommand.setCategory(g.getModel());
-                            deleteCategoryCommand.execute();
-                        }
-                    }
-                }).show();
+            @Override
+            public void onChoiceMade(boolean answer) {
+                if (answer) {
+                    deleteCategoryCommand.setCategory(g.getModel());
+                    deleteCategoryCommand.execute();
+                }
+            }
+        }).show();
     }
 
     @Override
@@ -179,16 +176,16 @@ public class PeopleHomeController extends DragPreviewDrawer implements Initializ
                 this.getClass().getResource("/fr/utc/lo23/sharutc/ui/css/modal.css").toExternalForm(),
                 groupContainer.getScene().getRoot(),
                 new DialogBoxBuilder.IEditBox() {
-                    @Override
-                    public void onValidate(String value) {
-                        //set the new name
-                        editCategoryNameCommand.setCategoryId(category.getId());
-                        editCategoryNameCommand.setCategoryName(value);
-                        editCategoryNameCommand.execute();
-                        //TODO remove when UPDATE will be fired
-                        displayUserGroup();
-                    }
-                }).show();
+            @Override
+            public void onValidate(String value) {
+                //set the new name
+                editCategoryNameCommand.setCategoryId(category.getId());
+                editCategoryNameCommand.setCategoryName(value);
+                editCategoryNameCommand.execute();
+                //TODO remove when UPDATE will be fired
+                displayUserGroup();
+            }
+        }).show();
     }
 
     @Override
@@ -384,7 +381,9 @@ public class PeopleHomeController extends DragPreviewDrawer implements Initializ
         hideAddNewGroupCard();
         final GroupCard newGroupCard = new GroupCard(category, PeopleHomeController.this);
         //need some improvement, remove mouse enter behaviour which display buttons for edition
-        if (!editable) newGroupCard.setOnMouseEntered(null);
+        if (!editable) {
+            newGroupCard.setOnMouseEntered(null);
+        }
         groupContainer.getChildren().add(newGroupCard);
         displayAddNewGroupCard();
 
@@ -411,13 +410,13 @@ public class PeopleHomeController extends DragPreviewDrawer implements Initializ
                             this.getClass().getResource("/fr/utc/lo23/sharutc/ui/css/modal.css").toExternalForm(),
                             groupContainer.getScene().getRoot(),
                             new DialogBoxBuilder.IEditBox() {
-                                @Override
-                                public void onValidate(String value) {
-                                    //create the category with the entered name
-                                    createCategoryCommand.setCategoryName(value);
-                                    createCategoryCommand.execute();
-                                }
-                            }).show();
+                        @Override
+                        public void onValidate(String value) {
+                            //create the category with the entered name
+                            createCategoryCommand.setCategoryName(value);
+                            createCategoryCommand.execute();
+                        }
+                    }).show();
                 }
             }
         });
@@ -470,10 +469,14 @@ public class PeopleHomeController extends DragPreviewDrawer implements Initializ
                 addNewGroupCard(c, true);
             } else if (item instanceof UserInfo) {
                 //new user connected
-                log.info("new user connected");
-                final UserInfo newConnectedUser = (UserInfo) item;
-                PeopleCard newCard = new PeopleCard(newConnectedUser, this, PeopleCard.USAGE_CONNECTED);
-                peopleContainer.getChildren().add(newCard);
+                Platform.runLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        final UserInfo newConnectedUser = (UserInfo) item;
+                        PeopleCard newCard = new PeopleCard(newConnectedUser, PeopleHomeController.this, PeopleCard.USAGE_CONNECTED);
+                        peopleContainer.getChildren().add(newCard);
+                    }
+                });
             }
         } else if (type.equals(CollectionEvent.Type.REMOVE)) {
             //REMOVE EVENT
@@ -483,12 +486,18 @@ public class PeopleHomeController extends DragPreviewDrawer implements Initializ
             } else if (item instanceof UserInfo) {
                 //user disconnected callback
                 log.info("one user disconnected");
-                ObservableList<Node> children = peopleContainer.getChildren();
+                final ObservableList<Node> children = peopleContainer.getChildren();
                 for (Node n : children) {
                     if (n instanceof PeopleCard) {
                         final PeopleCard userCard = (PeopleCard) n;
-                        if (((PeopleCard) n).getModel().equals(item)) {
-                            children.remove(userCard);
+                        //TODO equals between two UserInfo doesn't work here, use only peerId
+                        if (((PeopleCard) n).getModel().getPeerId().equals(((UserInfo) item).getPeerId())) {
+                            Platform.runLater(new Runnable() {
+                                @Override
+                                public void run() {
+                                    children.remove(userCard);
+                                }
+                            });
                         }
                     }
                 }
@@ -511,13 +520,11 @@ public class PeopleHomeController extends DragPreviewDrawer implements Initializ
          */
         void onPeopleDetailRequested(UserInfo user);
 
-        void onGroupEditionRequested(Category category);
-
         /**
-         * display group details
+         * display right edition view for the selected category
+         *
+         * @param category
          */
-        void onGroupDetailRequested();
-
         void onGroupRightsRequested(Category category);
     }
 }
