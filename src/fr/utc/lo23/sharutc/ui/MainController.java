@@ -319,7 +319,8 @@ public class MainController extends NavigationController implements Initializabl
         detachRightpane();
         mCurrentLoadedRighpaneResult = mFxmlLoader.load(getClass().getResource("/fr/utc/lo23/sharutc/ui/fxml/searchresult_detail.fxml"));
         ((SearchResultController) mCurrentLoadedRighpaneResult.getController()).setInterface(this);
-        ((SearchResultController) mCurrentLoadedRighpaneResult.getController()).init(mDragPreview);
+        ((SongSelectorController) mCurrentLoadedRighpaneResult.getController()).init(mDragPreview);
+        ((SongSelectorController) mCurrentLoadedRighpaneResult.getController()).setInterface(this);
         ((SearchResultController) mCurrentLoadedRighpaneResult.getController()).searchAll(textFieldSearch.getText());
         attachRightpane(mCurrentLoadedRighpaneResult);
 
@@ -391,7 +392,8 @@ public class MainController extends NavigationController implements Initializabl
         try {
             mCurrentLoadedRighpaneResult = mFxmlLoader.load(getClass().getResource("/fr/utc/lo23/sharutc/ui/fxml/people_detail.fxml"));
             ((PeopleDetailController) mCurrentLoadedRighpaneResult.getController()).setUserInfo(user);
-            ((DragPreviewDrawer) mCurrentLoadedRighpaneResult.getController()).init(mDragPreview);
+            ((SongSelectorController) mCurrentLoadedRighpaneResult.getController()).init(mDragPreview);
+            ((SongSelectorController) mCurrentLoadedRighpaneResult.getController()).setInterface(this);
             children.add((Node) mCurrentLoadedRighpaneResult.getRoot());
         } catch (IOException e) {
             log.error(e.getMessage());
