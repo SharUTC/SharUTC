@@ -1,13 +1,9 @@
 package fr.utc.lo23.sharutc.controler.player;
 
-public class PlayerEventType {
+public enum PlayerEventType {
 
-    public static final PlayerEventType STARTED = new PlayerEventType("Started");
-    public static final PlayerEventType PAUSED = new PlayerEventType("Paused");
-    public static final PlayerEventType STOPPED = new PlayerEventType("Stopped");
-    public String name;
+    STARTED, PAUSED, STOPPED;
 
-    public PlayerEventType(String name) {
-        this.name = name;
+    PlayerEventType() {
     }
 }

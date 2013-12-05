@@ -103,6 +103,7 @@ public class MusicServiceImpl implements MusicService {
     @Override
     public void removeFromLocalCatalog(Collection<Music> musics) {
         log.debug("removeFromLocalCatalog ...");
+        //TODO : clean RightList with removed music
         if (musics == null) {
             throwMissingParameter();
         } else {
@@ -912,18 +913,16 @@ public class MusicServiceImpl implements MusicService {
      */
     @Override
     public void addMusicToCategory(Music music, Category category) {
-        Long musicID = music.getId();
-        Set<Integer> categoriesIdsList = music.getCategoryIds();
 
         //Check that the music does not exist in this category
-        if (!categoriesIdsList.contains(category.getId())) {
-            appModel.getLocalCatalog().findMusicById(musicID).addCategoryId(category.getId());
+        if (!music.getCategoryIds().contains(category.getId())) {
+            appModel.getLocalCatalog().findMusicById(music.getId()).addCategoryId(category.getId());
         } else {
             log.warn("This music already exists in this category");
             ErrorMessage nErrorMessage = new ErrorMessage("This music already exists in this category");
             appModel.getErrorBus().pushErrorMessage(nErrorMessage);
         }
-
+        appModel.getRightsList().setRights(new Rights(category.getId(), music.getId(), localTagMapDirty, localTagMapDirty, localTagMapDirty));
     }
 
     /**
@@ -939,7 +938,7 @@ public class MusicServiceImpl implements MusicService {
          *  m.addCategoryId(Category.PUBLIC_CATEGORY_ID);
          * }
          */
-
+        appModel.getRightsList().remove(appModel.getRightsList().getByMusicIdAndCategoryId(music.getId(), category.getId()));
     }
 
     /**

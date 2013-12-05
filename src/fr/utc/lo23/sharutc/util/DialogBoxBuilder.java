@@ -25,16 +25,17 @@ public class DialogBoxBuilder {
      * @param label    instruction displayed to the user
      * @param hint     hint for the TextField
      * @param style    stylesheet class
+     * @param root     root view
      * @param callback catch on validate clicked
      * @return Stage to show
      */
-    public static Stage createEditBox(final String label, final String hint, final String style,final Parent root, final IEditBox callback) {
+    public static Stage createEditBox(final String label, final String hint, final String style, final Parent root, final IEditBox callback) {
         final Stage dialog = new Stage(StageStyle.TRANSPARENT);
         dialog.initModality(Modality.APPLICATION_MODAL);
         final TextField editableName = TextFieldBuilder.create().editable(true).styleClass("text-field").text(hint).build();
 
         //set effect
-        root.setEffect(new ColorAdjust(0,0,-0.5,-0.5));
+        applyEffect(true, root);
 
         dialog.setScene(
                 new Scene(
@@ -50,7 +51,7 @@ public class DialogBoxBuilder {
                                         callback.onValidate(editableName.getText());
 
                                         //remove effect
-                                        root.setEffect(null);
+                                        applyEffect(false, root);
                                         dialog.close();
                                     }
                                 }).build()
@@ -66,12 +67,17 @@ public class DialogBoxBuilder {
      *
      * @param label    instruction displayed to the user
      * @param style    stylesheet class
+     * @param root     root view
      * @param callback catch user choice
      * @return Stage to show
      */
-    public static Stage createConfirmBox(final String label, final String style, final IConfirmBox callback) {
+    public static Stage createConfirmBox(final String label, final String style, final Parent root, final IConfirmBox callback) {
         final Stage dialog = new Stage(StageStyle.TRANSPARENT);
         dialog.initModality(Modality.APPLICATION_MODAL);
+
+        //set effect
+        applyEffect(true, root);
+
         dialog.setScene(
                 new Scene(
                         VBoxBuilder.create().styleClass("modal-dialog").children(
@@ -81,6 +87,7 @@ public class DialogBoxBuilder {
                                             @Override
                                             public void handle(ActionEvent actionEvent) {
                                                 callback.onChoiceMade(true);
+                                                applyEffect(false, root);
                                                 dialog.close();
                                             }
                                         }
@@ -89,6 +96,7 @@ public class DialogBoxBuilder {
                                             @Override
                                             public void handle(ActionEvent actionEvent) {
                                                 callback.onChoiceMade(false);
+                                                applyEffect(false, root);
                                                 dialog.close();
                                             }
                                         }
@@ -100,6 +108,21 @@ public class DialogBoxBuilder {
         );
         dialog.getScene().getStylesheets().add(style);
         return dialog;
+    }
+
+    /**
+     * set effect to the Parent view
+     *
+     * @param apply true if effect has to be displayed, false if effect has to be hidden
+     * @param root  parent view on which the effect will be applied
+     */
+    private static void applyEffect(boolean apply, Parent root) {
+        if (apply) {
+            root.setEffect(new ColorAdjust(0, 0, -0.5, -0.5));
+        } else {
+            root.setEffect(null);
+        }
+
     }
 
     /**

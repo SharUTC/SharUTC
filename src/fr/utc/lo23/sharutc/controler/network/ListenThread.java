@@ -11,20 +11,19 @@ import org.slf4j.LoggerFactory;
 /**
  * Listen to new TCP connection and instantiate new PeerSocket to handle them.
  * <p>
- * This class bind a ServerSocket to the given port and listen on it.
- * Each new TCP connection is handled separately in a new instance of PeerSocket
- * running in a separate thread.
+ * This class bind a ServerSocket to the given port and listen on it. Each new
+ * TCP connection is handled separately in a new instance of PeerSocket running
+ * in a separate thread.
  *
  * @see PeerSocket
  */
 public class ListenThread implements Runnable {
-    private static final Logger log = LoggerFactory.getLogger(PeerDiscoverySocket.class);
 
+    private static final Logger log = LoggerFactory.getLogger(PeerDiscoverySocket.class);
     private final AppModel appModel;
     private final NetworkService networkService;
     private final MessageHandler messageHandler;
     private final MessageParser messageParser;
-
     private final int mPort;
     private ServerSocket mServerSocket;
     private Thread mThread;
@@ -39,9 +38,7 @@ public class ListenThread implements Runnable {
      * @param messageParser the injected MessageParser instance
      * @param networkService the injected NetworkService instance
      */
-    public ListenThread(int port, AppModel appModel, MessageHandler
-            messageHandler, MessageParser messageParser, NetworkService
-            networkService) {
+    public ListenThread(int port, AppModel appModel, MessageHandler messageHandler, MessageParser messageParser, NetworkService networkService) {
         this.mPort = port;
         this.appModel = appModel;
         this.messageHandler = messageHandler;
@@ -57,7 +54,7 @@ public class ListenThread implements Runnable {
      */
     public void start() {
         if (mThread == null) {
-            mThread = new Thread(this);
+            mThread = new Thread(this, "ListenThread");
             mThread.start();
         } else {
             log.warn("Can't start ListenThread: already running.");
@@ -76,39 +73,12 @@ public class ListenThread implements Runnable {
         }
     }
 
-    private long handleNewConnection(Socket socket) {
-        Long peerId = null;
-        try {
-            ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
-            String json = null;
-            try {
-                json = (String) in.readObject();
-            } catch (ClassNotFoundException ex) {
-                log.error(ex.toString());
-            }
-            Message msg= messageParser.fromJSON(json);
-            if (msg.getType() == MessageType.CONNECTION_RESPONSE) {
-                if (msg.getFromPeerId() == null) {
-                    log.error("Received connection response with peerId = null !");
-                }
-                peerId = msg.getFromPeerId();
-                messageHandler.handleMessage(json);
-            } else {
-                log.error("First message on Socket must be CONNECTION_RESPONSE");
-            }
-        } catch (IOException ex) {
-            log.error(ex.toString());
-        }
-        return peerId;
-    }
-
     /**
      * Main listening loop.
      * <p>
      * Loop on the ServerSocket accept() method and instantiate a new PeerSocket
-     * for each new connection.
-     * The newly created PeerSocket is then started in a new thread with
-     * start().
+     * for each new connection. The newly created PeerSocket is then started in
+     * a new thread with start().
      *
      * @see PeerSocket
      */
@@ -120,8 +90,7 @@ public class ListenThread implements Runnable {
 
             while (mServerSocket.isBound()) {
                 Socket clientSocket = mServerSocket.accept();
-                long peerId = handleNewConnection(clientSocket);
-                PeerSocket ps = new PeerSocket(clientSocket, peerId, messageHandler, messageParser, networkService);
+                PeerSocket ps = new PeerSocket(clientSocket, null, messageHandler, messageParser, networkService);
                 ps.start();
             }
             if (!mServerSocket.isClosed()) {

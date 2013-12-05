@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.GridPane?>
+<?import java.lang.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<?import java.net.*?>
+
+
+<VBox id="gridPane" GridPane.hgrow="ALWAYS"
+      GridPane.vgrow="ALWAYS" xmlns:fx="http://javafx.com/fxml"
+      fx:controller="fr.utc.lo23.sharutc.ui.SongDetailController">
+        
+    <stylesheets>
+        <URL value="@../css/song_detail.css"/>
+    </stylesheets>
+    
+    <padding>
+        <javafx.geometry.Insets top="10" />
+    </padding>
+
+    <BorderPane >
+        <left>
+            <VBox fx:id="topLeftContainer">                 
+            </VBox>
+        </left>          
+            
+            
+        
+        <right>
+            <VBox alignment="TOP_RIGHT" >
+                <Button fx:id="addRemoveButton" text="Add" styleClass="bigBlueButton"  />
+                
+                
+                <GridPane hgap="5" vgap="2" GridPane.valignment="CENTER"   >
+                    <Label text="My rate" styleClass="rankingSystemLabel" GridPane.rowIndex="0" GridPane.columnIndex="0" />
+                    <HBox GridPane.rowIndex="0" GridPane.columnIndex="1">
+                        <fr.utc.lo23.sharutc.ui.custom.RatingStar fx:id="starMyRate1"
+                                                                  onMouseEntered="#handleMouseEnteredRatingStar"
+                                                                  onMouseClicked="#handleMouseClickedRatingStar"
+                                                                  onMouseExited="#handleMouseExitedRatingStar" />
+                        <fr.utc.lo23.sharutc.ui.custom.RatingStar fx:id="starMyRate2" 
+                                                                  onMouseEntered="#handleMouseEnteredRatingStar"
+                                                                  onMouseClicked="#handleMouseClickedRatingStar"
+                                                                  onMouseExited="#handleMouseExitedRatingStar" />
+                        <fr.utc.lo23.sharutc.ui.custom.RatingStar fx:id="starMyRate3"
+                                                                  onMouseEntered="#handleMouseEnteredRatingStar"
+                                                                  onMouseClicked="#handleMouseClickedRatingStar"
+                                                                  onMouseExited="#handleMouseExitedRatingStar" />
+                        <fr.utc.lo23.sharutc.ui.custom.RatingStar fx:id="starMyRate4"
+                                                                  onMouseEntered="#handleMouseEnteredRatingStar"
+                                                                  onMouseClicked="#handleMouseClickedRatingStar"
+                                                                  onMouseExited="#handleMouseExitedRatingStar" />
+                        <fr.utc.lo23.sharutc.ui.custom.RatingStar fx:id="starMyRate5"
+                                                                  onMouseEntered="#handleMouseEnteredRatingStar"
+                                                                  onMouseClicked="#handleMouseClickedRatingStar"
+                                                                  onMouseExited="#handleMouseExitedRatingStar" />
+                    </HBox>
+                    
+                    <Label text="Average"  styleClass="rankingSystemLabel" GridPane.rowIndex="1" GridPane.columnIndex="0"  />
+                    <HBox GridPane.rowIndex="1" GridPane.columnIndex="1">
+                        <fr.utc.lo23.sharutc.ui.custom.RatingStar fx:id="starAverageRate1" />
+                        <fr.utc.lo23.sharutc.ui.custom.RatingStar fx:id="starAverageRate2" />
+                        <fr.utc.lo23.sharutc.ui.custom.RatingStar fx:id="starAverageRate3" />
+                        <fr.utc.lo23.sharutc.ui.custom.RatingStar fx:id="starAverageRate4" />
+                        <fr.utc.lo23.sharutc.ui.custom.RatingStar fx:id="starAverageRate5" />
+                    </HBox>
+                    
+                    <Label text="Owner"  styleClass="rankingSystemLabel" GridPane.rowIndex="2" GridPane.columnIndex="0" />
+                    <Label text="Matthieu Hanne" styleClass="ownerLabel" 
+                           GridPane.rowIndex="2" GridPane.columnIndex="1"
+                           GridPane.halignment="RIGHT"  />
+                    
+                </GridPane>
+            </VBox>            
+        </right>
+        
+        
+    </BorderPane>
+    
+    
+    <VBox VBox.vgrow="ALWAYS">
+        <padding>
+            <javafx.geometry.Insets top="20" left="5" />
+        </padding>
+        <Label text="Comments" fx:id="commentSectionTitle" />
+        <ScrollPane styleClass="myScrollPane"
+                    fitToWidth="true" VBox.vgrow="ALWAYS" >
+            <VBox.margin>
+                <javafx.geometry.Insets top="15" bottom="10" />
+            </VBox.margin>
+            <VBox  fx:id="commentContainer">
+                
+            </VBox>
+
+                
+        </ScrollPane>
+                
+    </VBox>
+    
+    <HBox alignment="CENTER_LEFT" > 
+        <VBox.margin>
+            <javafx.geometry.Insets bottom="8" />
+        </VBox.margin>
+        <Button fx:id="addCommentButton" text="Comment" onAction="#handleAddCommentAction" >
+            <HBox.margin>
+                <javafx.geometry.Insets right="8" />
+            </HBox.margin>
+        </Button>
+        <TextArea fx:id="commentTextArea" styleClass="commentTextArea" promptText="type your comment" HBox.hgrow="ALWAYS" prefRowCount="3"/>
+    </HBox>
+
+
+</VBox>
+
+
+
+
+
+

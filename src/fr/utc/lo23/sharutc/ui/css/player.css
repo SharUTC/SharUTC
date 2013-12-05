@@ -1,0 +1,77 @@
+
+#playerContainer {
+}
+
+#playerProgressBar {
+    -fx-opacity: 0.8;
+    -fx-padding: 0;
+}
+
+#playerProgressBar:hover {
+    -fx-opacity: 1;
+}
+
+#playerProgressBar .bar {
+    -fx-border-color: transparent;
+    -fx-background-color: #33B5E5;
+    -fx-background-radius: 0em;
+    -fx-padding: 2;
+}
+
+
+#playerProgressBar .track {
+    -fx-border-color: transparent;
+    -fx-background-color: #7F8C8D;
+    -fx-background-radius: 0em;
+}
+
+#playerTimeSlider .thumb {
+    -fx-border-color: transparent;
+    -fx-background-color: #33B5E5;
+    -fx-background-radius: 0em;
+    -fx-padding: 5;
+}
+
+#playerTimeSlider .track {
+    -fx-border-color: transparent;
+    -fx-background-color: transparent;
+    -fx-background-radius: 0em;
+}
+
+#currentMusicTitle {
+    -fx-font-size : 18px;
+    -fx-text-fill: #6E7879;
+    -fx-font-weight: bold;
+}
+
+#currentMusicAlbum{
+    -fx-font-size : 14px;
+    -fx-text-fill: #6E7879;   
+}
+
+#currentMusicArtist {
+    -fx-font-size : 14px;
+    -fx-text-fill: #6E7879;   
+}
+
+#speakerSlider .thumb {
+    -fx-border-color: transparent;
+    -fx-background-color: transparent;
+    -fx-background-radius: 0em;
+    -fx-padding: 12px 4px 12px 4px;
+}
+
+#speakerSlider .track {
+    -fx-border-color: transparent;
+    -fx-background-color: transparent;
+    -fx-background-radius: 0em;
+    -fx-padding: 12px 5px 12px 5px;
+}
+
+#speakerLevel {
+    -fx-fill: #6E7879;
+}
+
+#speakerLevelBackground {
+    -fx-fill: #95A5A6
+}

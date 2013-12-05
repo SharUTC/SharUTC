@@ -2,19 +2,11 @@ package fr.utc.lo23.sharutc.controler.network;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import fr.utc.lo23.sharutc.controler.command.Command;
+import fr.utc.lo23.sharutc.controler.command.account.IntegrateDisconnectionCommand;
 import fr.utc.lo23.sharutc.controler.command.account.IntegrateUserInfoAndReplyCommand;
 import fr.utc.lo23.sharutc.controler.command.account.IntegrateUserInfoCommand;
-import fr.utc.lo23.sharutc.controler.command.account.IntegrateDisconnectionCommand;
-import fr.utc.lo23.sharutc.controler.command.Command;
-import fr.utc.lo23.sharutc.controler.command.music.AddCommentCommand;
-import fr.utc.lo23.sharutc.controler.command.music.EditCommentCommand;
-import fr.utc.lo23.sharutc.controler.command.music.IntegrateRemoteCatalogCommand;
-import fr.utc.lo23.sharutc.controler.command.music.IntegrateRemoteTagMapCommand;
-import fr.utc.lo23.sharutc.controler.command.music.RemoveCommentCommand;
-import fr.utc.lo23.sharutc.controler.command.music.SendCatalogCommand;
-import fr.utc.lo23.sharutc.controler.command.music.SendTagMapCommand;
-import fr.utc.lo23.sharutc.controler.command.music.SetScoreCommand;
-import fr.utc.lo23.sharutc.controler.command.music.UnsetScoreCommand;
+import fr.utc.lo23.sharutc.controler.command.music.*;
 import fr.utc.lo23.sharutc.controler.command.player.PlayIncomingMusicCommand;
 import fr.utc.lo23.sharutc.controler.command.player.SendMusicToPlayCommand;
 import fr.utc.lo23.sharutc.controler.command.search.InstallRemoteMusicsCommand;
@@ -38,14 +30,13 @@ import org.slf4j.LoggerFactory;
  */
 @Singleton
 public class MessageHandlerImpl implements MessageHandler {
+
     private static final Logger log = LoggerFactory
             .getLogger(MessageHandlerImpl.class);
-
     private final AppModel appModel;
     private final MessageParser messageParser;
     private final MusicService musicService;
     private final UserService userService;
-
     private Command command = null;
 
     @Inject
@@ -56,7 +47,6 @@ public class MessageHandlerImpl implements MessageHandler {
         this.musicService = musicService;
         this.userService = userService;
     }
-
     // all command interfaces used by network service
     @Inject
     private AddCommentCommand addCommentCommand;
@@ -102,13 +92,19 @@ public class MessageHandlerImpl implements MessageHandler {
     @Override
     public void handleMessage(String string) {
         command = null;
-        log.info("handleMessage : {}", string);
-        Message incomingMessage = messageParser.fromJSON(string);
+        log.info("handleMessage ...");
+        //log.info("handleMessage : {}", string); // slow down computers when message contains a mp3 file
+        final Message incomingMessage = messageParser.fromJSON(string);
         if (incomingMessage != null) {
             try {
                 messageParser.read(incomingMessage);
                 // searching which command to execute following message type
-                log.info("Handling message '{}' from '{}'", incomingMessage.getType().name(), messageParser.getSource().getDisplayName());
+                if (messageParser.getSource() != null) {
+                    log.info("Handling message '{}' from '{}'", incomingMessage.getType().name(), messageParser.getSource().getDisplayName());
+                } else {
+                    log.info("Handling message '{}' from unknown peer", incomingMessage.getType().name());
+                }
+
                 switch (incomingMessage.getType()) {
                     case MUSIC_GET_CATALOG:
                         sendCatalogCommand.setConversationId((Long) messageParser.getValue(Message.CONVERSATION_ID));
@@ -222,12 +218,13 @@ public class MessageHandlerImpl implements MessageHandler {
                         log.warn("Missing command : {}", incomingMessage.getType().name());
                         break;
                 }
-                if (command != null) {
-                    Thread thread = new Thread() {
+                final Command commandToExecute = command;
+                if (commandToExecute != null) {
+                    Thread thread = new Thread(commandToExecute.getClass().getSimpleName()) {
                         @Override
                         public void run() {
-                            log.info("Running new command : {}", command.getClass().getName());
-                            command.execute();
+                            log.info("Running new command : {}", commandToExecute.getClass().getName());
+                            commandToExecute.execute();
                         }
                     };
                     thread.start();
@@ -240,8 +237,11 @@ public class MessageHandlerImpl implements MessageHandler {
     }
 
     /**
-     * chek if the current conversation id is equal to the message conversation id
-     * @return true if the current conversation id is equal to the message conversation id, else false.
+     * chek if the current conversation id is equal to the message conversation
+     * id
+     *
+     * @return true if the current conversation id is equal to the message
+     * conversation id, else false.
      */
     private boolean isMessageForCurrentConversation() {
         return appModel.getCurrentConversationId().equals(messageParser.getValue(Message.CONVERSATION_ID));

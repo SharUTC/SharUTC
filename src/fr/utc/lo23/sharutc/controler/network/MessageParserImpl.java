@@ -54,7 +54,6 @@ public class MessageParserImpl implements MessageParser {
     /**
      * Check that the parser read a message before being used.
      *
-     * @see read()
      * @throws RuntimeException throw this exception if the parser is used
      * before having read a Message first.
      */

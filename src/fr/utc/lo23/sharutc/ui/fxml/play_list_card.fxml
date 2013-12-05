@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.image.*?>
+
+<fx:root type="fr.utc.lo23.sharutc.ui.custom.card.PlayListCard"
+         xmlns:fx="http://javafx.com/fxml">
+    <ImageView fx:id="cdCover">
+        <image>
+            <Image url="/fr/utc/lo23/sharutc/ui/drawable/ic_vinyl.png" />            
+        </image>
+    </ImageView>
+    <Label fx:id="musicTitle" text="New York, New York" 
+           styleClass="playListCardMusicTitle"  wrapText="true" >
+        <VBox.margin>
+            <javafx.geometry.Insets top="10" left="5" right="5" />
+        </VBox.margin>
+    </Label>
+    <Label fx:id="musicArtist" text="Frank Sinatra" 
+            styleClass="playListCardMusicArtist" wrapText="true" >
+        <VBox.margin>
+            <javafx.geometry.Insets left="5" right="5" />
+        </VBox.margin>
+    </Label>
+     <VBox alignment="CENTER_RIGHT">
+        
+                    <ImageView fx:id="deleteButton" fitWidth="30" fitHeight="30">
+                        <image>
+                            <Image url="@../drawable/ic_delete.png"/>
+                        </image>
+                    </ImageView>
+     </VBox>
+</fx:root>

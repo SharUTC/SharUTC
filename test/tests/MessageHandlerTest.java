@@ -75,7 +75,7 @@ public class MessageHandlerTest {
 
         Long convId = (Long) messageParser.getValue(Message.CONVERSATION_ID);
         Peer peer = messageParser.getSource();
-        Assert.assertEquals("ConvID is not good",appModel.getCurrentConversationId(), convId);
-        Assert.assertEquals("SourcePeer is not good",appModel.getProfile().getUserInfo().toPeer(), peer);
+        Assert.assertEquals("ConvID is not good", appModel.getCurrentConversationId(), convId);
+        Assert.assertEquals("SourcePeer is not good", appModel.getProfile().getUserInfo().toPeer(), peer);
     }
 }
