@@ -15,7 +15,7 @@ public class HorizontalScrollHandler implements EventHandler<Event> {
     /**
      * speed of the auto scroll
      */
-    private static final double SPEED = 1.0 / 200;
+    private static final double SPEED = 1.0 / 100;
 
     /**
      * area for scroll detection in percent

@@ -3,6 +3,11 @@
     -fx-opacity: 0.5;
 }
 
+#dropOverlayBlue{
+    -fx-background-color: #33B5E5;
+    -fx-opacity: 0.5;
+}
+
 #dropOverlayLabel{
     -fx-font-family: Tahoma;
     -fx-font-size: 65px;

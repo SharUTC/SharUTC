@@ -17,7 +17,7 @@
             <Label fx:id="tagWeightLabel" text="53" styleClass="largeTextGrey"/>
         </VBox>
 
-        <Region fx:id="dropOverlay"/>
+        <Region fx:id="dropOverlayBlue"/>
         <Label fx:id="dropOverlayLabel" text="Add"
                StackPane.alignment="CENTER"/>
     </StackPane>
