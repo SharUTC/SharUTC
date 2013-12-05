@@ -631,7 +631,8 @@ public class MusicServiceImpl implements MusicService {
             } else {
                 author = appModel.getProfile().getKnownPeerList().getPeerNameById(comment.getAuthorPeerId());
             }
-            musicToReturn.setCommentAuthor(comment.getIndex(), author);
+            comment.setAuthorName(author);
+            //musicToReturn.setCommentAuthor(comment.getIndex(), author);
         }
     }
 

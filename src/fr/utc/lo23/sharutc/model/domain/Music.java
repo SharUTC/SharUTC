@@ -671,11 +671,6 @@ public class Music implements Serializable {
         return removed;
     }
 
-    public void setCommentAuthor(Integer index, String authorName) {
-        Comment comment = mComments.get(index);
-        comment.setAuthorName(authorName);
-    }
-
     @Override
     public boolean equals(Object obj) {
         // be careful, don't use public int hashCode() here, equals is realized with from music Bytes directly

@@ -17,7 +17,7 @@ public class TagCard extends SimpleCard implements EventHandler<Event> {
     @FXML
     public Label tagWeightLabel;
     @FXML
-    public Region dropOverlay;
+    public Region dropOverlayBlue;
     @FXML
     public Label dropOverlayLabel;
     private String mTagName;
@@ -60,7 +60,7 @@ public class TagCard extends SimpleCard implements EventHandler<Event> {
      * @param isShow true set drop overlay Visible, false will hide it
      */
     private void displayDropOverlay(boolean isShow) {
-        dropOverlay.setVisible(isShow);
+        dropOverlayBlue.setVisible(isShow);
         dropOverlayLabel.setVisible(isShow);
     }
 
