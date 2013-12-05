@@ -27,7 +27,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 import java.util.Set;
 
-public class PeopleDetailController extends SongSelectorController implements Initializable, TagCard.ITagCard, CollectionChangeListener {
+public class PeopleDetailController extends SongSelectorController implements Initializable, TagCard.ITagCard, CollectionChangeListener, ArtistCard.IArtistCard {
 
     private static final Logger log = LoggerFactory
             .getLogger(SongListController.class);
@@ -50,6 +50,8 @@ public class PeopleDetailController extends SongSelectorController implements In
     private AddContactToCategoryCommand addContactToCategoryCommand;
 
     private UserInfo mUserInfo;
+    private Set<String> mArtistsFound = new LinkedHashSet<String>();
+    private Set<String> mTagsFound = new LinkedHashSet<String>();
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -65,8 +67,6 @@ public class PeopleDetailController extends SongSelectorController implements In
     public void setUserInfo(UserInfo userInfo) {
         mUserInfo = userInfo;
 
-        Set<String> artists = new LinkedHashSet<String>();
-        Set<String> tags = new LinkedHashSet<String>();
 
         if (userInfo.getPeerId() == mAppModel.getProfile().getUserInfo().getPeerId()) {
             //the current user info
@@ -78,22 +78,11 @@ public class PeopleDetailController extends SongSelectorController implements In
             List<Music> musics = mAppModel.getLocalCatalog().getMusics();
 
             for (Music music : musics) {
-                tags.addAll(music.getTags());
-                artists.add(music.getArtist());
-                System.out.println("Music " + music.getTitle());
-                SongCard newCard = new SongCard(music, this, false);
-                songsContainer.getChildren().add(newCard);
+                processNewMusic(music, true);
             }
 
-            for (String artist : artists) {
-                ArtistCard newCard = new ArtistCard(artist, null);
-                artistsContainer.getChildren().add(newCard);
-            }
-
-            for (String tag : tags) {
-                TagCard newCard = new TagCard(tag, this);
-                tagsContainer.getChildren().add(newCard);
-            }
+            //show artist and tag
+            displayRetrieveData();
         } else {
             if (isFriend(mUserInfo)) {
                 //hide add to friend button if already in friend list
@@ -156,7 +145,6 @@ public class PeopleDetailController extends SongSelectorController implements In
     public void collectionChanged(CollectionEvent ev) {
         final CollectionEvent.Type type = ev.getType();
         final Object item = ev.getItem();
-        log.info("collectionChanged : Object " + item.getClass() + " | type : " + type.name());
         if (type.equals(CollectionEvent.Type.ADD)) {
             //ADD EVENT
             if (item instanceof Contact) {
@@ -169,24 +157,56 @@ public class PeopleDetailController extends SongSelectorController implements In
                     }
                 });
             } else if (item instanceof Music) {
-                //user added to friend
+                //retrieve music from network
                 Platform.runLater(new Runnable() {
                     @Override
                     public void run() {
                         //add song card
-                        SongCard newSongCard = new SongCard((Music) item, PeopleDetailController.this, false);
-                        songsContainer.getChildren().add(newSongCard);
-                        //add related artist  card
-                        ArtistCard newArtistCard = new ArtistCard(((Music) item).getArtist(), null);
-                        artistsContainer.getChildren().add(newArtistCard);
-                        //add tag card
-                        for (String tag : ((Music) item).getTags()) {
-                            TagCard newCard = new TagCard(tag, PeopleDetailController.this);
-                            tagsContainer.getChildren().add(newCard);
-                        }
+                        processNewMusic((Music) item, false);
+                        displayRetrieveData();
                     }
                 });
             }
         }
+    }
+
+    /**
+     * process music to display data properly
+     *
+     * @param music
+     */
+    private void processNewMusic(final Music music, boolean owned) {
+        //add tags to the tags list
+        mTagsFound.addAll(music.getTags());
+
+        //add music artist to the artist list
+        mArtistsFound.add(music.getArtist());
+
+        //display the new music card
+        final SongCard newSongCard = new SongCard(music, PeopleDetailController.this, owned);
+        songsContainer.getChildren().add(newSongCard);
+    }
+
+    /**
+     * display retrieve data
+     */
+    private void displayRetrieveData() {
+        artistsContainer.getChildren().clear();
+        tagsContainer.getChildren().clear();
+
+        for (String artist : mArtistsFound) {
+            ArtistCard newCard = new ArtistCard(artist, this);
+            artistsContainer.getChildren().add(newCard);
+        }
+
+        for (String tag : mTagsFound) {
+            TagCard newCard = new TagCard(tag, this);
+            tagsContainer.getChildren().add(newCard);
+        }
+    }
+
+    @Override
+    public void onArtistDetailRequested(String artistName) {
+        log.info("artist info requested " + artistName);
     }
 }
