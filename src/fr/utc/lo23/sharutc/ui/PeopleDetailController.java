@@ -1,6 +1,7 @@
 package fr.utc.lo23.sharutc.ui;
 
 import com.google.inject.Inject;
+import fr.utc.lo23.sharutc.controler.command.music.AddTagCommand;
 import fr.utc.lo23.sharutc.controler.command.music.FetchRemoteCatalogCommand;
 import fr.utc.lo23.sharutc.controler.command.profile.AddContactToCategoryCommand;
 import fr.utc.lo23.sharutc.model.AppModel;
@@ -48,6 +49,8 @@ public class PeopleDetailController extends SongSelectorController implements In
     private FetchRemoteCatalogCommand fetchRemoteCatalogCommand;
     @Inject
     private AddContactToCategoryCommand addContactToCategoryCommand;
+    @Inject
+    private AddTagCommand mAddTagCommand;
 
     private UserInfo mUserInfo;
     private Set<String> mArtistsFound = new LinkedHashSet<String>();
@@ -150,6 +153,11 @@ public class PeopleDetailController extends SongSelectorController implements In
     @Override
     public void onMusicDropOnTag(String tagName) {
         log.debug("music dropped on tag : " + tagName);
+        for(final SongCard songCard : getSelectedSong()) {
+            mAddTagCommand.setMusic(songCard.getModel());
+            mAddTagCommand.setTag(tagName);
+            mAddTagCommand.execute();
+        }
     }
 
     @Override
