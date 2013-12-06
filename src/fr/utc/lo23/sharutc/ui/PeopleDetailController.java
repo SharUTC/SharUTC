@@ -142,6 +142,9 @@ public class PeopleDetailController extends SongSelectorController implements In
     @Override
     public void onTagSelected(String tagName) {
         log.debug("tag selected : " + tagName);
+        if(mCallBack != null) {
+            mCallBack.onTagFilterRequested(tagName);
+        }
     }
 
     @Override
@@ -223,5 +226,6 @@ public class PeopleDetailController extends SongSelectorController implements In
     
     public interface IPeopleDetailController extends ISongListController{
         public void onArtistDetailRequested(final String artistName);
+        public void onTagFilterRequested(final String tagName);
     }
 }
