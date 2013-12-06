@@ -98,7 +98,7 @@
         </ScrollPane>                
     </VBox>
     
-    <HBox alignment="CENTER_LEFT" > 
+    <HBox alignment="BOTTOM_LEFT" > 
         <VBox.margin>
             <javafx.geometry.Insets bottom="8" />
         </VBox.margin>
