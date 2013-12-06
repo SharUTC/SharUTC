@@ -105,10 +105,10 @@ public class LoginController extends NavigationController implements Initializab
         //hide drop overlay
         hideDropOverlay();
 
-        //listen for changes on the AppModel
+        //listen to changes made on the AppModel
         mAppModel.addPropertyChangeListener(this);
 
-        //listen for changes on the Error Bus
+        //listen to changes made the Error Bus
         mAppModel.getErrorBus().addPropertyChangeListener(this);
     }
 
@@ -302,7 +302,7 @@ public class LoginController extends NavigationController implements Initializab
     }
 
     /**
-     * This method gets called when a bound property is changed
+     * This method gets called when a bound property is changed.
      *
      * @param evt {@link PropertyChangeEvent}
      */
