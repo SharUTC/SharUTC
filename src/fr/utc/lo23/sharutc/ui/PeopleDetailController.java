@@ -52,6 +52,7 @@ public class PeopleDetailController extends SongSelectorController implements In
     private UserInfo mUserInfo;
     private Set<String> mArtistsFound = new LinkedHashSet<String>();
     private Set<String> mTagsFound = new LinkedHashSet<String>();
+    private IPeopleDetailController mCallBack;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -63,6 +64,13 @@ public class PeopleDetailController extends SongSelectorController implements In
         mAppModel.getRemoteUserCatalog().addPropertyChangeListener(this);
 
     }
+
+    public void setInterface(IPeopleDetailController i) {
+        super.setInterface(i);
+        mCallBack = i;
+    }
+    
+    
 
     public void setUserInfo(UserInfo userInfo) {
         mUserInfo = userInfo;
@@ -206,7 +214,14 @@ public class PeopleDetailController extends SongSelectorController implements In
     }
 
     @Override
-    public void onArtistDetailRequested(String artistName) {
+    public void onArtistDetailRequested(final String artistName) {
         log.info("artist info requested " + artistName);
+        if(mCallBack != null) {
+            mCallBack.onArtistDetailRequested(artistName);
+        }
+    }
+    
+    public interface IPeopleDetailController extends ISongListController{
+        public void onArtistDetailRequested(final String artistName);
     }
 }

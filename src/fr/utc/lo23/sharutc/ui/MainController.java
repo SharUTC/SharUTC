@@ -58,7 +58,8 @@ public class MainController extends NavigationController implements Initializabl
         ArtistsDetailController.IArtistsDetailController,
         AlbumsDetailController.IAlbumsDetailController,
         SongSelectorController.ISongListController,
-        SongDetailController.ISongDetailController {
+        SongDetailController.ISongDetailController,
+        PeopleDetailController.IPeopleDetailController{
 
     private static final Logger log = LoggerFactory.getLogger(MainController.class);
     @Inject
@@ -489,7 +490,7 @@ public class MainController extends NavigationController implements Initializabl
     private void showPeopleDetail(UserInfo userInfo) {
         if(loadDragPreviewDrawer("/fr/utc/lo23/sharutc/ui/fxml/people_detail.fxml")) {
             ((PeopleDetailController) mCurrentLoadedRighpaneResult.getController()).setUserInfo(userInfo);
-            ((SongSelectorController) mCurrentLoadedRighpaneResult.getController()).setInterface(this);
+            ((PeopleDetailController) mCurrentLoadedRighpaneResult.getController()).setInterface(this);
         }
     }
 
