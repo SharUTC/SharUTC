@@ -98,7 +98,7 @@
         </ScrollPane>                
     </VBox>
     
-    <HBox alignment="BOTTOM_LEFT" > 
+    <HBox fx:id="inputContainer" alignment="BOTTOM_LEFT" > 
         <VBox.margin>
             <javafx.geometry.Insets bottom="8" />
         </VBox.margin>
@@ -107,7 +107,6 @@
                 <javafx.geometry.Insets right="8" />
             </HBox.margin>
         </Button>
-        <TextArea fx:id="inputTextArea" styleClass="commentTextArea" HBox.hgrow="ALWAYS"/>
     </HBox>
 
 

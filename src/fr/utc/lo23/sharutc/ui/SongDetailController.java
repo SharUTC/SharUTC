@@ -37,8 +37,11 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,7 +52,7 @@ public class SongDetailController extends SongSelectorController implements Init
 
     private static final Logger log = LoggerFactory.getLogger(SongDetailController.class);
     @FXML
-    public TextArea inputTextArea;
+    public HBox inputContainer;
     @FXML
     public Button addRemoveButton;
     @FXML
@@ -103,6 +106,8 @@ public class SongDetailController extends SongSelectorController implements Init
     private ISongDetailController mInteface;
     private VBox mCommentContainer;
     private FlowPane mTagContainer;
+    private TextArea mCommentInputTextArea;
+    private TextField mTagInputTextArea;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -147,16 +152,22 @@ public class SongDetailController extends SongSelectorController implements Init
     }
 
     public void showTags() {
-        centralSectionTitle.setText("Tags");
-        if (mCommentContainer != null) {
-            mCommentContainer.getChildren().clear();
-        }
         mTagContainer = new FlowPane(Orientation.HORIZONTAL);
         mTagContainer.setHgap(7);
         mTagContainer.setVgap(7);
         centralScrollPane.setContent(mTagContainer);
-        inputTextArea.setPrefRowCount(1);
-        inputTextArea.setPromptText("Type a new tag...");
+        centralSectionTitle.setText("Tags");        
+        mTagInputTextArea = new TextField();
+        mTagInputTextArea.setPromptText("Type a new tag...");
+        mTagInputTextArea.getStyleClass().add("commentTextArea");
+        mTagInputTextArea.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent t) {
+                handleAddTagAction(t);
+            }
+        });
+        HBox.setHgrow(mTagInputTextArea, Priority.ALWAYS);
+        inputContainer.getChildren().add(mTagInputTextArea);
         addInputButton.setText("Add a Tag");
         addInputButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
@@ -175,14 +186,15 @@ public class SongDetailController extends SongSelectorController implements Init
     }
 
     public void showComments() {
-        if (mTagContainer != null) {
-            mTagContainer.getChildren().clear();
-        }
         mCommentContainer = new VBox();
         centralScrollPane.setContent(mCommentContainer);
         centralSectionTitle.setText("Comments");
-        inputTextArea.setPrefRowCount(3);
-        inputTextArea.setPromptText("Type your comment...");
+        mCommentInputTextArea = new TextArea();
+        mCommentInputTextArea.getStyleClass().add("commentTextArea");
+        mCommentInputTextArea.setPrefRowCount(3);
+        mCommentInputTextArea.setPromptText("Type your comment...");
+        HBox.setHgrow(mCommentInputTextArea, Priority.ALWAYS);
+        inputContainer.getChildren().add(mCommentInputTextArea);
         addInputButton.setText("Comment");
         addInputButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
@@ -255,20 +267,20 @@ public class SongDetailController extends SongSelectorController implements Init
     }
 
     private void handleAddTagAction(ActionEvent event) {
-        final String tag = inputTextArea.getText().trim();
+        final String tag = mTagInputTextArea.getText().trim();
         if (!tag.isEmpty()) {
             log.debug("addTagCommand" + tag);
             mAddTagCommand.setMusic(mMusic);
             mAddTagCommand.setTag(tag);
-            mAddTagCommand.execute();            
-            inputTextArea.clear();
+            mAddTagCommand.execute();
+            mTagInputTextArea.clear();
             mTagContainer.getChildren().clear();
             loadTags();
         }
     }
 
     private void handleAddCommentAction(ActionEvent event) {
-        final String comment = inputTextArea.getText().trim();
+        final String comment = mCommentInputTextArea.getText().trim();
         if (!comment.isEmpty()) {
             log.debug("addCommentCommand : " + comment);
             mAddCommentCommand.setMusic(mMusic);
@@ -286,13 +298,13 @@ public class SongDetailController extends SongSelectorController implements Init
                 mAppModel.getActivePeerList().getPeerByPeerId(Long.MIN_VALUE);
                 mAddCommentCommand.setOwnerPeer(ownerPeer);
                 mAddCommentCommand.execute();
-                inputTextArea.clear();
+                mCommentInputTextArea.clear();
                 //Update UI directly, since no events are triggered when a comment is added.
                 mCommentContainer.getChildren().clear();
-                showComments();
+                loadComments();
             } else {
-                inputTextArea.clear();
-                inputTextArea.setText("user not connected anymore");
+                mCommentInputTextArea.clear();
+                mCommentInputTextArea.setText("user not connected anymore");
             }
 
             log.debug("addCommentCommand -- end ");
@@ -417,7 +429,7 @@ public class SongDetailController extends SongSelectorController implements Init
         mEditCommentCommand.execute();
         //Update UI directly, since no events are triggered when a comment is deleted
         mCommentContainer.getChildren().clear();
-        showComments();
+        loadComments();
     }
 
     @Override
@@ -429,7 +441,7 @@ public class SongDetailController extends SongSelectorController implements Init
         mRemoveCommentCommand.execute();
         //Update UI directly, since no events are triggered when a comment is deleted
         mCommentContainer.getChildren().clear();
-        showComments();
+        loadComments();
     }
 
     @Override
