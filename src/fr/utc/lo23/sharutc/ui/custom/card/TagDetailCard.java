@@ -6,6 +6,7 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.input.MouseEvent;
 
 
 public class TagDetailCard extends SimpleCard {
@@ -28,6 +29,20 @@ public class TagDetailCard extends SimpleCard {
             @Override
             public void handle(ActionEvent t) {
                 callBack.onTagDeleted(mTagName);
+            }
+        });
+        
+        this.setOnMouseEntered(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent t) {
+                buttonDeleteTag.setVisible(true);
+            }
+        });
+        
+        this.setOnMouseExited(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent t) {
+                buttonDeleteTag.setVisible(false);
             }
         });
     }

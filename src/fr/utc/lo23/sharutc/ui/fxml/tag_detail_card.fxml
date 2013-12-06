@@ -13,7 +13,7 @@
             <VBox HBox.hgrow="ALWAYS"  >
                 <Label fx:id="labelTagName" styleClass="largeTextGreyBold" wrapText="true" />
             </VBox>            
-            <Button fx:id="buttonDeleteTag" styleClass="imageButton">
+            <Button fx:id="buttonDeleteTag" styleClass="imageButton" visible="false">
                 <graphic>
                     <ImageView fitWidth="20" fitHeight="20">
                         <image>
