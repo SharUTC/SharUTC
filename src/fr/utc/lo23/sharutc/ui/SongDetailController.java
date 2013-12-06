@@ -180,8 +180,17 @@ public class SongDetailController extends SongSelectorController implements Init
 
     private void loadTags() {
         final Set<String> tags = mMusic.getTags();
-        for (String tag : tags) {
-            mTagContainer.getChildren().add(new TagDetailCard(tag, this));
+        for (final String tag : tags) {
+            final TagDetailCard tagCard = new  TagDetailCard(tag, this);
+            tagCard.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent t) {
+                    if(t.getClickCount() > 1) {
+                        mInteface.onTagFilterRequested(tag);
+                    }
+                }
+            });
+            mTagContainer.getChildren().add(tagCard);
         }
     }
 
@@ -457,5 +466,7 @@ public class SongDetailController extends SongSelectorController implements Init
     public interface ISongDetailController extends ISongListController {
 
         public void onSongRemovedFromLocalCatalog();
+        
+        public void onTagFilterRequested(String tagName);
     }
 }

@@ -470,6 +470,10 @@ public class MainController extends NavigationController implements Initializabl
         showSongDetailWithTag(music);
     }
     
+    @Override
+    public void onTagFilterRequested(String tagName) {
+        showLocalCatalogWithTagFilter(tagName);
+    }
     
     private void showGroupRights(Category category) {
         try {
@@ -558,6 +562,12 @@ public class MainController extends NavigationController implements Initializabl
             log.error(e.getMessage());
         }
         return success;
+    }
+    
+    private void showLocalCatalogWithTagFilter(String tagName) {
+        if(loadSongList()) {
+            ((SongListController) mCurrentLoadedRighpaneResult.getController()).showLocalCatalogWithTagFilter(tagName);
+        }
     }
 
     private void showLocalCatalogWithAlbumFilter(String albumName) {

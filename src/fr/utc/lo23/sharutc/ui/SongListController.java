@@ -147,7 +147,7 @@ public class SongListController extends SongSelectorController implements Initia
         final Catalog catalog = mAppModel.getLocalCatalog();
         ArrayList<Music> musics = new ArrayList<Music>();
 
-        titleLabel.setText("Songs with tag : " + tagFilter);
+        titleLabel.setText("#" + tagFilter);
 
         for (final Music m : catalog.getMusics()) {
             if (m.getTags().contains(tagFilter)) {
