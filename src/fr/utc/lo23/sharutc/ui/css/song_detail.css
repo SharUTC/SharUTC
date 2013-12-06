@@ -9,7 +9,7 @@
     -fx-font-weight : bold;
 }
 
-#commentSectionTitle {
+#centralSectionTitle {
     -fx-font-size : 20px;
     -fx-text-fill: #7F8C8D;
     -fx-border-width: 0px 0px 2px 0px;
@@ -34,7 +34,7 @@
     -fx-text-fill: #7F8C8D;
 }
 
-#addCommentButton {
+#addInputButton {
     -fx-padding : 7px 25px 7px 25px; 
     -fx-background-radius: 0;
     -fx-font-size : 13px;

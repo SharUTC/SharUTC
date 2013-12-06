@@ -456,13 +456,20 @@ public class MainController extends NavigationController implements Initializabl
     @Override
     public void onSongDetailRequested(final Music music) {
         log.info("Music detail requested : " + music.getAlbum());
-        showSongDetail(music);
+        showSongDetailWithComment(music);
     }
 
     @Override
     public void onSongRemovedFromLocalCatalog() {
         showLocalCatalog();
     }
+    
+    
+    @Override
+    public void onTagDetailRequested(Music music) {
+        showSongDetailWithTag(music);
+    }
+    
     
     private void showGroupRights(Category category) {
         try {
@@ -506,11 +513,25 @@ public class MainController extends NavigationController implements Initializabl
         }
     }
 
-    private void showSongDetail(final Music music) {
-        if(loadDragPreviewDrawer("/fr/utc/lo23/sharutc/ui/fxml/song_detail.fxml")) {
+    private void showSongDetailWithComment(final Music music) {
+        if(loadSongDetail(music)) {
+            ((SongDetailController) mCurrentLoadedRighpaneResult.getController()).showComments();
+        }
+    }
+    
+    private void showSongDetailWithTag(final Music music) {
+        if(loadSongDetail(music)) {
+            ((SongDetailController) mCurrentLoadedRighpaneResult.getController()).showTags();
+        }
+    }
+    
+    private boolean loadSongDetail(final Music music) {
+        boolean success = loadDragPreviewDrawer("/fr/utc/lo23/sharutc/ui/fxml/song_detail.fxml");
+        if(success) {
             ((SongDetailController) mCurrentLoadedRighpaneResult.getController()).setInterface(this);
             ((SongDetailController) mCurrentLoadedRighpaneResult.getController()).setMusic(music);
         }
+        return success;
     }
 
     private void showAlbumListWithArtistFilter(String artistName) {

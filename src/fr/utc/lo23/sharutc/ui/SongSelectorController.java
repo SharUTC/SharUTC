@@ -80,6 +80,9 @@ public class SongSelectorController extends DragPreviewDrawer implements SongCar
     @Override
     public void onTagEditionRequested(Music music) {
         log.info("onTagEditionRequested: " + music.getTitle());
+        if(mInterface != null) {
+            mInterface.onTagDetailRequested(music);
+        }        
     }
 
     @Override
@@ -141,5 +144,6 @@ public class SongSelectorController extends DragPreviewDrawer implements SongCar
     public interface ISongListController {
         
         void onSongDetailRequested(Music music);
+        void onTagDetailRequested(Music music);
     }
 }

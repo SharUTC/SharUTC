@@ -1,0 +1,28 @@
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import java.net.URL?>
+
+<fx:root type="fr.utc.lo23.sharutc.ui.custom.card.TagDetailCard"
+         xmlns:fx="http://javafx.com/fxml" minWidth="10" minHeight="10" >    
+    <StackPane>
+        <HBox alignment="CENTER" StackPane.alignment="CENTER">
+            <VBox HBox.hgrow="ALWAYS"  >
+                <Label fx:id="labelTagName" styleClass="largeTextGreyBold" wrapText="true" />
+            </VBox>            
+            <Button fx:id="buttonDeleteTag" styleClass="imageButton">
+                <graphic>
+                    <ImageView fitWidth="20" fitHeight="20">
+                        <image>
+                            <Image url="@../drawable/ic_delete.png"/>
+                        </image>
+                    </ImageView>
+                </graphic>
+            </Button>
+        </HBox>
+    </StackPane>
+    
+</fx:root>
