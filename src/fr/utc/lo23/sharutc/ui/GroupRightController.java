@@ -8,6 +8,7 @@ package fr.utc.lo23.sharutc.ui;
 
 import com.google.inject.Inject;
 import fr.utc.lo23.sharutc.controler.command.profile.ManageRightsCommand;
+import fr.utc.lo23.sharutc.model.AppModel;
 import fr.utc.lo23.sharutc.model.domain.Music;
 import fr.utc.lo23.sharutc.model.userdata.Category;
 import fr.utc.lo23.sharutc.ui.custom.HorizontalScrollHandler;
@@ -20,10 +21,13 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.StackPane;
+import javafx.scene.text.TextAlignment;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 
 /**
@@ -36,6 +40,8 @@ public class GroupRightController implements Initializable, SongCardRight.ISongC
 
     @Inject
     private ManageRightsCommand rightCommand;
+    @Inject
+    public AppModel mAppModel;
     @FXML
     public FlowPane songsContainer;
     @FXML
@@ -44,6 +50,9 @@ public class GroupRightController implements Initializable, SongCardRight.ISongC
     public ScrollPane rightScrollPane;
     @FXML
     public Label Group;
+    @FXML
+    public StackPane contentContainer;
+
     private Category currentCategory;
     private static final Logger log = LoggerFactory.getLogger(GroupRightController.class);
 
@@ -52,6 +61,10 @@ public class GroupRightController implements Initializable, SongCardRight.ISongC
     private RightCard mListenSongCard;
     private RightCard mCommentAndNoteSongCard;
     private RightCard mAllRightsSongCard;
+    /**
+     * Display message to the user
+     */
+    private Label mPlaceHolderLabel;
 
     /**
      * Initializes the controller class.
@@ -61,14 +74,16 @@ public class GroupRightController implements Initializable, SongCardRight.ISongC
         rightScrollPane.getStyleClass().add("myScrollPaneWithTopBorder");
         HorizontalScrollHandler scrollHandler = new HorizontalScrollHandler(rightScrollPane);
 
-        for (int i = 0; i < 20; i++) {
-            final Music m = new Music();
-            m.setTitle("Music " + i);
-            m.setArtist("Artist" + i);
-            SongCardRight newCard = new SongCardRight(m, this, false, true, false, true);
-            songsContainer.getChildren().add(newCard);
+        //populate the view with local musique
+        final List<Music> musics = mAppModel.getLocalCatalog().getMusics();
+        if (musics.isEmpty()) {
+            showPlaceHolder("There is no song in your catalogue. Go to the Songs tab first.");
+        } else {
+            for (Music m : musics) {
+                songsContainer.getChildren().add(new SongCardRight(m, this, false, true, false, true));
+            }
         }
-        // TODO
+
         drawRightCard();
     }
 
@@ -143,8 +158,38 @@ public class GroupRightController implements Initializable, SongCardRight.ISongC
                 mAllRightsSongCard);
     }
 
+
+    /**
+     * Display the message in the place Holder
+     */
+    private void showPlaceHolder(String message) {
+        mPlaceHolderLabel = new Label(message);
+        mPlaceHolderLabel.getStyleClass().add("placeHolderLabel");
+        mPlaceHolderLabel.setWrapText(true);
+        mPlaceHolderLabel.setTextAlignment(TextAlignment.CENTER);
+        contentContainer.getChildren().add(mPlaceHolderLabel);
+    }
+
+    /**
+     * hide the place holder if it's displayed
+     */
+    private void hidePlaceHolder() {
+        if (mPlaceHolderLabel != null) {
+            contentContainer.getChildren().remove(mPlaceHolderLabel);
+            mPlaceHolderLabel = null;
+        }
+    }
+
     @Override
     public void onSongAdded(RightCard card) {
-        //To change body of implemented methods use File | Settings | File Templates.
+        if (card.equals(mAllRightsSongCard)) {
+            log.info("song dropped in all right card ");
+        } else if (card.equals(mListenSongCard)) {
+            log.info("song dropped in listen right card ");
+        } else if (card.equals(mReadSongCard)) {
+            log.info("song dropped in read right card ");
+        } else if (card.equals(mCommentAndNoteSongCard)) {
+            log.info("song dropped in comment right card ");
+        }
     }
 }

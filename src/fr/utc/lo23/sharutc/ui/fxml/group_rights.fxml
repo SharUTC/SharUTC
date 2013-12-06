@@ -19,20 +19,22 @@
         <VBox  alignment="CENTER_RIGHT">
             <Label fx:id="Group" styleClass="panesubtitle"/>    
         </VBox>
-       </HBox>   
-    <ScrollPane styleClass="myScrollPane"
-                VBox.vgrow="ALWAYS" fitToWidth="true" fitToHeight="true">   
-         
-        <FlowPane GridPane.hgrow="ALWAYS"
-                  GridPane.vgrow="ALWAYS" fx:id="songsContainer"
-                  prefHeight="-1.0" prefWidth="-1.0"
-                  prefWrapLength="230.0" vgap="10.0"
-                  hgap="10.0">
-            <padding>
-                <javafx.geometry.Insets bottom="5" left="5" right="5" top="5"/>
-            </padding>
-        </FlowPane>
-    </ScrollPane>
+       </HBox>
+    <StackPane fx:id="contentContainer" VBox.vgrow="ALWAYS">
+        <ScrollPane styleClass="myScrollPane"
+                    VBox.vgrow="ALWAYS" fitToWidth="true" fitToHeight="true">
+
+            <FlowPane GridPane.hgrow="ALWAYS"
+                      GridPane.vgrow="ALWAYS" fx:id="songsContainer"
+                      prefHeight="-1.0" prefWidth="-1.0"
+                      prefWrapLength="230.0" vgap="10.0"
+                      hgap="10.0">
+                <padding>
+                    <javafx.geometry.Insets bottom="5" left="5" right="5" top="5"/>
+                </padding>
+            </FlowPane>
+        </ScrollPane>
+    </StackPane>
     <ScrollPane styleClass="myScrollPane" fx:id="rightScrollPane"
                 VBox.vgrow="NEVER" prefHeight="150" fitToWidth="true" fitToHeight="true" vbarPolicy="NEVER"
                 hbarPolicy="ALWAYS">

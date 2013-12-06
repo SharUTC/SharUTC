@@ -73,7 +73,7 @@ public class PeopleHomeController extends DragPreviewDrawer implements Initializ
     /**
      * Display message to the user
      */
-    private Label placeHolderLabel;
+    private Label mPlaceHolderLabel;
     /**
      * Manage Category
      */
@@ -271,20 +271,20 @@ public class PeopleHomeController extends DragPreviewDrawer implements Initializ
      * Display the message in the place Holder
      */
     private void showPlaceHolder(String message) {
-        placeHolderLabel = new Label(message);
-        placeHolderLabel.getStyleClass().add("placeHolderLabel");
-        placeHolderLabel.setWrapText(true);
-        placeHolderLabel.setTextAlignment(TextAlignment.CENTER);
-        contentContainer.getChildren().add(placeHolderLabel);
+        mPlaceHolderLabel = new Label(message);
+        mPlaceHolderLabel.getStyleClass().add("placeHolderLabel");
+        mPlaceHolderLabel.setWrapText(true);
+        mPlaceHolderLabel.setTextAlignment(TextAlignment.CENTER);
+        contentContainer.getChildren().add(mPlaceHolderLabel);
     }
 
     /**
      * hide the place holder if it's displayed
      */
     private void hidePlaceHolder() {
-        if (placeHolderLabel != null) {
-            contentContainer.getChildren().remove(placeHolderLabel);
-            placeHolderLabel = null;
+        if (mPlaceHolderLabel != null) {
+            contentContainer.getChildren().remove(mPlaceHolderLabel);
+            mPlaceHolderLabel = null;
         }
     }
 
