@@ -46,16 +46,25 @@ public class LoginController extends NavigationController implements Initializab
     /*
      * The UI attributs
      */
+    @FXML
     public StackPane loginRoot;
+    @FXML
     public SharutcLogo sharutcLogo;
+    @FXML
     public Button buttonSignUp;
+    @FXML
     public Button buttonSignIn;
+    @FXML
     public Button buttonImport;
+    @FXML
     public TextField userNameField;
+    @FXML
     public PasswordField passwordField;
-    //drop Overlay
+    @FXML
     public Region dropOverlay;
+    @FXML
     public Label dropOverlayLabel;
+    @FXML
     public VBox errorContainer;
     /*
      * The private attributs
@@ -71,10 +80,11 @@ public class LoginController extends NavigationController implements Initializab
     private ImportProfileCommand mImportProfileCommand;
 
     /**
-     * Initializes the controller class.
+     * Initializes the controller class. This method is called automatically
+     * when the controller is loaded.
      *
-     * @param url
-     * @param rb
+     * @param url {@link URL}
+     * @param rb {@link ResourceBundle}
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -95,10 +105,10 @@ public class LoginController extends NavigationController implements Initializab
         //hide drop overlay
         hideDropOverlay();
 
-        //listen for changes on the AppModel
+        //listen to changes made on the AppModel
         mAppModel.addPropertyChangeListener(this);
 
-        //listen for changes on the Error Bus
+        //listen to changes made the Error Bus
         mAppModel.getErrorBus().addPropertyChangeListener(this);
     }
 
@@ -113,7 +123,7 @@ public class LoginController extends NavigationController implements Initializab
      * Handles the ActionEvents of the three buttons "sign up" "sign in" and
      * "import"
      *
-     * @param event
+     * @param event {@link ActionEvent}
      * @throws IOException
      */
     @FXML
@@ -139,7 +149,7 @@ public class LoginController extends NavigationController implements Initializab
     /**
      * Handles the ActionEvent of the two TextFields "userName" and "password"
      *
-     * @param actionEvent
+     * @param actionEvent {@link ActionEvent}
      * @throws IOException
      */
     @FXML
@@ -150,7 +160,7 @@ public class LoginController extends NavigationController implements Initializab
     /**
      * Handles dragEntered Events. Shows the drop overlay.
      *
-     * @param dragEvent
+     * @param dragEvent {@link DragEvent}
      * @throws IOException
      */
     @FXML
@@ -163,7 +173,7 @@ public class LoginController extends NavigationController implements Initializab
      * Handles dragOver Events. Accepts the transfer is there is a file in the
      * Dragboard.
      *
-     * @param dragEvent
+     * @param dragEvent {@link DragEvent}
      * @throws IOException
      */
     @FXML
@@ -178,7 +188,7 @@ public class LoginController extends NavigationController implements Initializab
     /**
      * Handles dragExited Events. Hides the drop overlay.
      *
-     * @param dragEvent
+     * @param dragEvent {@link DragEvent}
      * @throws IOException
      */
     @FXML
@@ -191,7 +201,7 @@ public class LoginController extends NavigationController implements Initializab
      * Handles dragDrop Events. Tries to import the dropped file and then hides
      * the drop overlay.
      *
-     * @param dragEvent
+     * @param dragEvent {@link DragEvent}
      * @throws IOException
      */
     @FXML
@@ -291,6 +301,11 @@ public class LoginController extends NavigationController implements Initializab
         return isFormValid;
     }
 
+    /**
+     * This method gets called when a bound property is changed.
+     *
+     * @param evt {@link PropertyChangeEvent}
+     */
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         final String propertyName = evt.getPropertyName();
@@ -304,18 +319,29 @@ public class LoginController extends NavigationController implements Initializab
         }
     }
 
+    /**
+     * Loads the registration page properly.
+     */
     private void goToRegistrationPage() {
         mAppModel.getErrorBus().removePropertyChangeListener(this);
         mAppModel.removePropertyChangeListener(this);
         mNavigationHandler.goToRegistrationPage();
     }
 
+    /**
+     * Load the main page properly.
+     */
     private void goToMainPage() {
         mAppModel.getErrorBus().removePropertyChangeListener(this);
         mAppModel.removePropertyChangeListener(this);
         mNavigationHandler.goToMainPage();
     }
 
+    /**
+     * Imports a user profile.
+     *
+     * @param filePath the path of the file that contains the profile.
+     */
     private void importProfile(String filePath) {
         errorContainer.getChildren().clear();
         mImportProfileCommand.setPath(filePath);

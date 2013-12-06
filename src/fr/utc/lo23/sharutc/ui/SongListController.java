@@ -113,6 +113,7 @@ public class SongListController extends SongSelectorController implements Initia
 
     public void importSongs(final List<File> files) {
         log.debug("import started !");
+        showLocalCatalog();
         addNewSongButton.setVisible(false);
         addNewSongProgress.setVisible(true);
         final Task<Void> importTask = new Task<Void>() {
