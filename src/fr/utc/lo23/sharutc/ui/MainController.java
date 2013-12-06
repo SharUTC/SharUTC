@@ -118,6 +118,7 @@ public class MainController extends NavigationController implements Initializabl
             initializePlayList();
             mPlayerController.setPlayList(mPlayListData);
         } catch (IOException exception) {
+            log.error(exception.getMessage());
         }
 
         mDragPreview = new StackPane();
