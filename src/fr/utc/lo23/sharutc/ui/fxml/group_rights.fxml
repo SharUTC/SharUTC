@@ -9,6 +9,7 @@
 <?import javafx.scene.layout.*?>
 
 
+<?import fr.utc.lo23.sharutc.ui.custom.card.SimpleCard?>
 <VBox xmlns:fx="http://javafx.com/fxml"
       fx:controller="fr.utc.lo23.sharutc.ui.GroupRightController" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS">
      <HBox>
@@ -19,7 +20,7 @@
             <Label fx:id="Group" styleClass="panesubtitle"/>    
         </VBox>
        </HBox>   
-    <ScrollPane xmlns:fx="http://javafx.com/fxml" styleClass="myScrollPane"
+    <ScrollPane styleClass="myScrollPane"
                 VBox.vgrow="ALWAYS" fitToWidth="true" fitToHeight="true">   
          
         <FlowPane GridPane.hgrow="ALWAYS"
@@ -31,7 +32,23 @@
                 <javafx.geometry.Insets bottom="5" left="5" right="5" top="5"/>
             </padding>
         </FlowPane>
-    </ScrollPane>                
+    </ScrollPane>
+    <ScrollPane styleClass="myScrollPane" fx:id="rightScrollPane"
+                VBox.vgrow="NEVER" prefHeight="150" fitToWidth="true" fitToHeight="true" vbarPolicy="NEVER"
+                hbarPolicy="ALWAYS">
+
+        <FlowPane GridPane.hgrow="ALWAYS"
+                  GridPane.vgrow="ALWAYS" fx:id="rightContainer"
+                  prefHeight="-1.0" prefWidth="-1.0"
+                  orientation="VERTICAL"
+                  prefWrapLength="230.0" vgap="10.0"
+                  hgap="10.0">
+            <padding>
+                <javafx.geometry.Insets bottom="5" left="5" right="5" top="10"/>
+            </padding>
+        </FlowPane>
+
+    </ScrollPane>
 
         
 </VBox>
