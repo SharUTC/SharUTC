@@ -111,11 +111,10 @@ public class MainController extends NavigationController implements Initializabl
         populateMusics();
 
         try {
+            //Load the music player
             final Result loadingResult = mFxmlLoader.load(getClass().getResource("/fr/utc/lo23/sharutc/ui/fxml/player.fxml"));
             mPlayerController = loadingResult.getController();
-
             bottombar.getChildren().add((Node) loadingResult.getRoot());
-
             initializePlayList();
             mPlayerController.setPlayList(mPlayListData);
         } catch (IOException exception) {
@@ -154,7 +153,6 @@ public class MainController extends NavigationController implements Initializabl
                 dragEvent.consume();
             }
         });
-
         root.getChildren().add(mDragPreview);
     }
 
@@ -276,10 +274,22 @@ public class MainController extends NavigationController implements Initializabl
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 final String propertyName = evt.getPropertyName();
+                log.debug("AppModel propertyChange : " + propertyName);
                 if (AppModelImpl.Property.PROFILE.name().equals(propertyName)) {
                     if (evt.getNewValue() == null) {
                         log.debug("logout trigered");
                         logout();
+                    }
+                } else if (AppModelImpl.Property.LOCAL_CATALOG.name().equals(propertyName)) {
+                    try {
+                        detachRightpane();
+                        mCurrentLoadedRighpaneResult = mFxmlLoader.load(getClass().getResource("/fr/utc/lo23/sharutc/ui/fxml/song_list.fxml"));
+                        ((DragPreviewDrawer) mCurrentLoadedRighpaneResult.getController()).init(mDragPreview);
+                        ((SongListController) mCurrentLoadedRighpaneResult.getController()).setInterface(MainController.this);
+                        ((SongListController) mCurrentLoadedRighpaneResult.getController()).showLocalCatalog();
+                        attachRightpane(mCurrentLoadedRighpaneResult);
+                    } catch (IOException ex) {
+                        log.error(ex.getMessage());
                     }
                 }
             }
