@@ -2,9 +2,11 @@ package fr.utc.lo23.sharutc.ui;
 
 import com.google.inject.Inject;
 import fr.utc.lo23.sharutc.controler.command.music.AddCommentCommand;
+import fr.utc.lo23.sharutc.controler.command.music.AddTagCommand;
 import fr.utc.lo23.sharutc.controler.command.music.EditCommentCommand;
 import fr.utc.lo23.sharutc.controler.command.music.RemoveCommentCommand;
 import fr.utc.lo23.sharutc.controler.command.music.RemoveFromLocalCatalogCommand;
+import fr.utc.lo23.sharutc.controler.command.music.RemoveTagCommand;
 import fr.utc.lo23.sharutc.controler.command.music.SetScoreCommand;
 import fr.utc.lo23.sharutc.model.AppModel;
 import fr.utc.lo23.sharutc.model.domain.Comment;
@@ -15,6 +17,7 @@ import fr.utc.lo23.sharutc.ui.custom.CommentView;
 import fr.utc.lo23.sharutc.ui.custom.CommentView.IComment;
 import fr.utc.lo23.sharutc.ui.custom.RatingStar;
 import fr.utc.lo23.sharutc.ui.custom.card.SongCard;
+import fr.utc.lo23.sharutc.ui.custom.card.TagDetailCard;
 import fr.utc.lo23.sharutc.util.CollectionChangeListener;
 import fr.utc.lo23.sharutc.util.CollectionEvent;
 import fr.utc.lo23.sharutc.util.CollectionEvent.Type;
@@ -29,24 +32,37 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Orientation;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class SongDetailController extends SongSelectorController implements Initializable, PropertyChangeListener, CollectionChangeListener<Music>, IComment {
+public class SongDetailController extends SongSelectorController implements Initializable,
+        PropertyChangeListener, CollectionChangeListener<Music>, IComment,
+        TagDetailCard.ITagDetailCard {
 
     private static final Logger log = LoggerFactory.getLogger(SongDetailController.class);
     @FXML
-    public TextArea commentTextArea;
+    public HBox inputContainer;
     @FXML
     public Button addRemoveButton;
     @FXML
     public VBox topLeftContainer;
     @FXML
-    public VBox commentContainer;
+    public Button addInputButton;
+    @FXML
+    public Label centralSectionTitle;
+    @FXML
+    public ScrollPane centralScrollPane;
     @FXML
     public RatingStar starMyRate1;
     @FXML
@@ -79,11 +95,19 @@ public class SongDetailController extends SongSelectorController implements Init
     private RemoveCommentCommand mRemoveCommentCommand;
     @Inject
     private EditCommentCommand mEditCommentCommand;
+    @Inject
+    private AddTagCommand mAddTagCommand;
+    @Inject
+    private RemoveTagCommand mRemoveTagCommand;
     private RatingStar[] mMyRatingStars;
     private RatingStar[] mAverageRatingStars;
     private Music mMusic;
     private Score mUserScore;
     private ISongDetailController mInteface;
+    private VBox mCommentContainer;
+    private FlowPane mTagContainer;
+    private TextArea mCommentInputTextArea;
+    private TextField mTagInputTextArea;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -118,7 +142,6 @@ public class SongDetailController extends SongSelectorController implements Init
         showMusicInfo();
         showMyRating();
         showAverageRating();
-        showComments();
     }
 
     private void setUserScore() {
@@ -128,13 +151,74 @@ public class SongDetailController extends SongSelectorController implements Init
         }
     }
 
-    private void showComments() {
+    public void showTags() {
+        mTagContainer = new FlowPane(Orientation.HORIZONTAL);
+        mTagContainer.setHgap(7);
+        mTagContainer.setVgap(7);
+        centralScrollPane.setContent(mTagContainer);
+        centralSectionTitle.setText("Tags");
+        mTagInputTextArea = new TextField();
+        mTagInputTextArea.setPromptText("Type a new tag...");
+        mTagInputTextArea.getStyleClass().add("commentTextArea");
+        mTagInputTextArea.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent t) {
+                handleAddTagAction(t);
+            }
+        });
+        HBox.setHgrow(mTagInputTextArea, Priority.ALWAYS);
+        inputContainer.getChildren().add(mTagInputTextArea);
+        addInputButton.setText("Add a Tag");
+        addInputButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent t) {
+                handleAddTagAction(t);
+            }
+        });
+        loadTags();
+    }
+
+    private void loadTags() {
+        final Set<String> tags = mMusic.getTags();
+        for (final String tag : tags) {
+            final TagDetailCard tagCard = new TagDetailCard(tag, this);
+            tagCard.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent t) {
+                    mInteface.onTagFilterRequested(tag);
+                }
+            });
+            mTagContainer.getChildren().add(tagCard);
+        }
+    }
+
+    public void showComments() {
+        mCommentContainer = new VBox();
+        centralScrollPane.setContent(mCommentContainer);
+        centralSectionTitle.setText("Comments");
+        mCommentInputTextArea = new TextArea();
+        mCommentInputTextArea.getStyleClass().add("commentTextArea");
+        mCommentInputTextArea.setPrefRowCount(3);
+        mCommentInputTextArea.setPromptText("Type your comment...");
+        HBox.setHgrow(mCommentInputTextArea, Priority.ALWAYS);
+        inputContainer.getChildren().add(mCommentInputTextArea);
+        addInputButton.setText("Comment");
+        addInputButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent t) {
+                handleAddCommentAction(t);
+            }
+        });
+        loadComments();
+    }
+
+    private void loadComments() {
         final List<Comment> comments = mMusic.getComments();
         for (Comment comment : comments) {
             if (comment.getAuthorPeerId().equals(mAppModel.getProfile().getUserInfo().getPeerId())) {
-                commentContainer.getChildren().add(new CommentView(comment, this));
+                mCommentContainer.getChildren().add(new CommentView(comment, this));
             } else {
-                commentContainer.getChildren().add(new CommentView(comment));
+                mCommentContainer.getChildren().add(new CommentView(comment));
             }
 
         }
@@ -189,9 +273,21 @@ public class SongDetailController extends SongSelectorController implements Init
         }
     }
 
-    @FXML
+    private void handleAddTagAction(ActionEvent event) {
+        final String tag = mTagInputTextArea.getText().trim();
+        if (!tag.isEmpty()) {
+            log.debug("addTagCommand" + tag);
+            mAddTagCommand.setMusic(mMusic);
+            mAddTagCommand.setTag(tag);
+            mAddTagCommand.execute();
+            mTagInputTextArea.clear();
+            mTagContainer.getChildren().clear();
+            loadTags();
+        }
+    }
+
     private void handleAddCommentAction(ActionEvent event) {
-        final String comment = commentTextArea.getText().trim();
+        final String comment = mCommentInputTextArea.getText().trim();
         if (!comment.isEmpty()) {
             log.debug("addCommentCommand : " + comment);
             mAddCommentCommand.setMusic(mMusic);
@@ -208,16 +304,14 @@ public class SongDetailController extends SongSelectorController implements Init
             if (ownerPeer != null) {
                 mAppModel.getActivePeerList().getPeerByPeerId(Long.MIN_VALUE);
                 mAddCommentCommand.setOwnerPeer(ownerPeer);
-                //The command doesn't work as intended because of a bug with the
-                //Comment Indexes -> Demande #135
                 mAddCommentCommand.execute();
-                commentTextArea.clear();
+                mCommentInputTextArea.clear();
                 //Update UI directly, since no events are triggered when a comment is added.
-                commentContainer.getChildren().clear();
-                showComments();
+                mCommentContainer.getChildren().clear();
+                loadComments();
             } else {
-                commentTextArea.clear();
-                commentTextArea.setText("user not connected anymore");
+                mCommentInputTextArea.clear();
+                mCommentInputTextArea.setText("user not connected anymore");
             }
 
             log.debug("addCommentCommand -- end ");
@@ -298,9 +392,9 @@ public class SongDetailController extends SongSelectorController implements Init
         comment3.setIndex(3);
         comment3.setText("I'm not realy a fan of the genre. Is that event music ?!?");
 
-        commentContainer.getChildren().add(new CommentView(comment1));
-        commentContainer.getChildren().add(new CommentView(comment2));
-        commentContainer.getChildren().add(new CommentView(comment3));
+        mCommentContainer.getChildren().add(new CommentView(comment1));
+        mCommentContainer.getChildren().add(new CommentView(comment2));
+        mCommentContainer.getChildren().add(new CommentView(comment3));
     }
 
     @Override
@@ -339,12 +433,10 @@ public class SongDetailController extends SongSelectorController implements Init
         mEditCommentCommand.setOwnerPeer(mAppModel.getProfile().getUserInfo().toPeer());
         mEditCommentCommand.setCommentId(comment.getIndex());
         mEditCommentCommand.setComment(newCommentText);
-        //The command doesn't work as intended because of a bug with the
-        //Comment Indexes -> Demande #135
         mEditCommentCommand.execute();
         //Update UI directly, since no events are triggered when a comment is deleted
-        commentContainer.getChildren().clear();
-        showComments();
+        mCommentContainer.getChildren().clear();
+        loadComments();
     }
 
     @Override
@@ -353,16 +445,26 @@ public class SongDetailController extends SongSelectorController implements Init
         mRemoveCommentCommand.setCommentId(comment.getIndex());
         mRemoveCommentCommand.setMusic(mMusic);
         mRemoveCommentCommand.setPeer(mAppModel.getProfile().getUserInfo().toPeer());
-        //The command doesn't work as intended because of a bug with the
-        //Comment Indexes -> Demande #135
         mRemoveCommentCommand.execute();
         //Update UI directly, since no events are triggered when a comment is deleted
-        commentContainer.getChildren().clear();
-        showComments();
+        mCommentContainer.getChildren().clear();
+        loadComments();
+    }
+
+    @Override
+    public void onTagDeleted(String tag) {
+        log.debug("delete Tag : " + tag);
+        mRemoveTagCommand.setMusic(mMusic);
+        mRemoveTagCommand.setTag(tag);
+        mRemoveTagCommand.execute();
+        mTagContainer.getChildren().clear();
+        loadTags();
     }
 
     public interface ISongDetailController extends ISongListController {
 
         public void onSongRemovedFromLocalCatalog();
+
+        public void onTagFilterRequested(String tagName);
     }
 }

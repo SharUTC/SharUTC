@@ -88,31 +88,25 @@
         <padding>
             <javafx.geometry.Insets top="20" left="5" />
         </padding>
-        <Label text="Comments" fx:id="commentSectionTitle" />
-        <ScrollPane styleClass="myScrollPane"
+        <Label text="Comments" fx:id="centralSectionTitle" />
+        <ScrollPane fx:id="centralScrollPane" styleClass="myScrollPane"
                     fitToWidth="true" VBox.vgrow="ALWAYS" >
             <VBox.margin>
                 <javafx.geometry.Insets top="15" bottom="10" />
             </VBox.margin>
-            <VBox  fx:id="commentContainer">
-                
-            </VBox>
-
-                
-        </ScrollPane>
-                
+               
+        </ScrollPane>                
     </VBox>
     
-    <HBox alignment="CENTER_LEFT" > 
+    <HBox fx:id="inputContainer" alignment="BOTTOM_LEFT" > 
         <VBox.margin>
             <javafx.geometry.Insets bottom="8" />
         </VBox.margin>
-        <Button fx:id="addCommentButton" text="Comment" onAction="#handleAddCommentAction" >
+        <Button fx:id="addInputButton" >
             <HBox.margin>
                 <javafx.geometry.Insets right="8" />
             </HBox.margin>
         </Button>
-        <TextArea fx:id="commentTextArea" styleClass="commentTextArea" promptText="type your comment" HBox.hgrow="ALWAYS" prefRowCount="3"/>
     </HBox>
 
 

@@ -118,6 +118,7 @@ public class SearchResultController extends SongSelectorController implements Ri
     }
 
     public void setInterface(ISearchResultController i) {
+        super.setInterface(i);
         this.mInterface = i;
     }
 

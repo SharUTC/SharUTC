@@ -168,6 +168,8 @@ public class AppModelImpl implements AppModel, Serializable {
     @Override
     public void setLocalCatalog(Catalog localCatalog) {
         this.localCatalog = localCatalog;
+        propertyChangeSupport.firePropertyChange(Property.LOCAL_CATALOG.name(),
+                null, this.localCatalog);
     }
 
     /**
@@ -250,6 +252,10 @@ public class AppModelImpl implements AppModel, Serializable {
         /**
          *
          */
-        NETWORK_TAG_MAP
+        NETWORK_TAG_MAP,
+        /**
+         *
+         */
+        LOCAL_CATALOG
     }
 }

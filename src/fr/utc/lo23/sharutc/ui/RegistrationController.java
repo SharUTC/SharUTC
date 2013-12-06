@@ -41,15 +41,25 @@ public class RegistrationController extends NavigationController implements Init
     /*
      * The UI attributs
      */
+    @FXML
     public BorderPane registrationRoot;
+    @FXML
     public Button buttonCancel;
+    @FXML
     public SharutcLogo sharutcLogo;
+    @FXML
     public VBox errorContainer;
+    @FXML
     public TextField userNameField;
+    @FXML
     public TextField passwordField;
+    @FXML
     public TextField passwordConfirmField;
+    @FXML
     public TextField firstNameField;
+    @FXML
     public TextField lastNameField;
+    @FXML
     public TextField ageField;
     /*
      * The private attributs
@@ -63,7 +73,11 @@ public class RegistrationController extends NavigationController implements Init
     private AppModel mAppModel;
 
     /**
-     * Initializes the controller class.
+     * Initializes the controller class. This method is called automatically
+     * when the controller is loaded.
+     *
+     * @param url {@link URL}
+     * @param rb {@link ResourceBundle}
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -77,15 +91,17 @@ public class RegistrationController extends NavigationController implements Init
             }
         });
 
+        //listen to changes made on the AppModel
         mAppModel.addPropertyChangeListener(this);
-        
+
+        //listen to changes made on the ErrorBus
         mAppModel.getErrorBus().addPropertyChangeListener(this);
     }
 
     /**
      * Handles the ActionEvents of the Sign Up Button.
      *
-     * @param actionEvent
+     * @param actionEvent {@link ActionEvent}
      * @throws IOException
      */
     @FXML
@@ -110,7 +126,7 @@ public class RegistrationController extends NavigationController implements Init
      * Handles the ActionEvents of the Cancel Button. Goes back to the login
      * page.
      *
-     * @param actionEvent
+     * @param actionEvent {@link ActionEvent}
      * @throws IOException
      */
     @FXML
@@ -158,7 +174,6 @@ public class RegistrationController extends NavigationController implements Init
         if (!isAgeEmpty && !isAgeValid()) {
             mErrorMessages.add("Age is not valid.");
         }
-
 
         if (!emptyFields.isEmpty()) {
             mErrorMessages.add(makeEmptyFieldErrorMessage(emptyFields));
@@ -231,18 +246,26 @@ public class RegistrationController extends NavigationController implements Init
         return isAgeValid;
     }
 
+    /**
+     * This method gets called when a bound property is changed.
+     *
+     * @param evt {@link PropertyChangeEvent}
+     */
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         final String propertyName = evt.getPropertyName();
         if (AppModelImpl.Property.PROFILE.name().equals(propertyName)) {
             goToLoginPage();
-        } else if(ErrorBus.Property.APPLICATION_ERROR_MESSAGE.name().equals(propertyName)) {
+        } else if (ErrorBus.Property.APPLICATION_ERROR_MESSAGE.name().equals(propertyName)) {
             log.info("Application Error Message Changed");
             errorContainer.getChildren().clear();
             errorContainer.getChildren().add(new Label(((ErrorMessage) evt.getNewValue()).getMessage()));
         }
     }
 
+    /**
+     * Load the login page properly.
+     */
     private void goToLoginPage() {
         mAppModel.removePropertyChangeListener(this);
         mAppModel.getErrorBus().removePropertyChangeListener(this);

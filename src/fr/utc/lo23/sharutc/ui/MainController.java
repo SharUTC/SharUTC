@@ -58,7 +58,8 @@ public class MainController extends NavigationController implements Initializabl
         ArtistsDetailController.IArtistsDetailController,
         AlbumsDetailController.IAlbumsDetailController,
         SongSelectorController.ISongListController,
-        SongDetailController.ISongDetailController {
+        SongDetailController.ISongDetailController,
+        PeopleDetailController.IPeopleDetailController{
 
     private static final Logger log = LoggerFactory.getLogger(MainController.class);
     @Inject
@@ -111,14 +112,14 @@ public class MainController extends NavigationController implements Initializabl
         populateMusics();
 
         try {
+            //Load the music player
             final Result loadingResult = mFxmlLoader.load(getClass().getResource("/fr/utc/lo23/sharutc/ui/fxml/player.fxml"));
             mPlayerController = loadingResult.getController();
-
             bottombar.getChildren().add((Node) loadingResult.getRoot());
-
             initializePlayList();
             mPlayerController.setPlayList(mPlayListData);
         } catch (IOException exception) {
+            log.error(exception.getMessage());
         }
 
         mDragPreview = new StackPane();
@@ -154,7 +155,6 @@ public class MainController extends NavigationController implements Initializabl
                 dragEvent.consume();
             }
         });
-
         root.getChildren().add(mDragPreview);
     }
 
@@ -171,34 +171,26 @@ public class MainController extends NavigationController implements Initializabl
 
     @FXML
     private void handleMenuButtonAction(ActionEvent event) throws IOException {
-        detachRightpane();
 
         if (event.getSource() == songsbutton) {
-            mCurrentLoadedRighpaneResult = mFxmlLoader.load(getClass().getResource("/fr/utc/lo23/sharutc/ui/fxml/song_list.fxml"));
-            ((DragPreviewDrawer) mCurrentLoadedRighpaneResult.getController()).init(mDragPreview);
-            ((SongListController) mCurrentLoadedRighpaneResult.getController()).setInterface(this);
-            ((SongListController) mCurrentLoadedRighpaneResult.getController()).showLocalCatalog();
+            log.debug("song button clicked");
+            showLocalCatalog();
         } else if (event.getSource() == peoplebutton) {
-            mCurrentLoadedRighpaneResult = mFxmlLoader.load(getClass().getResource("/fr/utc/lo23/sharutc/ui/fxml/people_home.fxml"));
-            ((PeopleHomeController) mCurrentLoadedRighpaneResult.getController()).setInterface(this);
-            ((DragPreviewDrawer) mCurrentLoadedRighpaneResult.getController()).init(mDragPreview);
+            log.debug("people button clicked");
+            showPeopleList();
         } else if (event.getSource() == artistsbutton) {
-            mCurrentLoadedRighpaneResult = mFxmlLoader.load(getClass().getResource("/fr/utc/lo23/sharutc/ui/fxml/artists_detail.fxml"));
-            ((ArtistsDetailController) mCurrentLoadedRighpaneResult.getController()).setInterface(this);
+            log.debug("artist button clicked");
+            showArtistList();
         } else if (event.getSource() == albumsbutton) {
-            mCurrentLoadedRighpaneResult = mFxmlLoader.load(getClass().getResource("/fr/utc/lo23/sharutc/ui/fxml/albums_detail.fxml"));
-            ((AlbumsDetailController) mCurrentLoadedRighpaneResult.getController()).setInterface(this);
-            ((AlbumsDetailController) mCurrentLoadedRighpaneResult.getController()).showAlbums();
+            log.debug("album button clicked");
+            showAlbumList();
         } else if (event.getSource() == logoutButton) {
             log.debug("logout button clicked");
             mDisconnectionCommand.execute();
-            return;
         } else if (event.getSource() == exportButton) {
             log.debug("export button clicked");
             exportProfile();
         }
-
-        attachRightpane(mCurrentLoadedRighpaneResult);
     }
 
     private void exportProfile() {
@@ -276,11 +268,14 @@ public class MainController extends NavigationController implements Initializabl
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 final String propertyName = evt.getPropertyName();
+                log.debug("AppModel propertyChange : " + propertyName);
                 if (AppModelImpl.Property.PROFILE.name().equals(propertyName)) {
                     if (evt.getNewValue() == null) {
                         log.debug("logout trigered");
                         logout();
                     }
+                } else if (AppModelImpl.Property.LOCAL_CATALOG.name().equals(propertyName)) {
+                    showLocalCatalog();
                 }
             }
         };
@@ -315,19 +310,12 @@ public class MainController extends NavigationController implements Initializabl
     }
 
     @FXML
-    public void handleTextEntered(ActionEvent actionEvent) throws IOException {
-        detachRightpane();
-        mCurrentLoadedRighpaneResult = mFxmlLoader.load(getClass().getResource("/fr/utc/lo23/sharutc/ui/fxml/searchresult_detail.fxml"));
-        ((SearchResultController) mCurrentLoadedRighpaneResult.getController()).setInterface(this);
-        ((SongSelectorController) mCurrentLoadedRighpaneResult.getController()).init(mDragPreview);
-        ((SongSelectorController) mCurrentLoadedRighpaneResult.getController()).setInterface(this);
-        ((SearchResultController) mCurrentLoadedRighpaneResult.getController()).searchAll(textFieldSearch.getText());
-        attachRightpane(mCurrentLoadedRighpaneResult);
-
+    public void handleTextEntered(ActionEvent actionEvent) {
+        showSearchResult();;
     }
 
     @FXML
-    public void handleBottomBarDragEntered(DragEvent dragEvent) throws IOException {
+    public void handleBottomBarDragEntered(DragEvent dragEvent) {
         final String dragKey = dragEvent.getDragboard().getString();
         if (dragKey.equals(SongCard.DROP_KEY)) {
             //display drag overlay
@@ -337,7 +325,7 @@ public class MainController extends NavigationController implements Initializabl
     }
 
     @FXML
-    public void handleBottomBarDragOver(DragEvent dragEvent) throws IOException {
+    public void handleBottomBarDragOver(DragEvent dragEvent) {
         final String dragKey = dragEvent.getDragboard().getString();
         if (dragKey.equals(SongCard.DROP_KEY)) {
             dragEvent.acceptTransferModes(TransferMode.COPY_OR_MOVE);
@@ -347,7 +335,7 @@ public class MainController extends NavigationController implements Initializabl
     }
 
     @FXML
-    public void handleBottomBarDragDropped(DragEvent dragEvent) throws IOException {
+    public void handleBottomBarDragDropped(DragEvent dragEvent) {
         final Dragboard db = dragEvent.getDragboard();
         boolean success = false;
         //id droppable is a SongCard
@@ -379,71 +367,33 @@ public class MainController extends NavigationController implements Initializabl
     }
 
     @FXML
-    public void handleBottomBarDragExited(DragEvent dragEvent) throws IOException {
+    public void handleBottomBarDragExited(DragEvent dragEvent) {
         //hide drag overlay
         displayBottomBarOverlay(false);
     }
 
     @Override
     public void onPeopleDetailRequested(UserInfo user) {
-        ObservableList<Node> children = rightpane.getChildren();
-        children.clear();
         log.info("people detail requested : " + user.getLogin());
-        try {
-            mCurrentLoadedRighpaneResult = mFxmlLoader.load(getClass().getResource("/fr/utc/lo23/sharutc/ui/fxml/people_detail.fxml"));
-            ((PeopleDetailController) mCurrentLoadedRighpaneResult.getController()).setUserInfo(user);
-            ((SongSelectorController) mCurrentLoadedRighpaneResult.getController()).init(mDragPreview);
-            ((SongSelectorController) mCurrentLoadedRighpaneResult.getController()).setInterface(this);
-            children.add((Node) mCurrentLoadedRighpaneResult.getRoot());
-        } catch (IOException e) {
-            log.error(e.getMessage());
-        }
+        showPeopleDetail(user);
     }
 
     @Override
     public void onGroupRightsRequested(Category category) {
-        ObservableList<Node> children = rightpane.getChildren();
-        children.clear();
         log.info("Group Rights requested : " + category.getName());
-        try {
-            mCurrentLoadedRighpaneResult = mFxmlLoader.load(getClass().getResource("/fr/utc/lo23/sharutc/ui/fxml/group_rights.fxml"));
-            ((GroupRightController) mCurrentLoadedRighpaneResult.getController()).setGroupInfo(category);
-            children.add((Node) mCurrentLoadedRighpaneResult.getRoot());
-        } catch (IOException e) {
-            log.error(e.getMessage());
-        }
+        showGroupRights(category);
     }
 
     @Override
     public void onArtistDetailRequested(String artistName) {
-        ObservableList<Node> children = rightpane.getChildren();
-        children.clear();
         log.info("Artist detail requested : " + artistName);
-        try {
-            mCurrentLoadedRighpaneResult = mFxmlLoader.load(getClass().getResource("/fr/utc/lo23/sharutc/ui/fxml/albums_detail.fxml"));
-            ((AlbumsDetailController) mCurrentLoadedRighpaneResult.getController()).setInterface(this);
-            ((AlbumsDetailController) mCurrentLoadedRighpaneResult.getController()).showAlbums(artistName);
-            children.add((Node) mCurrentLoadedRighpaneResult.getRoot());
-        } catch (IOException e) {
-            log.error(e.getMessage());
-        }
+        showAlbumListWithArtistFilter(artistName);
     }
 
     @Override
     public void onAlbumDetailRequested(String albumName) {
-        ObservableList<Node> children = rightpane.getChildren();
-        children.clear();
         log.info("Album detail requested : " + albumName);
-        try {
-            detachRightpane();
-            mCurrentLoadedRighpaneResult = mFxmlLoader.load(getClass().getResource("/fr/utc/lo23/sharutc/ui/fxml/song_list.fxml"));
-            ((DragPreviewDrawer) mCurrentLoadedRighpaneResult.getController()).init(mDragPreview);
-            ((SongListController) mCurrentLoadedRighpaneResult.getController()).setInterface(this);
-            ((SongListController) mCurrentLoadedRighpaneResult.getController()).showLocalCatalogWithAlbumFilter(albumName);
-            attachRightpane(mCurrentLoadedRighpaneResult);
-        } catch (IOException e) {
-            log.error(e.getMessage());
-        }
+        showLocalCatalogWithAlbumFilter(albumName);
     }
 
     //Need some improvements
@@ -507,29 +457,152 @@ public class MainController extends NavigationController implements Initializabl
     @Override
     public void onSongDetailRequested(final Music music) {
         log.info("Music detail requested : " + music.getAlbum());
+        showSongDetailWithComment(music);
+    }
+
+    @Override
+    public void onSongRemovedFromLocalCatalog() {
+        showLocalCatalog();
+    }
+    
+    
+    @Override
+    public void onTagDetailRequested(Music music) {
+        showSongDetailWithTag(music);
+    }
+    
+    @Override
+    public void onTagFilterRequested(String tagName) {
+        showLocalCatalogWithTagFilter(tagName);
+    }
+    
+    private void showGroupRights(Category category) {
         try {
             detachRightpane();
-            mCurrentLoadedRighpaneResult = mFxmlLoader.load(getClass().getResource("/fr/utc/lo23/sharutc/ui/fxml/song_detail.fxml"));
-            ((SongDetailController) mCurrentLoadedRighpaneResult.getController()).init(mDragPreview);
-            ((SongDetailController) mCurrentLoadedRighpaneResult.getController()).setInterface(this);
-            ((SongDetailController) mCurrentLoadedRighpaneResult.getController()).setMusic(music);
+            mCurrentLoadedRighpaneResult = mFxmlLoader.load(getClass().getResource("/fr/utc/lo23/sharutc/ui/fxml/group_rights.fxml"));
+            ((GroupRightController) mCurrentLoadedRighpaneResult.getController()).setGroupInfo(category);
+            attachRightpane(mCurrentLoadedRighpaneResult);
+        } catch (IOException e) {
+            log.error(e.getMessage());
+        }
+    }
+    
+    private void showPeopleDetail(UserInfo userInfo) {
+        if(loadDragPreviewDrawer("/fr/utc/lo23/sharutc/ui/fxml/people_detail.fxml")) {
+            ((PeopleDetailController) mCurrentLoadedRighpaneResult.getController()).setUserInfo(userInfo);
+            ((PeopleDetailController) mCurrentLoadedRighpaneResult.getController()).setInterface(this);
+        }
+    }
+
+    private void showSearchResult() {    
+        if(loadDragPreviewDrawer("/fr/utc/lo23/sharutc/ui/fxml/searchresult_detail.fxml")) {
+            ((SearchResultController) mCurrentLoadedRighpaneResult.getController()).setInterface(this);
+            ((SearchResultController) mCurrentLoadedRighpaneResult.getController()).searchAll(textFieldSearch.getText());
+        }
+    }
+
+    private void showArtistList() {
+        try {
+            detachRightpane();
+            mCurrentLoadedRighpaneResult = mFxmlLoader.load(getClass().getResource("/fr/utc/lo23/sharutc/ui/fxml/artists_detail.fxml"));
+            ((ArtistsDetailController) mCurrentLoadedRighpaneResult.getController()).setInterface(this);
             attachRightpane(mCurrentLoadedRighpaneResult);
         } catch (IOException e) {
             log.error(e.getMessage());
         }
     }
 
-    @Override
-    public void onSongRemovedFromLocalCatalog() {
+    private void showPeopleList() {
+        if(loadDragPreviewDrawer("/fr/utc/lo23/sharutc/ui/fxml/people_home.fxml")) {
+            ((PeopleHomeController) mCurrentLoadedRighpaneResult.getController()).setInterface(this);
+        }
+    }
+
+    private void showSongDetailWithComment(final Music music) {
+        if(loadSongDetail(music)) {
+            ((SongDetailController) mCurrentLoadedRighpaneResult.getController()).showComments();
+        }
+    }
+    
+    private void showSongDetailWithTag(final Music music) {
+        if(loadSongDetail(music)) {
+            ((SongDetailController) mCurrentLoadedRighpaneResult.getController()).showTags();
+        }
+    }
+    
+    private boolean loadSongDetail(final Music music) {
+        boolean success = loadDragPreviewDrawer("/fr/utc/lo23/sharutc/ui/fxml/song_detail.fxml");
+        if(success) {
+            ((SongDetailController) mCurrentLoadedRighpaneResult.getController()).setInterface(this);
+            ((SongDetailController) mCurrentLoadedRighpaneResult.getController()).setMusic(music);
+        }
+        return success;
+    }
+
+    private void showAlbumListWithArtistFilter(String artistName) {
+        if (loadAlbumList()) {
+            ((AlbumsDetailController) mCurrentLoadedRighpaneResult.getController()).showAlbumsWithArtistFilter(artistName);
+        }
+    }
+
+    private void showAlbumList() {
+        if (loadAlbumList()) {
+            ((AlbumsDetailController) mCurrentLoadedRighpaneResult.getController()).showAlbums();
+        }
+    }
+
+    private boolean loadAlbumList() {
+        boolean success = false;
         try {
             detachRightpane();
-            mCurrentLoadedRighpaneResult = mFxmlLoader.load(getClass().getResource("/fr/utc/lo23/sharutc/ui/fxml/song_list.fxml"));
-            ((DragPreviewDrawer) mCurrentLoadedRighpaneResult.getController()).init(mDragPreview);
-            ((SongListController) mCurrentLoadedRighpaneResult.getController()).setInterface(this);
-            ((SongListController) mCurrentLoadedRighpaneResult.getController()).showLocalCatalog();
+            mCurrentLoadedRighpaneResult = mFxmlLoader.load(getClass().getResource("/fr/utc/lo23/sharutc/ui/fxml/albums_detail.fxml"));
+            ((AlbumsDetailController) mCurrentLoadedRighpaneResult.getController()).setInterface(this);
             attachRightpane(mCurrentLoadedRighpaneResult);
+            success = true;
+        } catch (IOException e) {
+            log.error(e.getMessage());
+        }
+        return success;
+    }
+    
+    private void showLocalCatalogWithTagFilter(String tagName) {
+        if(loadSongList()) {
+            ((SongListController) mCurrentLoadedRighpaneResult.getController()).showLocalCatalogWithTagFilter(tagName);
+        }
+    }
+
+    private void showLocalCatalogWithAlbumFilter(String albumName) {
+        if (loadSongList()) {
+            ((SongListController) mCurrentLoadedRighpaneResult.getController()).showLocalCatalogWithAlbumFilter(albumName);
+        }
+    }
+
+    private void showLocalCatalog() {
+        if (loadSongList()) {
+            ((SongListController) mCurrentLoadedRighpaneResult.getController()).showLocalCatalog();
+        }
+    }
+
+    private boolean loadSongList() {
+        boolean success = false;
+        if (loadDragPreviewDrawer("/fr/utc/lo23/sharutc/ui/fxml/song_list.fxml")) {
+            ((SongListController) mCurrentLoadedRighpaneResult.getController()).setInterface(this);
+            success = true;
+        }
+        return success;
+    }
+    
+    private boolean loadDragPreviewDrawer(String fxmlResource) {
+        boolean success = false;
+        try {
+            detachRightpane();
+            mCurrentLoadedRighpaneResult = mFxmlLoader.load(getClass().getResource(fxmlResource));
+            ((DragPreviewDrawer) mCurrentLoadedRighpaneResult.getController()).init(mDragPreview);
+            attachRightpane(mCurrentLoadedRighpaneResult);
+            success = true;
         } catch (IOException ex) {
             log.error(ex.getMessage());
         }
+        return success;
     }
 }

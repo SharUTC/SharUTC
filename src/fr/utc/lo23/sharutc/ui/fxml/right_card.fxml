@@ -1,0 +1,22 @@
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import java.net.URL?>
+<fx:root type="fr.utc.lo23.sharutc.ui.custom.card.RightCard"
+         xmlns:fx="http://javafx.com/fxml">
+    <StackPane>
+        <stylesheets>
+            <URL value="@../css/drop.css"/>
+        </stylesheets>
+
+        <VBox alignment="CENTER" StackPane.alignment="CENTER">
+            <Label fx:id="rightName" text="" styleClass="largeTextGreyBold"/>
+        </VBox>
+
+        <Region fx:id="dropOverlay"/>
+        <Label fx:id="dropOverlayLabel" text="Add"
+               StackPane.alignment="CENTER"/>
+    </StackPane>
+
+</fx:root>

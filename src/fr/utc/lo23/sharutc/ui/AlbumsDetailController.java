@@ -40,10 +40,10 @@ public class AlbumsDetailController implements RighpaneInterface, Initializable,
     }
     
     public void showAlbums() {
-        showAlbums(null);
+        showAlbumsWithArtistFilter(null);
     }
 
-    public void showAlbums(String artistFilter) {
+    public void showAlbumsWithArtistFilter(String artistFilter) {
         final ArrayList<Pair<String, String>> albumArtistPairs = new ArrayList<Pair<String, String>>();
         
         if(artistFilter != null) {
