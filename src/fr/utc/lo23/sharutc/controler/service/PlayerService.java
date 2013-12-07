@@ -178,6 +178,20 @@ public interface PlayerService {
     public void removePropertyChangeListener(PropertyChangeListener listener);
 
     /**
+     * Return the current music of the music player
+     *
+     * @return the current music of the music player, null if none selected
+     */
+    public Music getCurrentMusic();
+
+    /**
+     * Return the index of the currentMusic.
+     *
+     * @return the index of the currentMusic, -1 if not found or empty
+     */
+    public int getCurrentMusicIndex();
+
+    /**
      *
      */
     public enum Property {
