@@ -417,7 +417,9 @@ public class MainController extends NavigationController implements Initializabl
                 if (target instanceof ImageView) {
                     ImageView skin = (ImageView) target;
                     if (skin.getId().equals("deleteButton")) {
-                        mRemoveFromPlaylistCommand.setMusicIndex(listView.getSelectionModel().getSelectedIndex());
+                        List<Integer> indexs = new ArrayList<Integer>();
+                        indexs.add(listView.getSelectionModel().getSelectedIndex());
+                        mRemoveFromPlaylistCommand.setMusicsIndex(indexs);
                         mRemoveFromPlaylistCommand.execute();
                     }
 

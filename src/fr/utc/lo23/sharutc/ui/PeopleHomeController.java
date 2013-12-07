@@ -19,12 +19,10 @@ import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.StackPane;
@@ -158,14 +156,14 @@ public class PeopleHomeController extends DragPreviewDrawer implements Initializ
                 this.getClass().getResource("/fr/utc/lo23/sharutc/ui/css/modal.css").toExternalForm(),
                 groupContainer.getScene().getRoot(),
                 new DialogBoxBuilder.IConfirmBox() {
-            @Override
-            public void onChoiceMade(boolean answer) {
-                if (answer) {
-                    deleteCategoryCommand.setCategory(g.getModel());
-                    deleteCategoryCommand.execute();
-                }
-            }
-        }).show();
+                    @Override
+                    public void onChoiceMade(boolean answer) {
+                        if (answer) {
+                            deleteCategoryCommand.setCategory(g.getModel());
+                            deleteCategoryCommand.execute();
+                        }
+                    }
+                }).show();
     }
 
     @Override
@@ -176,16 +174,16 @@ public class PeopleHomeController extends DragPreviewDrawer implements Initializ
                 this.getClass().getResource("/fr/utc/lo23/sharutc/ui/css/modal.css").toExternalForm(),
                 groupContainer.getScene().getRoot(),
                 new DialogBoxBuilder.IEditBox() {
-            @Override
-            public void onValidate(String value) {
-                //set the new name
-                editCategoryNameCommand.setCategoryId(category.getId());
-                editCategoryNameCommand.setCategoryName(value);
-                editCategoryNameCommand.execute();
-                //TODO remove when UPDATE will be fired
-                displayUserGroup();
-            }
-        }).show();
+                    @Override
+                    public void onValidate(String value) {
+                        //set the new name
+                        editCategoryNameCommand.setCategoryId(category.getId());
+                        editCategoryNameCommand.setCategoryName(value);
+                        editCategoryNameCommand.execute();
+                        //TODO remove when UPDATE will be fired
+                        displayUserGroup();
+                    }
+                }).show();
     }
 
     @Override
@@ -217,24 +215,8 @@ public class PeopleHomeController extends DragPreviewDrawer implements Initializ
             addContactToCategoryCommand.execute();
         }
         //clean the selection
+        hideDragPreview(mPeopleCardSelected);
         mPeopleCardSelected.clear();
-        hideDragPreview();
-    }
-
-    /**
-     * Display PeopleCard selected as Drag preview
-     *
-     * @param event
-     */
-    protected void updateDragPreview(MouseEvent event) {
-        super.updateDragPreview(event);
-        int i = 0;
-        for (PeopleCard people : mPeopleCardSelected) {
-            final ImageView preview = new ImageView(people.snapshot(null, null));
-            StackPane.setMargin(preview, new Insets(20 * i, 20 * i, 0, 0));
-            mDragPreview.getChildren().add(preview);
-            i++;
-        }
     }
 
     @Override
@@ -247,10 +229,7 @@ public class PeopleHomeController extends DragPreviewDrawer implements Initializ
             mPeopleCardSelected.add(draggedCard);
 
             //drag event start, inform all selected card
-            updateDragPreview(event);
-            for (PeopleCard peopleCard : mPeopleCardSelected) {
-                peopleCard.dragged();
-            }
+            updateDragPreview(event, mPeopleCardSelected);
         }
     }
 
@@ -258,12 +237,9 @@ public class PeopleHomeController extends DragPreviewDrawer implements Initializ
     public void onDragStop(DraggableCard draggableCard) {
         if (draggableCard instanceof PeopleCard) {
             //drag event failed, inform all selected card
-            for (PeopleCard peopleCard : mPeopleCardSelected) {
-                peopleCard.dropped();
-            }
+            hideDragPreview(mPeopleCardSelected);
             //clean the selection
             mPeopleCardSelected.clear();
-            hideDragPreview();
         }
     }
 
@@ -410,13 +386,13 @@ public class PeopleHomeController extends DragPreviewDrawer implements Initializ
                             this.getClass().getResource("/fr/utc/lo23/sharutc/ui/css/modal.css").toExternalForm(),
                             groupContainer.getScene().getRoot(),
                             new DialogBoxBuilder.IEditBox() {
-                        @Override
-                        public void onValidate(String value) {
-                            //create the category with the entered name
-                            createCategoryCommand.setCategoryName(value);
-                            createCategoryCommand.execute();
-                        }
-                    }).show();
+                                @Override
+                                public void onValidate(String value) {
+                                    //create the category with the entered name
+                                    createCategoryCommand.setCategoryName(value);
+                                    createCategoryCommand.execute();
+                                }
+                            }).show();
                 }
             }
         });
