@@ -41,7 +41,7 @@ public class PlayerController implements Initializable, PropertyChangeListener {
     private static final ImageView IC_SPEAKER_MUTED = new ImageView("/fr/utc/lo23/sharutc/ui/drawable/ic_speaker_muted.png");
     private static final ImageView BT_PAUSE = new ImageView("/fr/utc/lo23/sharutc/ui/drawable/pause_button_small.png");
     private static final ImageView BT_PLAY = new ImageView("/fr/utc/lo23/sharutc/ui/drawable/play_button_small.png");
-    //TODO remove once we get a real song
+   
     private static final Logger log = LoggerFactory
             .getLogger(PlayerController.class);
     public Slider playerTimeSlider;
@@ -60,7 +60,6 @@ public class PlayerController implements Initializable, PropertyChangeListener {
     public Label currentMusicTitle;
     public Label currentMusicAlbum;
     public Label currentMusicArtist;
-    private int mCurrentTimeInSeconds;
     private RatingStar[] mRatingStars;
     @Inject
     private PlayerService mPlayerService;
@@ -323,13 +322,18 @@ public class PlayerController implements Initializable, PropertyChangeListener {
         log.debug("PropertyChangeEvent Name : " + propertyName);
         if (propertyName.equals(PlayerService.Property.CURRENT_MUSIC.name())) {
             Music m = (Music) evt.getNewValue();
-            onCurrentMusicUpdate(m);
-            //TODO get current index
-            int index = 0;
+            int index = mPlayerService.getCurrentMusicIndex();
             for (int i = 0; i < mPlayListData.size(); i++) {
-
                 ((PlayListMusic) mPlayListData.get(i)).setPlaying(i == index);
+                
             }
+            if(mPlayListData.size()>0){
+                PlayListMusic e = mPlayListData.remove(0);
+                mPlayListData.add(0, e);
+            }
+            onCurrentMusicUpdate(m);
+           
+            
         } else if (propertyName.equals(PlayerService.Property.CURRENT_TIME.name())) {
             updateCurrentSongTime((Long) evt.getNewValue());
         } else if (propertyName.equals(PlayerService.Property.MUTE.name())) {

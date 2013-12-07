@@ -111,6 +111,9 @@ public class MusicServiceImpl implements MusicService {
 
             for (Music currentMusic : musics) {
                 if (localCatalog.contains(currentMusic)) {
+                    for(String tag : currentMusic.getTags()){
+                        this.removeTag(currentMusic, tag);
+                    }
                     localCatalog.remove(currentMusic);
                 } else {
                     log.warn("Music to delete not found !\n{}", currentMusic.getRealName());
