@@ -59,7 +59,7 @@ public class MainController extends NavigationController implements Initializabl
         AlbumsDetailController.IAlbumsDetailController,
         SongSelectorController.ISongListController,
         SongDetailController.ISongDetailController,
-        PeopleDetailController.IPeopleDetailController{
+        PeopleDetailController.IPeopleDetailController {
 
     private static final Logger log = LoggerFactory.getLogger(MainController.class);
     @Inject
@@ -311,7 +311,8 @@ public class MainController extends NavigationController implements Initializabl
 
     @FXML
     public void handleTextEntered(ActionEvent actionEvent) {
-        showSearchResult();;
+        showSearchResult();
+        ;
     }
 
     @FXML
@@ -464,38 +465,33 @@ public class MainController extends NavigationController implements Initializabl
     public void onSongRemovedFromLocalCatalog() {
         showLocalCatalog();
     }
-    
-    
+
+
     @Override
     public void onTagDetailRequested(Music music) {
         showSongDetailWithTag(music);
     }
-    
+
     @Override
     public void onTagFilterRequested(String tagName) {
         showLocalCatalogWithTagFilter(tagName);
     }
-    
+
     private void showGroupRights(Category category) {
-        try {
-            detachRightpane();
-            mCurrentLoadedRighpaneResult = mFxmlLoader.load(getClass().getResource("/fr/utc/lo23/sharutc/ui/fxml/group_rights.fxml"));
+        if (loadDragPreviewDrawer("/fr/utc/lo23/sharutc/ui/fxml/group_rights.fxml")) {
             ((GroupRightController) mCurrentLoadedRighpaneResult.getController()).setGroupInfo(category);
-            attachRightpane(mCurrentLoadedRighpaneResult);
-        } catch (IOException e) {
-            log.error(e.getMessage());
         }
     }
-    
+
     private void showPeopleDetail(UserInfo userInfo) {
-        if(loadDragPreviewDrawer("/fr/utc/lo23/sharutc/ui/fxml/people_detail.fxml")) {
+        if (loadDragPreviewDrawer("/fr/utc/lo23/sharutc/ui/fxml/people_detail.fxml")) {
             ((PeopleDetailController) mCurrentLoadedRighpaneResult.getController()).setUserInfo(userInfo);
             ((PeopleDetailController) mCurrentLoadedRighpaneResult.getController()).setInterface(this);
         }
     }
 
-    private void showSearchResult() {    
-        if(loadDragPreviewDrawer("/fr/utc/lo23/sharutc/ui/fxml/searchresult_detail.fxml")) {
+    private void showSearchResult() {
+        if (loadDragPreviewDrawer("/fr/utc/lo23/sharutc/ui/fxml/searchresult_detail.fxml")) {
             ((SearchResultController) mCurrentLoadedRighpaneResult.getController()).setInterface(this);
             ((SearchResultController) mCurrentLoadedRighpaneResult.getController()).searchAll(textFieldSearch.getText());
         }
@@ -513,26 +509,26 @@ public class MainController extends NavigationController implements Initializabl
     }
 
     private void showPeopleList() {
-        if(loadDragPreviewDrawer("/fr/utc/lo23/sharutc/ui/fxml/people_home.fxml")) {
+        if (loadDragPreviewDrawer("/fr/utc/lo23/sharutc/ui/fxml/people_home.fxml")) {
             ((PeopleHomeController) mCurrentLoadedRighpaneResult.getController()).setInterface(this);
         }
     }
 
     private void showSongDetailWithComment(final Music music) {
-        if(loadSongDetail(music)) {
+        if (loadSongDetail(music)) {
             ((SongDetailController) mCurrentLoadedRighpaneResult.getController()).showComments();
         }
     }
-    
+
     private void showSongDetailWithTag(final Music music) {
-        if(loadSongDetail(music)) {
+        if (loadSongDetail(music)) {
             ((SongDetailController) mCurrentLoadedRighpaneResult.getController()).showTags();
         }
     }
-    
+
     private boolean loadSongDetail(final Music music) {
         boolean success = loadDragPreviewDrawer("/fr/utc/lo23/sharutc/ui/fxml/song_detail.fxml");
-        if(success) {
+        if (success) {
             ((SongDetailController) mCurrentLoadedRighpaneResult.getController()).setInterface(this);
             ((SongDetailController) mCurrentLoadedRighpaneResult.getController()).setMusic(music);
         }
@@ -564,9 +560,9 @@ public class MainController extends NavigationController implements Initializabl
         }
         return success;
     }
-    
+
     private void showLocalCatalogWithTagFilter(String tagName) {
-        if(loadSongList()) {
+        if (loadSongList()) {
             ((SongListController) mCurrentLoadedRighpaneResult.getController()).showLocalCatalogWithTagFilter(tagName);
         }
     }
@@ -591,7 +587,7 @@ public class MainController extends NavigationController implements Initializabl
         }
         return success;
     }
-    
+
     private boolean loadDragPreviewDrawer(String fxmlResource) {
         boolean success = false;
         try {

@@ -8,7 +8,7 @@
 <?import javafx.scene.*?>
 <?import javafx.scene.layout.*?>
 
-<fx:root type="fr.utc.lo23.sharutc.ui.custom.card.SongCardRight"
+<fx:root type="fr.utc.lo23.sharutc.ui.custom.card.SongRightCard"
          xmlns:fx="http://javafx.com/fxml">
     <HBox>
         
