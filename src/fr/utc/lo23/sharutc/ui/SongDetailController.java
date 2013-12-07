@@ -277,7 +277,9 @@ public class SongDetailController extends SongSelectorController implements Init
 
     private void handleAddTagAction(ActionEvent event) {
         final String tag = mTagInputTextArea.getText().trim();
-        if (!tag.isEmpty()) {
+        if (!tag.isEmpty()
+                && !SongListController.VIRTUAL_TAG_ALL_SONGS.equals(tag)
+                && !SongListController.VIRTUAL_TAG_MY_SONGS.equals(tag)) {
             log.debug("addTagCommand" + tag);
             mAddTagCommand.setMusic(mMusic);
             mAddTagCommand.setTag(tag);
