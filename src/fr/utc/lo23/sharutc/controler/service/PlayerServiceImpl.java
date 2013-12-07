@@ -18,6 +18,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.File;
+import java.util.logging.Level;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,7 +27,7 @@ import org.slf4j.LoggerFactory;
  */
 @Singleton
 public class PlayerServiceImpl implements PlayerService, PropertyChangeListener, CollectionChangeListener<Music> {
-
+    
     private static final Logger log = LoggerFactory
             .getLogger(PlayerServiceImpl.class);
     public static final int VOLUME_MAX = 100;
@@ -43,7 +44,7 @@ public class PlayerServiceImpl implements PlayerService, PropertyChangeListener,
     private boolean mute = false;
     private boolean pause = false;
     private PropertyChangeSupport propertyChangeSupport;
-
+    
     @Inject
     public PlayerServiceImpl(AppModel appModel, FileService fileService, MusicService musicService, NetworkService networkService) {
         this.appModel = appModel;
@@ -169,7 +170,7 @@ public class PlayerServiceImpl implements PlayerService, PropertyChangeListener,
                     player = new PlaybackListenerImpl(this, this, fileService, tmpFile.getCanonicalPath()) {
                         @Override
                         public void playbackEvent(PlayerEvent playerEvent) {
-
+                            
                             switch (playerEvent.eventType) {
                                 case STARTED:
                                     log.debug("playbackStarted");
@@ -328,7 +329,7 @@ public class PlayerServiceImpl implements PlayerService, PropertyChangeListener,
                 && !music.getOwnerPeerId().equals(appModel.getProfile().getUserInfo().getPeerId())) {
             log.debug("setCurrentMusic : delayed, fetching remote music data ...");
             fetchRemoteDataThenPlay(music);
-
+            
         } else if (music != mCurrentMusic) {
             if (music != null && (music.getFileBytes() == null || music.getFileBytes().length == 0)) {
                 musicService.loadMusicFile(music);
@@ -546,5 +547,21 @@ public class PlayerServiceImpl implements PlayerService, PropertyChangeListener,
             log.info("Fetching data for remote music from {}: {}", peer, music);
             networkService.downloadMusicForPlaying(peer, music.getId());
         }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Music getCurrentMusic() {
+        return mCurrentMusic;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int getCurrentMusicIndex() {
+        return mPlaylist.indexOf(mCurrentMusic);
     }
 }
