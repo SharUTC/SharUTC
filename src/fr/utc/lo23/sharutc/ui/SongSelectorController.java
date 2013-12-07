@@ -6,30 +6,28 @@ import fr.utc.lo23.sharutc.controler.command.player.PlayMusicCommand;
 import fr.utc.lo23.sharutc.model.domain.Music;
 import fr.utc.lo23.sharutc.ui.custom.card.DraggableCard;
 import fr.utc.lo23.sharutc.ui.custom.card.SongCard;
-import javafx.geometry.Insets;
-import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class SongSelectorController extends DragPreviewDrawer implements SongCard.ISongCard {
 
     private static final Logger log = LoggerFactory
             .getLogger(SongSelectorController.class);
-    
+
     private ISongListController mInterface;
     /**
      * Song Card selected by the user
      */
     protected ArrayList<SongCard> mSongCardSelected;
-    
+
     @Inject
     private PlayMusicCommand mPlayMusicCommand;
-    
+
     @Inject
     private AddToPlaylistCommand mAddToPlaylistCommand;
 
@@ -42,7 +40,7 @@ public class SongSelectorController extends DragPreviewDrawer implements SongCar
         super.init(dragPreview);
         mSongCardSelected = new ArrayList<SongCard>();
     }
-    
+
     public void setInterface(ISongListController i) {
         mInterface = i;
     }
@@ -57,10 +55,7 @@ public class SongSelectorController extends DragPreviewDrawer implements SongCar
             mSongCardSelected.add(draggedCard);
 
             //drag event start, inform all selected card
-            updateSongCardDragPreview(event);
-            for (SongCard songCard : mSongCardSelected) {
-                songCard.dragged();
-            }
+            updateDragPreview(event, mSongCardSelected);
         }
     }
 
@@ -80,26 +75,26 @@ public class SongSelectorController extends DragPreviewDrawer implements SongCar
     @Override
     public void onTagEditionRequested(Music music) {
         log.info("onTagEditionRequested: " + music.getTitle());
-        if(mInterface != null) {
+        if (mInterface != null) {
             mInterface.onTagDetailRequested(music);
-        }        
+        }
     }
 
     @Override
     public void onPlayRequested(Music music) {
         log.info("onPlayRequested: " + music.getTitle());
-        
+
         mPlayMusicCommand.setMusic(music);
         mPlayMusicCommand.execute();
-       
+
     }
 
     @Override
     public void onSongDetailsRequested(Music music) {
         log.info("onSongDetailsRequested: " + music.getTitle());
-        if(mInterface != null) {
+        if (mInterface != null) {
             mInterface.onSongDetailRequested(music);
-        }        
+        }
     }
 
     @Override
@@ -125,25 +120,10 @@ public class SongSelectorController extends DragPreviewDrawer implements SongCar
     public void onDetach() {
     }
 
-    /**
-     * Display SongCard selected as Drag preview
-     *
-     * @param event
-     */
-    protected void updateSongCardDragPreview(MouseEvent event) {
-        super.updateDragPreview(event);
-        int i = 0;
-        for (SongCard song : mSongCardSelected) {
-            final ImageView preview = new ImageView(song.snapshot(null, null));
-            StackPane.setMargin(preview, new Insets(20 * i, 20 * i, 0, 0));
-            mDragPreview.getChildren().add(preview);
-            i++;
-        }
-    }
-
     public interface ISongListController {
-        
+
         void onSongDetailRequested(Music music);
+
         void onTagDetailRequested(Music music);
     }
 }

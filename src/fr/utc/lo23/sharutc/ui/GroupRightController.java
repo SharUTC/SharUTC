@@ -18,11 +18,9 @@ import fr.utc.lo23.sharutc.ui.custom.card.SimpleCard;
 import fr.utc.lo23.sharutc.ui.custom.card.SongRightCard;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.StackPane;
@@ -191,23 +189,6 @@ public class GroupRightController extends DragPreviewDrawer implements Initializ
         }
     }
 
-    /**
-     * Display SongRightCard selected as Drag preview
-     *
-     * @param event
-     */
-    protected void updateDragPreview(MouseEvent event) {
-        //TODO improve by implementing updateDragPreview(MouseEvent  m, List<SimpleCard> l)
-        super.updateDragPreview(event);
-        int i = 0;
-        for (SongRightCard songRightCard : mSongRightCardSelected) {
-            final ImageView preview = new ImageView(songRightCard.snapshot(null, null));
-            StackPane.setMargin(preview, new Insets(20 * i, 20 * i, 0, 0));
-            mDragPreview.getChildren().add(preview);
-            i++;
-        }
-    }
-
     @Override
     public void onSongAdded(RightCard card) {
         //TODO implement command
@@ -245,10 +226,7 @@ public class GroupRightController extends DragPreviewDrawer implements Initializ
             mSongRightCardSelected.add(draggedCard);
 
             //drag event start, inform all selected card
-            updateDragPreview(event);
-            for (SongRightCard songRightCard : mSongRightCardSelected) {
-                songRightCard.dragged();
-            }
+            updateDragPreview(event, mSongRightCardSelected);
         }
     }
 
