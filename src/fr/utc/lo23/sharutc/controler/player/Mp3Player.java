@@ -2,6 +2,7 @@ package fr.utc.lo23.sharutc.controler.player;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.logging.Level;
 import javax.sound.sampled.FloatControl;
 import javazoom.jl.decoder.Bitstream;
 import javazoom.jl.decoder.Decoder;
@@ -24,8 +25,8 @@ public class Mp3Player {
     private Bitstream bitstream;
     private Decoder decoder;
     private AudioDevice audioDevice;
-    private boolean isClosed = false;
-    private boolean isComplete = false;
+    //  private boolean isClosed = false;
+    //   private boolean isComplete = false;
     private final PlaybackListener listener;
     private int frameIndexCurrent = 0;
     public boolean paused = false;
@@ -33,6 +34,7 @@ public class Mp3Player {
     private boolean stillFramesToRead = true;
     private Integer newCurrentFrameIndex;
     private boolean turnDownThread;
+    private boolean terminated;
 
     public Mp3Player(URL urlToStreamFrom, final PlaybackListener listener) throws Exception {
         this.urlToStreamFrom = urlToStreamFrom;
@@ -52,12 +54,13 @@ public class Mp3Player {
     }
 
     public boolean play(int frameIndexStart, int frameIndexFinal, int correctionFactorInFrames) throws Exception {
+        terminated = false;
         bitstream = new Bitstream(urlToStreamFrom.openStream());
         audioDevice = FactoryRegistry.systemRegistry().createAudioDevice();
         decoder = new Decoder();
         audioDevice.open(decoder);
 
-        while (!isComplete && stillFramesToRead
+        while (/*!isComplete && */stillFramesToRead
                 && frameIndexCurrent < frameIndexStart - correctionFactorInFrames) {
             stillFramesToRead = skipFrame();
             updateCurrentFrameIndex(false);
@@ -96,13 +99,13 @@ public class Mp3Player {
             audioDevice.flush();
 
             synchronized (this) {
-                isComplete = (isClosed == false);
+                /*  isComplete = (isClosed == false);*/
                 closeAudioDeviceAndBitStream();
             }
 
             // report to listener
             if (listener != null) {
-                if (!turnDownThread && isComplete) {
+                if (!turnDownThread/* && isComplete*/) {
                     listener.playbackEvent(
                             new PlayerEvent(
                             this,
@@ -117,6 +120,7 @@ public class Mp3Player {
         if (turnDownThread) {
             stillFramesToRead = true;
         }
+        terminated = true;
         log.info("End of AudioPlayerThread");
         return stillFramesToRead;
     }
@@ -136,7 +140,7 @@ public class Mp3Player {
             decoder = new Decoder();
             audioDevice.open(decoder);
 
-            while (!isComplete && stillFramesToRead == true
+            while (/*!isComplete && */stillFramesToRead == true
                     && frameIndexCurrent < frameIndexStart - correctionFactorInFrames) {
                 stillFramesToRead = skipFrame();
                 updateCurrentFrameIndex(false);
@@ -169,6 +173,14 @@ public class Mp3Player {
      */
     public void stop() {
         turnDownThread = true;
+        while (!terminated) {
+            try {
+                log.debug("Waiting for player to Stop");
+                Thread.sleep(10);
+            } catch (InterruptedException ex) {
+                log.info("Error while waiting for player to Stop");
+            }
+        }
     }
 
     public synchronized void closeAudioDeviceAndBitStream() {
@@ -184,7 +196,7 @@ public class Mp3Player {
                 log.error(ex.toString());
             }
         }
-        isClosed = true;
+        //  isClosed = true;
     }
 
     private boolean decodeFrame() throws JavaLayerException {
