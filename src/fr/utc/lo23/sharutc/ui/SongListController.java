@@ -271,6 +271,7 @@ public class SongListController extends SongSelectorController implements Initia
                         if (!newTagName.isEmpty()) {
                             final TagCard newTagCard = new TagCard(newTagName, SongListController.this);
                             HBox.setMargin(newTagCard, new Insets(0, 5, 0, 5));
+                            newTagCard.setTagWeight(0);
                             tagContainer.getChildren().add(tagContainer.getChildren().indexOf(addTagCard), newTagCard);
                         }
                     }
