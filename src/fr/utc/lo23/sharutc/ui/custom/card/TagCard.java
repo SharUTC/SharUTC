@@ -22,7 +22,7 @@ public class TagCard extends SimpleCard implements EventHandler<Event> {
     public Label dropOverlayLabel;
     private String mTagName;
     private ITagCard mCallBack;
-    
+
     public TagCard(String tagName, ITagCard callBack) {
         super("/fr/utc/lo23/sharutc/ui/fxml/tag_card.fxml");
         mCallBack = callBack;
@@ -36,6 +36,10 @@ public class TagCard extends SimpleCard implements EventHandler<Event> {
         setOnDragDropped(this);
 
         displayDropOverlay(false);
+    }
+
+    public void setTagWeight(final Integer weight) {
+        tagWeightLabel.setText(String.valueOf(weight));
     }
 
     @Override

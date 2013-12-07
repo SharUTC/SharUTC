@@ -12,14 +12,18 @@ import fr.utc.lo23.sharutc.model.AppModel;
 import fr.utc.lo23.sharutc.model.domain.Music;
 import fr.utc.lo23.sharutc.model.userdata.Category;
 import fr.utc.lo23.sharutc.ui.custom.HorizontalScrollHandler;
+import fr.utc.lo23.sharutc.ui.custom.card.DraggableCard;
 import fr.utc.lo23.sharutc.ui.custom.card.RightCard;
 import fr.utc.lo23.sharutc.ui.custom.card.SimpleCard;
-import fr.utc.lo23.sharutc.ui.custom.card.SongCardRight;
+import fr.utc.lo23.sharutc.ui.custom.card.SongRightCard;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.text.TextAlignment;
@@ -27,6 +31,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -35,7 +40,7 @@ import java.util.ResourceBundle;
  *
  * @author shima
  */
-public class GroupRightController implements Initializable, SongCardRight.ISongCardRight, RightCard.IRightCard {
+public class GroupRightController extends DragPreviewDrawer implements Initializable, SongRightCard.ISongCardRight, RightCard.IRightCard {
 
 
     @Inject
@@ -65,6 +70,10 @@ public class GroupRightController implements Initializable, SongCardRight.ISongC
      * Display message to the user
      */
     private Label mPlaceHolderLabel;
+    /**
+     * Card selected by the user
+     */
+    private ArrayList<SongRightCard> mSongRightCardSelected;
 
     /**
      * Initializes the controller class.
@@ -74,13 +83,15 @@ public class GroupRightController implements Initializable, SongCardRight.ISongC
         rightScrollPane.getStyleClass().add("myScrollPaneWithTopBorder");
         HorizontalScrollHandler scrollHandler = new HorizontalScrollHandler(rightScrollPane);
 
+        mSongRightCardSelected = new ArrayList<SongRightCard>();
+
         //populate the view with local musique
         final List<Music> musics = mAppModel.getLocalCatalog().getMusics();
         if (musics.isEmpty()) {
             showPlaceHolder("There is no song in your catalogue. Go to the Songs tab first.");
         } else {
             for (Music m : musics) {
-                songsContainer.getChildren().add(new SongCardRight(m, this, false, true, false, true));
+                songsContainer.getChildren().add(new SongRightCard(m, this, false, true, false, true));
             }
         }
 
@@ -180,16 +191,82 @@ public class GroupRightController implements Initializable, SongCardRight.ISongC
         }
     }
 
+    /**
+     * Display SongRightCard selected as Drag preview
+     *
+     * @param event
+     */
+    protected void updateDragPreview(MouseEvent event) {
+        //TODO improve by implementing updateDragPreview(MouseEvent  m, List<SimpleCard> l)
+        super.updateDragPreview(event);
+        int i = 0;
+        for (SongRightCard songRightCard : mSongRightCardSelected) {
+            final ImageView preview = new ImageView(songRightCard.snapshot(null, null));
+            StackPane.setMargin(preview, new Insets(20 * i, 20 * i, 0, 0));
+            mDragPreview.getChildren().add(preview);
+            i++;
+        }
+    }
+
     @Override
     public void onSongAdded(RightCard card) {
+        //TODO implement command
         if (card.equals(mAllRightsSongCard)) {
-            log.info("song dropped in all right card ");
+            log.info("song dropped in all right card : ");
         } else if (card.equals(mListenSongCard)) {
-            log.info("song dropped in listen right card ");
+            log.info("song dropped in listen right card : ");
         } else if (card.equals(mReadSongCard)) {
-            log.info("song dropped in read right card ");
+            log.info("song dropped in read right card : ");
         } else if (card.equals(mCommentAndNoteSongCard)) {
-            log.info("song dropped in comment right card ");
+            log.info("song dropped in comment right card : ");
         }
+
+        for (SongRightCard songRightCard : mSongRightCardSelected) {
+            log.info(songRightCard.getModel().getRealName());
+        }
+    }
+
+    @Override
+    public void onSongRightCardSelected(SongRightCard songCardRight) {
+        if (mSongRightCardSelected.contains(songCardRight)) {
+            mSongRightCardSelected.remove(songCardRight);
+        } else {
+            mSongRightCardSelected.add(songCardRight);
+        }
+    }
+
+    @Override
+    public void onDragStart(MouseEvent event, DraggableCard draggableCard) {
+        if (draggableCard instanceof SongRightCard) {
+            final SongRightCard draggedCard = (SongRightCard) draggableCard;
+            //had to checked if this card is already selected because user
+            //can drag a selected one or a new one
+            mSongRightCardSelected.remove(draggedCard);
+            mSongRightCardSelected.add(draggedCard);
+
+            //drag event start, inform all selected card
+            updateDragPreview(event);
+            for (SongRightCard songRightCard : mSongRightCardSelected) {
+                songRightCard.dragged();
+            }
+        }
+    }
+
+    @Override
+    public void onDragStop(DraggableCard draggableCard) {
+        if (draggableCard instanceof SongRightCard) {
+            //drag event failed, inform all selected card
+            for (SongRightCard songRightCard : mSongRightCardSelected) {
+                songRightCard.dropped();
+            }
+            //clean the selection
+            mSongRightCardSelected.clear();
+            hideDragPreview();
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        //To change body of implemented methods use File | Settings | File Templates.
     }
 }

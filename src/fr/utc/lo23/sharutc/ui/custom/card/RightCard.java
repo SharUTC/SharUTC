@@ -64,7 +64,7 @@ public class RightCard extends SimpleCard implements EventHandler<Event> {
      */
     private void onDragOver(DragEvent dragEvent) {
         final Object gestureSource = dragEvent.getGestureSource();
-        if (gestureSource instanceof SongCard) {
+        if (gestureSource instanceof SongRightCard) {
             dragEvent.acceptTransferModes(TransferMode.COPY_OR_MOVE);
         }
         //don't consume because root uses it to relocate preview
@@ -78,7 +78,7 @@ public class RightCard extends SimpleCard implements EventHandler<Event> {
      */
     private void onDragEntered(DragEvent dragEvent) {
         final Object gestureSource = dragEvent.getGestureSource();
-        if (gestureSource instanceof SongCard) {
+        if (gestureSource instanceof SongRightCard) {
             dragEvent.acceptTransferModes(TransferMode.COPY_OR_MOVE);
             displayDropOverlay(true);
         }
@@ -92,7 +92,7 @@ public class RightCard extends SimpleCard implements EventHandler<Event> {
      */
     private void onDragExited(DragEvent dragEvent) {
         final Object gestureSource = dragEvent.getGestureSource();
-        if (gestureSource instanceof SongCard) {
+        if (gestureSource instanceof SongRightCard) {
             displayDropOverlay(false);
         }
         dragEvent.consume();
@@ -106,8 +106,8 @@ public class RightCard extends SimpleCard implements EventHandler<Event> {
     private void onDragDropped(DragEvent dragEvent) {
         final Dragboard db = dragEvent.getDragboard();
         boolean success = false;
-        if (db.hasString() && db.getString().equals(PeopleCard.DROP_KEY)) {
-            final SongCard songCard = (SongCard) dragEvent.getGestureSource();
+        if (db.hasString() && db.getString().equals(SongRightCard.DROP_KEY)) {
+            final SongRightCard songRightCard = (SongRightCard) dragEvent.getGestureSource();
             mInterface.onSongAdded(this);
         }
         dragEvent.setDropCompleted(success);
