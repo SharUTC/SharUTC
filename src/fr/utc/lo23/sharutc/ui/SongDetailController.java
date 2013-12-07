@@ -148,6 +148,8 @@ public class SongDetailController extends SongSelectorController implements Init
         mUserScore = mMusic.getScore(mAppModel.getProfile().getUserInfo().getPeerId());
         if (mUserScore != null) {
             mUserScore.addPropertyChangeListener(this);
+        } else if (mMusic != null) {
+            mMusic.addPropertyChangeListener(this);
         }
     }
 
@@ -365,14 +367,6 @@ public class SongDetailController extends SongSelectorController implements Init
             mSetScoreCommand.setScore(newCandidateRate);
             mSetScoreCommand.setPeer(mAppModel.getProfile().getUserInfo().toPeer());
             mSetScoreCommand.execute();
-
-            //Update UI directly, since no events are triggered when the very first score is set.
-            if (mUserScore == null) {
-                log.debug("score -- work-around");
-                setUserScore();
-                showMyRating();
-                showAverageRating();
-            }
         }
     }
 
@@ -403,14 +397,22 @@ public class SongDetailController extends SongSelectorController implements Init
         if (mUserScore != null) {
             mUserScore.removePropertyChangeListener(this);
         }
+        if (mMusic != null) {
+            mMusic.removePropertyChangeListener(this);
+        }
         mAppModel.getLocalCatalog().removePropertyChangeListener(this);
     }
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         final String propertyName = evt.getPropertyName();
-        if (Score.Property.VALUE.name().equals(propertyName)) {
+        if (Score.Property.VALUE.name().equals(propertyName)
+                || Music.Property.SCORES.name().equals(propertyName)) {
             log.debug("score updated");
+            if (mUserScore == null) {
+                mMusic.removePropertyChangeListener(this);
+                setUserScore();
+            }
             showMyRating();
             showAverageRating();
         }

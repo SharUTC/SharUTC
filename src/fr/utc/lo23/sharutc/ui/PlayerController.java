@@ -41,7 +41,6 @@ public class PlayerController implements Initializable, PropertyChangeListener {
     private static final ImageView IC_SPEAKER_MUTED = new ImageView("/fr/utc/lo23/sharutc/ui/drawable/ic_speaker_muted.png");
     private static final ImageView BT_PAUSE = new ImageView("/fr/utc/lo23/sharutc/ui/drawable/pause_button_small.png");
     private static final ImageView BT_PLAY = new ImageView("/fr/utc/lo23/sharutc/ui/drawable/play_button_small.png");
-    //TODO remove once we get a real song
     private static final Logger log = LoggerFactory
             .getLogger(PlayerController.class);
     public Slider playerTimeSlider;
@@ -60,7 +59,6 @@ public class PlayerController implements Initializable, PropertyChangeListener {
     public Label currentMusicTitle;
     public Label currentMusicAlbum;
     public Label currentMusicArtist;
-    private int mCurrentTimeInSeconds;
     private RatingStar[] mRatingStars;
     @Inject
     private PlayerService mPlayerService;
@@ -70,7 +68,7 @@ public class PlayerController implements Initializable, PropertyChangeListener {
     private AppModel mAppModel;
     private Music mCurrentMusic;
     private Score mCurrentScore;
-    private PropertyChangeListener mPropertyChangeListenerCurrentMusicScore;
+    private PropertyChangeListener mPropertyChangeListenerScore;
     private ObservableList<PlayListMusic> mPlayListData;
 
     /**
@@ -115,11 +113,18 @@ public class PlayerController implements Initializable, PropertyChangeListener {
         };
         displayCurrentRating();
 
-        mPropertyChangeListenerCurrentMusicScore = new PropertyChangeListener() {
+        mPropertyChangeListenerScore = new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 final String propertyName = evt.getPropertyName();
-                if (Score.Property.VALUE.name().equals(propertyName)) {
+                if (Score.Property.VALUE.name().equals(propertyName)
+                        || Music.Property.SCORES.name().equals(propertyName)) {
+                    log.debug("Score update !");
+                    if (mCurrentScore == null) {
+                        removeScoreListener();
+                        setCurrentScore();
+                        addScoreListener();
+                    }
                     displayCurrentRating();
                 }
             }
@@ -127,11 +132,41 @@ public class PlayerController implements Initializable, PropertyChangeListener {
 
     }
 
+    public void addScoreListener() {
+        if (mCurrentScore != null) {
+            mCurrentScore.addPropertyChangeListener(mPropertyChangeListenerScore);
+        } else if (mCurrentMusic != null) {
+            final Music currentMusicFromLocalCatalog = mAppModel.getLocalCatalog().findMusicById(mCurrentMusic.getId());
+            if (currentMusicFromLocalCatalog != null) {
+                currentMusicFromLocalCatalog.addPropertyChangeListener(mPropertyChangeListenerScore);
+            }
+        }
+    }
+
+    public void removeScoreListener() {
+        if (mCurrentScore != null) {
+            mCurrentScore.removePropertyChangeListener(mPropertyChangeListenerScore);
+        }
+        if (mCurrentMusic != null) {
+            final Music currentMusicFromLocalCatalog = mAppModel.getLocalCatalog().findMusicById(mCurrentMusic.getId());
+            if (currentMusicFromLocalCatalog != null) {
+                currentMusicFromLocalCatalog.removePropertyChangeListener(mPropertyChangeListenerScore);
+            }
+        }
+    }
+
+    public void setCurrentScore() {
+        if (mCurrentMusic != null) {
+            final Music currentMusicFromLocalCatalog = mAppModel.getLocalCatalog().findMusicById(mCurrentMusic.getId());
+            if (currentMusicFromLocalCatalog != null) {
+                mCurrentScore = currentMusicFromLocalCatalog.getScore(mAppModel.getProfile().getUserInfo().toPeer());
+            }
+        }
+    }
+
     public void onDetach() {
         mPlayerService.removePropertyChangeListener(this);
-        if (mCurrentScore != null) {
-            mCurrentScore.removePropertyChangeListener(mPropertyChangeListenerCurrentMusicScore);
-        }
+        removeScoreListener();
     }
 
     /**
@@ -148,14 +183,10 @@ public class PlayerController implements Initializable, PropertyChangeListener {
             log.debug("music update");
             if (music != mCurrentMusic) {
                 log.debug("music update - new music");
-                if (mCurrentScore != null) {
-                    mCurrentScore.removePropertyChangeListener(mPropertyChangeListenerCurrentMusicScore);
-                }
+                removeScoreListener();
                 mCurrentMusic = music;
-                mCurrentScore = mCurrentMusic.getScore(mAppModel.getProfile().getUserInfo().getPeerId());
-                if (mCurrentScore != null) {
-                    mCurrentScore.addPropertyChangeListener(mPropertyChangeListenerCurrentMusicScore);
-                }
+                setCurrentScore();
+                addScoreListener();
             }
             playerMaxTime.setText(timeInSecondsToString(mPlayerService.getTotalTimeSec().intValue()));
             currentMusicTitle.setText(mCurrentMusic.getTitle());
@@ -165,7 +196,6 @@ public class PlayerController implements Initializable, PropertyChangeListener {
             playerTimeSlider.setValue(0d);
             displayCurrentRating();
         } else {
-            mCurrentMusic = null;
             playerProgressBar.setProgress(0d);
             playerTimeSlider.setValue(0d);
             playerMaxTime.setText(timeInSecondsToString(0));
@@ -173,10 +203,10 @@ public class PlayerController implements Initializable, PropertyChangeListener {
             currentMusicAlbum.setText("");
             currentMusicArtist.setText("");
             currentMusicTitle.setText("");
-            if (mCurrentScore != null) {
-                mCurrentScore.removePropertyChangeListener(mPropertyChangeListenerCurrentMusicScore);
-                mCurrentScore = null;
-            }
+            removeScoreListener();
+            mCurrentMusic = null;
+            mCurrentScore = null;
+            fillRatingStar(0);
         }
     }
 
@@ -234,11 +264,8 @@ public class PlayerController implements Initializable, PropertyChangeListener {
 
     private int getCurrentSongScore() {
         int currentSongValue = 0;
-        if (mCurrentMusic != null) {
-            final Score currentScore = mCurrentMusic.getScore(mAppModel.getProfile().getUserInfo().toPeer());
-            if (currentScore != null) {
-                currentSongValue = currentScore.getValue();
-            }
+        if (mCurrentScore != null) {
+            currentSongValue = mCurrentScore.getValue();
         }
         return currentSongValue;
     }
@@ -313,23 +340,28 @@ public class PlayerController implements Initializable, PropertyChangeListener {
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
-                handlePropertyChangeFromAudiPlayerThread(evt);
+                handlePropertyChangeFromAudioPlayerThread(evt);
             }
         });
     }
 
-    private void handlePropertyChangeFromAudiPlayerThread(final PropertyChangeEvent evt) {
+    private void handlePropertyChangeFromAudioPlayerThread(final PropertyChangeEvent evt) {
         final String propertyName = evt.getPropertyName();
         log.debug("PropertyChangeEvent Name : " + propertyName);
         if (propertyName.equals(PlayerService.Property.CURRENT_MUSIC.name())) {
             Music m = (Music) evt.getNewValue();
-            onCurrentMusicUpdate(m);
-            //TODO get current index
-            int index = 0;
+            int index = mPlayerService.getCurrentMusicIndex();
             for (int i = 0; i < mPlayListData.size(); i++) {
-
                 ((PlayListMusic) mPlayListData.get(i)).setPlaying(i == index);
+
             }
+            if (mPlayListData.size() > 0) {
+                PlayListMusic e = mPlayListData.remove(0);
+                mPlayListData.add(0, e);
+            }
+            onCurrentMusicUpdate(m);
+
+
         } else if (propertyName.equals(PlayerService.Property.CURRENT_TIME.name())) {
             updateCurrentSongTime((Long) evt.getNewValue());
         } else if (propertyName.equals(PlayerService.Property.MUTE.name())) {

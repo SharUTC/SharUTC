@@ -344,9 +344,6 @@
     -fx-border-color: #7f8c8d;
 }
 
-#playList .list-cell:selected .playListCard {
-    -fx-background-color: rgba(51,181,229,0.5);
-}
 
 .playListCardMusicTitle {
     -fx-font-size : 14px;
@@ -354,24 +351,53 @@
     -fx-font-weight: bold;
 }
 
-#playList .list-cell:selected .playListCardMusicTitle {
-    -fx-text-fill: #FFFFFF;
-}
 .playListCardMusicArtist {
     -fx-font-size : 12px;
     -fx-text-fill: #7f8c8d;
-}
-
-#playList .list-cell:selected .playListCardMusicArtist {
-    -fx-text-fill: #ECF0F1;
 }
 
 #playList .playListCardPlaying {
      -fx-background-color: rgba(51,181,229,0.5);
 }
 
+#playList .playListCardPlaying .playListCardMusicTitle {
+    -fx-text-fill: #FFFFFF;
+}
+
+#playList .playListCardPlaying .playListCardMusicArtist {
+    -fx-text-fill: #ECF0F1;
+}
 
 .placeHolderLabel {
     -fx-text-fill: #7F8C8D;
     -fx-font-size: 25px;
+}
+
+/*
+*	CheckBox
+*/
+
+.check-box .box {
+    -fx-background-color: #FFFFFF;
+    -fx-border-color: #BDC3C7;
+    -fx-border-width: 2px 2px 2px 2px;
+    -fx-border-radius: 2;
+}
+
+.check-box{
+	-fx-text-fill: #BDC3C7;
+}
+.check-box:hover{
+    -fx-opacity: 1.0;
+}
+
+.check-box .text {
+   -fx-font-weight: bold;
+}
+
+
+.check-box .mark {
+    -fx-background-color: #BDC3C7;
+    -fx-background-insets: 1 0 -1 0, 0;
+    -fx-shape: "M0,4H2L3,6L6,0H8L4,8H2Z";
 }
