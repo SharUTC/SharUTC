@@ -326,6 +326,9 @@ public class SongListController extends SongSelectorController implements Initia
                 mAddTagCommand.execute();
                 log.debug("add tag : " + tagName);
             }
+            //Since no event are fired on tag addition.
+            //reload the UI manualy
+            showTags();
         }
     }
 }
