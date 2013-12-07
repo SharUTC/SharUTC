@@ -41,7 +41,10 @@ public abstract class DragPreviewDrawer implements RighpaneInterface {
     /**
      * Don't forget to call this method when drag stopped to hide the preview
      */
-    protected void hideDragPreview() {
+    protected void hideDragPreview(ArrayList<? extends DraggableCard> list) {
+        for (DraggableCard card : list) {
+            card.dropped();
+        }
         mDragPreview.getChildren().clear();
     }
 
