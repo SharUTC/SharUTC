@@ -82,7 +82,7 @@
             <ProgressBar minWidth="150" fx:id="playerProgressBar" progress="0" />
             <Slider minWidth="150" fx:id="playerTimeSlider" min="0" max="1" blockIncrement="0.01"  value="0"   />            
         </StackPane>
-        <Label fx:id="playerMaxTime" text="03:45" />
+        <Label fx:id="playerMaxTime" text="00:00" />
     </HBox>
     
     <HBox alignment="CENTER" prefHeight="32" >
