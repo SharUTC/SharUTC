@@ -206,6 +206,7 @@ public class PlayerController implements Initializable, PropertyChangeListener {
             removeScoreListener();
             mCurrentMusic = null;
             mCurrentScore = null;
+            fillRatingStar(0);
         }
     }
 
