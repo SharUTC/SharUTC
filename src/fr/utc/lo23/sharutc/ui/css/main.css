@@ -344,9 +344,6 @@
     -fx-border-color: #7f8c8d;
 }
 
-#playList .list-cell:selected .playListCard {
-    -fx-background-color: rgba(51,181,229,0.5);
-}
 
 .playListCardMusicTitle {
     -fx-font-size : 14px;
@@ -354,22 +351,22 @@
     -fx-font-weight: bold;
 }
 
-#playList .list-cell:selected .playListCardMusicTitle {
-    -fx-text-fill: #FFFFFF;
-}
 .playListCardMusicArtist {
     -fx-font-size : 12px;
     -fx-text-fill: #7f8c8d;
-}
-
-#playList .list-cell:selected .playListCardMusicArtist {
-    -fx-text-fill: #ECF0F1;
 }
 
 #playList .playListCardPlaying {
      -fx-background-color: rgba(51,181,229,0.5);
 }
 
+#playList .playListCardPlaying .playListCardMusicTitle {
+    -fx-text-fill: #FFFFFF;
+}
+
+#playList .playListCardPlaying .playListCardMusicArtist {
+    -fx-text-fill: #ECF0F1;
+}
 
 .placeHolderLabel {
     -fx-text-fill: #7F8C8D;
