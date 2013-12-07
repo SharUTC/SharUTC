@@ -111,8 +111,8 @@ public class MusicServiceImpl implements MusicService {
 
             for (Music currentMusic : musics) {
                 if (localCatalog.contains(currentMusic)) {
-                    for(Integer categoryId: currentMusic.getCategoryIds()){
-                        currentMusic.removeCategoryId(categoryId);
+                    for(String tag : currentMusic.getTags()){
+                        this.removeTag(currentMusic, tag);
                     }
                     localCatalog.remove(currentMusic);
                 } else {
