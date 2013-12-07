@@ -375,3 +375,32 @@
     -fx-text-fill: #7F8C8D;
     -fx-font-size: 25px;
 }
+
+/*
+*	CheckBox
+*/
+
+.check-box .box {
+    -fx-background-color: #FFFFFF;
+    -fx-border-color: #BDC3C7;
+    -fx-border-width: 2px 2px 2px 2px;
+    -fx-border-radius: 2;
+}
+
+.check-box{
+	-fx-text-fill: #BDC3C7;
+}
+.check-box:hover{
+    -fx-opacity: 1.0;
+}
+
+.check-box .text {
+   -fx-font-weight: bold;
+}
+
+
+.check-box .mark {
+    -fx-background-color: #BDC3C7;
+    -fx-background-insets: 1 0 -1 0, 0;
+    -fx-shape: "M0,4H2L3,6L6,0H8L4,8H2Z";
+}
