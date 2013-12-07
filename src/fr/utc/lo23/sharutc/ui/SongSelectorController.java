@@ -63,12 +63,10 @@ public class SongSelectorController extends DragPreviewDrawer implements SongCar
     public void onDragStop(DraggableCard draggableCard) {
         if (draggableCard instanceof SongCard) {
             //drag event failed, inform all selected card
-            for (SongCard songCard : mSongCardSelected) {
-                songCard.dropped();
-            }
+            hideDragPreview(mSongCardSelected);
             //clean the selection
             mSongCardSelected.clear();
-            hideDragPreview();
+
         }
     }
 
