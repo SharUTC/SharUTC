@@ -198,6 +198,7 @@ public class SongListController extends SongSelectorController implements Initia
             placeHolderLabel = null;
         }
         songsContainer.getChildren().add(new SongCard(music, this, true));
+        showTags();
     }
 
     public void createCards(String artistName, String albumName) {
