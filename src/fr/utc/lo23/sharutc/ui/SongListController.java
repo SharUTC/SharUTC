@@ -229,16 +229,21 @@ public class SongListController extends SongSelectorController implements Initia
         tagContainer.getChildren().clear();
 
         //The "virtual" "All songs" tag
-        showSimpleCard(new TagCard(VIRTUAL_TAG_ALL_SONGS, this));
+        final TagCard allSongs = new TagCard(VIRTUAL_TAG_ALL_SONGS, this);
+        showSimpleCard(allSongs);
 
         //The "virtual" "My Songs" tag
-        showSimpleCard(new TagCard(VIRTUAL_TAG_MY_SONGS, this));
+        final TagCard mySongs = new TagCard(VIRTUAL_TAG_MY_SONGS, this);
+        mySongs.setTagWeight(mAppModel.getLocalCatalog().size());
+        showSimpleCard(mySongs);
 
         //For the moment, we retrieve only the local tag map
         final TagMap localTagMap = musicService.getLocalTagMap();
         final HashMap<String, Integer> tagHashMap = localTagMap.getMap();
         for (Entry<String, Integer> tag : tagHashMap.entrySet()) {
-            showSimpleCard(new TagCard(tag.getKey(), this));
+            final TagCard tagCard = new TagCard(tag.getKey(), this);
+            tagCard.setTagWeight(tag.getValue());
+            showSimpleCard(tagCard);
         }
 
         showAddTagCard();
