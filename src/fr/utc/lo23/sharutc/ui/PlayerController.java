@@ -312,12 +312,12 @@ public class PlayerController implements Initializable, PropertyChangeListener {
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
-                handlePropertyChangeFromAudiPlayerThread(evt);
+                handlePropertyChangeFromAudioPlayerThread(evt);
             }
         });
     }
 
-    private void handlePropertyChangeFromAudiPlayerThread(final PropertyChangeEvent evt) {
+    private void handlePropertyChangeFromAudioPlayerThread(final PropertyChangeEvent evt) {
         final String propertyName = evt.getPropertyName();
         log.debug("PropertyChangeEvent Name : " + propertyName);
         if (propertyName.equals(PlayerService.Property.CURRENT_MUSIC.name())) {
