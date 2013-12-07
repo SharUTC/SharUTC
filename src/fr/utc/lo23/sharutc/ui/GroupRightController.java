@@ -10,6 +10,8 @@ import com.google.inject.Inject;
 import fr.utc.lo23.sharutc.controler.command.profile.ManageRightsCommand;
 import fr.utc.lo23.sharutc.model.AppModel;
 import fr.utc.lo23.sharutc.model.domain.Music;
+import fr.utc.lo23.sharutc.model.domain.Rights;
+import fr.utc.lo23.sharutc.model.domain.RightsList;
 import fr.utc.lo23.sharutc.model.userdata.Category;
 import fr.utc.lo23.sharutc.ui.custom.HorizontalScrollHandler;
 import fr.utc.lo23.sharutc.ui.custom.card.DraggableCard;
@@ -82,17 +84,6 @@ public class GroupRightController extends DragPreviewDrawer implements Initializ
         HorizontalScrollHandler scrollHandler = new HorizontalScrollHandler(rightScrollPane);
 
         mSongRightCardSelected = new ArrayList<SongRightCard>();
-
-        //populate the view with local musique
-        final List<Music> musics = mAppModel.getLocalCatalog().getMusics();
-        if (musics.isEmpty()) {
-            showPlaceHolder("There is no song in your catalogue. Go to the Songs tab first.");
-        } else {
-            for (Music m : musics) {
-                songsContainer.getChildren().add(new SongRightCard(m, this, false, true, false, true));
-            }
-        }
-
         drawRightCard();
     }
 
@@ -101,6 +92,33 @@ public class GroupRightController extends DragPreviewDrawer implements Initializ
 
         Group.setText(category.getName());
         currentCategory = category;
+
+        //get rights
+        RightsList rightsList = mAppModel.getRightsList();
+
+        log.info("rights size : " + rightsList.size());
+        final List<Music> musics = mAppModel.getLocalCatalog().getMusics();
+        if (musics.isEmpty()) {
+            showPlaceHolder("There is no song in your catalogue. Go to the Songs tab first.");
+        } else {
+            for (Music m : musics) {
+                //for each music display rights
+                final Rights rights = rightsList.getByMusicIdAndCategoryId(m.getId(), currentCategory.getId());
+                if (rights == null) {
+                    //no rights yet, all false
+                    songsContainer.getChildren().add(new SongRightCard(m, this, false, false, false, false));
+                } else {
+                    //display rights
+                    //TODO wait for null pointer fixed
+//                    songsContainer.getChildren().add(new SongRightCard(m, this, false, rights.getMayListen(),
+//                            rights.getMayReadInfo(), rights.getMayNoteAndComment()));
+
+                    //TODO remove when fixed
+                    songsContainer.getChildren().add(new SongRightCard(m, this, false, false, false, false));
+                }
+
+            }
+        }
     }
 
 

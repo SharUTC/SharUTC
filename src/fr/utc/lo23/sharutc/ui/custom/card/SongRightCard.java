@@ -1,15 +1,13 @@
 package fr.utc.lo23.sharutc.ui.custom.card;
 
 import fr.utc.lo23.sharutc.model.domain.Music;
-import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
-
-import java.io.IOException;
+import javafx.scene.layout.VBox;
 
 public class SongRightCard extends DraggableCard implements EventHandler<Event> {
 
@@ -25,7 +23,8 @@ public class SongRightCard extends DraggableCard implements EventHandler<Event> 
     public Label songTitle;
     @FXML
     public Label songArtist;
-
+    @FXML
+    public VBox buttonContainer;
     @FXML
     public CheckBox checkBoxRead;
     @FXML
@@ -41,38 +40,29 @@ public class SongRightCard extends DraggableCard implements EventHandler<Event> 
         songTitle.setText(mModel.getTitle());
         songArtist.setText(mModel.getArtist());
         mIsOwned = isOwned;
+
+        buttonContainer.setDisable(true);
+
         checkBoxEdit.setSelected(mayListen);
         checkBoxRead.setSelected(mayReadInfo);
         checkBoxComment.setSelected(mayComment);
 
         setOnMouseClicked(this);
-    }
-
-    @FXML
-    private void handleSongCardRightCheckBoxAction(ActionEvent event) throws IOException {
-        final Object source = event.getSource();
-        if (source.equals(checkBoxEdit)) {
-            if (checkBoxEdit.isSelected())
-                mInterface.handleCheckBoxListenClicked(mModel, true);
-            else
-                mInterface.handleCheckBoxListenClicked(mModel, false);
-        } else if (source.equals(checkBoxRead)) {
-            if (checkBoxRead.isSelected())
-                mInterface.handleCheckBoxReadClicked(mModel, true);
-            else
-                mInterface.handleCheckBoxReadClicked(mModel, false);
-        } else if (source.equals(checkBoxComment)) {
-            if (checkBoxComment.isSelected())
-                mInterface.handleCheckBoxCommentClicked(mModel, true);
-            else
-                mInterface.handleCheckBoxCommentClicked(mModel, false);
-        }
-
-
+        setOnMouseEntered(this);
+        setOnMouseExited(this);
     }
 
     public Music getModel() {
         return mModel;
+    }
+
+    /**
+     * display right details on hover
+     *
+     * @param isHover
+     */
+    public void onHover(boolean isHover) {
+        buttonContainer.setVisible(isHover);
     }
 
 
@@ -84,6 +74,14 @@ public class SongRightCard extends DraggableCard implements EventHandler<Event> 
                 this.adaptStyle((MouseEvent) event);
                 mInterface.onSongRightCardSelected(this);
             }
+        } else if (event.getEventType() == MouseEvent.MOUSE_ENTERED) {
+            if (source.equals(this)) {
+                this.onHover(true);
+            }
+        } else if (event.getEventType() == MouseEvent.MOUSE_EXITED) {
+            if (source.equals(this)) {
+                this.onHover(false);
+            }
         }
     }
 
@@ -91,12 +89,6 @@ public class SongRightCard extends DraggableCard implements EventHandler<Event> 
      * interface to get callback from SongRightCard
      */
     public interface ISongCardRight extends IDraggableCardListener {
-
-        public void handleCheckBoxListenClicked(Music m, boolean boxstate);
-
-        public void handleCheckBoxReadClicked(Music m, boolean boxstate);
-
-        public void handleCheckBoxCommentClicked(Music m, boolean boxstate);
 
         /**
          * card has been selected

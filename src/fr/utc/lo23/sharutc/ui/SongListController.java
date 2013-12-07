@@ -51,8 +51,8 @@ public class SongListController extends SongSelectorController implements Initia
 
     private static final Logger log = LoggerFactory
             .getLogger(SongListController.class);
-    private static final String VIRTUAL_TAG_MY_SONGS = "My Songs";
-    private static final String VIRTUAL_TAG_ALL_SONGS = "All Songs";
+    public static final String VIRTUAL_TAG_MY_SONGS = "My Songs";
+    public static final String VIRTUAL_TAG_ALL_SONGS = "All Songs";
     @FXML
     public Button addNewSongButton;
     @FXML
@@ -269,7 +269,9 @@ public class SongListController extends SongSelectorController implements Initia
                     @Override
                     public void onValidate(String newTagName) {
                         log.debug("add a new tag -> " + newTagName);
-                        if (!newTagName.isEmpty()) {
+                        if (!newTagName.isEmpty()
+                                && !VIRTUAL_TAG_ALL_SONGS.equals(newTagName)
+                                && !VIRTUAL_TAG_MY_SONGS.equals(newTagName)) {
                             final TagCard newTagCard = new TagCard(newTagName, SongListController.this);
                             HBox.setMargin(newTagCard, new Insets(0, 5, 0, 5));
                             newTagCard.setTagWeight(0);

@@ -395,9 +395,12 @@
    -fx-font-weight: bold;
 }
 
+.check-box:disabled {
+    -fx-opacity: 1.0;
+}
 
-.check-box .mark {
+.check-box:selected .mark {
     -fx-background-color: #BDC3C7;
-    -fx-background-insets: 1 0 -1 0, 0;
-    -fx-shape: "M0,4H2L3,6L6,0H8L4,8H2Z";
+	-fx-background-insets: 1 0 -1 0, 0;
+	-fx-shape: "M0,4H2L3,6L6,0H8L4,8H2Z";
 }
