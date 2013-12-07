@@ -8,7 +8,10 @@ import javafx.scene.control.Label;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 
-
+/**
+ * A SimpleCard that displays the Album of a given [@link Music].
+ * The card notifies an {@link IAlbumCard} on double click.
+ */
 public class AlbumCard extends SimpleCard implements EventHandler<Event>{
     
     private Music mMusic;
@@ -35,13 +38,21 @@ public class AlbumCard extends SimpleCard implements EventHandler<Event>{
     public AlbumCard(Music m, IAlbumCard i) {
         this(m.getAlbum(),m.getArtist(),i);      
     }
-    
-    
-    
+
+    /**
+     * Returns the name of the artist.
+     * 
+     * @return the name of the artist.
+     */
     public String getArtistName() {
         return mArtistName;
     }
     
+    /**
+     * Returns the name of the album.
+     * 
+     * @return the name of the album.
+     */
     public String getAlbumName() {
         return mAlbumName;
     }
@@ -58,6 +69,9 @@ public class AlbumCard extends SimpleCard implements EventHandler<Event>{
         }
     }
     
+    /**
+     * A simple interface used as callback. 
+     */
     public interface IAlbumCard {
 
         /**
