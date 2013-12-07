@@ -54,9 +54,10 @@ public class Catalog implements Serializable, PropertyChangeListener {
     }
 
     /**
-     * Get the musics at the given index, uses same restriction as usual List
+     * Get the music at the given index, uses same restriction as usual List
      *
-     * @param index the index of the given music, >=0 && <size() @ return
+     * @param index the index of the given music, >=0 && <size()
+     * @return The music at the given index
      */
     public Music get(int index) {
         return mMusics.get(index);
@@ -165,7 +166,7 @@ public class Catalog implements Serializable, PropertyChangeListener {
      * @return true if the music was removed, else false
      */
     public boolean removeAt(Integer index) {
-        if(index < 0 || index > mMusics.size()) return false;
+        if(index < 0 || index >= mMusics.size()) return false;
         Music music = mMusics.get(index);
         return remove(music);
     }
