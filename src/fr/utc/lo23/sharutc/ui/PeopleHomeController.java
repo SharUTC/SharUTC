@@ -215,8 +215,8 @@ public class PeopleHomeController extends DragPreviewDrawer implements Initializ
             addContactToCategoryCommand.execute();
         }
         //clean the selection
+        hideDragPreview(mPeopleCardSelected);
         mPeopleCardSelected.clear();
-        hideDragPreview();
     }
 
     @Override
@@ -237,12 +237,9 @@ public class PeopleHomeController extends DragPreviewDrawer implements Initializ
     public void onDragStop(DraggableCard draggableCard) {
         if (draggableCard instanceof PeopleCard) {
             //drag event failed, inform all selected card
-            for (PeopleCard peopleCard : mPeopleCardSelected) {
-                peopleCard.dropped();
-            }
+            hideDragPreview(mPeopleCardSelected);
             //clean the selection
             mPeopleCardSelected.clear();
-            hideDragPreview();
         }
     }
 

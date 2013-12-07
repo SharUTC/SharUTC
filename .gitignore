@@ -1,12 +1,12 @@
-nbproject/*
+nbproject/private/*
 build/
-nbbuild/
+
 dist/
 nbdist/
 nbactions.xml
 nb-configuration.xml
-build.xml
-nbbuild.xml
+
+
 .DS_Store
 # Class Files #
 *.class

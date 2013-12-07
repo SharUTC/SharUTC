@@ -111,6 +111,9 @@ public class MusicServiceImpl implements MusicService {
 
             for (Music currentMusic : musics) {
                 if (localCatalog.contains(currentMusic)) {
+                    for(String tag : currentMusic.getTags()){
+                        this.removeTag(currentMusic, tag);
+                    }
                     localCatalog.remove(currentMusic);
                 } else {
                     log.warn("Music to delete not found !\n{}", currentMusic.getRealName());
@@ -357,18 +360,21 @@ public class MusicServiceImpl implements MusicService {
         if (peer == null || music == null) {
             throwMissingParameter();
         } else {
-            if (score == null) {
-                unsetScore(peer, music);
-            } else if (score >= Score.MIN_VALUE && score <= Score.MAX_VALUE) {
-                Score musicScore = music.getScore(peer);
-                if (musicScore != null) {
-                    // peer already scored the music
-                    musicScore.setValue(score);
-                    log.debug("setScore : update score value");
-                } else {
-                    log.debug("setScore : add score");
-                    musicScore = new Score(score, peer.getId());
-                    music.addScore(musicScore);
+            Music m = appModel.getLocalCatalog().findMusicById(music.getId());
+            if(m != null){
+                if (score == null) {
+                    unsetScore(peer, m);
+                } else if (score >= Score.MIN_VALUE && score <= Score.MAX_VALUE) {
+                    Score musicScore = m.getScore(peer);
+                    if (musicScore != null) {
+                        // peer already scored the music
+                        musicScore.setValue(score);
+                        log.debug("setScore : update score value");
+                    } else {
+                        log.debug("setScore : add score");
+                        musicScore = new Score(score, peer.getId());
+                        m.addScore(musicScore);
+                    }
                 }
             }
         }

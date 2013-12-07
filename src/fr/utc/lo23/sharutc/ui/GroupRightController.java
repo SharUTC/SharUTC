@@ -234,12 +234,10 @@ public class GroupRightController extends DragPreviewDrawer implements Initializ
     public void onDragStop(DraggableCard draggableCard) {
         if (draggableCard instanceof SongRightCard) {
             //drag event failed, inform all selected card
-            for (SongRightCard songRightCard : mSongRightCardSelected) {
-                songRightCard.dropped();
-            }
+            hideDragPreview(mSongRightCardSelected);
             //clean the selection
             mSongRightCardSelected.clear();
-            hideDragPreview();
+
         }
     }
 
