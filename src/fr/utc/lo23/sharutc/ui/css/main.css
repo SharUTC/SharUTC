@@ -231,6 +231,11 @@
     -fx-font-weight: bold;
 }
 
+.smallGreyText {
+    -fx-font-size : 12px;
+    -fx-text-fill: #BDC3C7;
+}
+
 .plusText{
     -fx-font-size : 60px;
     -fx-text-fill: #BDC3C7;

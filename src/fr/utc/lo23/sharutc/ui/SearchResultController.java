@@ -180,7 +180,7 @@ public class SearchResultController extends SongSelectorController implements Ri
                 }
                 if (m.getTitle().toLowerCase().contains(mCurrentCriteriaSearch)) {
                     log.debug("add music -- song");
-                    addChildFromOtherThread(new SongCard(m, SearchResultController.this, mAppModel.getProfile().getUserInfo().getPeerId() == m.getOwnerPeerId()));
+                    addChildFromOtherThread(new SongCard(m, SearchResultController.this, mAppModel));
                 }
                 break;
         }

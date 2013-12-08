@@ -12,19 +12,17 @@ import javafx.scene.input.MouseEvent;
  * A SimpleCard that displays the Album of a given [@link Music].
  * The card notifies an {@link IAlbumCard} on double click.
  */
-public class AlbumCard extends SimpleCard implements EventHandler<Event>{
-    
-    private Music mMusic;
-    private IAlbumCard mInterface;
-    
+public class AlbumCard extends SimpleCard implements EventHandler<Event> {
+
     @FXML
     public Label albumNameLabel;
     @FXML
     public Label artistNameLabel;
-    
+    private Music mMusic;
+    private IAlbumCard mInterface;
     private String mAlbumName;
     private String mArtistName;
-    
+
     public AlbumCard(String albumName, String artistName, IAlbumCard i) {
         super("/fr/utc/lo23/sharutc/ui/fxml/album_card.fxml");
         setOnMouseClicked(this);
@@ -32,31 +30,31 @@ public class AlbumCard extends SimpleCard implements EventHandler<Event>{
         mArtistName = artistName;
         mAlbumName = albumName;
         artistNameLabel.setText(mArtistName);
-        albumNameLabel.setText(mAlbumName);        
+        albumNameLabel.setText(mAlbumName);
     }
-    
+
     public AlbumCard(Music m, IAlbumCard i) {
-        this(m.getAlbum(),m.getArtist(),i);      
+        this(m.getAlbum(), m.getArtist(), i);
     }
 
     /**
-     * Returns the name of the artist.
-     * 
+     * Return the name of the artist.
+     *
      * @return the name of the artist.
      */
     public String getArtistName() {
         return mArtistName;
     }
-    
+
     /**
-     * Returns the name of the album.
-     * 
+     * Return the name of the album.
+     *
      * @return the name of the album.
      */
     public String getAlbumName() {
         return mAlbumName;
     }
-    
+
     @Override
     public void handle(Event event) {
         if (event instanceof MouseEvent) {
@@ -68,18 +66,18 @@ public class AlbumCard extends SimpleCard implements EventHandler<Event>{
             }
         }
     }
-    
+
     /**
-     * A simple interface used as callback. 
+     * A simple interface used as callback.
      */
     public interface IAlbumCard {
 
         /**
-         * user requested more details
+         * Notify the interface that the user wants to view the details of an
+         * album.
          *
-         * @param music
+         * @param albumName the name of the album shown on the card
          */
         public void onAlbumDetailRequested(String albumName);
-
     }
 }

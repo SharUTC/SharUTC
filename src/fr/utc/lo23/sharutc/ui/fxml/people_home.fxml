@@ -28,19 +28,20 @@
         </ScrollPane>
     </StackPane>
     <ScrollPane styleClass="myScrollPane" fx:id="groupScrollPane"
-                VBox.vgrow="NEVER" prefHeight="150" fitToWidth="true" fitToHeight="true" vbarPolicy="NEVER"
-                hbarPolicy="ALWAYS">
-
-        <FlowPane GridPane.hgrow="ALWAYS"
-                  GridPane.vgrow="ALWAYS" fx:id="groupContainer"
-                  prefHeight="-1.0" prefWidth="-1.0"
-                  orientation="VERTICAL"
-                  prefWrapLength="230.0" vgap="10.0"
-                  hgap="10.0">
+                VBox.vgrow="NEVER" prefHeight="135" fitToWidth="true" fitToHeight="true" vbarPolicy="NEVER"
+                hbarPolicy="AS_NEEDED">
+        
+        <VBox.margin>
+            <Insets bottom="5" />
+        </VBox.margin>
+                
+        <HBox GridPane.hgrow="ALWAYS"
+              GridPane.vgrow="ALWAYS" fx:id="groupContainer"
+              prefHeight="-1.0" prefWidth="-1.0" >
             <padding>
                 <javafx.geometry.Insets bottom="5" left="5" right="5" top="10"/>
             </padding>
-        </FlowPane>
+        </HBox>
 
     </ScrollPane>
 </VBox>

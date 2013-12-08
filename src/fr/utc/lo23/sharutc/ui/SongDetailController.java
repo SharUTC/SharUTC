@@ -8,7 +8,9 @@ import fr.utc.lo23.sharutc.controler.command.music.RemoveCommentCommand;
 import fr.utc.lo23.sharutc.controler.command.music.RemoveFromLocalCatalogCommand;
 import fr.utc.lo23.sharutc.controler.command.music.RemoveTagCommand;
 import fr.utc.lo23.sharutc.controler.command.music.SetScoreCommand;
+import fr.utc.lo23.sharutc.controler.command.search.DownloadMusicsCommand;
 import fr.utc.lo23.sharutc.model.AppModel;
+import fr.utc.lo23.sharutc.model.domain.Catalog;
 import fr.utc.lo23.sharutc.model.domain.Comment;
 import fr.utc.lo23.sharutc.model.domain.Music;
 import fr.utc.lo23.sharutc.model.domain.Score;
@@ -23,11 +25,13 @@ import fr.utc.lo23.sharutc.util.CollectionEvent;
 import fr.utc.lo23.sharutc.util.CollectionEvent.Type;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.File;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.Set;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -35,6 +39,7 @@ import javafx.fxml.Initializable;
 import javafx.geometry.Orientation;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
@@ -51,6 +56,8 @@ public class SongDetailController extends SongSelectorController implements Init
         TagDetailCard.ITagDetailCard {
 
     private static final Logger log = LoggerFactory.getLogger(SongDetailController.class);
+    @FXML
+    public ProgressIndicator progressIndicatorAddRemove;
     @FXML
     public HBox inputContainer;
     @FXML
@@ -99,6 +106,8 @@ public class SongDetailController extends SongSelectorController implements Init
     private AddTagCommand mAddTagCommand;
     @Inject
     private RemoveTagCommand mRemoveTagCommand;
+    @Inject
+    private DownloadMusicsCommand mDownloadMusicsCommand;
     private RatingStar[] mMyRatingStars;
     private RatingStar[] mAverageRatingStars;
     private Music mMusic;
@@ -229,9 +238,12 @@ public class SongDetailController extends SongSelectorController implements Init
     }
 
     private void showMusicInfo() {
-        final SongCard songCard = new SongCard(mMusic, this, false);
+        topLeftContainer.getChildren().clear();
+        final SongCard songCard = new SongCard(mMusic, this, mAppModel);
         songCard.setPrefWidth(230);
         topLeftContainer.getChildren().add(songCard);
+        progressIndicatorAddRemove.setVisible(false);
+        addRemoveButton.setVisible(true);
 
         if (mAppModel.getLocalCatalog().contains(mMusic)) {
             addRemoveButton.setText("Remove");
@@ -241,6 +253,22 @@ public class SongDetailController extends SongSelectorController implements Init
                     log.debug("remove button clicked");
                     mRemoveFromLocalCatalogCommand.setMusics(Arrays.asList(mMusic));
                     mRemoveFromLocalCatalogCommand.execute();
+                }
+            });
+        } else {
+            addRemoveButton.setText("Add");
+            addRemoveButton.setOnAction(new EventHandler<ActionEvent>() {
+                @Override
+                public void handle(ActionEvent t) {
+                    log.debug("add button clicked");
+                    log.debug("music file name " + mMusic.getFileName());
+                    final File file = new File(mMusic.getFileName());
+                    final Catalog catalog = new Catalog();
+                    catalog.add(mMusic);
+                    progressIndicatorAddRemove.setVisible(true);
+                    addRemoveButton.setVisible(false);
+                    mDownloadMusicsCommand.setCatalog(catalog);
+                    mDownloadMusicsCommand.execute();
                 }
             });
         }
@@ -421,11 +449,26 @@ public class SongDetailController extends SongSelectorController implements Init
     }
 
     @Override
-    public void collectionChanged(CollectionEvent<Music> ev) {
+    public void collectionChanged(final CollectionEvent<Music> ev) {
         final Type type = ev.getType();
+        log.debug("property Change -> " + type.name());
         if (CollectionEvent.Type.REMOVE.equals(type)) {
             log.info("remove music from local catalog");
             mInteface.onSongRemovedFromLocalCatalog();
+        } else if (CollectionEvent.Type.ADD.equals(type)) {
+            Platform.runLater(new Runnable() {
+                @Override
+                public void run() {
+                    log.info("add music to local catalog");
+                    if (mUserScore != null) {
+                        mUserScore.removePropertyChangeListener(SongDetailController.this);
+                    }
+                    if (mMusic != null) {
+                        mMusic.removePropertyChangeListener(SongDetailController.this);
+                    }
+                    setMusic(ev.getItem());
+                }
+            });
         }
     }
 
