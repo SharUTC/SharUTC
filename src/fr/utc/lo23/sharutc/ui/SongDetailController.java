@@ -9,7 +9,9 @@ import fr.utc.lo23.sharutc.controler.command.music.RemoveCommentCommand;
 import fr.utc.lo23.sharutc.controler.command.music.RemoveFromLocalCatalogCommand;
 import fr.utc.lo23.sharutc.controler.command.music.RemoveTagCommand;
 import fr.utc.lo23.sharutc.controler.command.music.SetScoreCommand;
+import fr.utc.lo23.sharutc.controler.command.search.DownloadMusicsCommand;
 import fr.utc.lo23.sharutc.model.AppModel;
+import fr.utc.lo23.sharutc.model.domain.Catalog;
 import fr.utc.lo23.sharutc.model.domain.Comment;
 import fr.utc.lo23.sharutc.model.domain.Music;
 import fr.utc.lo23.sharutc.model.domain.Score;
@@ -30,6 +32,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.Set;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -102,7 +105,7 @@ public class SongDetailController extends SongSelectorController implements Init
     @Inject
     private RemoveTagCommand mRemoveTagCommand;
     @Inject
-    private AddToLocalCatalogCommand mAddToLocalCatalogCommand;
+    private DownloadMusicsCommand mDownloadMusicsCommand;
     private RatingStar[] mMyRatingStars;
     private RatingStar[] mAverageRatingStars;
     private Music mMusic;
@@ -233,6 +236,7 @@ public class SongDetailController extends SongSelectorController implements Init
     }
 
     private void showMusicInfo() {
+        topLeftContainer.getChildren().clear();
         final SongCard songCard = new SongCard(mMusic, this, false);
         songCard.setPrefWidth(230);
         topLeftContainer.getChildren().add(songCard);
@@ -255,8 +259,10 @@ public class SongDetailController extends SongSelectorController implements Init
                     log.debug("add button clicked");
                     log.debug("music file name " + mMusic.getFileName());
                     final File file = new File(mMusic.getFileName());
-                    mAddToLocalCatalogCommand.setFiles(Arrays.asList(file));
-                    mAddToLocalCatalogCommand.execute();
+                    final Catalog catalog = new Catalog();
+                    catalog.add(mMusic);
+                    mDownloadMusicsCommand.setCatalog(catalog);
+                    mDownloadMusicsCommand.execute();
                 }
             });
         }
@@ -437,11 +443,26 @@ public class SongDetailController extends SongSelectorController implements Init
     }
 
     @Override
-    public void collectionChanged(CollectionEvent<Music> ev) {
+    public void collectionChanged(final CollectionEvent<Music> ev) {
         final Type type = ev.getType();
+        log.debug("property Change -> " + type.name());
         if (CollectionEvent.Type.REMOVE.equals(type)) {
             log.info("remove music from local catalog");
             mInteface.onSongRemovedFromLocalCatalog();
+        } else if (CollectionEvent.Type.ADD.equals(type)) {
+            Platform.runLater(new Runnable() {
+                @Override
+                public void run() {
+                    log.info("add music to local catalog");
+                    if (mUserScore != null) {
+                        mUserScore.removePropertyChangeListener(SongDetailController.this);
+                    }
+                    if (mMusic != null) {
+                        mMusic.removePropertyChangeListener(SongDetailController.this);
+                    }
+                    setMusic(ev.getItem());
+                }
+            });
         }
     }
 
