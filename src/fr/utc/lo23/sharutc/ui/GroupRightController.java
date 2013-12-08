@@ -43,10 +43,11 @@ public class GroupRightController extends DragPreviewDrawer implements Initializ
     private static final int RIGHT_LISTEN = 0x00000001;
     private static final int RIGHT_READ = 0x00000002;
     private static final int RIGHT_NOTE = 0x00000003;
+    private static final int RIGHT_ALL = 0x00000004;
 
 
     @Inject
-    private ManageRightsCommand rightCommand;
+    private ManageRightsCommand manageRightsCommand;
     @Inject
     public AppModel mAppModel;
     @FXML
@@ -60,7 +61,7 @@ public class GroupRightController extends DragPreviewDrawer implements Initializ
     @FXML
     public StackPane contentContainer;
 
-    private Category currentCategory;
+    private Category mCurrentCategory;
     private static final Logger log = LoggerFactory.getLogger(GroupRightController.class);
 
     private SimpleCard mAllSongCard;
@@ -93,19 +94,48 @@ public class GroupRightController extends DragPreviewDrawer implements Initializ
     public void setGroupInfo(Category category) {
 
         Group.setText(category.getName());
-        currentCategory = category;
+        mCurrentCategory = category;
 
         displayAllMusic();
     }
 
     private void displayMusicByRight(final int rightIdentifier) {
-        //clear view
-        songsContainer.getChildren().clear();
+        clearView();
 
         final List<Music> matchingMusics = getMusicByRights(rightIdentifier);
+        final RightsList rightsList = mAppModel.getRightsList();
 
         if (matchingMusics.isEmpty()) {
-            showPlaceHolder("");
+            //display place holder cause no music have the requested right
+            switch (rightIdentifier) {
+                case RIGHT_ALL:
+                    showPlaceHolder("Currently, there is no song with all rights in the category : "
+                            + mCurrentCategory.getName());
+                    break;
+                case RIGHT_LISTEN:
+                    showPlaceHolder("Currently, your musics can't be heard by the users of "
+                            + mCurrentCategory.getName());
+                    break;
+                case RIGHT_READ:
+                    showPlaceHolder("Currently, your musics' info can't be read by the users of "
+                            + mCurrentCategory.getName());
+                    break;
+                case RIGHT_NOTE:
+                    showPlaceHolder("Currently, your musics  can't be rated by the users of "
+                            + mCurrentCategory.getName());
+                    break;
+            }
+        } else {
+            for (Music m : matchingMusics) {
+                final Rights rights = rightsList.getByMusicIdAndCategoryId(m.getId(), mCurrentCategory.getId());
+                if (rights != null) {
+                    songsContainer.getChildren().add(new SongRightCard(m, this, false, rights.getMayListen(),
+                            rights.getMayReadInfo(), rights.getMayNoteAndComment()));
+                } else {
+                    //if doesn't exist, no rights at all
+                    songsContainer.getChildren().add(new SongRightCard(m, this, false, false, false, false));
+                }
+            }
         }
 
 
@@ -114,6 +144,7 @@ public class GroupRightController extends DragPreviewDrawer implements Initializ
     /**
      * get all music which match with the correct rightIdentifier
      * used to sort music by right
+     * Should it be a method of the model ?
      *
      * @param rightIdentifier
      * @return
@@ -121,6 +152,7 @@ public class GroupRightController extends DragPreviewDrawer implements Initializ
     private List<Music> getMusicByRights(final int rightIdentifier) {
         //get rights
         final List<Music> musics = mAppModel.getLocalCatalog().getMusics();
+        final RightsList rightsList = mAppModel.getRightsList();
 
         final List<Music> result = new ArrayList<Music>();
 
@@ -128,27 +160,36 @@ public class GroupRightController extends DragPreviewDrawer implements Initializ
             showPlaceHolder("There is no song in your catalogue. Go to the Songs tab first.");
         } else {
             for (Music m : musics) {
-                //for each music display rights
+                //for each music check rights
 
-                //TODO remove after fix implemented
-                final boolean[] rights = getMusicRights(m);
+                final Rights rights = rightsList.getByMusicIdAndCategoryId(m.getId(), mCurrentCategory.getId());
 
-                boolean shouldAdd = false;
-                switch (rightIdentifier) {
-                    case RIGHT_LISTEN:
-                        if (rights[0] == true) shouldAdd = true;
-                        break;
-                    case RIGHT_READ:
-                        if (rights[2] == true) shouldAdd = true;
-                        break;
-                    case RIGHT_NOTE:
-                        if (rights[3] == true) shouldAdd = true;
-                        break;
-                }
+                if (rights != null) {
+                    boolean shouldAdd = false;
+                    //are rights matching to requested one ?
+                    switch (rightIdentifier) {
+                        case RIGHT_LISTEN:
+                            if (rights.getMayListen()) shouldAdd = true;
+                            break;
+                        case RIGHT_READ:
+                            if (rights.getMayReadInfo()) shouldAdd = true;
+                            break;
+                        case RIGHT_NOTE:
+                            if (rights.getMayNoteAndComment()) shouldAdd = true;
+                            break;
+                        case RIGHT_ALL:
+                            if (rights.getMayNoteAndComment()
+                                    & rights.getMayReadInfo()
+                                    & rights.getMayListen()) {
+                                shouldAdd = true;
+                            }
+                            break;
+                    }
 
-                if (shouldAdd) {
-                    //add music to the resultList
-                    result.add(m);
+                    if (shouldAdd) {
+                        //add music to the resultList
+                        result.add(m);
+                    }
                 }
             }
         }
@@ -160,92 +201,26 @@ public class GroupRightController extends DragPreviewDrawer implements Initializ
      * Display all local music with rights according to the category selected
      */
     private void displayAllMusic() {
-        //clear view
-        songsContainer.getChildren().clear();
+        clearView();
 
         final List<Music> musics = mAppModel.getLocalCatalog().getMusics();
-
+        final RightsList rightsList = mAppModel.getRightsList();
         if (musics.isEmpty()) {
             showPlaceHolder("There is no song in your catalogue. Go to the Songs tab first.");
         } else {
             for (Music m : musics) {
                 //for each music display rights
-
-                //TODO remove after fix implemented
-                final boolean[] rights = getMusicRights(m);
-
+                final Rights rights = rightsList.getByMusicIdAndCategoryId(m.getId(), mCurrentCategory.getId());
                 //display the card
-                songsContainer.getChildren().add(new SongRightCard(m, this, false, rights[0],
-                        rights[1], rights[2]));
+                if (rights != null) {
+                    songsContainer.getChildren().add(new SongRightCard(m, this, false, rights.getMayListen(),
+                            rights.getMayReadInfo(), rights.getMayNoteAndComment()));
+                } else {
+                    //if doesn't exist, no rights at all
+                    songsContainer.getChildren().add(new SongRightCard(m, this, false, false, false, false));
+                }
             }
         }
-    }
-
-    /**
-     * Since there is no proper way to get right from a music, here is a hack
-     * remove when a fix will be implemented
-     *
-     * @param m
-     * @return rights in this order list,read,note
-     */
-    private boolean[] getMusicRights(Music m) {
-        final RightsList rightsList = mAppModel.getRightsList();
-        boolean[] result = {false, false, false};
-
-        final Rights rights = rightsList.getByMusicIdAndCategoryId(m.getId(), currentCategory.getId());
-        if (rights != null) {
-            //rights are set for this song and this category
-
-            //display rights
-            //TODO since a Rights not null can be returned even if all Boolean inside are Null
-            //we have to test them. Wait for fix
-            result[0] = rights.getMayListen() != null ? rights.getMayListen() : result[0];
-            result[1] = rights.getMayReadInfo() != null ? rights.getMayReadInfo() : result[1];
-            result[2] = rights.getMayNoteAndComment() != null ? rights.getMayNoteAndComment() : result[2];
-        }
-
-        return result;
-    }
-
-
-    public void handleCheckBoxListenClicked(Music m, boolean boxstate) {
-
-        rightCommand.setCategory(currentCategory);
-        rightCommand.setMusic(m);
-        if (boxstate) {
-            log.info("Goup:" + Group.getText() + " gives maylisten rights on music :" + m.getTitle());
-            rightCommand.setMayListen(true);
-        } else {
-            log.info("Goup:" + Group.getText() + " removes maylisten rights on music :" + m.getTitle());
-            rightCommand.setMayListen(false);
-        }
-        rightCommand.execute();
-    }
-
-    public void handleCheckBoxCommentClicked(Music m, boolean boxstate) {
-        rightCommand.setCategory(currentCategory);
-        rightCommand.setMusic(m);
-        if (boxstate) {
-            log.info("Goup:" + Group.getText() + " gives Comment rights on music :" + m.getTitle());
-            rightCommand.setMayCommentAndScore(true);
-        } else {
-            log.info("Goup:" + Group.getText() + " removes Comment rights on music :" + m.getTitle());
-            rightCommand.setMayCommentAndScore(false);
-        }
-        rightCommand.execute();
-    }
-
-    public void handleCheckBoxReadClicked(Music m, boolean boxstate) {
-        rightCommand.setCategory(currentCategory);
-        rightCommand.setMusic(m);
-        if (boxstate) {
-            log.info("Goup:" + Group.getText() + " gives ReadInfo rights on music :" + m.getTitle());
-            rightCommand.setMayReadInfo(true);
-        } else {
-            log.info("Goup:" + Group.getText() + " removes ReadInfo rights on music :" + m.getTitle());
-            rightCommand.setMayReadInfo(false);
-        }
-        rightCommand.execute();
     }
 
     /**
@@ -299,21 +274,56 @@ public class GroupRightController extends DragPreviewDrawer implements Initializ
         }
     }
 
+    /**
+     * used to clear songs container
+     */
+    private void clearView() {
+        songsContainer.getChildren().clear();
+        hidePlaceHolder();
+    }
+
     @Override
     public void onSongAdded(RightCard card) {
-        //TODO implement command
-        if (card.equals(mAllRightsSongCard)) {
-            log.info("song dropped in all right card : ");
-        } else if (card.equals(mListenSongCard)) {
-            log.info("song dropped in listen right card : ");
-        } else if (card.equals(mReadSongCard)) {
-            log.info("song dropped in read right card : ");
-        } else if (card.equals(mCommentAndNoteSongCard)) {
-            log.info("song dropped in comment right card : ");
-        }
+        final RightsList rightsList = mAppModel.getRightsList();
 
+        //for all selected Music dropped
         for (SongRightCard songRightCard : mSongRightCardSelected) {
-            log.info(songRightCard.getModel().getRealName());
+            //TODO move right into card model
+            //recover the music
+            final Music m = songRightCard.getModel();
+
+            //get the current rights
+            Rights rights = rightsList.getByMusicIdAndCategoryId(m.getId(), mCurrentCategory.getId());
+            if (rights == null) {
+                //rights doesn't exist yet
+                rights = new Rights(mCurrentCategory.getId(), m.getId(), false, false, false);
+            }
+            //initialize the command
+            manageRightsCommand.setCategory(mCurrentCategory);
+            manageRightsCommand.setMusic(m);
+            manageRightsCommand.setMayCommentAndScore(rights.getMayNoteAndComment());
+            manageRightsCommand.setMayListen(rights.getMayListen());
+            manageRightsCommand.setMayReadInfo(rights.getMayReadInfo());
+
+            //change according to the drop area
+            if (card.equals(mAllRightsSongCard)) {
+                log.info("song dropped in all right card : ");
+                manageRightsCommand.setMayCommentAndScore(true);
+                manageRightsCommand.setMayListen(true);
+                manageRightsCommand.setMayReadInfo(true);
+            } else if (card.equals(mListenSongCard)) {
+                log.info("song dropped in listen right card : ");
+                manageRightsCommand.setMayListen(true);
+            } else if (card.equals(mReadSongCard)) {
+                log.info("song dropped in read right card : ");
+                manageRightsCommand.setMayReadInfo(true);
+            } else if (card.equals(mCommentAndNoteSongCard)) {
+                log.info("song dropped in comment right card : ");
+                manageRightsCommand.setMayCommentAndScore(true);
+            }
+
+            //execute the command
+            manageRightsCommand.execute();
         }
     }
 
@@ -321,6 +331,16 @@ public class GroupRightController extends DragPreviewDrawer implements Initializ
     public void onRightCardClicked(RightCard card) {
         //clear the songRightCard container
         log.info("card clicked : " + card.getId());
+        if (card.equals(mListenSongCard)) {
+            displayMusicByRight(RIGHT_LISTEN);
+        } else if (card.equals(mReadSongCard)) {
+            displayMusicByRight(RIGHT_READ);
+        } else if (card.equals(mCommentAndNoteSongCard)) {
+            displayMusicByRight(RIGHT_NOTE);
+        } else if (card.equals(mAllRightsSongCard)) {
+            displayMusicByRight(RIGHT_ALL);
+        }
+
     }
 
     @Override
