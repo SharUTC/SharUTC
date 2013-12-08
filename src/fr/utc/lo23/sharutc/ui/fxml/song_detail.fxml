@@ -34,7 +34,11 @@
         
         <right>
             <VBox alignment="TOP_RIGHT" >
-                <Button fx:id="addRemoveButton" text="Add" styleClass="bigBlueButton"  />
+                <StackPane >
+                    <Button fx:id="addRemoveButton" text="Add" styleClass="bigBlueButton"  />
+                    <ProgressIndicator progress="-1" fx:id="progressIndicatorAddRemove" visible="false"  />
+                </StackPane>
+                
                 
                 
                 <GridPane hgap="5" vgap="2" GridPane.valignment="CENTER"   >

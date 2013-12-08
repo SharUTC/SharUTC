@@ -3,7 +3,6 @@ package fr.utc.lo23.sharutc.ui;
 import com.google.inject.Inject;
 import fr.utc.lo23.sharutc.controler.command.music.AddCommentCommand;
 import fr.utc.lo23.sharutc.controler.command.music.AddTagCommand;
-import fr.utc.lo23.sharutc.controler.command.music.AddToLocalCatalogCommand;
 import fr.utc.lo23.sharutc.controler.command.music.EditCommentCommand;
 import fr.utc.lo23.sharutc.controler.command.music.RemoveCommentCommand;
 import fr.utc.lo23.sharutc.controler.command.music.RemoveFromLocalCatalogCommand;
@@ -40,6 +39,7 @@ import javafx.fxml.Initializable;
 import javafx.geometry.Orientation;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
@@ -56,6 +56,8 @@ public class SongDetailController extends SongSelectorController implements Init
         TagDetailCard.ITagDetailCard {
 
     private static final Logger log = LoggerFactory.getLogger(SongDetailController.class);
+    @FXML
+    public ProgressIndicator progressIndicatorAddRemove;
     @FXML
     public HBox inputContainer;
     @FXML
@@ -240,6 +242,8 @@ public class SongDetailController extends SongSelectorController implements Init
         final SongCard songCard = new SongCard(mMusic, this, false);
         songCard.setPrefWidth(230);
         topLeftContainer.getChildren().add(songCard);
+        progressIndicatorAddRemove.setVisible(false);
+        addRemoveButton.setVisible(true);
 
         if (mAppModel.getLocalCatalog().contains(mMusic)) {
             addRemoveButton.setText("Remove");
@@ -261,6 +265,8 @@ public class SongDetailController extends SongSelectorController implements Init
                     final File file = new File(mMusic.getFileName());
                     final Catalog catalog = new Catalog();
                     catalog.add(mMusic);
+                    progressIndicatorAddRemove.setVisible(true);
+                    addRemoveButton.setVisible(false);
                     mDownloadMusicsCommand.setCatalog(catalog);
                     mDownloadMusicsCommand.execute();
                 }
