@@ -69,7 +69,7 @@ public class TagCard extends SimpleCard implements EventHandler<Event> {
     /**
      * Set the visibility of the drop overlay.
      *
-     * @param isShow true set drop overlay Visible, false will hide it
+     * @param isVisible the visibility of the overlay.
      */
     private void setDropOverlayVisibility(boolean isVisible) {
         dropOverlayBlue.setVisible(isVisible);
@@ -77,7 +77,8 @@ public class TagCard extends SimpleCard implements EventHandler<Event> {
     }
 
     /**
-     * Accept PeopleCard as Droppable
+     * The card received a {@link DragEvent.DRAG_OVER}.
+     * Accept the transfer if the source is a {@link SongCard}.
      *
      * @param dragEvent
      */
@@ -91,7 +92,9 @@ public class TagCard extends SimpleCard implements EventHandler<Event> {
     }
 
     /**
-     * Inform user with a message when an accepted droppable enter
+     * The card received a {@link DragEvent.DRAG_ENTERED].
+     * Accept the transfer if the source is a {@link SongCard} and
+     * show the drop overlay.
      *
      * @param dragEvent
      */
@@ -105,7 +108,8 @@ public class TagCard extends SimpleCard implements EventHandler<Event> {
     }
 
     /**
-     * Delete the message when user leave the card
+     * The card received a {@link DragEvent.DRAG_EXITED}.
+     * Hide the drop overlay if the source is a {@link SongCard}.
      *
      * @param dragEvent
      */
@@ -118,8 +122,10 @@ public class TagCard extends SimpleCard implements EventHandler<Event> {
     }
 
     /**
-     * retrieve content of the drag
-     *
+     * The card received a {@link DragEvent.DRAG_DROPPED}.
+     * If the {@link Dragboard} has the {@link SongCard.DROP_KEY}, 
+     * this method notifies the {@link ITagCard}.
+     * 
      * @param dragEvent
      */
     private void onDragDropped(DragEvent dragEvent) {
