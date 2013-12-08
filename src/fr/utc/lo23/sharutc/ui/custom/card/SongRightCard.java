@@ -9,16 +9,16 @@ import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 
+/**
+ * A {@link DraggableCard} that show the rights of a piece of {@link Music}.
+ * This class notifies a {@link ISongRightCard} on click.
+ */
 public class SongRightCard extends DraggableCard implements EventHandler<Event> {
 
     /**
      * key used for the drag event to identify the content
      */
     public static final String DROP_KEY = SongRightCard.class + "DropKey";
-
-    private Music mModel;
-    private boolean mIsOwned;
-    private ISongCardRight mInterface;
     @FXML
     public Label songTitle;
     @FXML
@@ -31,7 +31,9 @@ public class SongRightCard extends DraggableCard implements EventHandler<Event> 
     public CheckBox checkBoxEdit;
     @FXML
     public CheckBox checkBoxComment;
-
+    private Music mModel;
+    private boolean mIsOwned;
+    private ISongCardRight mInterface;
 
     public SongRightCard(Music m, ISongCardRight i, boolean isOwned, boolean mayListen, boolean mayReadInfo, boolean mayComment) {
         super("/fr/utc/lo23/sharutc/ui/fxml/song_card_right.fxml", DROP_KEY, i);
@@ -65,7 +67,6 @@ public class SongRightCard extends DraggableCard implements EventHandler<Event> 
         buttonContainer.setVisible(isHover);
     }
 
-
     @Override
     public void handle(Event event) {
         final Object source = event.getSource();
@@ -86,16 +87,18 @@ public class SongRightCard extends DraggableCard implements EventHandler<Event> 
     }
 
     /**
-     * interface to get callback from SongRightCard
+     * A {@link IDraggableCardListener} that is notified when a user selects the
+     * {@link SongRightCard}.
      */
     public interface ISongCardRight extends IDraggableCardListener {
 
         /**
-         * card has been selected
+         * The {@link ISongCardRight} is being notified that a
+         * {@link SongCardRight} has just benn selected.
          *
-         * @param songCardRight
+         * @param songCardRight the {@link SongRightCard} that has been
+         * selected.
          */
         public void onSongRightCardSelected(SongRightCard songCardRight);
     }
-
 }
