@@ -2,17 +2,23 @@ package fr.utc.lo23.sharutc.ui.custom.card;
 
 import javafx.event.Event;
 import javafx.event.EventHandler;
+import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 
-public class ArtistCard extends SimpleCard implements EventHandler<Event>{
-    
+/**
+ * A SimpleCard that displays the Artist of a given [@link Music].
+ * The card notifies an {@link IArtistCard} on double click.
+ */
+public class ArtistCard extends SimpleCard implements EventHandler<Event> {
+
+    @FXML
+    public Label artistNameLabel;
     private String mArtistName;
     private IArtistCard mInterface;
     
-    public Label artistNameLabel;
-    
+
     public ArtistCard(String artistName, IArtistCard i) {
         super("/fr/utc/lo23/sharutc/ui/fxml/artist_card.fxml");
         setOnMouseClicked(this);
@@ -21,7 +27,11 @@ public class ArtistCard extends SimpleCard implements EventHandler<Event>{
         artistNameLabel.setText(artistName);
     }
 
-
+    /**
+     * Return the name of the artist.
+     *
+     * @return the name of the artist.
+     */
     public String getArtistName() {
         return mArtistName;
     }
@@ -37,15 +47,18 @@ public class ArtistCard extends SimpleCard implements EventHandler<Event>{
             }
         }
     }
-    
+
+    /**
+     * A simple interface used as callback.
+     */
     public interface IArtistCard {
 
         /**
-         * user requested more details
+         * Notify the interface that the user wants to view the details of an
+         * artist.
          *
-         * @param music
+         * @param artistName the name of the artist shown on the card.
          */
         public void onArtistDetailRequested(String artistName);
-
     }
 }

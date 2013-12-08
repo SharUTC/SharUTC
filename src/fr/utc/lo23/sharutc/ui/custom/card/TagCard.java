@@ -10,6 +10,9 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.Region;
 
+/**
+ * A simple card that displays a tag and its weight.
+ */
 public class TagCard extends SimpleCard implements EventHandler<Event> {
 
     @FXML
@@ -35,9 +38,14 @@ public class TagCard extends SimpleCard implements EventHandler<Event> {
         setOnDragExited(this);
         setOnDragDropped(this);
 
-        displayDropOverlay(false);
+        setDropOverlayVisibility(false);
     }
 
+    /**
+     * Set the weight of the tag.
+     * 
+     * @param weight the weight of the tag
+     */
     public void setTagWeight(final Integer weight) {
         tagWeightLabel.setText(String.valueOf(weight));
     }
@@ -59,13 +67,13 @@ public class TagCard extends SimpleCard implements EventHandler<Event> {
     }
 
     /**
-     * display drop overlay
+     * Set the visibility of the drop overlay.
      *
      * @param isShow true set drop overlay Visible, false will hide it
      */
-    private void displayDropOverlay(boolean isShow) {
-        dropOverlayBlue.setVisible(isShow);
-        dropOverlayLabel.setVisible(isShow);
+    private void setDropOverlayVisibility(boolean isVisible) {
+        dropOverlayBlue.setVisible(isVisible);
+        dropOverlayLabel.setVisible(isVisible);
     }
 
     /**
@@ -91,7 +99,7 @@ public class TagCard extends SimpleCard implements EventHandler<Event> {
         final Object gestureSource = dragEvent.getGestureSource();
         if (gestureSource instanceof SongCard) {
             dragEvent.acceptTransferModes(TransferMode.COPY_OR_MOVE);
-            displayDropOverlay(true);
+            setDropOverlayVisibility(true);
         }
         dragEvent.consume();
     }
@@ -104,7 +112,7 @@ public class TagCard extends SimpleCard implements EventHandler<Event> {
     private void onDragExited(DragEvent dragEvent) {
         final Object gestureSource = dragEvent.getGestureSource();
         if (gestureSource instanceof SongCard) {
-            displayDropOverlay(false);
+            setDropOverlayVisibility(false);
         }
         dragEvent.consume();
     }

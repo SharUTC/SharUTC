@@ -5,11 +5,14 @@ import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.scene.input.*;
 
+/**
+ * A simple card that can be dragged. The card notifies a
+ * {@link IDraggableCardListener} on drag start and on drag done.
+ */
 public abstract class DraggableCard extends SimpleCard {
 
     private String mDropKey;
     private IDraggableCardListener mInterface;
-
     private EventHandler<Event> mHandler;
 
     public DraggableCard(String resourceFXML, String dropKey, IDraggableCardListener i) {
@@ -40,7 +43,8 @@ public abstract class DraggableCard extends SimpleCard {
     }
 
     /**
-     * Change style and add the model to the Dragboard
+     * Change the style of the card and add the model to the Dragboard when the
+     * drag start.
      *
      * @param mouseEvent
      */
@@ -54,18 +58,17 @@ public abstract class DraggableCard extends SimpleCard {
     }
 
     /**
-     * Retrieve original style whe drag gesture is done
+     * Reset the default style after drag.
      *
      * @param dragEvent
      */
     private void onDragDone(DragEvent dragEvent) {
-
         this.getStyleClass().remove("cardDragged");
         dragEvent.consume();
     }
 
     /**
-     * inform that this card as been dropped due to multi selection Drag&Drop
+     * Reset the default style after drop.
      */
     public void dropped() {
         final ObservableList<String> style = getStyleClass();
@@ -76,7 +79,7 @@ public abstract class DraggableCard extends SimpleCard {
     }
 
     /**
-     * inform is being dragged due to multi selection Drag&Drop
+     * Set a dragged style.
      */
     public void dragged() {
         final ObservableList<String> style = getStyleClass();
@@ -84,11 +87,10 @@ public abstract class DraggableCard extends SimpleCard {
 
     }
 
-
     public interface IDraggableCardListener {
+
         public void onDragStart(MouseEvent event, DraggableCard draggableCard);
 
         public void onDragStop(DraggableCard draggableCard);
-
     }
 }

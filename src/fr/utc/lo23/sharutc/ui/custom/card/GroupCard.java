@@ -1,6 +1,5 @@
 package fr.utc.lo23.sharutc.ui.custom.card;
 
-
 import fr.utc.lo23.sharutc.model.userdata.Category;
 import javafx.event.Event;
 import javafx.event.EventHandler;
@@ -15,35 +14,25 @@ import javafx.scene.layout.Region;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 public class GroupCard extends SimpleCard implements EventHandler<Event> {
 
     private static final Logger log = LoggerFactory.getLogger(GroupCard.class);
-
     @FXML
     public Button deleteButton;
-
     @FXML
     public Button editButton;
-
     @FXML
     public Button rightsButton;
-
     @FXML
     public Label groupName;
-
     @FXML
     public Label groupMembers;
-
     @FXML
     public Region dropOverlay;
-
     @FXML
     public Label dropOverlayLabel;
-
     private Category mModel;
     private IGroupCard mInterface;
-
 
     public GroupCard(Category category, IGroupCard i) {
         super("/fr/utc/lo23/sharutc/ui/fxml/group_card.fxml");
@@ -181,6 +170,7 @@ public class GroupCard extends SimpleCard implements EventHandler<Event> {
      * interface for GroupCard's callback
      */
     public interface IGroupCard {
+
         /**
          * user clicked on deleted button
          *
