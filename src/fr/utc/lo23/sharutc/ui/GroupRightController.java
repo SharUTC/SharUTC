@@ -129,11 +129,11 @@ public class GroupRightController extends DragPreviewDrawer implements Initializ
             for (Music m : matchingMusics) {
                 final Rights rights = rightsList.getByMusicIdAndCategoryId(m.getId(), mCurrentCategory.getId());
                 if (rights != null) {
-                    songsContainer.getChildren().add(new SongRightCard(m, this, false, rights.getMayListen(),
-                            rights.getMayReadInfo(), rights.getMayNoteAndComment()));
+                    songsContainer.getChildren().add(new SongRightCard(m, this, rights));
                 } else {
                     //if doesn't exist, no rights at all
-                    songsContainer.getChildren().add(new SongRightCard(m, this, false, false, false, false));
+                    songsContainer.getChildren().add(new SongRightCard(m, this,
+                            new Rights(mCurrentCategory.getId(), m.getId(), false, false, false)));
                 }
             }
         }
@@ -213,11 +213,11 @@ public class GroupRightController extends DragPreviewDrawer implements Initializ
                 final Rights rights = rightsList.getByMusicIdAndCategoryId(m.getId(), mCurrentCategory.getId());
                 //display the card
                 if (rights != null) {
-                    songsContainer.getChildren().add(new SongRightCard(m, this, false, rights.getMayListen(),
-                            rights.getMayReadInfo(), rights.getMayNoteAndComment()));
+                    songsContainer.getChildren().add(new SongRightCard(m, this, rights));
                 } else {
                     //if doesn't exist, no rights at all
-                    songsContainer.getChildren().add(new SongRightCard(m, this, false, false, false, false));
+                    songsContainer.getChildren().add(new SongRightCard(m, this,
+                            new Rights(mCurrentCategory.getId(), m.getId(), false, false, false)));
                 }
             }
         }
@@ -284,20 +284,14 @@ public class GroupRightController extends DragPreviewDrawer implements Initializ
 
     @Override
     public void onSongAdded(RightCard card) {
-        final RightsList rightsList = mAppModel.getRightsList();
-
         //for all selected Music dropped
         for (SongRightCard songRightCard : mSongRightCardSelected) {
-            //TODO move right into card model
             //recover the music
-            final Music m = songRightCard.getModel();
+            final Music m = songRightCard.getMusic();
 
             //get the current rights
-            Rights rights = rightsList.getByMusicIdAndCategoryId(m.getId(), mCurrentCategory.getId());
-            if (rights == null) {
-                //rights doesn't exist yet
-                rights = new Rights(mCurrentCategory.getId(), m.getId(), false, false, false);
-            }
+            Rights rights = songRightCard.getRights();
+
             //initialize the command
             manageRightsCommand.setCategory(mCurrentCategory);
             manageRightsCommand.setMusic(m);
@@ -330,7 +324,6 @@ public class GroupRightController extends DragPreviewDrawer implements Initializ
     @Override
     public void onRightCardClicked(RightCard card) {
         //clear the songRightCard container
-        log.info("card clicked : " + card.getId());
         if (card.equals(mListenSongCard)) {
             displayMusicByRight(RIGHT_LISTEN);
         } else if (card.equals(mReadSongCard)) {
