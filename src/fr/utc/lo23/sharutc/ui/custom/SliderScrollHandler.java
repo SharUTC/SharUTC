@@ -6,7 +6,6 @@ import javafx.scene.input.ScrollEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 /**
  * Catch scroll event on Slider and change the value by 1% each event
  */
