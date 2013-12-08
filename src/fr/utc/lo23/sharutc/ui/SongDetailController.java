@@ -3,6 +3,7 @@ package fr.utc.lo23.sharutc.ui;
 import com.google.inject.Inject;
 import fr.utc.lo23.sharutc.controler.command.music.AddCommentCommand;
 import fr.utc.lo23.sharutc.controler.command.music.AddTagCommand;
+import fr.utc.lo23.sharutc.controler.command.music.AddToLocalCatalogCommand;
 import fr.utc.lo23.sharutc.controler.command.music.EditCommentCommand;
 import fr.utc.lo23.sharutc.controler.command.music.RemoveCommentCommand;
 import fr.utc.lo23.sharutc.controler.command.music.RemoveFromLocalCatalogCommand;
@@ -23,6 +24,7 @@ import fr.utc.lo23.sharutc.util.CollectionEvent;
 import fr.utc.lo23.sharutc.util.CollectionEvent.Type;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.File;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
@@ -99,6 +101,8 @@ public class SongDetailController extends SongSelectorController implements Init
     private AddTagCommand mAddTagCommand;
     @Inject
     private RemoveTagCommand mRemoveTagCommand;
+    @Inject
+    private AddToLocalCatalogCommand mAddToLocalCatalogCommand;
     private RatingStar[] mMyRatingStars;
     private RatingStar[] mAverageRatingStars;
     private Music mMusic;
@@ -241,6 +245,18 @@ public class SongDetailController extends SongSelectorController implements Init
                     log.debug("remove button clicked");
                     mRemoveFromLocalCatalogCommand.setMusics(Arrays.asList(mMusic));
                     mRemoveFromLocalCatalogCommand.execute();
+                }
+            });
+        } else {
+            addRemoveButton.setText("Add");
+            addRemoveButton.setOnAction(new EventHandler<ActionEvent>() {
+                @Override
+                public void handle(ActionEvent t) {
+                    log.debug("add button clicked");
+                    log.debug("music file name " + mMusic.getFileName());
+                    final File file = new File(mMusic.getFileName());
+                    mAddToLocalCatalogCommand.setFiles(Arrays.asList(file));
+                    mAddToLocalCatalogCommand.execute();
                 }
             });
         }
