@@ -230,8 +230,8 @@ public class SongListController extends SongSelectorController implements Initia
         tagContainer.getChildren().clear();
 
         //The "virtual" "All songs" tag
-        final TagCard allSongs = new TagCard(VIRTUAL_TAG_ALL_SONGS, this);
-        showSimpleCard(allSongs);
+        //final TagCard allSongs = new TagCard(VIRTUAL_TAG_ALL_SONGS, this);
+        //showSimpleCard(allSongs);
 
         //The "virtual" "My Songs" tag
         final TagCard mySongs = new TagCard(VIRTUAL_TAG_MY_SONGS, this);
