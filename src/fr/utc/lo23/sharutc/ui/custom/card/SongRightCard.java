@@ -3,6 +3,7 @@ package fr.utc.lo23.sharutc.ui.custom.card;
 import fr.utc.lo23.sharutc.model.domain.Music;
 import javafx.event.Event;
 import javafx.event.EventHandler;
+import javafx.event.EventType;
 import javafx.fxml.FXML;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
@@ -70,16 +71,17 @@ public class SongRightCard extends DraggableCard implements EventHandler<Event> 
     @Override
     public void handle(Event event) {
         final Object source = event.getSource();
-        if (event.getEventType() == MouseEvent.MOUSE_CLICKED) {
+        final EventType eventType = event.getEventType();
+        if (MouseEvent.MOUSE_CLICKED.equals(eventType)) {
             if (source.equals(this)) {
                 this.adaptStyle((MouseEvent) event);
                 mInterface.onSongRightCardSelected(this);
             }
-        } else if (event.getEventType() == MouseEvent.MOUSE_ENTERED) {
+        } else if (MouseEvent.MOUSE_ENTERED.equals(eventType)) {
             if (source.equals(this)) {
                 this.onHover(true);
             }
-        } else if (event.getEventType() == MouseEvent.MOUSE_EXITED) {
+        } else if (MouseEvent.MOUSE_EXITED.equals(eventType)) {
             if (source.equals(this)) {
                 this.onHover(false);
             }

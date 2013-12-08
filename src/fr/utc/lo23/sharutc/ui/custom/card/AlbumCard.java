@@ -56,13 +56,12 @@ public class AlbumCard extends SimpleCard implements EventHandler<Event> {
     }
 
     @Override
-    public void handle(Event event) {
+    public void handle(final Event event) {
         if (event instanceof MouseEvent) {
-            MouseEvent mouseEvent = (MouseEvent) event;
-            if (mouseEvent.getButton().equals(MouseButton.PRIMARY)) {
-                if (mouseEvent.getClickCount() == 2) {
-                    mInterface.onAlbumDetailRequested(mAlbumName);
-                }
+            final MouseEvent mouseEvent = (MouseEvent) event;
+            if (mouseEvent.getButton().equals(MouseButton.PRIMARY)
+                    && mouseEvent.getClickCount() == 2) {
+                mInterface.onAlbumDetailRequested(mAlbumName);
             }
         }
     }
