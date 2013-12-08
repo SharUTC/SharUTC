@@ -1,20 +1,16 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package fr.utc.lo23.sharutc.ui.custom.card;
 
 import fr.utc.lo23.sharutc.ui.custom.PlayListMusic;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 
 /**
+ * A {@link SimpleCard} that is used to show the detail of a piece of
+ * {@link Music} within the playList.
  *
- * @author Vbarthel
+ * This class has to style : one when the {@link Music} associated is currently
+ * being played and one when the {@link Music} is not.
  */
 public class PlayListCard extends SimpleCard {
 
@@ -30,13 +26,18 @@ public class PlayListCard extends SimpleCard {
 
         musicArtist.setText(musicPList.music.getAlbum());
         musicTitle.setText(musicPList.music.getTitle());
-        
+
         setIsPlaying(musicPList.isPlaying());
     }
 
-   
-
-    public void setIsPlaying(boolean isPlaying) {
+    /**
+     * Set the style according to the playing state of the associated
+     * {@link Music}.
+     *
+     * @param isPlaying a {@link Boolean} that represents the playing state of
+     * the associated [@link Music}
+     */
+    private void setIsPlaying(boolean isPlaying) {
         if (isPlaying) {
             getStyleClass().add("playListCardPlaying");
         } else {

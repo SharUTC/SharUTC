@@ -1,5 +1,6 @@
 package fr.utc.lo23.sharutc.ui.custom.card;
 
+import fr.utc.lo23.sharutc.model.domain.Music;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -9,24 +10,25 @@ import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.Region;
 
+/**
+ * A {@link SimpleCard} that can display the name of a right. This class
+ * notifies a {@link IRightCard} when a {@link SongCard} is dropped.
+ */
 public class RightCard extends SimpleCard implements EventHandler<Event> {
 
     @FXML
     public Label rightName;
-
     @FXML
     public Region dropOverlay;
-
     @FXML
     public Label dropOverlayLabel;
-
     private IRightCard mInterface;
 
     /**
      * Card displayed to represent a right
      *
      * @param rightText text displayed to the user
-     * @param i         interface to get the callback
+     * @param i interface to get the callback
      */
     public RightCard(String rightText, IRightCard i) {
         super("/fr/utc/lo23/sharutc/ui/fxml/right_card.fxml");
@@ -125,14 +127,16 @@ public class RightCard extends SimpleCard implements EventHandler<Event> {
     }
 
     /**
-     * interface for RightCard's callback
+     * A simple callback used by a {@link RightCard} to notify that a
+     * {@link SongCard} has been dropped.
      */
     public interface IRightCard {
 
         /**
-         * user added song to this right
+         * The {@link IRightCard} is being ask to add the right of the
+         * {@link RightCard} to the selected pieces of {@link Music}.
          *
-         * @param card
+         * @param card the {@link RighCard} that contains the right.
          */
         public void onSongAdded(RightCard card);
     }
