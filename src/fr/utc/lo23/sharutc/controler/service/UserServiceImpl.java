@@ -161,6 +161,7 @@ public class UserServiceImpl implements UserService {
 
                if (!present) {
                    category.setName(newCategoryName);
+                   getProfile().getCategories().notifyCategoryUpdate(category);
                } else {
                    log.warn("This category name already exists, you can't rename the category");
                    ErrorMessage nErrorMessage = new ErrorMessage("This category name already exists, you can't rename the category");
