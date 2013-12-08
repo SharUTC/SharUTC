@@ -1,5 +1,6 @@
 package fr.utc.lo23.sharutc.ui.custom.card;
 
+import fr.utc.lo23.sharutc.model.AppModel;
 import fr.utc.lo23.sharutc.model.domain.Music;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
@@ -18,27 +19,22 @@ public class SongCard extends DraggableCard implements EventHandler<Event> {
     private Music mModel;
     private ISongCard mInterface;
     private boolean mIsOwned;
-
+    @FXML
+    public Label ownerLogin;
     @FXML
     public Label songTitle;
-    
     @FXML
     public Label songArtist;
-
     @FXML
     Button detailButton;
-
     @FXML
     Button addToPlayListButton;
-    
     @FXML
     Button tagEditionButton;
-
-
     @FXML
     VBox buttonContainer;
 
-    public SongCard(Music m, ISongCard i, boolean isOwned) {
+    public SongCard(Music m, ISongCard i, final AppModel appModel) {
         super("/fr/utc/lo23/sharutc/ui/fxml/song_card.fxml", DROP_KEY, i);
         mInterface = i;
         mModel = m;
@@ -47,8 +43,13 @@ public class SongCard extends DraggableCard implements EventHandler<Event> {
         setOnMouseClicked(this);
         setOnMouseEntered(this);
         setOnMouseExited(this);
-        mIsOwned = isOwned;
-        
+        if (appModel.getProfile().getUserInfo().getPeerId().equals(mModel.getOwnerPeerId())) {
+            mIsOwned = true;
+        } else {
+            mIsOwned = false;
+            ownerLogin.setText(appModel.getActivePeerList().getPeerByPeerId(m.getOwnerPeerId()).getDisplayName());
+        }
+
     }
 
     public Music getModel() {
@@ -68,10 +69,10 @@ public class SongCard extends DraggableCard implements EventHandler<Event> {
             if (source.equals(this)) {
                 mInterface.onSongCardSelected(SongCard.this);
                 this.adaptStyle((MouseEvent) event);
-                if(((MouseEvent)event).getClickCount() == 2) {
+                if (((MouseEvent) event).getClickCount() == 2) {
                     mInterface.onPlayRequested(mModel);
                 }
-            }            
+            }
         } else if (event.getEventType() == MouseEvent.MOUSE_ENTERED) {
             if (source.equals(this)) {
                 this.onHover(true);
@@ -97,13 +98,13 @@ public class SongCard extends DraggableCard implements EventHandler<Event> {
     }
 
     public interface ISongCard extends IDraggableCardListener {
+
         /**
          * user requested play song
          *
          * @param music clicked card's model
          */
         public void onPlayRequested(Music music);
-
 
         /**
          * user requested more details
@@ -118,18 +119,18 @@ public class SongCard extends DraggableCard implements EventHandler<Event> {
          * @param songCard
          */
         public void onSongCardSelected(SongCard songCard);
-        
+
         /**
          * user requested to add this song to his play list
-         * 
-         * @param music 
+         *
+         * @param music
          */
         public void onSongAddToPlayList(Music music);
-        
+
         /**
          * user wants edit the tag of the music
-         * 
-         * @param music 
+         *
+         * @param music
          */
         public void onTagEditionRequested(Music music);
     }

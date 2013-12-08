@@ -187,7 +187,7 @@ public class SongListController extends SongSelectorController implements Initia
                 placeHolderLabel = null;
             }
             for (Music m : musics) {
-                songsContainer.getChildren().add(new SongCard(m, this, true));
+                songsContainer.getChildren().add(new SongCard(m, this, mAppModel));
             }
         }
     }
@@ -197,14 +197,14 @@ public class SongListController extends SongSelectorController implements Initia
             contentContainer.getChildren().remove(placeHolderLabel);
             placeHolderLabel = null;
         }
-        songsContainer.getChildren().add(new SongCard(music, this, true));
+        songsContainer.getChildren().add(new SongCard(music, this, mAppModel));
         showTags();
     }
 
     public void createCards(String artistName, String albumName) {
         for (Music m : MainController.population) {
             if ((m.getArtist().equals(artistName) && m.getAlbum().equals(albumName)) || (artistName.equals("") && albumName.equals(""))) {
-                SongCard newCard = new SongCard(m, this, true);
+                SongCard newCard = new SongCard(m, this, mAppModel);
                 songsContainer.getChildren().add(newCard);
             }
         }
@@ -222,7 +222,7 @@ public class SongListController extends SongSelectorController implements Initia
     private void songAdded(File song) {
         final Music m = new Music();
         m.setFileName(song.getName());
-        songsContainer.getChildren().add(new SongCard(m, this, true));
+        songsContainer.getChildren().add(new SongCard(m, this, mAppModel));
         //TODO add song to user songs
     }
 

@@ -239,7 +239,7 @@ public class SongDetailController extends SongSelectorController implements Init
 
     private void showMusicInfo() {
         topLeftContainer.getChildren().clear();
-        final SongCard songCard = new SongCard(mMusic, this, false);
+        final SongCard songCard = new SongCard(mMusic, this, mAppModel);
         songCard.setPrefWidth(230);
         topLeftContainer.getChildren().add(songCard);
         progressIndicatorAddRemove.setVisible(false);

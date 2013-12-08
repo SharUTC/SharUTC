@@ -89,7 +89,7 @@ public class PeopleDetailController extends SongSelectorController implements In
             List<Music> musics = mAppModel.getLocalCatalog().getMusics();
 
             for (Music music : musics) {
-                processNewMusic(music, true);
+                processNewMusic(music);
             }
 
             //show artist and tag
@@ -181,7 +181,7 @@ public class PeopleDetailController extends SongSelectorController implements In
                     @Override
                     public void run() {
                         //add song card
-                        processNewMusic((Music) item, false);
+                        processNewMusic((Music) item);
                         displayRetrieveData();
                     }
                 });
@@ -194,7 +194,7 @@ public class PeopleDetailController extends SongSelectorController implements In
      *
      * @param music
      */
-    private void processNewMusic(final Music music, boolean owned) {
+    private void processNewMusic(final Music music) {
         //add tags to the tags list
         mTagsFound.addAll(music.getTags());
 
@@ -202,7 +202,7 @@ public class PeopleDetailController extends SongSelectorController implements In
         mArtistsFound.add(music.getArtist());
 
         //display the new music card
-        final SongCard newSongCard = new SongCard(music, PeopleDetailController.this, owned);
+        final SongCard newSongCard = new SongCard(music, PeopleDetailController.this, mAppModel);
         songsContainer.getChildren().add(newSongCard);
     }
 
