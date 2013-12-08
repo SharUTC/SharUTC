@@ -35,6 +35,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.ResourceBundle;
+import javafx.geometry.Insets;
+import javafx.scene.layout.HBox;
 
 public class PeopleHomeController extends DragPreviewDrawer implements Initializable, PeopleCard.IPeopleCard, GroupCard.IGroupCard, CollectionChangeListener {
 
@@ -47,7 +49,7 @@ public class PeopleHomeController extends DragPreviewDrawer implements Initializ
     @FXML
     public FlowPane peopleContainer;
     @FXML
-    public FlowPane groupContainer;
+    public HBox groupContainer;
     @FXML
     public ScrollPane groupScrollPane;
     @FXML
@@ -332,7 +334,7 @@ public class PeopleHomeController extends DragPreviewDrawer implements Initializ
         groupContainer.getChildren().clear();
 
         //Display the virtual category for find connected people
-        groupContainer.getChildren().add(mVirtualConnectedGroup);
+        addSimpleCardIngroupContainer(mVirtualConnectedGroup);
 
         //Add the + card for create a new group
         displayAddNewGroupCard();
@@ -360,7 +362,7 @@ public class PeopleHomeController extends DragPreviewDrawer implements Initializ
         if (!editable) {
             newGroupCard.setOnMouseEntered(null);
         }
-        groupContainer.getChildren().add(newGroupCard);
+        addSimpleCardIngroupContainer(newGroupCard);
         displayAddNewGroupCard();
 
     }
@@ -373,6 +375,9 @@ public class PeopleHomeController extends DragPreviewDrawer implements Initializ
                 180, 108, Pos.CENTER);
         final Label plusText = new Label("+");
         plusText.getStyleClass().addAll("plusText");
+        mCreateNewGroupCard.setMinWidth(180);
+        mCreateNewGroupCard.setMinHeight(100);
+        mCreateNewGroupCard.setMaxHeight(100);
         mCreateNewGroupCard.getChildren().add(plusText);
         mCreateNewGroupCard.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
@@ -396,7 +401,12 @@ public class PeopleHomeController extends DragPreviewDrawer implements Initializ
                 }
             }
         });
-        groupContainer.getChildren().add(mCreateNewGroupCard);
+        addSimpleCardIngroupContainer(mCreateNewGroupCard);
+    }
+    
+    private void addSimpleCardIngroupContainer(SimpleCard simpleCard) {
+        HBox.setMargin(simpleCard, new Insets(0, 5, 0, 5));
+        groupContainer.getChildren().add(simpleCard);
     }
 
     /**
