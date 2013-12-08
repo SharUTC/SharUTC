@@ -1,7 +1,22 @@
 package fr.utc.lo23.sharutc.ui.navigation;
 
-public interface NavigationHandler {    
-   public void goToLoginPage();
-   public void goToRegistrationPage();
-   public void goToMainPage();
+/**
+ * A simple class to handle the main navigation.
+ */
+public interface NavigationHandler {
+
+    /**
+     * Load the login page.
+     */
+    public void goToLoginPage();
+
+    /**
+     * Load the registration page.
+     */
+    public void goToRegistrationPage();
+
+    /**
+     * Load the main page.
+     */
+    public void goToMainPage();
 }
