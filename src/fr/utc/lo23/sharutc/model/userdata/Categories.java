@@ -63,6 +63,17 @@ public class Categories implements Serializable {
         }
         return category;
     }
+    
+    
+     /**
+     * Notify when a category is updated
+     *
+     * @param category
+     */
+    public void notifyCategoryUpdate(Category category) {
+        mCollectionChangeSupport.fireCollectionChanged(category, -1, CollectionEvent.Type.UPDATE);
+    }
+    
 
     /**
      * Add a category to the category list
