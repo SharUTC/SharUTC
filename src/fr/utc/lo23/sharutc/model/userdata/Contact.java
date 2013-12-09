@@ -92,14 +92,11 @@ public class Contact implements Serializable {
      * @return a boolean
      */
     public boolean isInPublic() {
-        boolean isInPublic = false;
         for (Integer c : mCategoryIds) {
-            if (c.equals(Category.PUBLIC_CATEGORY_ID)) {
-                isInPublic = true;
-                break;
-            }
+            if (c.equals(Category.PUBLIC_CATEGORY_ID))
+                return true;
         }
-        return isInPublic;
+        return false;
     }
 
     /**
