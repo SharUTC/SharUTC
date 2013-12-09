@@ -19,12 +19,14 @@ import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.text.TextAlignment;
 import org.slf4j.Logger;
@@ -35,8 +37,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.ResourceBundle;
-import javafx.geometry.Insets;
-import javafx.scene.layout.HBox;
 
 public class PeopleHomeController extends DragPreviewDrawer implements Initializable, PeopleCard.IPeopleCard, GroupCard.IGroupCard, CollectionChangeListener {
 
@@ -182,8 +182,6 @@ public class PeopleHomeController extends DragPreviewDrawer implements Initializ
                         editCategoryNameCommand.setCategoryId(category.getId());
                         editCategoryNameCommand.setCategoryName(value);
                         editCategoryNameCommand.execute();
-                        //TODO remove when UPDATE will be fired
-                        displayUserGroup();
                     }
                 }).show();
     }
@@ -403,7 +401,7 @@ public class PeopleHomeController extends DragPreviewDrawer implements Initializ
         });
         addSimpleCardIngroupContainer(mCreateNewGroupCard);
     }
-    
+
     private void addSimpleCardIngroupContainer(SimpleCard simpleCard) {
         HBox.setMargin(simpleCard, new Insets(0, 5, 0, 5));
         groupContainer.getChildren().add(simpleCard);
@@ -490,9 +488,8 @@ public class PeopleHomeController extends DragPreviewDrawer implements Initializ
             }
         } else if (type.equals(CollectionEvent.Type.UPDATE)) {
             if (item instanceof Category) {
-                //redraw user group
-                //TODO UPDATE not fired onNameChanged
-                //displayUserGroup();
+                //redraw the group container
+                displayUserGroup();
             }
         }
     }

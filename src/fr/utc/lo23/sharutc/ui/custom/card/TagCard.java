@@ -50,6 +50,9 @@ public class TagCard extends SimpleCard implements EventHandler<Event> {
         tagWeightLabel.setText(String.valueOf(weight));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void handle(Event event) {
         final Object source = event.getSource();
@@ -139,12 +142,24 @@ public class TagCard extends SimpleCard implements EventHandler<Event> {
     }
 
     /**
-     * interface for tag card callback
+     * A simple callback used by {@link TagCard} to notify that the user 
+     * wants to select a tag, or that the user has just dropped on it.
      */
     public interface ITagCard {
 
+        /**
+         * The {@link ITagCard} is being asked to select a tag.
+         * 
+         * @param tagName the tag name to be selected.
+         */
         public void onTagSelected(String tagName);
 
+        /**
+         * The {@link ITagCard} is being notified that a {@link SongCard}
+         * has just been dropped on a tag.
+         * 
+         * @param tagName the tag name on which the {@link SongCard} was dropped.
+         */
         public void onMusicDropOnTag(String tagName);
     }
 }

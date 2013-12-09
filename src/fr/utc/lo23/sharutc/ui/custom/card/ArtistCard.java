@@ -17,7 +17,6 @@ public class ArtistCard extends SimpleCard implements EventHandler<Event> {
     public Label artistNameLabel;
     private String mArtistName;
     private IArtistCard mInterface;
-    
 
     public ArtistCard(String artistName, IArtistCard i) {
         super("/fr/utc/lo23/sharutc/ui/fxml/artist_card.fxml");
@@ -36,14 +35,17 @@ public class ArtistCard extends SimpleCard implements EventHandler<Event> {
         return mArtistName;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public void handle(Event event) {
+    public void handle(final Event event) {
         if (event instanceof MouseEvent) {
-            MouseEvent mouseEvent = (MouseEvent) event;
-            if (mouseEvent.getButton().equals(MouseButton.PRIMARY)) {
-                if (mouseEvent.getClickCount() == 2) {
-                    mInterface.onArtistDetailRequested(mArtistName);
-                }
+            final MouseEvent mouseEvent = (MouseEvent) event;
+            if (mouseEvent.getButton().equals(MouseButton.PRIMARY)
+                    && mouseEvent.getClickCount() == 2) {
+                mInterface.onArtistDetailRequested(mArtistName);
+
             }
         }
     }

@@ -1,32 +1,38 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package fr.utc.lo23.sharutc.ui.custom;
 
 import fr.utc.lo23.sharutc.model.domain.Music;
-import javafx.collections.ObservableList;
 
 /**
+ * A simple model of a piece of music.
  *
- * @author Florian
+ * Encapsulate a piece of {@link Music} and a boolean describing its current
+ * playing state.
  */
-public class PlayListMusic  {
-    
+public class PlayListMusic {
+
     public Music music;
     private boolean played;
-    
-    public PlayListMusic(Music music){
+
+    public PlayListMusic(Music music) {
         this.music = music;
         this.played = false;
     }
 
+    /**
+     * Change the current playing state.
+     *
+     * @param b the new playing state.
+     */
     public void setPlaying(boolean b) {
         played = b;
     }
-    public boolean isPlaying(){
+
+    /**
+     * Get the current playing state.
+     *
+     * @return true if the music is being played, false otherwise.
+     */
+    public boolean isPlaying() {
         return played;
     }
 }

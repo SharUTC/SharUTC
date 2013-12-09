@@ -13,12 +13,19 @@ import javafx.scene.layout.VBox;
 
 import java.io.IOException;
 
+/**
+ * A {@link DraggableCard} that shows the information of a piece of
+ * {@link Music}.
+ *
+ * This card has three buttons to add the song to the play list, to view the
+ * details of the song and to view the tags associated with the song.
+ *
+ * This class notifies a {@link ISongCard} on click, double click, and when one
+ * of the three buttons is clicked.
+ */
 public class SongCard extends DraggableCard implements EventHandler<Event> {
 
     public static final String DROP_KEY = SongCard.class + "DropKey";
-    private Music mModel;
-    private ISongCard mInterface;
-    private boolean mIsOwned;
     @FXML
     public Label ownerLogin;
     @FXML
@@ -33,6 +40,9 @@ public class SongCard extends DraggableCard implements EventHandler<Event> {
     Button tagEditionButton;
     @FXML
     VBox buttonContainer;
+    private Music mModel;
+    private ISongCard mInterface;
+    private boolean mIsOwned;
 
     public SongCard(Music m, ISongCard i, final AppModel appModel) {
         super("/fr/utc/lo23/sharutc/ui/fxml/song_card.fxml", DROP_KEY, i);
@@ -52,16 +62,29 @@ public class SongCard extends DraggableCard implements EventHandler<Event> {
 
     }
 
+    /**
+     * Return the {@link Music} from the data was extracted.
+     *
+     * @return {@link Music}
+     */
     public Music getModel() {
         return mModel;
     }
 
-    public void onHover(boolean isHover) {
-        detailButton.setVisible(isHover);
-        addToPlayListButton.setVisible(isHover);
-        tagEditionButton.setVisible(isHover);
+    /**
+     * Set the visibility of the buttons.
+     *
+     * @param isVisible the visibility to be set.
+     */
+    public void setButtonVisibility(boolean isVisible) {
+        detailButton.setVisible(isVisible);
+        addToPlayListButton.setVisible(isVisible);
+        tagEditionButton.setVisible(isVisible);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void handle(Event event) {
         final Object source = event.getSource();
@@ -75,11 +98,11 @@ public class SongCard extends DraggableCard implements EventHandler<Event> {
             }
         } else if (event.getEventType() == MouseEvent.MOUSE_ENTERED) {
             if (source.equals(this)) {
-                this.onHover(true);
+                this.setButtonVisibility(true);
             }
         } else if (event.getEventType() == MouseEvent.MOUSE_EXITED) {
             if (source.equals(this)) {
-                this.onHover(false);
+                this.setButtonVisibility(false);
             }
         }
     }
@@ -97,40 +120,49 @@ public class SongCard extends DraggableCard implements EventHandler<Event> {
 
     }
 
+    /**
+     * A {@link IDraggableCardListener} that is notified when a user interacts
+     * with a {@link SongCard}
+     */
     public interface ISongCard extends IDraggableCardListener {
 
         /**
-         * user requested play song
+         * The {@link ISongCard} is being asked to play a piece of
+         * {@link Music}.
          *
-         * @param music clicked card's model
+         * @param music the piece of {@link Music} to be played.
          */
         public void onPlayRequested(Music music);
 
         /**
-         * user requested more details
+         * The {@link ISongCard} is being asked to display the detail of a piece
+         * of {@link Music}
          *
-         * @param music clicked card's model
+         * @param music the piece of {@link Music} to be displayed.
          */
         public void onSongDetailsRequested(Music music);
 
         /**
-         * card has been selected
+         * The {@link ISongCard} is being notified that a {@link @SongCard} has
+         * just been selected.
          *
-         * @param songCard
+         * @param songCard the {@link SongCard} that has been selected.
          */
         public void onSongCardSelected(SongCard songCard);
 
         /**
-         * user requested to add this song to his play list
+         * The {@link ISongCard} is being asked to add a piece of {@link Music}
+         * to the play list.
          *
-         * @param music
+         * @param music the piece of {@link Music} to be added.
          */
         public void onSongAddToPlayList(Music music);
 
         /**
-         * user wants edit the tag of the music
+         * The {@link ISongCard} is being asked to edit the tags of a piece of
+         * {@link Music}.
          *
-         * @param music
+         * @param music the piece of {@link Music} to be edited.
          */
         public void onTagEditionRequested(Music music);
     }

@@ -3,10 +3,16 @@ package fr.utc.lo23.sharutc.ui.custom.card;
 import fr.utc.lo23.sharutc.model.userdata.UserInfo;
 import javafx.event.Event;
 import javafx.event.EventHandler;
+import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 
+/**
+ * A {@link DraggableCard} that is used to display the information of a user.
+ * This class notifies a {@link IPeopleCard} when the user interacts with the
+ * card.
+ */
 public class PeopleCard extends DraggableCard implements EventHandler<Event> {
 
     /**
@@ -15,17 +21,17 @@ public class PeopleCard extends DraggableCard implements EventHandler<Event> {
     public static final String DROP_KEY = PeopleCard.class + "DropKey";
     public static final int USAGE_CATEGORY = 0x00000001;
     public static final int USAGE_CONNECTED = 0x00000002;
-
+    @FXML
+    public Label userLogin;
+    @FXML
+    public Label userName;
+    @FXML
+    public Button deleteButton;
+    @FXML
+    public Button detailButton;
     private IPeopleCard mInterface;
     private UserInfo mUserInfo;
     private int mUsage;
-
-    public Label userLogin;
-    public Label userName;
-
-    public Button deleteButton;
-    public Button detailButton;
-
 
     public PeopleCard(UserInfo userInfo, IPeopleCard i, int usage) {
         super("/fr/utc/lo23/sharutc/ui/fxml/people_card.fxml", DROP_KEY, i);
@@ -65,6 +71,9 @@ public class PeopleCard extends DraggableCard implements EventHandler<Event> {
         userName.setText(mUserInfo.getFirstName() + " " + mUserInfo.getLastName());
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void handle(Event event) {
         final Object source = event.getSource();
@@ -107,13 +116,11 @@ public class PeopleCard extends DraggableCard implements EventHandler<Event> {
          */
         public void onPeopleDeletetionRequested(PeopleCard peopleCard);
 
-
         /**
          * card has been selected
          *
          * @param peopleCard
          */
         public void onPeopleCardSelected(PeopleCard peopleCard);
-
     }
 }
