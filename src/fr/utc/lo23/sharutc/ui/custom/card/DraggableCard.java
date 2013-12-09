@@ -3,6 +3,7 @@ package fr.utc.lo23.sharutc.ui.custom.card;
 import javafx.collections.ObservableList;
 import javafx.event.Event;
 import javafx.event.EventHandler;
+import javafx.event.EventType;
 import javafx.scene.input.*;
 
 /**
@@ -24,12 +25,13 @@ public abstract class DraggableCard extends SimpleCard {
             @Override
             public void handle(Event event) {
                 final Object source = event.getSource();
-                if (event.getEventType() == MouseEvent.DRAG_DETECTED) {
+                final EventType eventType = event.getEventType();
+                if (MouseEvent.DRAG_DETECTED.equals(eventType)) {
                     if (source.equals(DraggableCard.this)) {
                         onDragStart((MouseEvent) event);
                         mInterface.onDragStart((MouseEvent) event, DraggableCard.this);
                     }
-                } else if (event.getEventType() == DragEvent.DRAG_DONE) {
+                } else if (DragEvent.DRAG_DONE.equals(eventType)) {
                     if (source.equals(DraggableCard.this)) {
                         onDragDone((DragEvent) event);
                         mInterface.onDragStop(DraggableCard.this);

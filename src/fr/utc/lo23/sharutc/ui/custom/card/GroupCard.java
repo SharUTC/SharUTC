@@ -14,6 +14,12 @@ import javafx.scene.layout.Region;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * A {@link SimpleCard} that is used to display a {@link Category}.
+ *
+ * This class notifies a {@link IGroupCard} when the user interacts with the
+ * card.
+ */
 public class GroupCard extends SimpleCard implements EventHandler<Event> {
 
     private static final Logger log = LoggerFactory.getLogger(GroupCard.class);
@@ -57,22 +63,30 @@ public class GroupCard extends SimpleCard implements EventHandler<Event> {
         displayDropOverlay(false);
     }
 
-    public void onHover(boolean isHover) {
-        deleteButton.setVisible(isHover);
-        editButton.setVisible(isHover);
-        rightsButton.setVisible(isHover);
+    /**
+     * Set the visibility of the buttons.
+     *
+     * @param isVisible the visibility to be set.
+     */
+    public void setButtonVisibility(boolean isVisible) {
+        deleteButton.setVisible(isVisible);
+        editButton.setVisible(isVisible);
+        rightsButton.setVisible(isVisible);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void handle(Event event) {
         final Object source = event.getSource();
         if (event.getEventType() == MouseEvent.MOUSE_ENTERED) {
             if (source.equals(this)) {
-                this.onHover(true);
+                this.setButtonVisibility(true);
             }
         } else if (event.getEventType() == MouseEvent.MOUSE_EXITED) {
             if (source.equals(this)) {
-                this.onHover(false);
+                this.setButtonVisibility(false);
             }
         } else if (event.getEventType() == DragEvent.DRAG_OVER) {
             onDragOver((DragEvent) event);
@@ -95,12 +109,17 @@ public class GroupCard extends SimpleCard implements EventHandler<Event> {
         }
     }
 
+    /**
+     * Return the model from which the data was extracted.
+     *
+     * @return {@link Category}
+     */
     public Category getModel() {
         return mModel;
     }
 
     /**
-     * display drop overlay
+     * Display drop overlay.
      *
      * @param isShow true set drop overlay Visible, false will hide it
      */
@@ -110,7 +129,7 @@ public class GroupCard extends SimpleCard implements EventHandler<Event> {
     }
 
     /**
-     * Accept PeopleCard as Droppable
+     * Accept PeopleCard as Droppable.
      *
      * @param dragEvent
      */
@@ -124,7 +143,7 @@ public class GroupCard extends SimpleCard implements EventHandler<Event> {
     }
 
     /**
-     * Inform user with a message when an accepted droppable enter
+     * Inform user with a message when an accepted droppable enter.
      *
      * @param dragEvent
      */
@@ -138,7 +157,7 @@ public class GroupCard extends SimpleCard implements EventHandler<Event> {
     }
 
     /**
-     * Delete the message when user leave the card
+     * Delete the message when user leave the card.
      *
      * @param dragEvent
      */
@@ -151,7 +170,7 @@ public class GroupCard extends SimpleCard implements EventHandler<Event> {
     }
 
     /**
-     * retrieve content of the drag
+     * Retrieve content of the drag.
      *
      * @param dragEvent
      */
@@ -167,40 +186,46 @@ public class GroupCard extends SimpleCard implements EventHandler<Event> {
     }
 
     /**
-     * interface for GroupCard's callback
+     * A simple interface used by {@link GroupCard} to notify that the user has
+     * just interacted with the card.
      */
     public interface IGroupCard {
 
         /**
-         * user clicked on deleted button
+         * The {@link IGroupCard} is being asked to delete a group.
          *
-         * @param g
+         * @param g the {@link GroupCard} to be deleted.
          */
         public void onGroupDeletionRequested(GroupCard g);
 
         /**
-         * user requested details
+         * The {@link IGroupCard} is being asked to edit a {@link Category}.
          *
-         * @param category
+         * @param category the {@link Category} to be edited.
          */
         public void onGroupEditionRequested(Category category);
 
         /**
-         * user requested rights manager
+         * The {@link IGroupCard} is being notified that the user wants to view
+         * the detailed rights of a {@link Category}
          *
-         * @param category
+         * @param category The {@link Category} to be viewed.
          */
         public void onGroupRightsRequested(Category category);
 
         /**
-         * user selects this category
+         * The {@link IGroupCard} is being notified that the user has just
+         * selected a {@link Category}
          *
-         * @param category
+         * @param category The {@link Category} being selected.
          */
         public void onGroupSelected(Category category);
 
         /**
-         * user added people
+         * The {@link IGroupCard} is being asked to add selected users to a
+         * {@link Category}
+         *
+         * @param category
          */
         public void onUsersAdded(Category category);
     }

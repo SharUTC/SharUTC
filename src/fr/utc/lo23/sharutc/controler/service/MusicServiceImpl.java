@@ -111,7 +111,7 @@ public class MusicServiceImpl implements MusicService {
 
             for (Music currentMusic : musics) {
                 if (localCatalog.contains(currentMusic)) {
-                    for(String tag : currentMusic.getTags()){
+                    for (String tag : currentMusic.getTags()) {
                         this.removeTag(currentMusic, tag);
                     }
                     localCatalog.remove(currentMusic);
@@ -370,7 +370,7 @@ public class MusicServiceImpl implements MusicService {
             throwMissingParameter();
         } else {
             Music m = appModel.getLocalCatalog().findMusicById(music.getId());
-            if(m != null){
+            if (m != null) {
                 if (score == null) {
                     unsetScore(peer, m);
                 } else if (score >= Score.MIN_VALUE && score <= Score.MAX_VALUE) {
@@ -941,7 +941,7 @@ public class MusicServiceImpl implements MusicService {
             ErrorMessage nErrorMessage = new ErrorMessage("This music already exists in this category");
             appModel.getErrorBus().pushErrorMessage(nErrorMessage);
         }
-        appModel.getRightsList().setRights(new Rights(category.getId(), music.getId(), localTagMapDirty, localTagMapDirty, localTagMapDirty));
+        appModel.getRightsList().setRights(new Rights(category.getId(), music.getId(), Rights.DEFAULT_MAY_READ_INFO, Rights.DEFAULT_LISTEN, Rights.DEFAULT_MAY_NOTE_AND_COMMENT));
     }
 
     /**
