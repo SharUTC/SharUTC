@@ -71,6 +71,9 @@ public class PeopleCard extends DraggableCard implements EventHandler<Event> {
         userName.setText(mUserInfo.getFirstName() + " " + mUserInfo.getLastName());
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void handle(Event event) {
         final Object source = event.getSource();

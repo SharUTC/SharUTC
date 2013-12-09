@@ -47,6 +47,9 @@ public class RightCard extends SimpleCard implements EventHandler<Event> {
         displayDropOverlay(false);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void handle(Event event) {
         final Object source = event.getSource();
@@ -148,7 +151,7 @@ public class RightCard extends SimpleCard implements EventHandler<Event> {
          * The {@link IRightCard} is being informed that the
          * {@link RightCard} has been clicked
          *
-         * @param card the {@link RighCard} that represent the right.
+         * @param card the {@link RightCard} that represent the right.
          */
         public void onRightCardClicked(RightCard card);
     }

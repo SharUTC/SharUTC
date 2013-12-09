@@ -84,6 +84,9 @@ public class SongRightCard extends DraggableCard implements EventHandler<Event> 
         buttonContainer.setVisible(isHover);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void handle(Event event) {
         final Object source = event.getSource();

@@ -35,6 +35,9 @@ public class ArtistCard extends SimpleCard implements EventHandler<Event> {
         return mArtistName;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void handle(final Event event) {
         if (event instanceof MouseEvent) {
