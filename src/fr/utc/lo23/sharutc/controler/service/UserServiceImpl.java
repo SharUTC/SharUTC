@@ -260,7 +260,7 @@ public class UserServiceImpl implements UserService {
         if (profileToConnect != null && profileToConnect.getUserInfo() != null) {
             UserInfo userInfo = profileToConnect.getUserInfo();
             boolean success = userInfo.getLogin().equals(login)
-                    && userInfo.getPassword().equals(password);
+                    && userInfo.getPassword().equals(UserInfo.sha1(password));
             if (success) {
                 appModel.setProfile(profileToConnect);
             } else {

@@ -82,6 +82,8 @@ public class SongDetailController extends SongSelectorController implements Init
     @FXML
     public RatingStar starMyRate5;
     @FXML
+    public Label ownerLogin;
+    @FXML
     public RatingStar starAverageRate1;
     @FXML
     public RatingStar starAverageRate2;
@@ -148,6 +150,8 @@ public class SongDetailController extends SongSelectorController implements Init
             starAverageRate4,
             starAverageRate5
         };
+
+        ownerLogin.setText(mAppModel.getProfile().getUserInfo().getLogin());
 
         mAppModel.getLocalCatalog().addPropertyChangeListener(this);
 

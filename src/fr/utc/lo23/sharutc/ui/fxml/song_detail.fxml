@@ -76,7 +76,7 @@
                     </HBox>
                     
                     <Label text="Owner"  styleClass="rankingSystemLabel" GridPane.rowIndex="2" GridPane.columnIndex="0" />
-                    <Label text="Matthieu Hanne" styleClass="ownerLabel" 
+                    <Label fx:id="ownerLogin" text="login" styleClass="ownerLabel"
                            GridPane.rowIndex="2" GridPane.columnIndex="1"
                            GridPane.halignment="RIGHT"  />
                     

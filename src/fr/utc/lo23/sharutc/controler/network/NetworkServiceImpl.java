@@ -240,8 +240,8 @@ public class NetworkServiceImpl implements NetworkService {
      * {inheritDoc}
      */
     @Override
-    public void removeComment(Peer peer, Music music, Integer commentIndex) {
-        Message message = messageParser.write(MessageType.COMMENT_REMOVE, new Object[][]{{Message.MUSIC, music}, {Message.COMMENT_ID, commentIndex}});
+    public void removeComment(Peer peer, Peer commenter, Music music, Integer commentIndex) {
+        Message message = messageParser.write(MessageType.COMMENT_REMOVE, new Object[][]{{Message.AUTHOR_PEER, commenter}, {Message.MUSIC, music}, {Message.COMMENT_ID, commentIndex}});
         sendUnicast(message, peer);
     }
 
@@ -249,8 +249,8 @@ public class NetworkServiceImpl implements NetworkService {
      * {inheritDoc}
      */
     @Override
-    public void setScore(Peer peer, Music music, Integer score) {
-        Message message = messageParser.write(MessageType.SCORE_SET, new Object[][]{{Message.MUSIC, music}, {Message.SCORE, score}});
+    public void setScore(Peer peer, Peer scoringPeer, Music music, Integer score) {
+        Message message = messageParser.write(MessageType.SCORE_SET, new Object[][]{{Message.AUTHOR_PEER, scoringPeer}, {Message.MUSIC, music}, {Message.SCORE, score}});
         sendUnicast(message, peer);
     }
 

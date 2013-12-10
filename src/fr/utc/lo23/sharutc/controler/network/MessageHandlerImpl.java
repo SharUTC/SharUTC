@@ -147,12 +147,12 @@ public class MessageHandlerImpl implements MessageHandler {
                     case COMMENT_REMOVE:
                         removeCommentCommand.setCommentId((Integer) messageParser.getValue(Message.COMMENT_ID));
                         removeCommentCommand.setMusic((Music) messageParser.getValue(Message.MUSIC));
-                        removeCommentCommand.setPeer(messageParser.getSource());
+                        removeCommentCommand.setPeer((Peer) messageParser.getValue(Message.AUTHOR_PEER));
                         command = removeCommentCommand;
                         break;
                     case SCORE_SET:
                         setScoreCommand.setMusic((Music) messageParser.getValue(Message.MUSIC));
-                        setScoreCommand.setPeer(messageParser.getSource());
+                        setScoreCommand.setPeer((Peer) messageParser.getValue(Message.AUTHOR_PEER));
                         setScoreCommand.setScore((Integer) messageParser.getValue(Message.SCORE));
                         command = setScoreCommand;
                         break;
@@ -237,7 +237,7 @@ public class MessageHandlerImpl implements MessageHandler {
     }
 
     /**
-     * chek if the current conversation id is equal to the message conversation
+     * check if the current conversation id is equal to the message conversation
      * id
      *
      * @return true if the current conversation id is equal to the message

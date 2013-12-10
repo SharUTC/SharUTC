@@ -54,6 +54,7 @@ public class AccountCreationCommandImpl implements AccountCreationCommand {
     @Override
     public void setUserInfo(UserInfo userInfo) {
         this.mUserInfo = userInfo;
+        mUserInfo.setPassword(UserInfo.sha1(mUserInfo.getPassword()));
     }
 
     /**

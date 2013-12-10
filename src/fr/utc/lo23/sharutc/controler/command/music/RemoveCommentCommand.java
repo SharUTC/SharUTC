@@ -10,17 +10,17 @@ import fr.utc.lo23.sharutc.model.userdata.Peer;
 public interface RemoveCommentCommand extends Command {
 
     /**
-     * Get the owner of the music commented
+     * Get the owner of the comment
      *
-     * @return The owner of the music commented
+     * @return The owner of the comment
      */
     public Peer getPeer();
 
 
     /**
-     * Set the owner of the music commented
+     * Set the owner of the comment
      *
-     * @param peer The owner of the music commented
+     * @param peer The owner of the comment
      */
     public void setPeer(Peer peer);
 

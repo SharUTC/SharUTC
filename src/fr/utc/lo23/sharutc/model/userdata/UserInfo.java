@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 import java.io.File;
 import java.io.Serializable;
+import java.security.MessageDigest;
+import org.slf4j.LoggerFactory;
 
 /**
  * Represents user's information
@@ -200,13 +202,16 @@ public class UserInfo implements Serializable {
         }
 
         final UserInfo userInfo = (UserInfo) obj;
+        boolean avatarPath = true;
+        if(mAvatarFile != null)
+            avatarPath = mAvatarFile.getPath().equals(userInfo.mAvatarFile.getPath());
         return (mPeerId.equals(userInfo.mPeerId) 
                 && mLogin.equals(userInfo.mLogin)
                 && mPassword.equals(userInfo.mPassword)
                 && mFirstName.equals(userInfo.mFirstName)
                 && mLastName.equals(userInfo.mLastName)
                 && mAge.equals(userInfo.mAge)
-                && mAvatarFile.getPath().equals(userInfo.mAvatarFile.getPath()));
+                && avatarPath);
     }
 
     @Override
@@ -220,5 +225,41 @@ public class UserInfo implements Serializable {
         hash = 97 * hash + (this.mAge != null ? this.mAge.hashCode() : 0);
         hash = 97 * hash + (this.mAvatarFile != null ? this.mAvatarFile.hashCode() : 0);
         return hash;
+    }
+    
+    /**
+     * Return the SHA-1 of a string
+     * 
+     * @param s the string
+     * @return the SHA-1 of s
+     */
+    public static String sha1(String s) {
+        String sha1 = "";
+        
+        try {
+            MessageDigest d = MessageDigest.getInstance("SHA-1");
+            d.reset();
+            d.update(s.getBytes());
+            sha1 = byteArrayToHexString(d.digest());
+        } catch (Exception ex) {
+            LoggerFactory.getLogger(UserInfo.class).error("Error during creation of the SHA-1 of: " + s + " <> error: ", ex.toString());
+        }
+        
+        return sha1;
+    }
+    
+    /**
+     * Convert a bite array to a string
+     * 
+     * @param b the bite array
+     * @return the string corresponding to the byte array
+     */
+    private static String byteArrayToHexString(byte[] b) {
+        String result = "";
+        for (int i = 0; i < b.length; i++) {
+            result +=
+                    Integer.toString((b[i] & 0xff) + 0x100, 16).substring(1);
+        }
+        return result;
     }
 }
