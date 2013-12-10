@@ -124,14 +124,13 @@ public class SongDetailController extends SongSelectorController implements Init
     private TextField mTagInputTextArea;
     private CollectionChangeListener<Music> mRemoteCatalogListener;
 
-    
-     public static enum CatalogType{
+    public static enum CatalogType {
+
         local,
         remote,
         search
     }
-     
-     
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
 
@@ -307,7 +306,7 @@ public class SongDetailController extends SongSelectorController implements Init
                     mDownloadMusicsCommand.setCatalog(catalog);
                     mDownloadMusicsCommand.execute();
                 }
-            });
+            });            
         }
     }
 
@@ -339,6 +338,27 @@ public class SongDetailController extends SongSelectorController implements Init
             }
         }
     }
+
+    /**
+     * HOT FIX
+     * 
+     * If the owner of the current music is not the current user, this method
+     * fetch the remote catalog of the owner.
+     *
+     * This method is used to update the UI after a modification on a remote
+     * piece of {@link Music}.
+     *
+     * @param ownerPeer the {@link Peer} of the owner
+     */
+    private void fetchIfNeeded() {
+        final Peer ownerPeer = mAppModel.getActivePeerList().getPeerByPeerId(mMusic.getOwnerPeerId());
+        if (ownerPeer != null && !ownerPeer.equals(mAppModel.getProfile().getUserInfo().toPeer())) {
+            log.debug("Fetch music to update !");
+            mFetchRemoteCatalogCommand.setPeer(ownerPeer);
+            mFetchRemoteCatalogCommand.execute();
+        }
+    }
+    
 
     private void handleAddTagAction(ActionEvent event) {
         final String tag = mTagInputTextArea.getText().trim();
@@ -378,12 +398,7 @@ public class SongDetailController extends SongSelectorController implements Init
                 //Update UI directly, since no events are triggered when a comment is added.
                 mCommentContainer.getChildren().clear();
                 loadComments();
-                if (!ownerPeer.equals(mAppModel.getProfile().getUserInfo().toPeer())) {
-                    //fetch the music in order to update the ui
-                    log.debug("Fetch music to update !");
-                    mFetchRemoteCatalogCommand.setPeer(ownerPeer);
-                    mFetchRemoteCatalogCommand.execute();
-                }
+                fetchIfNeeded();
             } else {
                 mCommentInputTextArea.clear();
                 mCommentInputTextArea.setText("user not connected anymore");
@@ -440,6 +455,7 @@ public class SongDetailController extends SongSelectorController implements Init
             mSetScoreCommand.setScore(newCandidateRate);
             mSetScoreCommand.setPeer(mAppModel.getProfile().getUserInfo().toPeer());
             mSetScoreCommand.execute();
+            fetchIfNeeded();
         }
     }
 
@@ -504,13 +520,18 @@ public class SongDetailController extends SongSelectorController implements Init
         log.debug("comment edition requested !");
         mEditCommentCommand.setMusic(mMusic);
         mEditCommentCommand.setAuthorPeer(mAppModel.getProfile().getUserInfo().toPeer());
-        mEditCommentCommand.setOwnerPeer(mAppModel.getProfile().getUserInfo().toPeer());
+        if(mMusic.getOwnerPeerId().equals(mAppModel.getProfile().getUserInfo().getPeerId())) {
+            mEditCommentCommand.setOwnerPeer(mAppModel.getProfile().getUserInfo().toPeer());
+        } else {
+            mEditCommentCommand.setOwnerPeer(mAppModel.getActivePeerList().getPeerByPeerId(mMusic.getOwnerPeerId()));
+        }        
         mEditCommentCommand.setCommentId(comment.getIndex());
         mEditCommentCommand.setComment(newCommentText);
         mEditCommentCommand.execute();
         //Update UI directly, since no events are triggered when a comment is deleted
         mCommentContainer.getChildren().clear();
         loadComments();
+        fetchIfNeeded();
     }
 
     @Override
@@ -523,6 +544,7 @@ public class SongDetailController extends SongSelectorController implements Init
         //Update UI directly, since no events are triggered when a comment is deleted
         mCommentContainer.getChildren().clear();
         loadComments();
+        fetchIfNeeded();
     }
 
     @Override
