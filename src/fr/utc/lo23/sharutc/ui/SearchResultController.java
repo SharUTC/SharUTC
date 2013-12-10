@@ -149,13 +149,13 @@ public class SearchResultController extends SongSelectorController implements Ri
     }
 
     @Override
-    public void onArtistDetailRequested(String artistName) {
-        mInterface.onArtistDetailRequested(artistName);
+    public void onArtistDetailRequested(String artistName, SongDetailController.CatalogType type) {
+        mInterface.onArtistDetailRequested(artistName, type);
     }
 
     @Override
-    public void onAlbumDetailRequested(String albumName) {
-        mInterface.onAlbumDetailRequested(albumName);
+    public void onAlbumDetailRequested(String albumName, SongDetailController.CatalogType type) {
+        mInterface.onAlbumDetailRequested(albumName, type);
     }
 
     @Override
@@ -171,12 +171,22 @@ public class SearchResultController extends SongSelectorController implements Ri
                 if (m.getAlbum().toLowerCase().contains(mCurrentCriteriaSearch) && !mAlbumNameFound.contains(m.getAlbum())) {
                     log.debug("add music -- album");
                     mAlbumNameFound.add(m.getAlbum());
-                    addChildFromOtherThread(new AlbumCard(m, SearchResultController.this));
+                    
+                    AlbumCard card = new AlbumCard(m, SearchResultController.this);
+                    if(!(mAppModel.getProfile().getUserInfo().getPeerId()==m.getOwnerPeerId())){
+                       card.setCatalogType(SongDetailController.CatalogType.search); 
+                    }
+                    
+                    addChildFromOtherThread(card);
                 }
                 if (m.getArtist().toLowerCase().contains(mCurrentCriteriaSearch) && !mArtistNameFound.contains(m.getArtist())) {
                     log.debug("add music -- artist");
                     mArtistNameFound.add(m.getArtist());
-                    addChildFromOtherThread(new ArtistCard(m.getArtist(), SearchResultController.this));
+                    ArtistCard card = new ArtistCard(m.getArtist(), SearchResultController.this);
+                    if(!(mAppModel.getProfile().getUserInfo().getPeerId()==m.getOwnerPeerId())){
+                       card.setCatalogType(SongDetailController.CatalogType.search); 
+                    }
+                    addChildFromOtherThread(card);
                 }
                 if (m.getTitle().toLowerCase().contains(mCurrentCriteriaSearch)) {
                     log.debug("add music -- song");
@@ -206,13 +216,13 @@ public class SearchResultController extends SongSelectorController implements Ri
          *
          * @param music
          */
-        public void onArtistDetailRequested(String artistName);
+        public void onArtistDetailRequested(String artistName, SongDetailController.CatalogType type);
 
         /**
          * display album details
          *
          * @param music
          */
-        public void onAlbumDetailRequested(String albumName);
+        public void onAlbumDetailRequested(String albumName, SongDetailController.CatalogType type);
     }
 }

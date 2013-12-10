@@ -157,12 +157,21 @@ public class SongListController extends SongSelectorController implements Initia
         showMusics(musics);
     }
 
-    public void showLocalCatalogWithAlbumFilter(String albumFilter) {
-        final Catalog catalog = mAppModel.getLocalCatalog();
+    public void showLocalCatalogWithAlbumFilter(String albumFilter, SongDetailController.CatalogType type) {
+        Catalog catalog = null;
+        if(type.equals(SongDetailController.CatalogType.local)){
+             catalog = mAppModel.getLocalCatalog();
+        }else if(type.equals(SongDetailController.CatalogType.remote)){
+             catalog = mAppModel.getRemoteUserCatalog();
+        }else{
+            catalog = mAppModel.getSearchResults();
+        }
+       
         ArrayList<Music> musics = new ArrayList<Music>();
 
         titleLabel.setText(albumFilter + " Album");
 
+        
         for (final Music m : catalog.getMusics()) {
             if (albumFilter == null || albumFilter.equals(m.getAlbum())) {
                 musics.add(m);

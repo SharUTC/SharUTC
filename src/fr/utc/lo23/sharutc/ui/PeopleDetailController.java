@@ -8,6 +8,7 @@ import fr.utc.lo23.sharutc.model.AppModel;
 import fr.utc.lo23.sharutc.model.domain.Music;
 import fr.utc.lo23.sharutc.model.userdata.Contact;
 import fr.utc.lo23.sharutc.model.userdata.UserInfo;
+import fr.utc.lo23.sharutc.ui.custom.CardList;
 import fr.utc.lo23.sharutc.ui.custom.card.ArtistCard;
 import fr.utc.lo23.sharutc.ui.custom.card.SongCard;
 import fr.utc.lo23.sharutc.ui.custom.card.TagCard;
@@ -18,7 +19,6 @@ import javafx.event.ActionEvent;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.layout.FlowPane;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,20 +27,16 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.Set;
+import javafx.scene.layout.VBox;
 
-public class PeopleDetailController extends SongSelectorController implements Initializable, TagCard.ITagCard, CollectionChangeListener, ArtistCard.IArtistCard {
+public class PeopleDetailController extends SongSelectorController implements RighpaneInterface, Initializable, TagCard.ITagCard, CollectionChangeListener, ArtistCard.IArtistCard {
 
     private static final Logger log = LoggerFactory
             .getLogger(SongListController.class);
 
     public Label login;
     public Button addToFriendsButton;
-    public Button seeMoreSongs;
-    public Button seeMoreArtists;
-    public Button seeMoreTags;
-    public FlowPane songsContainer;
-    public FlowPane artistsContainer;
-    public FlowPane tagsContainer;
+    public VBox scrollPaneContent;
 
     @Inject
     private AppModel mAppModel;
@@ -56,28 +52,39 @@ public class PeopleDetailController extends SongSelectorController implements In
     private Set<String> mArtistsFound = new LinkedHashSet<String>();
     private Set<String> mTagsFound = new LinkedHashSet<String>();
     private IPeopleDetailController mCallBack;
+    private CardList mSongList;
+    private CardList mTagList;
+    private CardList mArtistList;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         addToFriendsButton.getStyleClass().add("bgGreen");
-        seeMoreArtists.getStyleClass().add("bgRed");
-        seeMoreSongs.getStyleClass().add("bgBlue");
-
+       
+        mSongList = new CardList("Songs", "bgBlue");
+        mArtistList = new CardList("Artists", "bgRed");
+        mTagList = new CardList("Tags", "");
+        scrollPaneContent.getChildren().add(mSongList);
+        scrollPaneContent.getChildren().add(mArtistList);
+        scrollPaneContent.getChildren().add(mTagList);
+        
         mAppModel.getProfile().getContacts().addPropertyChangeListener(this);
         mAppModel.getRemoteUserCatalog().addPropertyChangeListener(this);
 
+    }
+
+    @Override
+    public void onDetach() {
+        mAppModel.getProfile().getContacts().removePropertyChangeListener(this);
+        mAppModel.getRemoteUserCatalog().removePropertyChangeListener(this);
     }
 
     public void setInterface(IPeopleDetailController i) {
         super.setInterface(i);
         mCallBack = i;
     }
-    
-    
 
     public void setUserInfo(UserInfo userInfo) {
         mUserInfo = userInfo;
-
 
         if (userInfo.getPeerId() == mAppModel.getProfile().getUserInfo().getPeerId()) {
             //the current user info
@@ -130,22 +137,12 @@ public class PeopleDetailController extends SongSelectorController implements In
 
     }
 
-    public void handleSeeMoreFriendsClicked(ActionEvent actionEvent) {
-
-    }
-
-    public void handleSeeMoreArtistsClicked(ActionEvent actionEvent) {
-
-    }
-
-    public void handleSeeMoreTagsClicked(ActionEvent actionEvent) {
-
-    }
+    
 
     @Override
     public void onTagSelected(String tagName) {
         log.debug("tag selected : " + tagName);
-        if(mCallBack != null) {
+        if (mCallBack != null) {
             mCallBack.onTagFilterRequested(tagName);
         }
     }
@@ -153,7 +150,7 @@ public class PeopleDetailController extends SongSelectorController implements In
     @Override
     public void onMusicDropOnTag(String tagName) {
         log.debug("music dropped on tag : " + tagName);
-        for(final SongCard songCard : getSelectedSong()) {
+        for (final SongCard songCard : getSelectedSong()) {
             mAddTagCommand.setMusic(songCard.getModel());
             mAddTagCommand.setTag(tagName);
             mAddTagCommand.execute();
@@ -203,37 +200,46 @@ public class PeopleDetailController extends SongSelectorController implements In
 
         //display the new music card
         final SongCard newSongCard = new SongCard(music, PeopleDetailController.this, mAppModel);
-        songsContainer.getChildren().add(newSongCard);
+        
+        mSongList.addChild(newSongCard);
     }
 
     /**
      * display retrieve data
      */
     private void displayRetrieveData() {
-        artistsContainer.getChildren().clear();
-        tagsContainer.getChildren().clear();
+        mArtistList.clear();
+        mTagList.clear();
 
         for (String artist : mArtistsFound) {
             ArtistCard newCard = new ArtistCard(artist, this);
-            artistsContainer.getChildren().add(newCard);
+            if(!(mUserInfo.getPeerId()==mAppModel.getProfile().getUserInfo().getPeerId())){
+              newCard.setCatalogType(SongDetailController.CatalogType.remote);  
+            }
+            
+        
+        
+            mArtistList.addChild(newCard);
         }
 
         for (String tag : mTagsFound) {
             TagCard newCard = new TagCard(tag, this);
-            tagsContainer.getChildren().add(newCard);
+            mTagList.addChild(newCard);
         }
     }
 
     @Override
-    public void onArtistDetailRequested(final String artistName) {
+    public void onArtistDetailRequested(final String artistName, SongDetailController.CatalogType type) {
         log.info("artist info requested " + artistName);
-        if(mCallBack != null) {
-            mCallBack.onArtistDetailRequested(artistName);
+        if (mCallBack != null) {
+            mCallBack.onArtistDetailRequested(artistName, type);
         }
     }
-    
-    public interface IPeopleDetailController extends ISongListController{
-        public void onArtistDetailRequested(final String artistName);
+
+    public interface IPeopleDetailController extends ISongListController {
+
+        public void onArtistDetailRequested(final String artistName, SongDetailController.CatalogType type);
+
         public void onTagFilterRequested(final String tagName);
     }
 }

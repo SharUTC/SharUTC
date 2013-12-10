@@ -281,15 +281,15 @@ public class PeopleHomeController extends DragPreviewDrawer implements Initializ
                 log.info("No user connected");
 
                 //TODO Remove once we get the real peersList
-                for (int i = 10; i < 25; i++) {
-                    final UserInfo userInfo = new UserInfo();
-                    userInfo.setLogin("Login " + String.valueOf(i));
-                    userInfo.setLastName("LastName");
-                    userInfo.setFirstName("FirstName");
-                    userInfo.setPeerId((long) i);
-                    PeopleCard newCard = new PeopleCard(userInfo, this, PeopleCard.USAGE_CONNECTED);
-                    peopleContainer.getChildren().add(newCard);
-                }
+//                for (int i = 10; i < 25; i++) {
+//                    final UserInfo userInfo = new UserInfo();
+//                    userInfo.setLogin("Login " + String.valueOf(i));
+//                    userInfo.setLastName("LastName");
+//                    userInfo.setFirstName("FirstName");
+//                    userInfo.setPeerId((long) i);
+//                    PeopleCard newCard = new PeopleCard(userInfo, this, PeopleCard.USAGE_CONNECTED);
+//                    peopleContainer.getChildren().add(newCard);
+//                }
             } else {
                 for (UserInfo userInfo : currentConnectedPeer.keySet()) {
                     peopleContainer.getChildren().add(new PeopleCard(userInfo, this, PeopleCard.USAGE_CONNECTED));
@@ -453,14 +453,17 @@ public class PeopleHomeController extends DragPreviewDrawer implements Initializ
                 addNewGroupCard(c, true);
             } else if (item instanceof UserInfo) {
                 //new user connected
-                Platform.runLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        final UserInfo newConnectedUser = (UserInfo) item;
-                        PeopleCard newCard = new PeopleCard(newConnectedUser, PeopleHomeController.this, PeopleCard.USAGE_CONNECTED);
-                        peopleContainer.getChildren().add(newCard);
-                    }
-                });
+                if (mCurrentCategory.equals(mVirtualConnectedGroup.getModel())) {
+                    //refresh only if current category is connected
+                    Platform.runLater(new Runnable() {
+                        @Override
+                        public void run() {
+                            final UserInfo newConnectedUser = (UserInfo) item;
+                            PeopleCard newCard = new PeopleCard(newConnectedUser, PeopleHomeController.this, PeopleCard.USAGE_CONNECTED);
+                            peopleContainer.getChildren().add(newCard);
+                        }
+                    });
+                }
             }
         } else if (type.equals(CollectionEvent.Type.REMOVE)) {
             //REMOVE EVENT

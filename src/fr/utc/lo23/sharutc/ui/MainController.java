@@ -386,15 +386,15 @@ public class MainController extends NavigationController implements Initializabl
     }
 
     @Override
-    public void onArtistDetailRequested(String artistName) {
+    public void onArtistDetailRequested(String artistName, SongDetailController.CatalogType type) {
         log.info("Artist detail requested : " + artistName);
-        showAlbumListWithArtistFilter(artistName);
+        showAlbumListWithArtistFilter(artistName, type);
     }
 
     @Override
-    public void onAlbumDetailRequested(String albumName) {
+    public void onAlbumDetailRequested(String albumName, SongDetailController.CatalogType type) {
         log.info("Album detail requested : " + albumName);
-        showLocalCatalogWithAlbumFilter(albumName);
+        showLocalCatalogWithAlbumFilter(albumName, type);
     }
 
     //Need some improvements
@@ -537,9 +537,9 @@ public class MainController extends NavigationController implements Initializabl
         return success;
     }
 
-    private void showAlbumListWithArtistFilter(String artistName) {
+    private void showAlbumListWithArtistFilter(String artistName, SongDetailController.CatalogType type) {
         if (loadAlbumList()) {
-            ((AlbumsDetailController) mCurrentLoadedRighpaneResult.getController()).showAlbumsWithArtistFilter(artistName);
+            ((AlbumsDetailController) mCurrentLoadedRighpaneResult.getController()).showAlbumsWithArtistFilter(artistName, type);
         }
     }
 
@@ -569,9 +569,9 @@ public class MainController extends NavigationController implements Initializabl
         }
     }
 
-    private void showLocalCatalogWithAlbumFilter(String albumName) {
+    private void showLocalCatalogWithAlbumFilter(String albumName, SongDetailController.CatalogType type) {
         if (loadSongList()) {
-            ((SongListController) mCurrentLoadedRighpaneResult.getController()).showLocalCatalogWithAlbumFilter(albumName);
+            ((SongListController) mCurrentLoadedRighpaneResult.getController()).showLocalCatalogWithAlbumFilter(albumName, type);
         }
     }
 
@@ -603,4 +603,6 @@ public class MainController extends NavigationController implements Initializabl
         }
         return success;
     }
+
+    
 }

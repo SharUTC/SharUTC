@@ -15,7 +15,13 @@ import javazoom.jl.player.JavaSoundAudioDevice;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-// This class is loosely based on javazoom.jl.player.AdvancedPlayer.
+/**
+ * Open a stream from a mp3 file and play its content until the end, player can
+ * be started, paused and stopped. Audio gain and current time may also be
+ * modified with this class, current time changes are checked between every
+ * frame read, gain uses a small tweak on JLayer librairy to give access to gain
+ * control
+ */
 public class Mp3Player {
 
     private static final Logger log = LoggerFactory
@@ -25,8 +31,6 @@ public class Mp3Player {
     private Bitstream bitstream;
     private Decoder decoder;
     private AudioDevice audioDevice;
-    //  private boolean isClosed = false;
-    //   private boolean isComplete = false;
     private final PlaybackListener listener;
     private int frameIndexCurrent = 0;
     public boolean paused = false;
@@ -36,23 +40,74 @@ public class Mp3Player {
     private boolean turnDownThread;
     private boolean terminated;
 
+    /**
+     * Create a new instance of the Mp3Player, use listener's methods to manage
+     * events (may be send without user action at the end of the music)
+     *
+     * @param urlToStreamFrom the complete file location on the system
+     * @param listener the listener of events such as STARTED, PAUSED and
+     * STOPPED
+     *
+     * @throws Exception might occur if the mp3 file is corrupted
+     */
     public Mp3Player(URL urlToStreamFrom, final PlaybackListener listener) throws Exception {
         this.urlToStreamFrom = urlToStreamFrom;
         this.listener = listener;
     }
 
+    /**
+     * Play the music from the current frame Index to its end, send STARTED and
+     * PAUSED event, use returned value to listen to thread's end (which occurs
+     * on error and at the end of the music). Default value for
+     * frameIndexCurrent is 0
+     *
+     * @return false when then music stops by itself, true if the music is
+     * paused or an error happens
+     * @throws Exception might occur if the mp3 file is corrupted
+     */
     public boolean resume() throws Exception {
         return play(frameIndexCurrent);
     }
 
+    /**
+     * Play the music from its beginning to its end, send STARTED and PAUSED
+     * event, use returned value to listen to thread's end (which occurs on
+     * error and at the end of the music)
+     *
+     * @return false when then music stops by itself, true if the music is
+     * paused or an error happens
+     * @throws Exception might occur if the mp3 file is corrupted
+     */
     public boolean play() throws Exception {
         return play(0);
     }
 
+    /**
+     * Play the music from frameIndexStart to its end, send STARTED and PAUSED
+     * event, use returned value to listen to thread's end (which occurs on
+     * error and at the end of the music)
+     *
+     * @param frameIndexStart the first frame to read
+     * @return false when then music stops by itself, true if the music is
+     * paused or an error happens
+     * @throws Exception might occur if the mp3 file is corrupted
+     */
     public boolean play(int frameIndexStart) throws Exception {
         return play(frameIndexStart, listener.getMusic().getFrames().intValue(), CORRECTION_FACTOR_FRAMES);
     }
 
+    /**
+     * Play the music from frameIndexStart to frameIndexFinal, send STARTED and
+     * PAUSED event, use returned value to listen to thread's end (which occurs
+     * on error and at the end of the music)
+     *
+     * @param frameIndexStart the first frame to read
+     * @param frameIndexFinal the last frame to read
+     * @param correctionFactorInFrames if some delay appears (NOT USED)
+     * @return false when then music stops by itself, true if the music is
+     * paused or an error happens
+     * @throws Exception might occur if the mp3 file is corrupted
+     */
     public boolean play(int frameIndexStart, int frameIndexFinal, int correctionFactorInFrames) throws Exception {
         terminated = false;
         bitstream = new Bitstream(urlToStreamFrom.openStream());
@@ -60,7 +115,7 @@ public class Mp3Player {
         decoder = new Decoder();
         audioDevice.open(decoder);
 
-        while (/*!isComplete && */stillFramesToRead
+        while (stillFramesToRead
                 && frameIndexCurrent < frameIndexStart - correctionFactorInFrames) {
             stillFramesToRead = skipFrame();
             updateCurrentFrameIndex(false);
@@ -99,7 +154,6 @@ public class Mp3Player {
             audioDevice.flush();
 
             synchronized (this) {
-                /*  isComplete = (isClosed == false);*/
                 closeAudioDeviceAndBitStream();
             }
 
@@ -125,6 +179,14 @@ public class Mp3Player {
         return stillFramesToRead;
     }
 
+    /**
+     * When the next frame index to read is changed, music has to be read from
+     * the beginning because it uses a Bitstream to progress in the file
+     *
+     * @param frameIndexStart the new position of the music during the while
+     * loop
+     * @param correctionFactorInFrames if some delay appears (NOT USED)
+     */
     private void reload(int frameIndexStart, int correctionFactorInFrames) {
         log.info("reloading bitstream...");
         try {
@@ -140,8 +202,7 @@ public class Mp3Player {
             decoder = new Decoder();
             audioDevice.open(decoder);
 
-            while (/*!isComplete && */stillFramesToRead == true
-                    && frameIndexCurrent < frameIndexStart - correctionFactorInFrames) {
+            while (stillFramesToRead == true && frameIndexCurrent < frameIndexStart - correctionFactorInFrames) {
                 stillFramesToRead = skipFrame();
                 updateCurrentFrameIndex(false);
             }
@@ -153,7 +214,7 @@ public class Mp3Player {
     }
 
     /**
-     * Bloque le thread en cours
+     * Pauses the thread to pause the music reading, send PAUSED event
      */
     public void pause() {
         paused = true;
@@ -161,7 +222,7 @@ public class Mp3Player {
     }
 
     /**
-     * reprend la lecture, player est en pause dans un while
+     * Wakes up the thread to continue playing the music, send STARTED event
      */
     public void unpause() {
         paused = false;
@@ -169,7 +230,8 @@ public class Mp3Player {
     }
 
     /**
-     * met fin au thread en cours avant la fin de la musique
+     * Stops the thread, and wait for its complete end before returning to avoid
+     * duplication of this thread
      */
     public void stop() {
         turnDownThread = true;
@@ -183,7 +245,10 @@ public class Mp3Player {
         }
     }
 
-    public synchronized void closeAudioDeviceAndBitStream() {
+    /**
+     * Try to close the audio device and the bitstream from mp3 file
+     */
+    private void closeAudioDeviceAndBitStream() {
         if (audioDevice != null) {
             audioDevice.close();
             audioDevice = null;
@@ -196,9 +261,17 @@ public class Mp3Player {
                 log.error(ex.toString());
             }
         }
-        //  isClosed = true;
     }
 
+    /**
+     * Read a frame from the music and write it in audio device's buffer to play
+     * a sound
+     *
+     * @return true if there is no error at reading the frame, if not so the
+     * reading loop has to be stopped
+     *
+     * @throws JavaLayerException
+     */
     private boolean decodeFrame() throws JavaLayerException {
         boolean continueDecoding = true;
         try {
@@ -226,6 +299,16 @@ public class Mp3Player {
         return continueDecoding;
     }
 
+    /**
+     * When the music is paused or is started directly at an other frame index
+     * than 0, since the reading must start from the beginning of the file we
+     * have to read its content until the right frame without writing it in the
+     * audio buffer
+     *
+     * @return true to confirm that a frame was read and closed without trouble
+     * @throws JavaLayerException might occur if the mp3 file is corrupted or if
+     * the bitstream is going to far
+     */
     private boolean skipFrame() throws JavaLayerException {
         boolean skipped = false;
         Header header = bitstream.readFrame();
@@ -236,13 +319,19 @@ public class Mp3Player {
         return skipped;
     }
 
-    private void updateCurrentFrameIndex(boolean propagateToUI) {
+    private void updateCurrentFrameIndex(boolean informListener) {
         frameIndexCurrent++;
-        if (propagateToUI) {
+        if (informListener) {
             listener.setCurrentFrameIndex(frameIndexCurrent);
         }
     }
 
+    /**
+     * Allows the user to control the audio gain. Uses a modification of JLayer
+     * librairy to give access to a private member from one of its class
+     *
+     * @return the floatControl on which a gain in dB is settable
+     */
     public FloatControl getMasterGainControl() {
         log.debug("getMasterGainControl");
         FloatControl floatControl = null;
@@ -253,14 +342,35 @@ public class Mp3Player {
         return floatControl;
     }
 
+    /**
+     * Set the next position of frame to read, lead to restart reading at the
+     * beginning of the file
+     *
+     * @param newCurrentFrameIndex if < 0 or too big, music will played until
+     * its end
+     */
     public void changeCurrentFrame(int newCurrentFrameIndex) {
         this.newCurrentFrameIndex = new Integer(newCurrentFrameIndex);
     }
 
+    /**
+     * Set the audio gain, the value is read during the while loop if not null
+     *
+     * @param gain the gain in dB (from -30dB to 0dB)
+     */
     public void setGain(float gain) {
         this.gain = gain;
     }
 
+    /**
+     * Convert frame index into a integer representing the current time position
+     * in the music
+     *
+     * @param frame the frame index to convert to seconds
+     * @return the time equivalent value of this frame index, or 0 if no music
+     * is played or a value (track length in seconds or total frames of the
+     * file) is missing
+     */
     private int frameToTime(int frame) {
         int time = 0;
         if (listener != null && listener.getMusic() != null && listener.getMusic().getTrackLength() != null && listener.getMusic().getFrames() != null) {

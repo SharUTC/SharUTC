@@ -64,9 +64,9 @@ public class ArtistsDetailController implements RighpaneInterface, Initializable
     }
 
     @Override
-    public void onArtistDetailRequested(String artistName) {
+    public void onArtistDetailRequested(String artistName, SongDetailController.CatalogType type) {
         log.info("onArtistDetailRequested " + artistName);
-        mInterface.onArtistDetailRequested(artistName);
+        mInterface.onArtistDetailRequested(artistName, type);
     }
 
     @Override
@@ -80,6 +80,6 @@ public class ArtistsDetailController implements RighpaneInterface, Initializable
          *
          * @param music
          */
-        public void onArtistDetailRequested(String artistName);
+        public void onArtistDetailRequested(String artistName, SongDetailController.CatalogType type);
     }
 }

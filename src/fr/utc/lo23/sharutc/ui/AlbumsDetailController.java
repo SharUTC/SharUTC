@@ -9,6 +9,7 @@ import javafx.fxml.Initializable;
 
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
@@ -30,6 +31,8 @@ public class AlbumsDetailController implements RighpaneInterface, Initializable,
     public Label titleLabel;
     @Inject
     private AppModel mAppModel;
+    
+   
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -40,18 +43,26 @@ public class AlbumsDetailController implements RighpaneInterface, Initializable,
     }
     
     public void showAlbums() {
-        showAlbumsWithArtistFilter(null);
+        showAlbumsWithArtistFilter(null, SongDetailController.CatalogType.local);
     }
 
-    public void showAlbumsWithArtistFilter(String artistFilter) {
+    public void showAlbumsWithArtistFilter(String artistFilter, SongDetailController.CatalogType type) {
         final ArrayList<Pair<String, String>> albumArtistPairs = new ArrayList<Pair<String, String>>();
         
         if(artistFilter != null) {
             titleLabel.setText("Browse "+ artistFilter +"'s albums");
         }
-
+        List<Music> musics = null;
+        if(type.equals(SongDetailController.CatalogType.remote)){
+            musics = mAppModel.getRemoteUserCatalog().getMusics();
+        }else if(type.equals(SongDetailController.CatalogType.local)){
+            musics = mAppModel.getLocalCatalog().getMusics();
+        }else{
+            musics = mAppModel.getSearchResults().getMusics();
+        }
+        
         //retrieve the albums from the local catalog
-        for (Music m : mAppModel.getLocalCatalog().getMusics()) {
+        for (Music m : musics) {
             final Pair<String, String> currentAlbumArtistPair =
                     new Pair<String, String>(m.getAlbum(), m.getArtist());
             if (!albumArtistPairs.contains(currentAlbumArtistPair)
@@ -69,16 +80,18 @@ public class AlbumsDetailController implements RighpaneInterface, Initializable,
             contentContainer.getChildren().add(placeHolder);
         } else {
             for (Pair<String, String> albumArtistPair : albumArtistPairs) {
-                albumsContainer.getChildren().add(new AlbumCard(
-                        albumArtistPair.getLeft(), albumArtistPair.getRight(), this));
+                AlbumCard card = new AlbumCard(
+                        albumArtistPair.getLeft(), albumArtistPair.getRight(), this);
+                card.setCatalogType(type);
+                albumsContainer.getChildren().add(card);
             }
         }
     }
 
     @Override
-    public void onAlbumDetailRequested(String albumName) {
+    public void onAlbumDetailRequested(String albumName, SongDetailController.CatalogType type) {
         log.info("onArtistDetailRequested " + albumName);
-        mInterface.onAlbumDetailRequested(albumName);
+        mInterface.onAlbumDetailRequested(albumName, type);
     }
 
     @Override
@@ -92,6 +105,6 @@ public class AlbumsDetailController implements RighpaneInterface, Initializable,
          *
          * @param music
          */
-        public void onAlbumDetailRequested(String albumName);
+        public void onAlbumDetailRequested(String albumName, SongDetailController.CatalogType type);
     }
 }

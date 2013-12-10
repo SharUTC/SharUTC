@@ -142,6 +142,9 @@ public class Catalog implements Serializable, PropertyChangeListener {
             for (Music music : musics) {
                 this.add(music);
             }
+            //Hot fix
+            //fire an event to notify the ui that all the music have been added.
+            collectionChangeSupport.fireCollectionChanged(null, CollectionEvent.Type.UPDATE);
         }
     }
 

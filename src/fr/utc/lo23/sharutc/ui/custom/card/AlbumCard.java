@@ -1,6 +1,7 @@
 package fr.utc.lo23.sharutc.ui.custom.card;
 
 import fr.utc.lo23.sharutc.model.domain.Music;
+import fr.utc.lo23.sharutc.ui.SongDetailController;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -22,6 +23,7 @@ public class AlbumCard extends SimpleCard implements EventHandler<Event> {
     private IAlbumCard mInterface;
     private String mAlbumName;
     private String mArtistName;
+    private SongDetailController.CatalogType type = SongDetailController.CatalogType.local;
 
     public AlbumCard(String albumName, String artistName, IAlbumCard i) {
         super("/fr/utc/lo23/sharutc/ui/fxml/album_card.fxml");
@@ -31,6 +33,10 @@ public class AlbumCard extends SimpleCard implements EventHandler<Event> {
         mAlbumName = albumName;
         artistNameLabel.setText(mArtistName);
         albumNameLabel.setText(mAlbumName);
+    }
+    
+    public void setCatalogType(SongDetailController.CatalogType type){
+        this.type = type;
     }
 
     public AlbumCard(Music m, IAlbumCard i) {
@@ -64,7 +70,7 @@ public class AlbumCard extends SimpleCard implements EventHandler<Event> {
             final MouseEvent mouseEvent = (MouseEvent) event;
             if (mouseEvent.getButton().equals(MouseButton.PRIMARY)
                     && mouseEvent.getClickCount() == 2) {
-                mInterface.onAlbumDetailRequested(mAlbumName);
+                mInterface.onAlbumDetailRequested(mAlbumName, type);
             }
         }
     }
@@ -80,6 +86,6 @@ public class AlbumCard extends SimpleCard implements EventHandler<Event> {
          *
          * @param albumName the name of the album shown on the card
          */
-        public void onAlbumDetailRequested(String albumName);
+        public void onAlbumDetailRequested(String albumName, SongDetailController.CatalogType type);
     }
 }
