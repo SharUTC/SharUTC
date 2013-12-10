@@ -41,6 +41,7 @@ public class GroupRightController extends DragPreviewDrawer implements Initializ
     private static final int RIGHT_READ = 0x00000002;
     private static final int RIGHT_NOTE = 0x00000003;
     private static final int RIGHT_ALL = 0x00000004;
+    private static final int RIGHT_NONE = 0x00000005;
 
     @Inject
     private ManageRightsCommand manageRightsCommand;
@@ -65,6 +66,7 @@ public class GroupRightController extends DragPreviewDrawer implements Initializ
     private RightCard mListenSongCard;
     private RightCard mCommentAndNoteSongCard;
     private RightCard mAllRightsSongCard;
+    private RightCard mNoneRightsSongCard;
     /**
      * Display message to the user
      */
@@ -122,6 +124,10 @@ public class GroupRightController extends DragPreviewDrawer implements Initializ
                     showPlaceHolder("Currently, your musics  can't be rated by the users of "
                             + mCurrentCategory.getName());
                     break;
+                case RIGHT_NONE:
+                    showPlaceHolder("Currently, your musics as rights in the category : "
+                            + mCurrentCategory.getName());
+                    break;
             }
         } else {
             for (Music m : matchingMusics) {
@@ -173,6 +179,11 @@ public class GroupRightController extends DragPreviewDrawer implements Initializ
                                     & rights.getMayListen()) {
                                 shouldAdd = true;
                             }
+                            break;
+                        case RIGHT_NONE:
+                            if (!rights.getMayNoteAndComment()
+                                    & !rights.getMayReadInfo()
+                                    & !rights.getMayListen()) shouldAdd = true;
                             break;
                     }
 
@@ -247,9 +258,11 @@ public class GroupRightController extends DragPreviewDrawer implements Initializ
         mCommentAndNoteSongCard = new RightCard("Note", this);
 
         mAllRightsSongCard = new RightCard("All Right", this);
+        
+        mNoneRightsSongCard= new RightCard("None", this);
 
         rightContainer.getChildren().addAll(mAllSongCard, mReadSongCard, mListenSongCard, mCommentAndNoteSongCard,
-                mAllRightsSongCard);
+                mAllRightsSongCard , mNoneRightsSongCard);
     }
 
 
@@ -314,6 +327,11 @@ public class GroupRightController extends DragPreviewDrawer implements Initializ
             } else if (card.equals(mCommentAndNoteSongCard)) {
                 log.info("song dropped in comment right card : ");
                 manageRightsCommand.setMayCommentAndScore(true);
+            }else if (card.equals(mNoneRightsSongCard)) {
+                log.info("song dropped in none right card : ");
+                manageRightsCommand.setMayCommentAndScore(false);
+                manageRightsCommand.setMayListen(false);
+                manageRightsCommand.setMayReadInfo(false);
             }
 
             //execute the command
@@ -332,6 +350,8 @@ public class GroupRightController extends DragPreviewDrawer implements Initializ
             displayMusicByRight(RIGHT_NOTE);
         } else if (card.equals(mAllRightsSongCard)) {
             displayMusicByRight(RIGHT_ALL);
+        } else if (card.equals(mNoneRightsSongCard)) {
+            displayMusicByRight(RIGHT_NONE);
         }
 
     }

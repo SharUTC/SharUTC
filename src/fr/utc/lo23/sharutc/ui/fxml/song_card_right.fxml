@@ -8,7 +8,7 @@
             <Label fx:id="songTitle" text="New York New York" styleClass="largeTextGreyBold"/>
             <Label fx:id="songArtist" text="Frank Sinatra" styleClass="largeTextGrey"/>
         </VBox>
-        <VBox fx:id="buttonContainer" visible="false" alignment="TOP_LEFT" HBox.hgrow="ALWAYS">
+        <VBox fx:id="buttonContainer" minWidth="40" visible="false" alignment="TOP_LEFT" HBox.hgrow="ALWAYS">
             <CheckBox fx:id="checkBoxRead" styleClass="imageButton" text="R"/>
             <CheckBox fx:id="checkBoxEdit" styleClass="imageButton" text="L"/>
             <CheckBox fx:id="checkBoxComment" styleClass="imageButton" text="N"/>
