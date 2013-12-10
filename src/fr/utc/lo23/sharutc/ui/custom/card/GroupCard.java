@@ -46,7 +46,9 @@ public class GroupCard extends SimpleCard implements EventHandler<Event> {
 
         mInterface = i;
         mModel = category;
-        groupName.setText(mModel.getName());
+
+        //Hideous hack to display "Friends" instead of "Public" in the interface only
+        groupName.setText(mModel.getName().equals("Public") ? "Friends" : mModel.getName());
 
         setOnMouseEntered(this);
         setOnMouseExited(this);
