@@ -62,7 +62,7 @@ public class PeopleDetailController extends SongSelectorController implements Ri
        
         mSongList = new CardList("Songs", "bgBlue");
         mArtistList = new CardList("Artists", "bgRed");
-        mTagList = new CardList("Albums", "");
+        mTagList = new CardList("Tags", "");
         scrollPaneContent.getChildren().add(mSongList);
         scrollPaneContent.getChildren().add(mArtistList);
         scrollPaneContent.getChildren().add(mTagList);
