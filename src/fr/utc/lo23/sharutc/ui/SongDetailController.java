@@ -4,6 +4,7 @@ import com.google.inject.Inject;
 import fr.utc.lo23.sharutc.controler.command.music.AddCommentCommand;
 import fr.utc.lo23.sharutc.controler.command.music.AddTagCommand;
 import fr.utc.lo23.sharutc.controler.command.music.EditCommentCommand;
+import fr.utc.lo23.sharutc.controler.command.music.FetchRemoteCatalogCommand;
 import fr.utc.lo23.sharutc.controler.command.music.RemoveCommentCommand;
 import fr.utc.lo23.sharutc.controler.command.music.RemoveFromLocalCatalogCommand;
 import fr.utc.lo23.sharutc.controler.command.music.RemoveTagCommand;
@@ -108,6 +109,8 @@ public class SongDetailController extends SongSelectorController implements Init
     private RemoveTagCommand mRemoveTagCommand;
     @Inject
     private DownloadMusicsCommand mDownloadMusicsCommand;
+    @Inject
+    private FetchRemoteCatalogCommand mFetchRemoteCatalogCommand;
     private RatingStar[] mMyRatingStars;
     private RatingStar[] mAverageRatingStars;
     private Music mMusic;
@@ -117,6 +120,7 @@ public class SongDetailController extends SongSelectorController implements Init
     private FlowPane mTagContainer;
     private TextArea mCommentInputTextArea;
     private TextField mTagInputTextArea;
+    private CollectionChangeListener<Music> mRemoteCatalogListener;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -138,6 +142,26 @@ public class SongDetailController extends SongSelectorController implements Init
         };
 
         mAppModel.getLocalCatalog().addPropertyChangeListener(this);
+
+        mRemoteCatalogListener = new CollectionChangeListener<Music>() {
+            @Override
+            public void collectionChanged(CollectionEvent<Music> ev) {
+                final Type type = ev.getType();
+                if (CollectionEvent.Type.UPDATE.equals(type)) {
+                    log.debug("Remote catalog updated");
+                    final Music newMusic = ((Catalog) ev.getSource()).findMusicById(mMusic.getId());
+                    removeListeners();
+                    Platform.runLater(new Runnable() {
+                        @Override
+                        public void run() {
+                            setMusic(newMusic);
+                            showComments();
+                        }
+                    });
+                }
+            }
+        };
+        mAppModel.getRemoteUserCatalog().addPropertyChangeListener(mRemoteCatalogListener);
     }
 
     public void setInterface(ISongDetailController i) {
@@ -204,22 +228,26 @@ public class SongDetailController extends SongSelectorController implements Init
     }
 
     public void showComments() {
-        mCommentContainer = new VBox();
-        centralScrollPane.setContent(mCommentContainer);
-        centralSectionTitle.setText("Comments");
-        mCommentInputTextArea = new TextArea();
-        mCommentInputTextArea.getStyleClass().add("commentTextArea");
-        mCommentInputTextArea.setPrefRowCount(3);
-        mCommentInputTextArea.setPromptText("Type your comment...");
-        HBox.setHgrow(mCommentInputTextArea, Priority.ALWAYS);
-        inputContainer.getChildren().add(mCommentInputTextArea);
-        addInputButton.setText("Comment");
-        addInputButton.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent t) {
-                handleAddCommentAction(t);
-            }
-        });
+        if (mCommentContainer == null) {
+            mCommentContainer = new VBox();
+            centralScrollPane.setContent(mCommentContainer);
+            centralSectionTitle.setText("Comments");
+            mCommentInputTextArea = new TextArea();
+            mCommentInputTextArea.getStyleClass().add("commentTextArea");
+            mCommentInputTextArea.setPrefRowCount(3);
+            mCommentInputTextArea.setPromptText("Type your comment...");
+            HBox.setHgrow(mCommentInputTextArea, Priority.ALWAYS);
+            inputContainer.getChildren().add(mCommentInputTextArea);
+            addInputButton.setText("Comment");
+            addInputButton.setOnAction(new EventHandler<ActionEvent>() {
+                @Override
+                public void handle(ActionEvent t) {
+                    handleAddCommentAction(t);
+                }
+            });
+        } else {
+            mCommentContainer.getChildren().clear();
+        }
         loadComments();
     }
 
@@ -231,10 +259,9 @@ public class SongDetailController extends SongSelectorController implements Init
             } else {
                 mCommentContainer.getChildren().add(new CommentView(comment));
             }
-
         }
         //artificialy populate with some comments
-        populateCommentContainer();
+        //populateCommentContainer();
     }
 
     private void showMusicInfo() {
@@ -341,6 +368,12 @@ public class SongDetailController extends SongSelectorController implements Init
                 //Update UI directly, since no events are triggered when a comment is added.
                 mCommentContainer.getChildren().clear();
                 loadComments();
+                if (!ownerPeer.equals(mAppModel.getProfile().getUserInfo().toPeer())) {
+                    //fetch the music in order to update the ui
+                    log.debug("Fetch music to update !");
+                    mFetchRemoteCatalogCommand.setPeer(ownerPeer);
+                    mFetchRemoteCatalogCommand.execute();
+                }
             } else {
                 mCommentInputTextArea.clear();
                 mCommentInputTextArea.setText("user not connected anymore");
@@ -424,6 +457,10 @@ public class SongDetailController extends SongSelectorController implements Init
     @Override
     public void onDetach() {
         super.onDetach();
+        removeListeners();
+    }
+
+    private void removeListeners() {
         if (mUserScore != null) {
             mUserScore.removePropertyChangeListener(this);
         }
@@ -431,6 +468,7 @@ public class SongDetailController extends SongSelectorController implements Init
             mMusic.removePropertyChangeListener(this);
         }
         mAppModel.getLocalCatalog().removePropertyChangeListener(this);
+        mAppModel.getRemoteUserCatalog().removePropertyChangeListener(mRemoteCatalogListener);
     }
 
     @Override
