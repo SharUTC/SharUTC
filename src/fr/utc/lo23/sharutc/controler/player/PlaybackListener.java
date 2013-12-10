@@ -31,18 +31,21 @@ public interface PlaybackListener {
     public void setCurrentFrameIndex(int currentFrameIndex);
 
     /**
-     * Initialize the current music in player and/or create and start player
-     * thread
+     * Start or continue the Mp3Player reading loop, use this method in a new
+     * Thread to avoid waiting for the end of the file
      */
     public void play();
 
     /**
-     *
+     * Pauses the Mp3Player reading loop, use this method in a new Thread to
+     * avoid waiting for the end of the file
      */
     public void pause();
 
     /**
-     *
+     * Put an end to the reading loop, this method shouldn't be called in a
+     * thread to avoir thread duplication because the first one wouldn't have
+     * been closed early enough
      */
     public void stop();
 
@@ -62,9 +65,7 @@ public interface PlaybackListener {
 
     /**
      * Performs a volume conversion, volume reference used for db is 100, volume
-     * goes from 0 to 100, equivalent to -30db to 0db. ONLY USED DURING PLAYING
-     * (gain control isn't available before music has been played, at least one
-     * frame)
+     * goes from 0 to 100, equivalent to -30db to 0db.
      *
      * @param volume from 0 to 100, value is set to max or min if it exceeds
      * limits
@@ -72,8 +73,7 @@ public interface PlaybackListener {
     public void setVolume(int volume);
 
     /**
-     * Set the next frame to read WHILE PLAYING ONLY (time isn't when player
-     * thread isn't running)
+     * Set the next frame to read
      *
      * @param timeSec the time to set in seconds, value is set to 0 if negative
      * and to music length if it exceeds music.trackLength
