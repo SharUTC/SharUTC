@@ -122,6 +122,14 @@ public class SongDetailController extends SongSelectorController implements Init
     private TextField mTagInputTextArea;
     private CollectionChangeListener<Music> mRemoteCatalogListener;
 
+    
+     public static enum CatalogType{
+        local,
+        remote,
+        search
+    }
+     
+     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
 
