@@ -31,7 +31,7 @@ public class PlaybackListenerImpl implements Runnable, PlaybackListener {
     private final PlayerService playerService;
 
     /**
-     * {@inheritDoc}
+     * Create a new instance of the PlaybackListener, one instance is needed by music file
      */
     @Inject
     public PlaybackListenerImpl(PlayerService playerService, PropertyChangeListener pcl, FileService fileService, String filePath) {
@@ -42,7 +42,8 @@ public class PlaybackListenerImpl implements Runnable, PlaybackListener {
     }
 
     /**
-     * {@inheritDoc}
+     * Run the reading thread. Reading doesn't directly return, thread is
+     * waiting for its loop end to send MUSIC_END update
      */
     @Override
     public void run() {

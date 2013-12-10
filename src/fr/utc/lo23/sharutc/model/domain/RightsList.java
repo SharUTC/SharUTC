@@ -4,19 +4,19 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import fr.utc.lo23.sharutc.util.CollectionChangeListener;
 import fr.utc.lo23.sharutc.util.CollectionChangeSupport;
 import fr.utc.lo23.sharutc.util.CollectionEvent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Contains all rights relative to an account, stored with categoryId and
  * musicId to perform searches. Send updates when a Rights instance is addeed,
  * removed, updated, and when the list is cleared through a
  * CollectionChangeListener
- *
  */
 public class RightsList implements Serializable {
 
@@ -68,7 +68,7 @@ public class RightsList implements Serializable {
      * Add a Rights instancve to the RightsList at the specified index, send
      * update (ADD)
      *
-     * @param index where to add the rights, must be inside [0; size()]
+     * @param index  where to add the rights, must be inside [0; size()]
      * @param rights the rights to add
      */
     private void add(int index, Rights rights) {
@@ -79,8 +79,8 @@ public class RightsList implements Serializable {
     /**
      * Replace the Rights instance at the specified index, send update (UPDATE)
      *
-     * @param index where to update the Rights instance, must be inside [0;
-     * size()[
+     * @param index  where to update the Rights instance, must be inside [0;
+     *               size()[
      * @param rights the rights to add
      * @return the previously element at the given position
      */
@@ -146,7 +146,7 @@ public class RightsList implements Serializable {
      *
      * @param rights the right instance to find in this rightsList
      * @return index of the rights instance in this catalog, -1 if there's no
-     * such instance
+     *         such instance
      */
     private int indexOf(Rights rights) {
         return mRightsList.indexOf(rights);
@@ -214,6 +214,8 @@ public class RightsList implements Serializable {
                 log.debug("setRights : Rights doesn't exist, adding it to Rightlist");
                 mRightsList.add(rights);
             }
+            collectionChangeSupport.fireCollectionChanged(rights, mRightsList.indexOf(rights),
+                    CollectionEvent.Type.UPDATE);
         }
     }
 }
