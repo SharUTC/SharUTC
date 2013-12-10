@@ -188,10 +188,12 @@ public class SongDetailController extends SongSelectorController implements Init
 
     private void setUserScore() {
         mUserScore = mMusic.getScore(mAppModel.getProfile().getUserInfo().getPeerId());
-        if (mUserScore != null) {
-            mUserScore.addPropertyChangeListener(this);
-        } else if (mMusic != null) {
-            mMusic.addPropertyChangeListener(this);
+        if (mAppModel.getProfile().getUserInfo().getPeerId().equals(mMusic.getOwnerPeerId())) {
+            if (mUserScore != null) {
+                mUserScore.addPropertyChangeListener(this);
+            } else if (mMusic != null) {
+                mMusic.addPropertyChangeListener(this);
+            }
         }
     }
 
