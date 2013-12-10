@@ -1,5 +1,6 @@
 package fr.utc.lo23.sharutc.ui.custom.card;
 
+import fr.utc.lo23.sharutc.ui.SongDetailController;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -18,6 +19,7 @@ public class ArtistCard extends SimpleCard implements EventHandler<Event> {
     private String mArtistName;
     private IArtistCard mInterface;
 
+    private SongDetailController.CatalogType type = SongDetailController.CatalogType.local;
     public ArtistCard(String artistName, IArtistCard i) {
         super("/fr/utc/lo23/sharutc/ui/fxml/artist_card.fxml");
         setOnMouseClicked(this);
@@ -25,6 +27,11 @@ public class ArtistCard extends SimpleCard implements EventHandler<Event> {
         mArtistName = artistName;
         artistNameLabel.setText(artistName);
     }
+    
+    public void setCatalogType(SongDetailController.CatalogType type){
+        this.type= type;
+    }
+    
 
     /**
      * Return the name of the artist.
@@ -44,7 +51,7 @@ public class ArtistCard extends SimpleCard implements EventHandler<Event> {
             final MouseEvent mouseEvent = (MouseEvent) event;
             if (mouseEvent.getButton().equals(MouseButton.PRIMARY)
                     && mouseEvent.getClickCount() == 2) {
-                mInterface.onArtistDetailRequested(mArtistName);
+                mInterface.onArtistDetailRequested(mArtistName, type);
 
             }
         }
@@ -61,6 +68,6 @@ public class ArtistCard extends SimpleCard implements EventHandler<Event> {
          *
          * @param artistName the name of the artist shown on the card.
          */
-        public void onArtistDetailRequested(String artistName);
+        public void onArtistDetailRequested(String artistName, SongDetailController.CatalogType type);
     }
 }

@@ -200,6 +200,7 @@ public class PeopleDetailController extends SongSelectorController implements Ri
 
         //display the new music card
         final SongCard newSongCard = new SongCard(music, PeopleDetailController.this, mAppModel);
+        
         mSongList.addChild(newSongCard);
     }
 
@@ -212,6 +213,12 @@ public class PeopleDetailController extends SongSelectorController implements Ri
 
         for (String artist : mArtistsFound) {
             ArtistCard newCard = new ArtistCard(artist, this);
+            if(!(mUserInfo.getPeerId()==mAppModel.getProfile().getUserInfo().getPeerId())){
+              newCard.setCatalogType(SongDetailController.CatalogType.remote);  
+            }
+            
+        
+        
             mArtistList.addChild(newCard);
         }
 
@@ -222,16 +229,16 @@ public class PeopleDetailController extends SongSelectorController implements Ri
     }
 
     @Override
-    public void onArtistDetailRequested(final String artistName) {
+    public void onArtistDetailRequested(final String artistName, SongDetailController.CatalogType type) {
         log.info("artist info requested " + artistName);
         if (mCallBack != null) {
-            mCallBack.onArtistDetailRequested(artistName);
+            mCallBack.onArtistDetailRequested(artistName, type);
         }
     }
 
     public interface IPeopleDetailController extends ISongListController {
 
-        public void onArtistDetailRequested(final String artistName);
+        public void onArtistDetailRequested(final String artistName, SongDetailController.CatalogType type);
 
         public void onTagFilterRequested(final String tagName);
     }

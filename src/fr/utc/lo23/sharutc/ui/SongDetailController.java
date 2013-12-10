@@ -118,6 +118,14 @@ public class SongDetailController extends SongSelectorController implements Init
     private TextArea mCommentInputTextArea;
     private TextField mTagInputTextArea;
 
+    
+     public static enum CatalogType{
+        local,
+        remote,
+        search
+    }
+     
+     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
 
