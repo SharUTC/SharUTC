@@ -108,10 +108,11 @@ public interface NetworkService {
      * Rate a music from another peer.
      *
      * @param peer the music owner
+     * @param scoringPeer the peer adding the score
      * @param music the music to rate
      * @param rating the rating
      */
-    public void setScore(Peer peer, Music music, Integer rating);
+    public void setScore(Peer peer, Peer scoringPeer, Music music, Integer rating);
 
     /**
      * Remove the user's rating from a music of a peer.

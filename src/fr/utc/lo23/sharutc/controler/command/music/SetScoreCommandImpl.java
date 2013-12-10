@@ -104,7 +104,8 @@ public class SetScoreCommandImpl implements SetScoreCommand {
             musicService.saveUserMusicFile();
             userService.saveProfileFiles();
         } else {
-            networkService.setScore(mPeer, mMusic, mScore); // distant
+            Peer ownerPeer = appModel.getActivePeerList().getPeerByPeerId(mMusic.getOwnerPeerId());
+            networkService.setScore(ownerPeer, mPeer, mMusic, mScore); // distant
         }
         log.info("SetScoreCommandImpl DONE");
     }

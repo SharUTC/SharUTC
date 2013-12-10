@@ -152,7 +152,7 @@ public class MessageHandlerImpl implements MessageHandler {
                         break;
                     case SCORE_SET:
                         setScoreCommand.setMusic((Music) messageParser.getValue(Message.MUSIC));
-                        setScoreCommand.setPeer(messageParser.getSource());
+                        setScoreCommand.setPeer((Peer) messageParser.getValue(Message.AUTHOR_PEER));
                         setScoreCommand.setScore((Integer) messageParser.getValue(Message.SCORE));
                         command = setScoreCommand;
                         break;
