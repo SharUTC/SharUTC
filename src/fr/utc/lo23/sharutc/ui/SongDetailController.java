@@ -124,14 +124,13 @@ public class SongDetailController extends SongSelectorController implements Init
     private TextField mTagInputTextArea;
     private CollectionChangeListener<Music> mRemoteCatalogListener;
 
-    
-     public static enum CatalogType{
+    public static enum CatalogType {
+
         local,
         remote,
         search
     }
-     
-     
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
 
@@ -150,8 +149,6 @@ public class SongDetailController extends SongSelectorController implements Init
             starAverageRate4,
             starAverageRate5
         };
-
-        ownerLogin.setText(mAppModel.getProfile().getUserInfo().getLogin());
 
         mAppModel.getLocalCatalog().addPropertyChangeListener(this);
 
@@ -191,10 +188,12 @@ public class SongDetailController extends SongSelectorController implements Init
 
     private void setUserScore() {
         mUserScore = mMusic.getScore(mAppModel.getProfile().getUserInfo().getPeerId());
-        if (mUserScore != null) {
-            mUserScore.addPropertyChangeListener(this);
-        } else if (mMusic != null) {
-            mMusic.addPropertyChangeListener(this);
+        if (mAppModel.getProfile().getUserInfo().getPeerId().equals(mMusic.getOwnerPeerId())) {
+            if (mUserScore != null) {
+                mUserScore.addPropertyChangeListener(this);
+            } else if (mMusic != null) {
+                mMusic.addPropertyChangeListener(this);
+            }
         }
     }
 
@@ -272,8 +271,6 @@ public class SongDetailController extends SongSelectorController implements Init
                 mCommentContainer.getChildren().add(new CommentView(comment));
             }
         }
-        //artificialy populate with some comments
-        //populateCommentContainer();
     }
 
     private void showMusicInfo() {
@@ -285,6 +282,7 @@ public class SongDetailController extends SongSelectorController implements Init
         addRemoveButton.setVisible(true);
 
         if (mAppModel.getLocalCatalog().contains(mMusic)) {
+            ownerLogin.setText(mAppModel.getProfile().getUserInfo().getLogin());
             addRemoveButton.setText("Remove");
             addRemoveButton.setOnAction(new EventHandler<ActionEvent>() {
                 @Override
@@ -295,6 +293,7 @@ public class SongDetailController extends SongSelectorController implements Init
                 }
             });
         } else {
+            ownerLogin.setText(mAppModel.getActivePeerList().getPeerByPeerId(mMusic.getOwnerPeerId()).getDisplayName());
             addRemoveButton.setText("Add");
             addRemoveButton.setOnAction(new EventHandler<ActionEvent>() {
                 @Override
@@ -342,6 +341,26 @@ public class SongDetailController extends SongSelectorController implements Init
         }
     }
 
+    /**
+     * HOT FIX
+     *
+     * If the owner of the current music is not the current user, this method
+     * fetch the remote catalog of the owner.
+     *
+     * This method is used to update the UI after a modification on a remote
+     * piece of {@link Music}.
+     *
+     * @param ownerPeer the {@link Peer} of the owner
+     */
+    private void fetchIfNeeded() {
+        final Peer ownerPeer = mAppModel.getActivePeerList().getPeerByPeerId(mMusic.getOwnerPeerId());
+        if (ownerPeer != null && !ownerPeer.equals(mAppModel.getProfile().getUserInfo().toPeer())) {
+            log.debug("Fetch music to update !");
+            mFetchRemoteCatalogCommand.setPeer(ownerPeer);
+            mFetchRemoteCatalogCommand.execute();
+        }
+    }
+
     private void handleAddTagAction(ActionEvent event) {
         final String tag = mTagInputTextArea.getText().trim();
         if (!tag.isEmpty()
@@ -380,12 +399,7 @@ public class SongDetailController extends SongSelectorController implements Init
                 //Update UI directly, since no events are triggered when a comment is added.
                 mCommentContainer.getChildren().clear();
                 loadComments();
-                if (!ownerPeer.equals(mAppModel.getProfile().getUserInfo().toPeer())) {
-                    //fetch the music in order to update the ui
-                    log.debug("Fetch music to update !");
-                    mFetchRemoteCatalogCommand.setPeer(ownerPeer);
-                    mFetchRemoteCatalogCommand.execute();
-                }
+                fetchIfNeeded();
             } else {
                 mCommentInputTextArea.clear();
                 mCommentInputTextArea.setText("user not connected anymore");
@@ -442,28 +456,8 @@ public class SongDetailController extends SongSelectorController implements Init
             mSetScoreCommand.setScore(newCandidateRate);
             mSetScoreCommand.setPeer(mAppModel.getProfile().getUserInfo().toPeer());
             mSetScoreCommand.execute();
+            fetchIfNeeded();
         }
-    }
-
-    private void populateCommentContainer() {
-        final Comment comment1 = new Comment();
-        comment1.setAuthorName("Jake");
-        comment1.setIndex(1);
-        comment1.setText("This song saved my life");
-
-        final Comment comment2 = new Comment();
-        comment2.setAuthorName("Amelia");
-        comment2.setIndex(2);
-        comment2.setText("Sick !");
-
-        final Comment comment3 = new Comment();
-        comment3.setAuthorName("PainInTheNeck");
-        comment3.setIndex(3);
-        comment3.setText("I'm not realy a fan of the genre. Is that event music ?!?");
-
-        mCommentContainer.getChildren().add(new CommentView(comment1));
-        mCommentContainer.getChildren().add(new CommentView(comment2));
-        mCommentContainer.getChildren().add(new CommentView(comment3));
     }
 
     @Override
@@ -527,13 +521,18 @@ public class SongDetailController extends SongSelectorController implements Init
         log.debug("comment edition requested !");
         mEditCommentCommand.setMusic(mMusic);
         mEditCommentCommand.setAuthorPeer(mAppModel.getProfile().getUserInfo().toPeer());
-        mEditCommentCommand.setOwnerPeer(mAppModel.getProfile().getUserInfo().toPeer());
+        if (mMusic.getOwnerPeerId().equals(mAppModel.getProfile().getUserInfo().getPeerId())) {
+            mEditCommentCommand.setOwnerPeer(mAppModel.getProfile().getUserInfo().toPeer());
+        } else {
+            mEditCommentCommand.setOwnerPeer(mAppModel.getActivePeerList().getPeerByPeerId(mMusic.getOwnerPeerId()));
+        }
         mEditCommentCommand.setCommentId(comment.getIndex());
         mEditCommentCommand.setComment(newCommentText);
         mEditCommentCommand.execute();
         //Update UI directly, since no events are triggered when a comment is deleted
         mCommentContainer.getChildren().clear();
         loadComments();
+        fetchIfNeeded();
     }
 
     @Override
@@ -546,6 +545,7 @@ public class SongDetailController extends SongSelectorController implements Init
         //Update UI directly, since no events are triggered when a comment is deleted
         mCommentContainer.getChildren().clear();
         loadComments();
+        fetchIfNeeded();
     }
 
     @Override
