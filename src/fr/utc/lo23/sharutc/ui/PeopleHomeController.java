@@ -453,14 +453,17 @@ public class PeopleHomeController extends DragPreviewDrawer implements Initializ
                 addNewGroupCard(c, true);
             } else if (item instanceof UserInfo) {
                 //new user connected
-                Platform.runLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        final UserInfo newConnectedUser = (UserInfo) item;
-                        PeopleCard newCard = new PeopleCard(newConnectedUser, PeopleHomeController.this, PeopleCard.USAGE_CONNECTED);
-                        peopleContainer.getChildren().add(newCard);
-                    }
-                });
+                if (mCurrentCategory.equals(mVirtualConnectedGroup.getModel())) {
+                    //refresh only if current category is connected
+                    Platform.runLater(new Runnable() {
+                        @Override
+                        public void run() {
+                            final UserInfo newConnectedUser = (UserInfo) item;
+                            PeopleCard newCard = new PeopleCard(newConnectedUser, PeopleHomeController.this, PeopleCard.USAGE_CONNECTED);
+                            peopleContainer.getChildren().add(newCard);
+                        }
+                    });
+                }
             }
         } else if (type.equals(CollectionEvent.Type.REMOVE)) {
             //REMOVE EVENT
