@@ -4,6 +4,10 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 import java.io.File;
 import java.io.Serializable;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Represents user's information
@@ -220,5 +224,29 @@ public class UserInfo implements Serializable {
         hash = 97 * hash + (this.mAge != null ? this.mAge.hashCode() : 0);
         hash = 97 * hash + (this.mAvatarFile != null ? this.mAvatarFile.hashCode() : 0);
         return hash;
+    }
+    
+    public static String sha1(String s) {
+        String sha1 = "";
+        
+        try {
+            MessageDigest d = MessageDigest.getInstance("SHA-1");
+            d.reset();
+            d.update(s.getBytes());
+            sha1 = byteArrayToHexString(d.digest());
+        } catch (NoSuchAlgorithmException ex) {
+            Logger.getLogger(UserInfo.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return sha1;
+    }
+    
+    private static String byteArrayToHexString(byte[] b) {
+        String result = "";
+        for (int i = 0; i < b.length; i++) {
+            result +=
+                    Integer.toString((b[i] & 0xff) + 0x100, 16).substring(1);
+        }
+        return result;
     }
 }

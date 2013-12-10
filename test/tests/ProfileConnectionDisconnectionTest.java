@@ -124,7 +124,7 @@ public class ProfileConnectionDisconnectionTest {
 
         Assert.assertNotNull(appModel.getProfile());
         Assert.assertEquals(appModel.getProfile().getUserInfo().getLogin(), login);
-        Assert.assertEquals(appModel.getProfile().getUserInfo().getPassword(), password);
+        Assert.assertEquals(appModel.getProfile().getUserInfo().getPassword(), UserInfo.sha1(password));
         Assert.assertEquals(appModel.getProfile().getUserInfo().getFirstName(), firstName);
         Assert.assertEquals(appModel.getProfile().getUserInfo().getLastName(), lastName);
 
