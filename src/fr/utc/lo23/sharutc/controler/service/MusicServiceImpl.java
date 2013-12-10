@@ -304,10 +304,13 @@ public class MusicServiceImpl implements MusicService {
         if (peer == null || music == null || comment == null || comment.trim().isEmpty()) {
             throwMissingParameter();
         } else {
-            if (!comment.isEmpty()) {
-                Comment myComment = new Comment(comment, peer.getId());
-                myComment.setAuthorName(peer.getDisplayName());
-                music.addComment(myComment);
+            Music m = appModel.getLocalCatalog().findMusicById(music.getId());
+            if(m != null){
+                if (!comment.isEmpty()) {
+                    Comment myComment = new Comment(comment, peer.getId());
+                    myComment.setAuthorName(peer.getDisplayName());
+                    m.addComment(myComment);
+                }
             }
         }
         log.debug("addComment DONE");
@@ -322,11 +325,14 @@ public class MusicServiceImpl implements MusicService {
         if (peer == null || music == null || comment == null || comment.trim().isEmpty() || commentIndex == null) {
             throwMissingParameter();
         } else {
-            Comment commentToEdit = music.getComment(peer, commentIndex);
-            if (commentToEdit != null) {
-                commentToEdit.setText(comment);
-            } else {
-                log.warn("editComment : Comment to edit not found");
+            Music m = appModel.getLocalCatalog().findMusicById(music.getId());
+            if(m != null){
+                Comment commentToEdit = m.getComment(peer, commentIndex);
+                if (commentToEdit != null) {
+                    commentToEdit.setText(comment);
+                } else {
+                    log.warn("editComment : Comment to edit not found");
+                }
             }
         }
         log.debug("editComment DONE");
@@ -341,11 +347,14 @@ public class MusicServiceImpl implements MusicService {
         if (peer == null || music == null || commentIndex == null) {
             throwMissingParameter();
         } else {
-            Comment myComment = music.getComment(peer, commentIndex);
-            if (myComment != null) {
-                music.removeComment(myComment);
-            } else {
-                log.warn("removeComment : Comment to remove not found");
+            Music m = appModel.getLocalCatalog().findMusicById(music.getId());
+            if(m != null){
+                Comment myComment = m.getComment(peer, commentIndex);
+                if (myComment != null) {
+                    music.removeComment(myComment);
+                } else {
+                    log.warn("removeComment : Comment to remove not found");
+                }
             }
         }
         log.debug("removeComment DONE");
@@ -390,9 +399,12 @@ public class MusicServiceImpl implements MusicService {
         if (peer == null || music == null) {
             throwMissingParameter();
         } else {
-            Score musicScore = music.getScore(peer);
-            if (musicScore != null) {
-                music.removeScore(musicScore);
+            Music m = appModel.getLocalCatalog().findMusicById(music.getId());
+            if(m != null){
+                Score musicScore = m.getScore(peer);
+                if (musicScore != null) {
+                    m.removeScore(musicScore);
+                }
             }
         }
         log.debug("unsetScore DONE");

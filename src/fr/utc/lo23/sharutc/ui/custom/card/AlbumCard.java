@@ -55,6 +55,9 @@ public class AlbumCard extends SimpleCard implements EventHandler<Event> {
         return mAlbumName;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void handle(final Event event) {
         if (event instanceof MouseEvent) {

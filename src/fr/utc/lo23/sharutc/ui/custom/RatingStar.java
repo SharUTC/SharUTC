@@ -4,6 +4,12 @@ import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
+/**
+ * A simple {@link Button} with a nice look of a star.
+ *
+ * This class is used to rate something. It has to style : one when the star is
+ * filled and one when the star is not filled.
+ */
 public class RatingStar extends Button {
 
     private static final Image STAR_EMPTY =
@@ -21,6 +27,11 @@ public class RatingStar extends Button {
         getStyleClass().add("imageButton");
     }
 
+    /**
+     * Set the proper style according to the fill state.
+     *
+     * @param isFill is the star filled.
+     */
     public void fill(boolean isFill) {
         mIsFill = isFill;
         if (isFill) {
@@ -30,6 +41,11 @@ public class RatingStar extends Button {
         }
     }
 
+    /**
+     * Get the current fill state of the button.
+     *
+     * @return true is the star is filled, false otherwise.
+     */
     public boolean isFilled() {
         return mIsFill;
     }

@@ -350,7 +350,7 @@ public class MainController extends NavigationController implements Initializabl
 
                 List<Music> musics = new ArrayList<Music>();
                 for (SongCard songCard : songs) {
-                    //mPlayerController.addSong(songCard.getModel());
+                    //mPlayerController.addSong(songCard.getMusic());
                     musics.add(songCard.getModel());
                     songCard.dropped();
                 }
@@ -358,7 +358,7 @@ public class MainController extends NavigationController implements Initializabl
 
             } else {
                 //only add selected song to the player
-                //mPlayerController.addSong(droppedCard.getModel());
+                //mPlayerController.addSong(droppedCard.getMusic());
                 mAddToPlaylistCommand.setMusic(droppedCard.getModel());
             }
             mAddToPlaylistCommand.execute();

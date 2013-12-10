@@ -50,6 +50,9 @@ public class TagCard extends SimpleCard implements EventHandler<Event> {
         tagWeightLabel.setText(String.valueOf(weight));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void handle(Event event) {
         final Object source = event.getSource();

@@ -1,6 +1,5 @@
 package fr.utc.lo23.sharutc.ui.custom;
 
-
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.scene.control.ScrollPane;
@@ -10,28 +9,28 @@ import javafx.scene.input.ScrollEvent;
 import java.util.Timer;
 import java.util.TimerTask;
 
+/**
+ * A neat {@link EventHandler} that handles the Event DragEvent.DRAG_OVER to
+ * scroll horizontally. 
+ */
 public class HorizontalScrollHandler implements EventHandler<Event> {
 
     /**
      * speed of the auto scroll
      */
     private static final double SPEED = 1.0 / 100;
-
     /**
      * area for scroll detection in percent
      */
     private static final double SCROLL_BOUNDARY_IN_PERCENT = 10;
-
     /**
      * refresh delay, also change the speed when onDragOver detected
      */
     private static final int TIMER_REFRESH_IN_MILLI = 20;
-
     /**
      * mouse scroll direction
      */
     private static final int DIRECTION = -1;
-
     private ScrollPane mScrollPane;
     private int mDirection;
     private Timer mTimer;
@@ -46,6 +45,9 @@ public class HorizontalScrollHandler implements EventHandler<Event> {
 
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void handle(Event event) {
         if (event.getEventType().equals(DragEvent.DRAG_OVER)) {
@@ -98,5 +100,4 @@ public class HorizontalScrollHandler implements EventHandler<Event> {
             mTimer = null;
         }
     }
-
 }

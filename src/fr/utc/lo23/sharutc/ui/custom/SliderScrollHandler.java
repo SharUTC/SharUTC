@@ -13,6 +13,9 @@ public class SliderScrollHandler implements EventHandler<ScrollEvent> {
 
     private static final Logger log = LoggerFactory.getLogger(SliderScrollHandler.class);
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void handle(ScrollEvent scrollEvent) {
         if (scrollEvent.getSource() instanceof Slider) {

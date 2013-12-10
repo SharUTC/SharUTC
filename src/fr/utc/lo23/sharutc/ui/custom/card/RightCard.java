@@ -7,6 +7,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.Region;
 
@@ -28,7 +29,7 @@ public class RightCard extends SimpleCard implements EventHandler<Event> {
      * Card displayed to represent a right
      *
      * @param rightText text displayed to the user
-     * @param i interface to get the callback
+     * @param i         interface to get the callback
      */
     public RightCard(String rightText, IRightCard i) {
         super("/fr/utc/lo23/sharutc/ui/fxml/right_card.fxml");
@@ -41,10 +42,14 @@ public class RightCard extends SimpleCard implements EventHandler<Event> {
         setOnDragOver(this);
         setOnDragExited(this);
         setOnDragDropped(this);
+        setOnMouseClicked(this);
 
         displayDropOverlay(false);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void handle(Event event) {
         final Object source = event.getSource();
@@ -56,6 +61,8 @@ public class RightCard extends SimpleCard implements EventHandler<Event> {
             onDragExited((DragEvent) event);
         } else if (event.getEventType() == DragEvent.DRAG_DROPPED) {
             onDragDropped((DragEvent) event);
+        } else if (event.getEventType() == MouseEvent.MOUSE_CLICKED) {
+            mInterface.onRightCardClicked(this);
         }
     }
 
@@ -136,8 +143,16 @@ public class RightCard extends SimpleCard implements EventHandler<Event> {
          * The {@link IRightCard} is being ask to add the right of the
          * {@link RightCard} to the selected pieces of {@link Music}.
          *
-         * @param card the {@link RighCard} that contains the right.
+         * @param card the {@link RighCard} that represent the right.
          */
         public void onSongAdded(RightCard card);
+
+        /**
+         * The {@link IRightCard} is being informed that the
+         * {@link RightCard} has been clicked
+         *
+         * @param card the {@link RightCard} that represent the right.
+         */
+        public void onRightCardClicked(RightCard card);
     }
 }

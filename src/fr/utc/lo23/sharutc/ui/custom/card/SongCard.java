@@ -82,6 +82,9 @@ public class SongCard extends DraggableCard implements EventHandler<Event> {
         tagEditionButton.setVisible(isVisible);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void handle(Event event) {
         final Object source = event.getSource();

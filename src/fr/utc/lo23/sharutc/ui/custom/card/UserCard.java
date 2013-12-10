@@ -55,6 +55,9 @@ public class UserCard extends SimpleCard implements EventHandler<Event> {
         return mUserInfo;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void handle(final Event event) {
         if (event instanceof MouseEvent) {
