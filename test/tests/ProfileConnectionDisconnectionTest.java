@@ -91,14 +91,14 @@ public class ProfileConnectionDisconnectionTest {
         // add first user
         String login = "tudorluchy1";
         String password = "password1";
-        //  Long peerId = 4L;
+        // Long peerId = 4L;
         String firstName = "Tudor";
         String lastName = "Luchiancenco";
 
         UserInfo userInfo = new UserInfo();
         userInfo.setLogin(login);
         userInfo.setPassword(password);
-        //   userInfo.setPeerId(peerId);
+        // userInfo.setPeerId(peerId);
         userInfo.setFirstName(firstName);
         userInfo.setLastName(lastName);
         userInfo.setAge(22);
@@ -123,10 +123,7 @@ public class ProfileConnectionDisconnectionTest {
         connectionRequestCommand.execute();
 
         Assert.assertNotNull(appModel.getProfile());
-        Assert.assertEquals(appModel.getProfile().getUserInfo().getLogin(), login);
-        Assert.assertEquals(appModel.getProfile().getUserInfo().getPassword(), UserInfo.sha1(password));
-        Assert.assertEquals(appModel.getProfile().getUserInfo().getFirstName(), firstName);
-        Assert.assertEquals(appModel.getProfile().getUserInfo().getLastName(), lastName);
+        Assert.assertTrue(appModel.getProfile().getUserInfo().equals(userInfo));
 
         // tests
         Message m = networkService.getSentMessage();

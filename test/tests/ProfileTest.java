@@ -144,12 +144,8 @@ public class ProfileTest {
         connectionRequestCommand.execute();
         Assert.assertNotNull(appModel.getProfile());
         
-        Assert.assertTrue("accountCreationCommand failed: first name is not the same", appModel.getProfile().getUserInfo().getFirstName().equals(info.getFirstName()));
-        Assert.assertTrue("accountCreationCommand failed: last name is not the same", appModel.getProfile().getUserInfo().getLastName().equals(info.getLastName()));
-        Assert.assertTrue("accountCreationCommand failed: login is not the same", appModel.getProfile().getUserInfo().getLogin().equals(info.getLogin()));
-        Assert.assertTrue("accountCreationCommand failed: password is not the same", appModel.getProfile().getUserInfo().getPassword().equals(info.getPassword()));
-        Assert.assertTrue("accountCreationCommand failed: age is not the same", appModel.getProfile().getUserInfo().getAge().equals(info.getAge()));
-    
+        Assert.assertTrue("accountCreationCommand failed", appModel.getProfile().getUserInfo().equals(info));
+        
         ///////////////////
         // Connected peers test
         ///////////////////
@@ -201,11 +197,7 @@ public class ProfileTest {
         addContactCommand.execute();
         Assert.assertEquals("addContactCommand failed", 1, appModel.getProfile().getContacts().getContacts().size());
         
-        Assert.assertTrue("addContactCommand failed", appModel.getProfile().getContacts().findById(cCree.getUserInfo().getPeerId()).getUserInfo().getFirstName().equals(uiContact.getFirstName()));
-        Assert.assertTrue("addContactCommand failed", appModel.getProfile().getContacts().findById(cCree.getUserInfo().getPeerId()).getUserInfo().getLastName().equals(uiContact.getLastName()));
-        Assert.assertTrue("addContactCommand failed", appModel.getProfile().getContacts().findById(cCree.getUserInfo().getPeerId()).getUserInfo().getLogin().equals(uiContact.getLogin()));
-        Assert.assertTrue("addContactCommand failed", appModel.getProfile().getContacts().findById(cCree.getUserInfo().getPeerId()).getUserInfo().getPassword().equals(uiContact.getPassword()));
-        Assert.assertTrue("addContactCommand failed", appModel.getProfile().getContacts().findById(cCree.getUserInfo().getPeerId()).getUserInfo().getAge().equals(uiContact.getAge()));
+        Assert.assertTrue("addContactCommand failed", appModel.getProfile().getContacts().findById(cCree.getUserInfo().getPeerId()).getUserInfo().equals(uiContact));
 
         Assert.assertTrue("addContactCommand failed", appModel.getProfile().getContacts().findById(cCree.getUserInfo().getPeerId()).isInPublic());
         
