@@ -1,5 +1,6 @@
 package fr.utc.lo23.sharutc.model.userdata;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
@@ -62,7 +63,7 @@ public class Contact implements Serializable {
      * @param categoryIds - the list of the ids of the categories in which the
      * contact is
      */
-    public void setCategoryId(Set<Integer> categoryIds) {
+    public void setCategoryIds(Set<Integer> categoryIds) {
         this.mCategoryIds = categoryIds;
     }
 
@@ -91,6 +92,7 @@ public class Contact implements Serializable {
      *
      * @return a boolean
      */
+    @JsonIgnore
     public boolean isInPublic() {
         for (Integer c : mCategoryIds) {
             if (c.equals(Category.PUBLIC_CATEGORY_ID))

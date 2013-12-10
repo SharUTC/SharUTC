@@ -86,6 +86,9 @@ public class NetworkServiceImpl implements NetworkService {
         mListenThread.stop();
         mPeerDiscoverySocket.stop();
         mHeartbeatThread.stop();
+        for (PeerSocket peer : mPeers.values()) {
+            peer.stop();
+        }
     }
 
     /**
