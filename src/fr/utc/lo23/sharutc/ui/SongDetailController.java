@@ -150,8 +150,6 @@ public class SongDetailController extends SongSelectorController implements Init
             starAverageRate5
         };
 
-        ownerLogin.setText(mAppModel.getProfile().getUserInfo().getLogin());
-
         mAppModel.getLocalCatalog().addPropertyChangeListener(this);
 
         mRemoteCatalogListener = new CollectionChangeListener<Music>() {
@@ -282,6 +280,7 @@ public class SongDetailController extends SongSelectorController implements Init
         addRemoveButton.setVisible(true);
 
         if (mAppModel.getLocalCatalog().contains(mMusic)) {
+            ownerLogin.setText(mAppModel.getProfile().getUserInfo().getLogin());
             addRemoveButton.setText("Remove");
             addRemoveButton.setOnAction(new EventHandler<ActionEvent>() {
                 @Override
@@ -292,6 +291,7 @@ public class SongDetailController extends SongSelectorController implements Init
                 }
             });
         } else {
+            ownerLogin.setText(mAppModel.getActivePeerList().getPeerByPeerId(mMusic.getOwnerPeerId()).getDisplayName());
             addRemoveButton.setText("Add");
             addRemoveButton.setOnAction(new EventHandler<ActionEvent>() {
                 @Override
@@ -306,7 +306,7 @@ public class SongDetailController extends SongSelectorController implements Init
                     mDownloadMusicsCommand.setCatalog(catalog);
                     mDownloadMusicsCommand.execute();
                 }
-            });            
+            });
         }
     }
 
@@ -341,7 +341,7 @@ public class SongDetailController extends SongSelectorController implements Init
 
     /**
      * HOT FIX
-     * 
+     *
      * If the owner of the current music is not the current user, this method
      * fetch the remote catalog of the owner.
      *
@@ -358,7 +358,6 @@ public class SongDetailController extends SongSelectorController implements Init
             mFetchRemoteCatalogCommand.execute();
         }
     }
-    
 
     private void handleAddTagAction(ActionEvent event) {
         final String tag = mTagInputTextArea.getText().trim();
@@ -520,11 +519,11 @@ public class SongDetailController extends SongSelectorController implements Init
         log.debug("comment edition requested !");
         mEditCommentCommand.setMusic(mMusic);
         mEditCommentCommand.setAuthorPeer(mAppModel.getProfile().getUserInfo().toPeer());
-        if(mMusic.getOwnerPeerId().equals(mAppModel.getProfile().getUserInfo().getPeerId())) {
+        if (mMusic.getOwnerPeerId().equals(mAppModel.getProfile().getUserInfo().getPeerId())) {
             mEditCommentCommand.setOwnerPeer(mAppModel.getProfile().getUserInfo().toPeer());
         } else {
             mEditCommentCommand.setOwnerPeer(mAppModel.getActivePeerList().getPeerByPeerId(mMusic.getOwnerPeerId()));
-        }        
+        }
         mEditCommentCommand.setCommentId(comment.getIndex());
         mEditCommentCommand.setComment(newCommentText);
         mEditCommentCommand.execute();
