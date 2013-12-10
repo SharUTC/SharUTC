@@ -12,6 +12,8 @@ import fr.utc.lo23.sharutc.ui.custom.card.DraggableCard;
 import fr.utc.lo23.sharutc.ui.custom.card.RightCard;
 import fr.utc.lo23.sharutc.ui.custom.card.SimpleCard;
 import fr.utc.lo23.sharutc.ui.custom.card.SongRightCard;
+import fr.utc.lo23.sharutc.util.CollectionChangeListener;
+import fr.utc.lo23.sharutc.util.CollectionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -30,7 +32,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
-public class GroupRightController extends DragPreviewDrawer implements Initializable, SongRightCard.ISongCardRight, RightCard.IRightCard {
+public class GroupRightController extends DragPreviewDrawer implements Initializable, SongRightCard.ISongCardRight, RightCard.IRightCard, CollectionChangeListener {
 
     /**
      * local identifier
@@ -82,6 +84,8 @@ public class GroupRightController extends DragPreviewDrawer implements Initializ
 
         mSongRightCardSelected = new ArrayList<SongRightCard>();
         drawRightCard();
+
+        mAppModel.getRightsList().addPropertyChangeListener(this);
     }
 
 
@@ -315,9 +319,6 @@ public class GroupRightController extends DragPreviewDrawer implements Initializ
             //execute the command
             manageRightsCommand.execute();
         }
-
-        //TODO use property change listener for updating ui
-        displayAllMusic();
     }
 
     @Override
@@ -371,6 +372,19 @@ public class GroupRightController extends DragPreviewDrawer implements Initializ
 
     @Override
     public void onDetach() {
-        //To change body of implemented methods use File | Settings | File Templates.
+        mAppModel.getRightsList().removePropertyChangeListener(this);
+    }
+
+    @Override
+    public void collectionChanged(CollectionEvent ev) {
+        final CollectionEvent.Type type = ev.getType();
+        final Object item = ev.getItem();
+        if (CollectionEvent.Type.UPDATE.equals(type)) {
+            if (item instanceof Rights) {
+                //update UI
+                displayAllMusic();
+                log.info("Rights updated : " + ((Rights) item).getMusicId());
+            }
+        }
     }
 }

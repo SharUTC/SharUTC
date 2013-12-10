@@ -46,15 +46,24 @@ public class SongRightCard extends DraggableCard implements EventHandler<Event> 
 
         buttonContainer.setDisable(true);
 
+        this.updateRights(rights);
+
+        setOnMouseClicked(this);
+        setOnMouseEntered(this);
+        setOnMouseExited(this);
+    }
+
+    /**
+     * set rights to update the ui
+     *
+     * @param rights
+     */
+    public void updateRights(Rights rights) {
         mRights = rights;
 
         checkBoxEdit.setSelected(mRights.getMayListen());
         checkBoxRead.setSelected(mRights.getMayReadInfo());
         checkBoxComment.setSelected(mRights.getMayNoteAndComment());
-
-        setOnMouseClicked(this);
-        setOnMouseEntered(this);
-        setOnMouseExited(this);
     }
 
     /**
