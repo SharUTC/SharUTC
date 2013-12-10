@@ -272,8 +272,6 @@ public class SongDetailController extends SongSelectorController implements Init
                 mCommentContainer.getChildren().add(new CommentView(comment));
             }
         }
-        //artificialy populate with some comments
-        //populateCommentContainer();
     }
 
     private void showMusicInfo() {
@@ -443,27 +441,6 @@ public class SongDetailController extends SongSelectorController implements Init
             mSetScoreCommand.setPeer(mAppModel.getProfile().getUserInfo().toPeer());
             mSetScoreCommand.execute();
         }
-    }
-
-    private void populateCommentContainer() {
-        final Comment comment1 = new Comment();
-        comment1.setAuthorName("Jake");
-        comment1.setIndex(1);
-        comment1.setText("This song saved my life");
-
-        final Comment comment2 = new Comment();
-        comment2.setAuthorName("Amelia");
-        comment2.setIndex(2);
-        comment2.setText("Sick !");
-
-        final Comment comment3 = new Comment();
-        comment3.setAuthorName("PainInTheNeck");
-        comment3.setIndex(3);
-        comment3.setText("I'm not realy a fan of the genre. Is that event music ?!?");
-
-        mCommentContainer.getChildren().add(new CommentView(comment1));
-        mCommentContainer.getChildren().add(new CommentView(comment2));
-        mCommentContainer.getChildren().add(new CommentView(comment3));
     }
 
     @Override
