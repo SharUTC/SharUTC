@@ -103,7 +103,8 @@ public class RemoveCommentCommandImpl implements RemoveCommentCommand {
             musicService.removeFromKnownPeersIfUseless(mPeer);
             musicService.saveUserMusicFile();
         } else {
-            networkService.removeComment(mPeer, mMusic, mCommentId); // distant
+            Peer ownerPeer = appModel.getActivePeerList().getPeerByPeerId(mMusic.getOwnerPeerId());
+            networkService.removeComment(ownerPeer, mPeer, mMusic, mCommentId); // distant
         }
         log.info("RemoveCommentCommandImpl DONE");
     }

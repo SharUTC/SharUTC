@@ -99,10 +99,11 @@ public interface NetworkService {
      * Remove a comment from another peer's music.
      *
      * @param peer the music owner
+     * @param commenter the owner of the comment
      * @param music the commented music
      * @param commentIndex the comment's identifier
      */
-    public void removeComment(Peer peer, Music music, Integer commentIndex);
+    public void removeComment(Peer peer, Peer commenter, Music music, Integer commentIndex);
 
     /**
      * Rate a music from another peer.

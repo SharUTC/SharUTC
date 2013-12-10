@@ -240,8 +240,8 @@ public class NetworkServiceImpl implements NetworkService {
      * {inheritDoc}
      */
     @Override
-    public void removeComment(Peer peer, Music music, Integer commentIndex) {
-        Message message = messageParser.write(MessageType.COMMENT_REMOVE, new Object[][]{{Message.MUSIC, music}, {Message.COMMENT_ID, commentIndex}});
+    public void removeComment(Peer peer, Peer commenter, Music music, Integer commentIndex) {
+        Message message = messageParser.write(MessageType.COMMENT_REMOVE, new Object[][]{{Message.AUTHOR_PEER, commenter}, {Message.MUSIC, music}, {Message.COMMENT_ID, commentIndex}});
         sendUnicast(message, peer);
     }
 
