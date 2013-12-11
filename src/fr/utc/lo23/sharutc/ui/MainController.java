@@ -424,7 +424,6 @@ public class MainController extends NavigationController implements Initializabl
                     }
 
                 } else if (event.getClickCount() > 1) {
-                    System.out.println("playMusicFromPlaylist");
                     mPlayerService.playMusicFromPlaylist(listView.getSelectionModel().getSelectedIndex());
                 }
             }
