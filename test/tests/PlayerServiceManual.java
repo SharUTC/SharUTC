@@ -161,8 +161,8 @@ public class PlayerServiceManual implements PropertyChangeListener {
         if (evt.getPropertyName().equals(PlayerServiceImpl.Property.CURRENT_TIME.name())) {
             currentTimeSec = (Long) evt.getNewValue();
             System.out.println("Time : " + currentTimeSec + " / " + playerService.getTotalTimeSec() + " seconds");
-        } else if (evt.getPropertyName().equals(PlayerServiceImpl.Property.CURRENT_MUSIC.name())) {
-            System.out.println("Music : " + evt.getNewValue());
+        } else if (evt.getPropertyName().equals(PlayerServiceImpl.Property.CURRENT_MUSIC_INDEX.name())) {
+            System.out.println("Current Music Index : " + evt.getNewValue());
         } else if (evt.getPropertyName().equals(PlayerServiceImpl.Property.MUTE.name())) {
             System.out.println("Mute : " + (((Boolean) evt.getNewValue()).booleanValue() == true ? "ON" : "OFF"));
         } else if (evt.getPropertyName().equals(PlayerServiceImpl.Property.VOLUME.name())) {

@@ -9,8 +9,6 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.File;
 import java.net.URL;
-import java.util.logging.Level;
-import javazoom.jl.decoder.JavaLayerException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

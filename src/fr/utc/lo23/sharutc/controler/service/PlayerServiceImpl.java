@@ -27,7 +27,7 @@ import org.slf4j.LoggerFactory;
  */
 @Singleton
 public class PlayerServiceImpl implements PlayerService, PropertyChangeListener, CollectionChangeListener<Music> {
-    
+
     private static final Logger log = LoggerFactory
             .getLogger(PlayerServiceImpl.class);
     public static final int VOLUME_MAX = 100;
@@ -38,13 +38,13 @@ public class PlayerServiceImpl implements PlayerService, PropertyChangeListener,
     private final MusicService musicService;
     private static PlaybackListener player;
     private final Catalog mPlaylist;
-    private int mCurrentMusicIndex = -1;
+    private Music mCurrentMusic;
     private Long mCurrentTimeSec = 0L;
     private Integer volume = 100;
     private boolean mute = false;
     private boolean pause = false;
     private PropertyChangeSupport propertyChangeSupport;
-    
+
     @Inject
     public PlayerServiceImpl(AppModel appModel, FileService fileService, MusicService musicService, NetworkService networkService) {
         this.appModel = appModel;
@@ -73,25 +73,9 @@ public class PlayerServiceImpl implements PlayerService, PropertyChangeListener,
      * {@inheritDoc}
      */
     @Override
-    public void removeFromPlaylist(Integer index) {
-        if (index >= 0) {
+    public void removeFromPlaylist(int index) {
+        if (index >= 0 && index < mPlaylist.size()) {
             if (mPlaylist.removeAt(index)) {
-                log.debug("removeFromPlaylist : music removed");
-            } else {
-                log.error("removeFromPlaylist : music NOT removed, not found");
-            }
-        } else {
-            log.warn("removeFromPlaylist : music parameter is null");
-        }
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void removeFromPlaylist(Music music) {
-        if (music != null) {
-            if (mPlaylist.remove(music)) {
                 log.debug("removeFromPlaylist : music removed");
             } else {
                 log.error("removeFromPlaylist : music NOT removed, not found");
@@ -115,23 +99,11 @@ public class PlayerServiceImpl implements PlayerService, PropertyChangeListener,
      * {@inheritDoc}
      */
     @Override
-    public synchronized void playMusicFromPlaylist(Music music) {
+    public synchronized void playMusicFromPlaylist(int musicIndexInPlaylist) {
         log.info("playMusicFromPlaylist");
-        if (music != null && mPlaylist.contains(music)) {
-            playMusicFromPlaylist(mPlaylist.indexOf(music));
-        }
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public synchronized void playMusicFromPlaylist(int musicIndex) {
-        log.info("playMusicFromPlaylist");
-        if (musicIndex < mPlaylist.size() && musicIndex >= 0) {
-            playerStop();
-            setCurrentMusicIndex(musicIndex);
-            playerPlay();
-        }
+        playerStop();
+        setCurrentMusicByIndex(musicIndexInPlaylist);
+        playerPlay();
     }
 
     /**
@@ -159,7 +131,7 @@ public class PlayerServiceImpl implements PlayerService, PropertyChangeListener,
             int musicIndex = mPlaylist.indexOf(musicWithBytes);
             Music musicFromPlaylist = mPlaylist.get(musicIndex);
             musicFromPlaylist.setFileBytes(musicWithBytes.getFileBytes());
-            setCurrentMusic(musicFromPlaylist);
+            setCurrentMusicByIndex(musicIndex);
             playerPlay();
         }
     }
@@ -171,16 +143,16 @@ public class PlayerServiceImpl implements PlayerService, PropertyChangeListener,
     public synchronized void playerPlay() {
         log.info("playerPlay");
         if (player == null) {
-            if (mCurrentMusicIndex == -1 && !mPlaylist.isEmpty()) {
-                setCurrentMusicIndex(0);
+            if (mCurrentMusic == null && !mPlaylist.isEmpty()) {
+                setCurrentMusicByIndex(0);
             }
-            if (mCurrentMusicIndex != -1) {
+            if (mCurrentMusic != null) {
                 try {
-                    File tmpFile = fileService.buildTmpMusicFile(getCurrentMusic().getFileBytes());
+                    File tmpFile = fileService.buildTmpMusicFile(mCurrentMusic.getFileBytes());
                     player = new PlaybackListenerImpl(this, this, fileService, tmpFile.getCanonicalPath()) {
                         @Override
                         public void playbackEvent(PlayerEvent playerEvent) {
-                            
+
                             switch (playerEvent.eventType) {
                                 case STARTED:
                                     log.debug("playbackStarted");
@@ -242,11 +214,11 @@ public class PlayerServiceImpl implements PlayerService, PropertyChangeListener,
         // set current to next or first
         if (!mPlaylist.isEmpty()) {
             int nextIndex = 0;
-            if (mCurrentMusicIndex != -1) {
-                nextIndex = mCurrentMusicIndex + 1;
+            if (mCurrentMusic != null) {
+                nextIndex = mPlaylist.indexOf(mCurrentMusic) + 1;
                 nextIndex %= mPlaylist.size();
             }
-            setCurrentMusicIndex(nextIndex);
+            setCurrentMusicByIndex(nextIndex);
         } else {
             // no effect
             log.trace("playerNext on empty list");
@@ -268,10 +240,10 @@ public class PlayerServiceImpl implements PlayerService, PropertyChangeListener,
         // set current to previous or last
         if (!mPlaylist.isEmpty()) {
             int previousIndex = mPlaylist.size() - 1;
-            if (mCurrentMusicIndex > 0) {
-                previousIndex = mCurrentMusicIndex - 1;
+            if (mCurrentMusic != null && mPlaylist.indexOf(mCurrentMusic) > 0) {
+                previousIndex = mPlaylist.indexOf(mCurrentMusic) - 1;
             }
-            setCurrentMusicIndex(previousIndex);
+            setCurrentMusicByIndex(previousIndex);
         } else {
             // no effect
             log.trace("playerPrevious on empty list");
@@ -287,7 +259,7 @@ public class PlayerServiceImpl implements PlayerService, PropertyChangeListener,
     public Long getCurrentTimeSec() {
         log.trace("getCurrentTimeSec ...");
         Long currentTime = null;
-        if (player != null && mCurrentMusicIndex != -1) {
+        if (player != null && mCurrentMusic != null) {
             currentTime = mCurrentTimeSec;
         }
         log.trace("getCurrentTimeSec DONE ({} s)", currentTime);
@@ -300,11 +272,11 @@ public class PlayerServiceImpl implements PlayerService, PropertyChangeListener,
     @Override
     public synchronized void setCurrentTimeSec(Long timeInSec) {
         log.debug("setCurrentTimeSec ({}) ...", timeInSec);
-        if (getCurrentMusic() != null && timeInSec != null) {
+        if (mCurrentMusic != null && timeInSec != null) {
             if (timeInSec <= 0L) {
                 timeInSec = 0L;
-            } else if (timeInSec >= getCurrentMusic().getTrackLength()) {
-                timeInSec = (long) getCurrentMusic().getTrackLength();
+            } else if (timeInSec >= mCurrentMusic.getTrackLength()) {
+                timeInSec = (long) mCurrentMusic.getTrackLength();
             }
             this.mCurrentTimeSec = timeInSec;
             if (player != null) {
@@ -322,8 +294,8 @@ public class PlayerServiceImpl implements PlayerService, PropertyChangeListener,
     public Long getTotalTimeSec() {
         log.trace("getTotalTimeSec ...");
         Long totalTime = null;
-        if (getCurrentMusic() != null) {
-            totalTime = new Long(getCurrentMusic().getTrackLength());
+        if (mCurrentMusic != null) {
+            totalTime = new Long(mCurrentMusic.getTrackLength());
         }
         log.trace("getTotalTimeSec DONE ({})", totalTime);
         return totalTime;
@@ -332,32 +304,27 @@ public class PlayerServiceImpl implements PlayerService, PropertyChangeListener,
     /**
      * {@inheritDoc}
      */
-    private synchronized void setCurrentMusic(Music music) {
+    private synchronized void setCurrentMusicByIndex(int musicIndex) {
         log.trace("setCurrentMusic ...");
-        if (music != null
-                && (music.getFileBytes() == null || music.getFileBytes().length == 0)
-                && !music.getOwnerPeerId().equals(appModel.getProfile().getUserInfo().getPeerId())) {
-            log.debug("setCurrentMusic : delayed, fetching remote music data ...");
-            fetchRemoteDataThenPlay(music);
-            
-        } else if (music != getCurrentMusic()) {
-            if (music != null && (music.getFileBytes() == null || music.getFileBytes().length == 0)) {
-                musicService.loadMusicFile(music);
+        if (musicIndex == -1) {
+            int oldMusicIndex = mPlaylist.indexOf(mCurrentMusic);
+            this.mCurrentMusic = null;
+            propertyChangeSupport.firePropertyChange(Property.CURRENT_MUSIC_INDEX.name(), oldMusicIndex, musicIndex);
+        } else {
+            Music music = mPlaylist.get(musicIndex);
+            if (music != null
+                    && (music.getFileBytes() == null || music.getFileBytes().length == 0)
+                    && !music.getOwnerPeerId().equals(appModel.getProfile().getUserInfo().getPeerId())) {
+                log.debug("setCurrentMusic : delayed, fetching remote music data ...");
+                fetchMusicDataThenPlay(music);
+            } else if (music != mCurrentMusic) {
+                int oldMusicIndex = mPlaylist.indexOf(mCurrentMusic);
+                if (music != null && (music.getFileBytes() == null || music.getFileBytes().length == 0)) {
+                    musicService.loadMusicFile(music);
+                }
+                this.mCurrentMusic = music;
+                propertyChangeSupport.firePropertyChange(Property.CURRENT_MUSIC_INDEX.name(), oldMusicIndex, musicIndex);
             }
-            this.setCurrentMusicIndex(mPlaylist.indexOf(music));
-        }
-    }
-    
-    /**
-     * {@inheritDoc}
-     */
-    private synchronized void setCurrentMusicIndex(int musicIndex) {
-        log.trace("setCurrentMusicIndex ...");
-        if(musicIndex != mCurrentMusicIndex &&
-                musicIndex >= 0 && musicIndex < mPlaylist.size()){
-            Music oldMusic = this.getCurrentMusic();
-            this.mCurrentMusicIndex = musicIndex;
-            propertyChangeSupport.firePropertyChange(Property.CURRENT_MUSIC.name(), oldMusic, getCurrentMusic());
         }
     }
 
@@ -408,7 +375,7 @@ public class PlayerServiceImpl implements PlayerService, PropertyChangeListener,
      */
     private void onMusicEnd() {
         player = null;
-        if (mCurrentMusicIndex < (mPlaylist.size() - 1)) {
+        if (mPlaylist.indexOf(mCurrentMusic) < (mPlaylist.size() - 1)) {
             playerNext();
             setCurrentTimeSec(0L);
         } else {
@@ -510,7 +477,7 @@ public class PlayerServiceImpl implements PlayerService, PropertyChangeListener,
      */
     private void onPlaylistClear() {
         playerStop();
-        setCurrentMusic(null);
+        setCurrentMusicByIndex(-1);
     }
 
     /**
@@ -519,29 +486,30 @@ public class PlayerServiceImpl implements PlayerService, PropertyChangeListener,
      * @param ev
      */
     private void onPlaylistRemove(CollectionEvent<Music> ev) {
-        Music currentMusic;
+        Integer newIndex = null;
         if (mPlaylist.isEmpty()) {
             playerStop();
-            currentMusic = null;
+            newIndex = -1;
         } else {
             // currentMusic was removed
-            if (getCurrentMusic().equals(ev.getItem())) {
+            if (mCurrentMusic == ev.getItem()) {
                 playerStop();
                 // auto select next (=id removed) if possible for current music or previous
                 // list is NOT EMPTY, mPlaylist has already changed
                 if (mPlaylist.size() == ev.getIndex()) {
                     // deleted : last of playlist, no next, use previous
-                    currentMusic = mPlaylist.get(ev.getIndex() - 1);
+                    newIndex = ev.getIndex() - 1;
                 } else {
                     // deleted : one of playlist except last
-                    currentMusic = mPlaylist.get(ev.getIndex());
+                    newIndex = ev.getIndex();
                 }
             } else {
                 // other music was removed, no need to stop music or change currentMusic reference
-                currentMusic = getCurrentMusic();
             }
         }
-        setCurrentMusic(currentMusic);
+        if (newIndex != null) {
+            setCurrentMusicByIndex(newIndex);
+        }
     }
 
     /**
@@ -549,7 +517,7 @@ public class PlayerServiceImpl implements PlayerService, PropertyChangeListener,
      */
     private void onPlaylistAdd() {
         if (mPlaylist.size() == 1) {
-            setCurrentMusic(mPlaylist.get(0));
+            setCurrentMusicByIndex(0);
         }
     }
 
@@ -558,7 +526,7 @@ public class PlayerServiceImpl implements PlayerService, PropertyChangeListener,
      *
      * @param music The music to load and play
      */
-    private void fetchRemoteDataThenPlay(Music music) {
+    private void fetchMusicDataThenPlay(Music music) {
         if (appModel.getTmpCatalog().contains(music)) {
             log.info("Loading data for remote music from TMP_CATALOG : {}", music);
             Music musicWithFile = appModel.getTmpCatalog().findMusicByHash(music.getHash());
@@ -575,12 +543,7 @@ public class PlayerServiceImpl implements PlayerService, PropertyChangeListener,
      */
     @Override
     public Music getCurrentMusic() {
-        if(mCurrentMusicIndex >= 0 && mCurrentMusicIndex < mPlaylist.size()) {
-            return mPlaylist.get(mCurrentMusicIndex);
-        }
-        else {
-            return null;
-        }
+        return mCurrentMusic;
     }
 
     /**
@@ -588,6 +551,10 @@ public class PlayerServiceImpl implements PlayerService, PropertyChangeListener,
      */
     @Override
     public int getCurrentMusicIndex() {
-        return mCurrentMusicIndex;
+        int currentMusicIndex = -1;
+        if (mCurrentMusic != null) {
+            currentMusicIndex = mPlaylist.indexOf(mCurrentMusic);
+        }
+        return currentMusicIndex;
     }
 }

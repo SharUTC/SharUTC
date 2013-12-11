@@ -103,7 +103,6 @@ public class MusicServiceImpl implements MusicService {
     @Override
     public void removeFromLocalCatalog(Collection<Music> musics) {
         log.debug("removeFromLocalCatalog ...");
-        //TODO : clean RightList with removed music
         if (musics == null) {
             throwMissingParameter();
         } else {
@@ -115,6 +114,12 @@ public class MusicServiceImpl implements MusicService {
                         this.removeTag(currentMusic, tag);
                     }
                     localCatalog.remove(currentMusic);
+                    RightsList rightsList = appModel.getRightsList();
+                    Set<Integer> catIds = currentMusic.getCategoryIds();
+                    for (Integer catId : catIds) {
+                        rightsList.remove(rightsList.getByMusicIdAndCategoryId(currentMusic.getId(), catId));
+                    }
+                    fileService.deleteUserMusicFile(currentMusic);
                 } else {
                     log.warn("Music to delete not found !\n{}", currentMusic.getRealName());
                 }
@@ -305,7 +310,7 @@ public class MusicServiceImpl implements MusicService {
             throwMissingParameter();
         } else {
             Music m = appModel.getLocalCatalog().findMusicById(music.getId());
-            if(m != null){
+            if (m != null) {
                 if (!comment.isEmpty()) {
                     Comment myComment = new Comment(comment, peer.getId());
                     myComment.setAuthorName(peer.getDisplayName());
@@ -326,7 +331,7 @@ public class MusicServiceImpl implements MusicService {
             throwMissingParameter();
         } else {
             Music m = appModel.getLocalCatalog().findMusicById(music.getId());
-            if(m != null){
+            if (m != null) {
                 Comment commentToEdit = m.getComment(peer, commentIndex);
                 if (commentToEdit != null) {
                     commentToEdit.setText(comment);
@@ -348,7 +353,7 @@ public class MusicServiceImpl implements MusicService {
             throwMissingParameter();
         } else {
             Music m = appModel.getLocalCatalog().findMusicById(music.getId());
-            if(m != null){
+            if (m != null) {
                 Comment myComment = m.getComment(peer, commentIndex);
                 if (myComment != null) {
                     music.removeComment(myComment);
@@ -400,7 +405,7 @@ public class MusicServiceImpl implements MusicService {
             throwMissingParameter();
         } else {
             Music m = appModel.getLocalCatalog().findMusicById(music.getId());
-            if(m != null){
+            if (m != null) {
                 Score musicScore = m.getScore(peer);
                 if (musicScore != null) {
                     m.removeScore(musicScore);

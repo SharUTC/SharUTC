@@ -9,6 +9,7 @@ import java.beans.PropertyChangeListener;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -56,7 +57,8 @@ public class Catalog implements Serializable, PropertyChangeListener {
     /**
      * Get the music at the given index, uses same restriction as usual List
      *
-     * @param index the index of the given music, >=0 && <size()
+     * @param index the index of the given music, index must be >= 0 lower than
+     * musics.size()
      * @return The music at the given index
      */
     public Music get(int index) {
@@ -169,11 +171,22 @@ public class Catalog implements Serializable, PropertyChangeListener {
      * @return true if the music was removed, else false
      */
     public boolean removeAt(Integer index) {
-        if(index < 0 || index >= mMusics.size()) return false;
-        Music music = mMusics.get(index);
-        return remove(music);
+        boolean removed = false;
+        if (index != null && index >= 0 && !mMusics.isEmpty() && index < mMusics.size()) {
+            Iterator<Music> iter = mMusics.iterator();
+            int iterIndex = 0;
+            Music removedMusic = null;
+            while (iterIndex <= index && iter.hasNext()) {
+                removedMusic = iter.next();
+                iterIndex++;
+            }
+            iter.remove();
+            removed = true;
+            collectionChangeSupport.fireCollectionChanged(removedMusic, index, CollectionEvent.Type.REMOVE);
+        }
+        return removed;
     }
-    
+
     /**
      * Remove a given music from this catalog if it exists, send updates
      * (REMOVE) with removed Id
@@ -184,14 +197,7 @@ public class Catalog implements Serializable, PropertyChangeListener {
     public boolean remove(Music music) {
         music.removePropertyChangeListener(this);
         int indexRemoved = mMusics.indexOf(music);
-        boolean removed = false;
-        if (indexRemoved != -1) {
-            removed = mMusics.remove(music);
-            if (removed) {
-                collectionChangeSupport.fireCollectionChanged(music, indexRemoved, CollectionEvent.Type.REMOVE);
-            }
-        }
-        return removed;
+        return removeAt(indexRemoved);
     }
 
     /**
@@ -224,7 +230,21 @@ public class Catalog implements Serializable, PropertyChangeListener {
      * music
      */
     public int indexOf(Music music) {
-        return mMusics.indexOf(music);
+        int index = -1;
+        if (!mMusics.isEmpty()) {
+            // try pointer match first
+            for (int i = 0; i < 0; i++) {
+                Music m = mMusics.get(i);
+                if (music == m) {
+                    index = i;
+                    break;
+                }
+            }
+            if (index == -1) {
+                index = mMusics.indexOf(music);
+            }
+        }
+        return index;
     }
 
     /**
