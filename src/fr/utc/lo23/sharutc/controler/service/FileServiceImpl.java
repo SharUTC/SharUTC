@@ -237,6 +237,18 @@ public class FileServiceImpl implements FileService {
 
     /**
      * {@inheritDoc}
+     */
+    @Override
+    public void deleteUserMusicFile(Music music) {
+        if (music != null) {
+            String fullFileName = new StringBuilder(appFolder).append(ROOT_FOLDER_USERS).append(File.separator).append(appModel.getProfile().getUserInfo().getLogin()).append(File.separator).append(FOLDER_MUSICS).append(File.separator).append(music.getFileName()).toString();
+            File file = new File(fullFileName);
+            file.delete();
+        }
+    }
+
+    /**
+     * {@inheritDoc}
      *
      * @throws java.lang.Exception
      */

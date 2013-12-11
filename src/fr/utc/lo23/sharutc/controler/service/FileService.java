@@ -18,7 +18,7 @@ public interface FileService {
     public static final String ROOT_FOLDER_TMP = "tmp";
     public static final String FOLDER_MUSICS = "musics";
     public static final String DOT_MP3 = ".mp3";
-    public static final String[] AUTHORIZED_MUSIC_FILE_TYPE = {"mp3"};
+    public static final String[] AUTHORIZED_MUSIC_FILE_TYPE = {"mp3", "MP3"};
     public static final int MIN_FILENAME_LENGTH = 1;
 
     public String getAppFolder();
@@ -114,4 +114,6 @@ public interface FileService {
     public void createAccountFolder(String login);
 
     public Music fakeMusicFromFile(File file) throws Exception;
+
+    public void deleteUserMusicFile(Music currentMusic);
 }

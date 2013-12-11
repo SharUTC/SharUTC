@@ -119,6 +119,7 @@ public class MusicServiceImpl implements MusicService {
                     for (Integer catId : catIds) {
                         rightsList.remove(rightsList.getByMusicIdAndCategoryId(currentMusic.getId(), catId));
                     }
+                    fileService.deleteUserMusicFile(currentMusic);
                 } else {
                     log.warn("Music to delete not found !\n{}", currentMusic.getRealName());
                 }
