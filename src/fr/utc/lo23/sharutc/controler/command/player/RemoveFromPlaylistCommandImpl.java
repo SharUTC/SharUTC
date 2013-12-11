@@ -57,8 +57,6 @@ public class RemoveFromPlaylistCommandImpl implements RemoveFromPlaylistCommand 
     public void execute() {
         log.info("RemoveFromPlaylistCommand...");
 
-        System.out.println(mMusicIndexs);
-
         if (mMusicIndexs != null) {
             for (Integer index : mMusicIndexs) {
                 playerService.removeFromPlaylist(index);

@@ -492,7 +492,7 @@ public class PlayerServiceImpl implements PlayerService, PropertyChangeListener,
             newIndex = -1;
         } else {
             // currentMusic was removed
-            if (mCurrentMusic.equals(ev.getItem())) {
+            if (mCurrentMusic == ev.getItem()) {
                 playerStop();
                 // auto select next (=id removed) if possible for current music or previous
                 // list is NOT EMPTY, mPlaylist has already changed
