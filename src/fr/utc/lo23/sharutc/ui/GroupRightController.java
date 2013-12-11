@@ -258,11 +258,11 @@ public class GroupRightController extends DragPreviewDrawer implements Initializ
         mCommentAndNoteSongCard = new RightCard("Note", this);
 
         mAllRightsSongCard = new RightCard("All Right", this);
-        
-        mNoneRightsSongCard= new RightCard("None", this);
+
+        mNoneRightsSongCard = new RightCard("None", this);
 
         rightContainer.getChildren().addAll(mAllSongCard, mReadSongCard, mListenSongCard, mCommentAndNoteSongCard,
-                mAllRightsSongCard , mNoneRightsSongCard);
+                mAllRightsSongCard, mNoneRightsSongCard);
     }
 
 
@@ -327,7 +327,7 @@ public class GroupRightController extends DragPreviewDrawer implements Initializ
             } else if (card.equals(mCommentAndNoteSongCard)) {
                 log.info("song dropped in comment right card : ");
                 manageRightsCommand.setMayCommentAndScore(true);
-            }else if (card.equals(mNoneRightsSongCard)) {
+            } else if (card.equals(mNoneRightsSongCard)) {
                 log.info("song dropped in none right card : ");
                 manageRightsCommand.setMayCommentAndScore(false);
                 manageRightsCommand.setMayListen(false);
@@ -362,6 +362,25 @@ public class GroupRightController extends DragPreviewDrawer implements Initializ
             mSongRightCardSelected.remove(songCardRight);
         } else {
             mSongRightCardSelected.add(songCardRight);
+        }
+    }
+
+    @Override
+    public void onSongRightCardHovered(SongRightCard songRightCard, boolean isHover) {
+        final Rights rights = songRightCard.getRights();
+        if (isHover) {
+            if (rights.getMayListen()) mListenSongCard.getStyleClass().add("simpleCardClicked");
+            if (rights.getMayReadInfo()) mReadSongCard.getStyleClass().add("simpleCardClicked");
+            if (rights.getMayNoteAndComment()) mCommentAndNoteSongCard.getStyleClass().add("simpleCardClicked");
+            if (rights.getMayListen() & rights.getMayNoteAndComment() & rights.getMayReadInfo())
+                mAllRightsSongCard.getStyleClass().add("simpleCardClicked");
+
+        } else {
+            //hide all
+            mAllRightsSongCard.getStyleClass().remove("simpleCardClicked");
+            mListenSongCard.getStyleClass().remove("simpleCardClicked");
+            mReadSongCard.getStyleClass().remove("simpleCardClicked");
+            mCommentAndNoteSongCard.getStyleClass().remove("simpleCardClicked");
         }
     }
 

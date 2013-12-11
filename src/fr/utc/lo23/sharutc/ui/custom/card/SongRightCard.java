@@ -89,8 +89,18 @@ public class SongRightCard extends DraggableCard implements EventHandler<Event> 
      *
      * @param isHover
      */
-    public void onHover(boolean isHover) {
+    private void onHover(boolean isHover) {
         buttonContainer.setVisible(isHover);
+        mInterface.onSongRightCardHovered(this, isHover);
+    }
+
+    /**
+     * display right details on hover
+     *
+     * @param isHover
+     */
+    public void setDeletable(boolean isDelatable) {
+        //TODO
     }
 
     /**
@@ -124,11 +134,20 @@ public class SongRightCard extends DraggableCard implements EventHandler<Event> 
 
         /**
          * The {@link ISongCardRight} is being notified that a
-         * {@link SongCardRight} has just benn selected.
+         * {@link SongCardRight} has just been selected.
          *
          * @param songCardRight the {@link SongRightCard} that has been
          *                      selected.
          */
         public void onSongRightCardSelected(SongRightCard songCardRight);
+
+        /**
+         * The {@link ISongCardRight} is being notified that a
+         * {@link SongCardRight} has just been hovered.
+         *
+         * @param songCardRight the {@link SongRightCard} that has been
+         *                      hovered.
+         */
+        public void onSongRightCardHovered(SongRightCard songRightCard, boolean isHover);
     }
 }
