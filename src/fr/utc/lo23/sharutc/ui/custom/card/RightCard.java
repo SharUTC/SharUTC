@@ -62,7 +62,7 @@ public class RightCard extends SimpleCard implements EventHandler<Event> {
         } else if (event.getEventType() == DragEvent.DRAG_DROPPED) {
             onDragDropped((DragEvent) event);
         } else if (event.getEventType() == MouseEvent.MOUSE_CLICKED) {
-            mInterface.onRightCardClicked(this);
+            mInterface.onRightCardClicked(this, (MouseEvent) event);
         }
     }
 
@@ -151,8 +151,9 @@ public class RightCard extends SimpleCard implements EventHandler<Event> {
          * The {@link IRightCard} is being informed that the
          * {@link RightCard} has been clicked
          *
-         * @param card the {@link RightCard} that represent the right.
+         * @param card       the {@link RightCard} that represent the right.
+         * @param mouseEvent {@link MouseEvent} mouse event
          */
-        public void onRightCardClicked(RightCard card);
+        public void onRightCardClicked(RightCard card, MouseEvent mouseEvent);
     }
 }

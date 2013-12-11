@@ -159,9 +159,9 @@ public class GroupRightController extends DragPreviewDrawer implements Initializ
                 //for each music check rights
 
                 final Rights rights = rightsList.getByMusicIdAndCategoryId(m.getId(), mCurrentCategory.getId());
-
+                boolean shouldAdd = false;
                 if (rights != null) {
-                    boolean shouldAdd = false;
+
                     //are rights matching to requested one ?
                     switch (rightIdentifier) {
                         case RIGHT_LISTEN:
@@ -187,10 +187,13 @@ public class GroupRightController extends DragPreviewDrawer implements Initializ
                             break;
                     }
 
-                    if (shouldAdd) {
-                        //add music to the resultList
-                        result.add(m);
-                    }
+                } else {
+                    //no rights for this music but hsould add for none section
+                    shouldAdd = true;
+                }
+                if (shouldAdd) {
+                    //add music to the resultList
+                    result.add(m);
                 }
             }
         }
@@ -247,6 +250,7 @@ public class GroupRightController extends DragPreviewDrawer implements Initializ
         mAllSongCard.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent mouseEvent) {
+                unSelectRightsCard();
                 displayAllMusic();
             }
         });
@@ -295,6 +299,14 @@ public class GroupRightController extends DragPreviewDrawer implements Initializ
         hidePlaceHolder();
     }
 
+    private void unSelectRightsCard() {
+        mListenSongCard.getStyleClass().remove("simpleCardClicked");
+        mReadSongCard.getStyleClass().remove("simpleCardClicked");
+        mCommentAndNoteSongCard.getStyleClass().remove("simpleCardClicked");
+        mAllRightsSongCard.getStyleClass().remove("simpleCardClicked");
+        mNoneRightsSongCard.getStyleClass().remove("simpleCardClicked");
+    }
+
     @Override
     public void onSongAdded(RightCard card) {
         //for all selected Music dropped
@@ -340,8 +352,12 @@ public class GroupRightController extends DragPreviewDrawer implements Initializ
     }
 
     @Override
-    public void onRightCardClicked(RightCard card) {
-        //clear the songRightCard container
+    public void onRightCardClicked(RightCard card, MouseEvent event) {
+        //select the right one and unselected the other
+        unSelectRightsCard();
+        card.getStyleClass().add("simpleCardClicked");
+
+
         if (card.equals(mListenSongCard)) {
             displayMusicByRight(RIGHT_LISTEN);
         } else if (card.equals(mReadSongCard)) {
@@ -369,11 +385,14 @@ public class GroupRightController extends DragPreviewDrawer implements Initializ
     public void onSongRightCardHovered(SongRightCard songRightCard, boolean isHover) {
         final Rights rights = songRightCard.getRights();
         if (isHover) {
+            //TODO improve
             if (rights.getMayListen()) mListenSongCard.getStyleClass().add("simpleCardClicked");
             if (rights.getMayReadInfo()) mReadSongCard.getStyleClass().add("simpleCardClicked");
             if (rights.getMayNoteAndComment()) mCommentAndNoteSongCard.getStyleClass().add("simpleCardClicked");
             if (rights.getMayListen() & rights.getMayNoteAndComment() & rights.getMayReadInfo())
                 mAllRightsSongCard.getStyleClass().add("simpleCardClicked");
+            if (!rights.getMayListen() & !rights.getMayReadInfo() & !rights.getMayNoteAndComment())
+                mNoneRightsSongCard.getStyleClass().add("simpleCardClicked");
 
         } else {
             //hide all
@@ -381,6 +400,7 @@ public class GroupRightController extends DragPreviewDrawer implements Initializ
             mListenSongCard.getStyleClass().remove("simpleCardClicked");
             mReadSongCard.getStyleClass().remove("simpleCardClicked");
             mCommentAndNoteSongCard.getStyleClass().remove("simpleCardClicked");
+            mNoneRightsSongCard.getStyleClass().remove("simpleCardClicked");
         }
     }
 
