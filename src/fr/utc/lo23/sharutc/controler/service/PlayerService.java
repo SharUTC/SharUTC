@@ -35,20 +35,12 @@ public interface PlayerService {
     public void addToPlaylist(Music music);
 
     /**
-     * Removes the given music from playlist if exist, else do nothing, update
-     * ui via listener on playlist
+     * Removes a music at the specified index from playlist if it exists, else
+     * do nothing, update ui via listener on playlist
      *
-     * @param index the music to remove from playlist
+     * @param index the index of the music to remove from playlist
      */
-    public void removeFromPlaylist(Integer index);
-
-    /**
-     * Removes the given music from playlist if exist, else do nothing, update
-     * ui via listener on playlist
-     *
-     * @param music the music to remove from playlist
-     */
-    public void removeFromPlaylist(Music music);
+    public void removeFromPlaylist(int index);
 
     /**
      * Removes all musics from playlist
@@ -61,7 +53,7 @@ public interface PlayerService {
      *
      * @param music the music to play from playlist
      */
-    public void playMusicFromPlaylist(Music music);
+    public void playMusicFromPlaylist(int musicIndexInPlaylist);
 
     /**
      * Start playing a music, accepts local music only (with music.FileByte[] !=
@@ -203,7 +195,7 @@ public interface PlayerService {
         /**
          *
          */
-        CURRENT_MUSIC,
+        CURRENT_MUSIC_INDEX,
         /**
          *
          */

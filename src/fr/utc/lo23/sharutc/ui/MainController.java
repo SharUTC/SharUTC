@@ -312,7 +312,6 @@ public class MainController extends NavigationController implements Initializabl
     @FXML
     public void handleTextEntered(ActionEvent actionEvent) {
         showSearchResult();
-        ;
     }
 
     @FXML
@@ -418,13 +417,15 @@ public class MainController extends NavigationController implements Initializabl
                     ImageView skin = (ImageView) target;
                     if (skin.getId().equals("deleteButton")) {
                         List<Integer> indexs = new ArrayList<Integer>();
+                        Music m = ((PlayListMusic) listView.getSelectionModel().getSelectedItem()).music;
                         indexs.add(listView.getSelectionModel().getSelectedIndex());
                         mRemoveFromPlaylistCommand.setMusicsIndex(indexs);
                         mRemoveFromPlaylistCommand.execute();
                     }
 
                 } else if (event.getClickCount() > 1) {
-                    mPlayerService.playMusicFromPlaylist(((PlayListMusic) listView.getSelectionModel().getSelectedItem()).music);
+                    System.out.println("playMusicFromPlaylist");
+                    mPlayerService.playMusicFromPlaylist(listView.getSelectionModel().getSelectedIndex());
                 }
             }
         });
@@ -467,7 +468,6 @@ public class MainController extends NavigationController implements Initializabl
     public void onSongRemovedFromLocalCatalog() {
         showLocalCatalog();
     }
-
 
     @Override
     public void onTagDetailRequested(Music music) {
@@ -603,6 +603,4 @@ public class MainController extends NavigationController implements Initializabl
         }
         return success;
     }
-
-    
 }

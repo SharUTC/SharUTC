@@ -458,8 +458,8 @@ public class Music implements Serializable {
     public Comment getComment(Long peerId, Integer commentIndex) {
         Comment comment = null;
         for (Comment tmpComment : getComments()) {
-            if (tmpComment.getAuthorPeerId().equals(peerId) &&
-                    tmpComment.getIndex().equals(commentIndex)) {
+            if (tmpComment.getAuthorPeerId().equals(peerId)
+                    && tmpComment.getIndex().equals(commentIndex)) {
                 comment = tmpComment;
             }
         }
@@ -675,8 +675,7 @@ public class Music implements Serializable {
     public boolean equals(Object obj) {
         // be careful, don't use public int hashCode() here, equals is realized with from music Bytes directly
         return (obj != null && obj instanceof Music
-                && (((Music) obj).mHash.equals(this.mHash)
-                || ((Music) obj).mId.equals(this.mId) && ((Music) obj).mOwnerPeerId.equals(this.mOwnerPeerId)));
+                && (((Music) obj).mHash.equals(this.mHash) /*|| ((Music) obj).mId.equals(this.mId) && ((Music) obj).mOwnerPeerId.equals(this.mOwnerPeerId)*/));
     }
 
     @Override

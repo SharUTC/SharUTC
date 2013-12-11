@@ -16,7 +16,7 @@ public class RemoveFromPlaylistCommandImpl implements RemoveFromPlaylistCommand 
     private static final Logger log = LoggerFactory
             .getLogger(RemoveFromPlaylistCommandImpl.class);
     private final PlayerService playerService;
-    private List<Integer> mPlaylist;
+    private List<Integer> mMusicIndexs;
 
     @Inject
     public RemoveFromPlaylistCommandImpl(PlayerService playerService) {
@@ -27,27 +27,27 @@ public class RemoveFromPlaylistCommandImpl implements RemoveFromPlaylistCommand 
      * {@inheritDoc}
      */
     @Override
-    public List<Integer> getMusicsIndex(){
-        return mPlaylist;
+    public List<Integer> getMusicsIndex() {
+        return mMusicIndexs;
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void setMusicsIndex(List<Integer> musicsIndex){
-        mPlaylist = musicsIndex;
+    public void setMusicsIndex(List<Integer> musicsIndex) {
+        mMusicIndexs = musicsIndex;
     }
-    
+
     /**
      * {@inheritDoc}
      */
     @Override
-    public void setMusicIndex(Integer musicIndex){
-        if(mPlaylist == null){
-            mPlaylist = new ArrayList<Integer>();
+    public void setMusicIndex(Integer musicIndex) {
+        if (mMusicIndexs == null) {
+            mMusicIndexs = new ArrayList<Integer>();
         }
-        mPlaylist.add(musicIndex);
+        mMusicIndexs.add(musicIndex);
     }
 
     /**
@@ -56,16 +56,15 @@ public class RemoveFromPlaylistCommandImpl implements RemoveFromPlaylistCommand 
     @Override
     public void execute() {
         log.info("RemoveFromPlaylistCommand...");
-        
-        System.out.println(mPlaylist);
-        
-        if(mPlaylist != null){
-            for (Integer index : mPlaylist) {
+
+        System.out.println(mMusicIndexs);
+
+        if (mMusicIndexs != null) {
+            for (Integer index : mMusicIndexs) {
                 playerService.removeFromPlaylist(index);
             }
         }
 
         log.info("RemoveFromPlaylistCommand DONE");
     }
-
 }

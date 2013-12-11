@@ -348,19 +348,20 @@ public class PlayerController implements Initializable, PropertyChangeListener {
     private void handlePropertyChangeFromAudioPlayerThread(final PropertyChangeEvent evt) {
         final String propertyName = evt.getPropertyName();
         log.debug("PropertyChangeEvent Name : " + propertyName);
-        if (propertyName.equals(PlayerService.Property.CURRENT_MUSIC.name())) {
-            Music m = (Music) evt.getNewValue();
-            int index = mPlayerService.getCurrentMusicIndex();
-            for (int i = 0; i < mPlayListData.size(); i++) {
-                ((PlayListMusic) mPlayListData.get(i)).setPlaying(i == index);
-
+        if (propertyName.equals(PlayerService.Property.CURRENT_MUSIC_INDEX.name())) {
+            int index = (Integer) evt.getNewValue();
+            if (index != -1) {
+                for (int i = 0; i < mPlayListData.size(); i++) {
+                    ((PlayListMusic) mPlayListData.get(i)).setPlaying(i == index);
+                }
+                if (mPlayListData.size() > 0) {
+                    PlayListMusic e = mPlayListData.remove(0);
+                    mPlayListData.add(0, e);
+                }
+                onCurrentMusicUpdate(mPlayerService.getPlaylist().get(index));
+            } else {
+                onCurrentMusicUpdate(null);
             }
-            if (mPlayListData.size() > 0) {
-                PlayListMusic e = mPlayListData.remove(0);
-                mPlayListData.add(0, e);
-            }
-            onCurrentMusicUpdate(m);
-
 
         } else if (propertyName.equals(PlayerService.Property.CURRENT_TIME.name())) {
             updateCurrentSongTime((Long) evt.getNewValue());
