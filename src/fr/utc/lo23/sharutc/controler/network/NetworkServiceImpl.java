@@ -158,6 +158,7 @@ public class NetworkServiceImpl implements NetworkService {
             log.debug("before sendUnicast "+message.toString()+" | peer "+peer.getId());
             mPeers.get(peer.getId()).send(message);
             log.debug("after sendUnicast ");
+            messageHandler.setPreviousMessageType(message.getType());
         } else {
             log.error("Peer " + (peer != null ? peer.getId() : "null") + " not connected");
         }

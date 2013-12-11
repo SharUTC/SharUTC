@@ -184,7 +184,7 @@ public class SongListController extends SongSelectorController implements Initia
         songsContainer.getChildren().clear();
         if (musics.isEmpty()) {
             if (placeHolderLabel == null) {
-                placeHolderLabel = new Label("You have no songs. Please use the \"Add\" button in the left top corner.");
+                placeHolderLabel = new Label("You have no songs. Please use the \"Add\" button in the top right corner.");
                 placeHolderLabel.getStyleClass().add("placeHolderLabel");
                 placeHolderLabel.setWrapText(true);
                 placeHolderLabel.setTextAlignment(TextAlignment.CENTER);

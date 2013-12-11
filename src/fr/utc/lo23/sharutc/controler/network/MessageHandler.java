@@ -12,4 +12,16 @@ public interface MessageHandler {
      * @param string a Json String containing a Message
      */
     public void handleMessage(String string);
+    
+    /**
+     * Sets the previousMessageType attribute with type of latest message (with conversationId) sent
+     * @param newMessageType Type of most recent message with conversationId
+     */
+    public void setPreviousMessageType(MessageType newMessageType);
+    
+     /**
+     * Gets the previousMessageType attribute which contains type of latest message (with conversationId) sent
+     * @return Type of most recent message with conversationId
+     */
+    public MessageType getPreviousMessageType();
 }
