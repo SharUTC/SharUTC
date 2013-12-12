@@ -24,6 +24,7 @@ public class RightCard extends SimpleCard implements EventHandler<Event> {
     @FXML
     public Label dropOverlayLabel;
     private IRightCard mInterface;
+    private int mIdentifier;
 
     /**
      * Card displayed to represent a right
@@ -31,10 +32,11 @@ public class RightCard extends SimpleCard implements EventHandler<Event> {
      * @param rightText text displayed to the user
      * @param i         interface to get the callback
      */
-    public RightCard(String rightText, IRightCard i) {
+    public RightCard(String rightText, int identifier, IRightCard i) {
         super("/fr/utc/lo23/sharutc/ui/fxml/right_card.fxml");
 
         mInterface = i;
+        mIdentifier = identifier;
 
         rightName.setText(rightText);
 
@@ -45,6 +47,15 @@ public class RightCard extends SimpleCard implements EventHandler<Event> {
         setOnMouseClicked(this);
 
         displayDropOverlay(false);
+    }
+
+    /**
+     * retrieve the right identifier
+     *
+     * @return
+     */
+    public int getIdentifier() {
+        return mIdentifier;
     }
 
     /**

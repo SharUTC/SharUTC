@@ -1,5 +1,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
 <fx:root type="fr.utc.lo23.sharutc.ui.custom.card.SongRightCard"
          xmlns:fx="http://javafx.com/fxml">
     <HBox>
@@ -8,10 +10,16 @@
             <Label fx:id="songTitle" text="New York New York" styleClass="largeTextGreyBold"/>
             <Label fx:id="songArtist" text="Frank Sinatra" styleClass="largeTextGrey"/>
         </VBox>
-        <VBox fx:id="buttonContainer" minWidth="40" visible="false" alignment="TOP_LEFT" HBox.hgrow="ALWAYS">
-            <CheckBox fx:id="checkBoxRead" styleClass="imageButton" text="R"/>
-            <CheckBox fx:id="checkBoxEdit" styleClass="imageButton" text="L"/>
-            <CheckBox fx:id="checkBoxComment" styleClass="imageButton" text="N"/>
+        <VBox fx:id="buttonContainer" minWidth="40" visible="true" alignment="CENTER_RIGHT" HBox.hgrow="ALWAYS">
+            <Button fx:id="deleteButton" styleClass="imageButton" visible="false">
+                <graphic>
+                    <ImageView fitWidth="30" fitHeight="30">
+                        <image>
+                            <Image url="@../drawable/ic_delete.png"/>
+                        </image>
+                    </ImageView>
+                </graphic>
+            </Button>
         </VBox>
 
     </HBox>

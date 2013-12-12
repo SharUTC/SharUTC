@@ -6,10 +6,9 @@ import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.event.EventType;
 import javafx.fxml.FXML;
-import javafx.scene.control.CheckBox;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.VBox;
 
 /**
  * A {@link DraggableCard} that show the rights of a piece of {@link Music}.
@@ -26,13 +25,8 @@ public class SongRightCard extends DraggableCard implements EventHandler<Event> 
     @FXML
     public Label songArtist;
     @FXML
-    public VBox buttonContainer;
-    @FXML
-    public CheckBox checkBoxRead;
-    @FXML
-    public CheckBox checkBoxEdit;
-    @FXML
-    public CheckBox checkBoxComment;
+    public Button deleteButton;
+
     private Music mMusic;
     private Rights mRights;
     private ISongCardRight mInterface;
@@ -44,13 +38,12 @@ public class SongRightCard extends DraggableCard implements EventHandler<Event> 
         songTitle.setText(mMusic.getTitle());
         songArtist.setText(mMusic.getArtist());
 
-        buttonContainer.setDisable(true);
-
         this.updateRights(rights);
 
         setOnMouseClicked(this);
         setOnMouseEntered(this);
         setOnMouseExited(this);
+        deleteButton.setOnMouseClicked(this);
     }
 
     /**
@@ -60,10 +53,6 @@ public class SongRightCard extends DraggableCard implements EventHandler<Event> 
      */
     public void updateRights(Rights rights) {
         mRights = rights;
-
-        checkBoxEdit.setSelected(mRights.getMayListen());
-        checkBoxRead.setSelected(mRights.getMayReadInfo());
-        checkBoxComment.setSelected(mRights.getMayNoteAndComment());
     }
 
     /**
@@ -90,7 +79,7 @@ public class SongRightCard extends DraggableCard implements EventHandler<Event> 
      * @param isHover
      */
     private void onHover(boolean isHover) {
-        buttonContainer.setVisible(isHover);
+        deleteButton.setVisible(isHover);
         mInterface.onSongRightCardHovered(this, isHover);
     }
 
@@ -100,7 +89,7 @@ public class SongRightCard extends DraggableCard implements EventHandler<Event> 
      * @param isHover
      */
     public void setDeletable(boolean isDelatable) {
-        //TODO
+        deleteButton.setVisible(isDelatable);
     }
 
     /**
@@ -111,7 +100,9 @@ public class SongRightCard extends DraggableCard implements EventHandler<Event> 
         final Object source = event.getSource();
         final EventType eventType = event.getEventType();
         if (MouseEvent.MOUSE_CLICKED.equals(eventType)) {
-            if (source.equals(this)) {
+            if (source.equals(deleteButton)) {
+                mInterface.onSongRightCardRemove(this);
+            } else if (source.equals(this)) {
                 this.adaptStyle((MouseEvent) event);
                 mInterface.onSongRightCardSelected(this);
             }
@@ -149,5 +140,14 @@ public class SongRightCard extends DraggableCard implements EventHandler<Event> 
          *                      hovered.
          */
         public void onSongRightCardHovered(SongRightCard songRightCard, boolean isHover);
+
+        /**
+         * The {@link ISongCardRight} is being notified that a
+         * {@link SongCardRight} has just been remove.
+         *
+         * @param songCardRight the {@link SongRightCard} that has been
+         *                      hovered.
+         */
+        public void onSongRightCardRemove(SongRightCard songRightCard);
     }
 }
