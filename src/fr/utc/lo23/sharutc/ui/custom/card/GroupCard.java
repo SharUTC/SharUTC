@@ -16,7 +16,6 @@ import org.slf4j.LoggerFactory;
 
 /**
  * A {@link SimpleCard} that is used to display a {@link Category}.
- *
  * This class notifies a {@link IGroupCard} when the user interacts with the
  * card.
  */
@@ -40,7 +39,16 @@ public class GroupCard extends SimpleCard implements EventHandler<Event> {
     private Category mModel;
     private IGroupCard mInterface;
 
-    public GroupCard(Category category, IGroupCard i) {
+    /**
+     * Card use to display a {@link Category} to the user
+     * //TODO improve the Category model, sad fix
+     * Since {@link Category} doesn't provide number of contacts, use the parameter
+     *
+     * @param category     model of the card
+     * @param i            interface used for the callback
+     * @param memberNumber number of contact in this category //TODO remove after fix
+     */
+    public GroupCard(Category category, int memberNumber, IGroupCard i) {
         super("/fr/utc/lo23/sharutc/ui/fxml/group_card.fxml");
         getStyleClass().add("groupCard");
 
@@ -49,6 +57,7 @@ public class GroupCard extends SimpleCard implements EventHandler<Event> {
 
         //Hideous hack to display "Friends" instead of "Public" in the interface only
         groupName.setText(mModel.getName().equals("Public") ? "Friends" : mModel.getName());
+        groupMembers.setText(String.valueOf(memberNumber));
 
         setOnMouseEntered(this);
         setOnMouseExited(this);
@@ -118,6 +127,20 @@ public class GroupCard extends SimpleCard implements EventHandler<Event> {
      */
     public Category getModel() {
         return mModel;
+    }
+
+    /**
+     * Set model of the card
+     * //TODO improve the Category model, sad fix
+     * Since {@link Category} doesn't provide number of contacts, use the parameter
+     *
+     * @param category
+     * @param membersNumber
+     */
+    public void setModel(Category category, int membersNumber) {
+        mModel = category;
+        groupMembers.setText(String.valueOf(membersNumber));
+
     }
 
     /**

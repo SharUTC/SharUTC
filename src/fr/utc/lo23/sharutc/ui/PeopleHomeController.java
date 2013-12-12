@@ -33,10 +33,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.ResourceBundle;
+import java.util.*;
 
 public class PeopleHomeController extends DragPreviewDrawer implements Initializable, PeopleCard.IPeopleCard, GroupCard.IGroupCard, CollectionChangeListener {
 
@@ -271,7 +268,6 @@ public class PeopleHomeController extends DragPreviewDrawer implements Initializ
         peopleContainer.getChildren().clear();
         hidePlaceHolder();
 
-
         if (c.equals(mVirtualConnectedGroup.getModel())) {
             //display connected user
             final HashMap<UserInfo, Date> currentConnectedPeer = mAppModel.getActivePeerList().getActivePeers();
@@ -281,48 +277,34 @@ public class PeopleHomeController extends DragPreviewDrawer implements Initializ
                 log.info("No user connected");
 
                 //TODO Remove once we get the real peersList
-//                for (int i = 10; i < 25; i++) {
-//                    final UserInfo userInfo = new UserInfo();
-//                    userInfo.setLogin("Login " + String.valueOf(i));
-//                    userInfo.setLastName("LastName");
-//                    userInfo.setFirstName("FirstName");
-//                    userInfo.setPeerId((long) i);
-//                    PeopleCard newCard = new PeopleCard(userInfo, this, PeopleCard.USAGE_CONNECTED);
-//                    peopleContainer.getChildren().add(newCard);
-//                }
+                for (int i = 10; i < 25; i++) {
+                    final UserInfo userInfo = new UserInfo();
+                    userInfo.setLogin("Login " + String.valueOf(i));
+                    userInfo.setLastName("LastName");
+                    userInfo.setFirstName("FirstName");
+                    userInfo.setPeerId((long) i);
+                    PeopleCard newCard = new PeopleCard(userInfo, this, PeopleCard.USAGE_CONNECTED);
+                    peopleContainer.getChildren().add(newCard);
+                }
             } else {
                 for (UserInfo userInfo : currentConnectedPeer.keySet()) {
                     peopleContainer.getChildren().add(new PeopleCard(userInfo, this, PeopleCard.USAGE_CONNECTED));
                 }
             }
 
-        } else if (c.getId().equals(0)) {
-            //display contact from all Categories
-            ArrayList<Contact> allContact = mAppModel.getProfile().getContacts().getContacts();
-            if (allContact.size() == 0) {
-                showPlaceHolder("You have no contact in \"" + c.getName() + "\". Select \"Connected\" and Drag&Drop a user to a category.");
-            } else {
-                for (Contact contact : allContact) {
-                    PeopleCard newCard = new PeopleCard(contact.getUserInfo(), this, PeopleCard.USAGE_CATEGORY);
-                    peopleContainer.getChildren().add(newCard);
-                }
-            }
         } else {
             //check if user are in mCurrentCategory
             final ArrayList<Contact> contacts = mAppModel.getProfile().getContacts().getContacts();
             for (Contact contact : contacts) {
-                //TODO improvement : user Contact as model in PeopleCard
                 //TODO Why not manage contactList in a Category ? would be far more efficient, Category only contain an id and a name...
                 if (contact.getCategoryIds().contains(c.getId())) {
                     peopleContainer.getChildren().add(new PeopleCard(contact.getUserInfo(), this, PeopleCard.USAGE_CATEGORY));
                 }
             }
-            //TODO include PeerId in categoy, due to category id store in contact
             if (peopleContainer.getChildren().size() == 0) {
                 showPlaceHolder("You have no contact in \"" + c.getName() + "\". Select \"Connected\" and Drag&Drop a user to a category.");
             }
         }
-
     }
 
     /**
@@ -331,6 +313,8 @@ public class PeopleHomeController extends DragPreviewDrawer implements Initializ
     private void displayUserGroup() {
         groupContainer.getChildren().clear();
 
+        final ArrayList<Category> categories = mAppModel.getProfile().getCategories().getCategories();
+
         //Display the virtual category for find connected people
         addSimpleCardIngroupContainer(mVirtualConnectedGroup);
 
@@ -338,24 +322,57 @@ public class PeopleHomeController extends DragPreviewDrawer implements Initializ
         displayAddNewGroupCard();
 
         //Display Existing Category
-        for (Category c : mAppModel.getProfile().getCategories().getCategories()) {
+        for (Category c : categories) {
             if (c.getId().equals(0)) {
-                addNewGroupCard(c, false);
+                addNewGroupCard(c, getMembersNumbers(c), false);
             } else {
-                addNewGroupCard(c, true);
+                addNewGroupCard(c, getMembersNumbers(c), true);
             }
         }
     }
 
     /**
-     * add a GroupCard to the GroupCard list
+     * Retrieve the number of contact for a given category
+     * //TODO remove when Category model will offer a such feature
+     * Hot fix as it's impossible to know the number of contact in each category...
      *
-     * @param category the model og this card
-     * @param editable true is the card can be deleted and edited
+     * @param category
+     * @return
      */
-    private void addNewGroupCard(Category category, boolean editable) {
+    private int getMembersNumbers(Category category) {
+        //init result
+        int result = 0;
+        ArrayList<Contact> allContact = mAppModel.getProfile().getContacts().getContacts();
+
+        //For all contact
+        for (Contact contact : allContact) {
+            final Set<Integer> contactCategoryIds = contact.getCategoryIds();
+
+            //For all category ids of the contact
+            for (Integer contactCategoryId : contactCategoryIds) {
+
+                //increase number if ids match
+                if (category.getId().intValue() == contactCategoryId.intValue()) {
+                    result++;
+                }
+            }
+        }
+
+        return result;
+    }
+
+    /**
+     * add a GroupCard to the GroupCard list
+     * //TODO improve the Category model, sad fix
+     * Since {@link Category} doesn't provide number of contacts, use the parameter
+     *
+     * @param category      the model og this card
+     * @param editable      true is the card can be deleted and edited
+     * @param membersNumber number of contact in this category //TODO remove after fix
+     */
+    private void addNewGroupCard(Category category, int membersNumber, boolean editable) {
         hideAddNewGroupCard();
-        final GroupCard newGroupCard = new GroupCard(category, PeopleHomeController.this);
+        final GroupCard newGroupCard = new GroupCard(category, membersNumber, PeopleHomeController.this);
         //need some improvement, remove mouse enter behaviour which display buttons for edition
         if (!editable) {
             newGroupCard.setOnMouseEntered(null);
@@ -425,7 +442,7 @@ public class PeopleHomeController extends DragPreviewDrawer implements Initializ
     private GroupCard createVirtualGroup(String groupName) {
         Category virtualCategory = new Category();
         virtualCategory.setName(groupName);
-        GroupCard virtualGroup = new GroupCard(virtualCategory, this);
+        GroupCard virtualGroup = new GroupCard(virtualCategory, mAppModel.getActivePeerList().size(), this);
         //disable deletion, edit and rights for this virtual groupCard, needs improvement
         virtualGroup.setOnMouseEntered(null);
         //disable drop behavior for this virtual groupCard, needs improvement
@@ -450,7 +467,7 @@ public class PeopleHomeController extends DragPreviewDrawer implements Initializ
             if (item instanceof Category) {
                 //new category added callback
                 final Category c = (Category) ev.getItem();
-                addNewGroupCard(c, true);
+                addNewGroupCard(c, 0, true);
             } else if (item instanceof UserInfo) {
                 //new user connected
                 if (mCurrentCategory.equals(mVirtualConnectedGroup.getModel())) {
@@ -461,6 +478,7 @@ public class PeopleHomeController extends DragPreviewDrawer implements Initializ
                             final UserInfo newConnectedUser = (UserInfo) item;
                             PeopleCard newCard = new PeopleCard(newConnectedUser, PeopleHomeController.this, PeopleCard.USAGE_CONNECTED);
                             peopleContainer.getChildren().add(newCard);
+                            displayUserGroup();
                         }
                     });
                 }
@@ -483,6 +501,7 @@ public class PeopleHomeController extends DragPreviewDrawer implements Initializ
                                 @Override
                                 public void run() {
                                     children.remove(userCard);
+                                    displayUserGroup();
                                 }
                             });
                         }
@@ -491,8 +510,18 @@ public class PeopleHomeController extends DragPreviewDrawer implements Initializ
             }
         } else if (type.equals(CollectionEvent.Type.UPDATE)) {
             if (item instanceof Category) {
-                //redraw the group container
-                displayUserGroup();
+                final Category c = (Category) item;
+                //update only the concerning category
+                Platform.runLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        for (Node n : groupContainer.getChildren()) {
+                            if (n instanceof GroupCard && ((GroupCard) n).getModel().equals(c)) {
+                                ((GroupCard) n).setModel(c, getMembersNumbers(c));
+                            }
+                        }
+                    }
+                });
             }
         }
     }
