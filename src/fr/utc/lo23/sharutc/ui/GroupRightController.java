@@ -108,7 +108,7 @@ public class GroupRightController extends DragPreviewDrawer implements Initializ
      * @param rightIdentifier
      */
     private void displayMusicByRight(final int rightIdentifier) {
-        clearView();
+        clearSongContainer();
 
         final List<Music> matchingMusics = getMusicByRights(rightIdentifier);
         final RightsList rightsList = mAppModel.getRightsList();
@@ -212,7 +212,7 @@ public class GroupRightController extends DragPreviewDrawer implements Initializ
      * Display all local music with rights according to the category selected
      */
     private void displayAllMusic() {
-        clearView();
+        clearSongContainer();
 
         final List<Music> musics = mAppModel.getLocalCatalog().getMusics();
         final RightsList rightsList = mAppModel.getRightsList();
@@ -258,7 +258,7 @@ public class GroupRightController extends DragPreviewDrawer implements Initializ
             @Override
             public void handle(MouseEvent mouseEvent) {
                 mCurrentRightsSongCard = mAllSongCard;
-                unSelectRightsCard();
+                cleanRightContainer();
                 displayAllMusic();
             }
         });
@@ -304,20 +304,43 @@ public class GroupRightController extends DragPreviewDrawer implements Initializ
     /**
      * used to clear songs container
      */
-    private void clearView() {
+    private void clearSongContainer() {
         songsContainer.getChildren().clear();
         hidePlaceHolder();
     }
 
     /**
-     * remove highlight which was showing selection
+     * used to clean style of right card
      */
-    private void unSelectRightsCard() {
+    private void cleanRightContainer() {
+        mAllRightsSongCard.getStyleClass().remove("simpleCardClicked");
         mListenSongCard.getStyleClass().remove("simpleCardClicked");
         mReadSongCard.getStyleClass().remove("simpleCardClicked");
         mCommentAndNoteSongCard.getStyleClass().remove("simpleCardClicked");
-        mAllRightsSongCard.getStyleClass().remove("simpleCardClicked");
         mNoneRightsSongCard.getStyleClass().remove("simpleCardClicked");
+    }
+
+    /**
+     * Display highlight on each right card matching with the given rights
+     *
+     * @param rights which be used to find matching rightCard
+     */
+    private void selectedMatchingRight(Rights rights) {
+        final Boolean mayListen = rights.getMayListen();
+        final Boolean mayReadInfo = rights.getMayReadInfo();
+        final Boolean mayCommentAndNote = rights.getMayNoteAndComment();
+
+        if (mayListen & mayReadInfo & mayCommentAndNote) {
+            mAllRightsSongCard.getStyleClass().add("simpleCardClicked");
+        }
+
+        if (mayListen | mayReadInfo | mayCommentAndNote) {
+            if (mayListen) mListenSongCard.getStyleClass().add("simpleCardClicked");
+            if (mayReadInfo) mReadSongCard.getStyleClass().add("simpleCardClicked");
+            if (mayCommentAndNote) mCommentAndNoteSongCard.getStyleClass().add("simpleCardClicked");
+        } else {
+            mNoneRightsSongCard.getStyleClass().add("simpleCardClicked");
+        }
     }
 
     /**
@@ -377,9 +400,11 @@ public class GroupRightController extends DragPreviewDrawer implements Initializ
     @Override
     public void onRightCardClicked(RightCard card, MouseEvent event) {
         //select the right one and unselected the other
-        unSelectRightsCard();
-        card.getStyleClass().add("simpleCardClicked");
+        if (mCurrentRightsSongCard != mAllSongCard) {
+            mCurrentRightsSongCard.getStyleClass().remove("simpleCardClicked");
+        }
         mCurrentRightsSongCard = card;
+        mCurrentRightsSongCard.getStyleClass().add("simpleCardClicked");
 
         displayMusicByRight(card.getIdentifier());
     }
@@ -395,34 +420,23 @@ public class GroupRightController extends DragPreviewDrawer implements Initializ
 
     @Override
     public void onSongRightCardHovered(SongRightCard songRightCard, boolean isHover) {
-        final Rights rights = songRightCard.getRights();
         if (isHover) {
-            final Boolean mayListen = rights.getMayListen();
-            final Boolean mayReadInfo = rights.getMayReadInfo();
-            final Boolean mayCommentAndNote = rights.getMayNoteAndComment();
-
-            if (mayListen & mayReadInfo & mayCommentAndNote) {
-                mAllRightsSongCard.getStyleClass().add("simpleCardClicked");
-            }
-
-            if (mayListen | mayReadInfo | mayCommentAndNote) {
-                if (mayListen) mListenSongCard.getStyleClass().add("simpleCardClicked");
-                if (mayReadInfo) mReadSongCard.getStyleClass().add("simpleCardClicked");
-                if (mayCommentAndNote) mCommentAndNoteSongCard.getStyleClass().add("simpleCardClicked");
-            } else {
-                mNoneRightsSongCard.getStyleClass().add("simpleCardClicked");
-            }
-
+            selectedMatchingRight(songRightCard.getRights());
             songRightCard.setDeletable(mCurrentRightsSongCard != mAllSongCard);
 
         } else {
             //hide all
-            mAllRightsSongCard.getStyleClass().remove("simpleCardClicked");
-            mListenSongCard.getStyleClass().remove("simpleCardClicked");
-            mReadSongCard.getStyleClass().remove("simpleCardClicked");
-            mCommentAndNoteSongCard.getStyleClass().remove("simpleCardClicked");
-            mNoneRightsSongCard.getStyleClass().remove("simpleCardClicked");
+            cleanRightContainer();
             songRightCard.setDeletable(false);
+        }
+    }
+
+    @Override
+    public void onSongRightCardBasketHovered(SongRightCard songRightCard, boolean isHover) {
+        if (isHover) {
+            cleanRightContainer();
+        } else {
+            selectedMatchingRight(songRightCard.getRights());
         }
     }
 
@@ -466,6 +480,8 @@ public class GroupRightController extends DragPreviewDrawer implements Initializ
                 new DialogBoxBuilder.IConfirmBox() {
                     @Override
                     public void onChoiceMade(boolean answer) {
+                        cleanRightContainer();
+                        mCurrentRightsSongCard.getStyleClass().add("simpleCardClicked");
                         if (answer) {
                             manageRightsCommand.execute();
                         }

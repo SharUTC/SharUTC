@@ -44,6 +44,8 @@ public class SongRightCard extends DraggableCard implements EventHandler<Event> 
         setOnMouseEntered(this);
         setOnMouseExited(this);
         deleteButton.setOnMouseClicked(this);
+        deleteButton.setOnMouseEntered(this);
+        deleteButton.setOnMouseExited(this);
     }
 
     /**
@@ -102,6 +104,7 @@ public class SongRightCard extends DraggableCard implements EventHandler<Event> 
         if (MouseEvent.MOUSE_CLICKED.equals(eventType)) {
             if (source.equals(deleteButton)) {
                 mInterface.onSongRightCardRemove(this);
+                event.consume();
             } else if (source.equals(this)) {
                 this.adaptStyle((MouseEvent) event);
                 mInterface.onSongRightCardSelected(this);
@@ -109,10 +112,14 @@ public class SongRightCard extends DraggableCard implements EventHandler<Event> 
         } else if (MouseEvent.MOUSE_ENTERED.equals(eventType)) {
             if (source.equals(this)) {
                 this.onHover(true);
+            }else if(source.equals(deleteButton)){
+                 mInterface.onSongRightCardBasketHovered(this,true);
             }
         } else if (MouseEvent.MOUSE_EXITED.equals(eventType)) {
             if (source.equals(this)) {
                 this.onHover(false);
+            } else if(source.equals(deleteButton)){
+                mInterface.onSongRightCardBasketHovered(this,false);
             }
         }
     }
@@ -140,6 +147,15 @@ public class SongRightCard extends DraggableCard implements EventHandler<Event> 
          *                      hovered.
          */
         public void onSongRightCardHovered(SongRightCard songRightCard, boolean isHover);
+
+        /**
+         * The {@link ISongCardRight} is being notified that the
+         * basket of {@link SongCardRight} has just been hovered.
+         *
+         * @param songCardRight the {@link SongRightCard} that has been
+         *                      hovered.
+         */
+        public void onSongRightCardBasketHovered(SongRightCard songRightCard, boolean isHover);
 
         /**
          * The {@link ISongCardRight} is being notified that a
