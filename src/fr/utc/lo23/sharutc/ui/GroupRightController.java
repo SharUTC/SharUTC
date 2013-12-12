@@ -14,6 +14,7 @@ import fr.utc.lo23.sharutc.ui.custom.card.SimpleCard;
 import fr.utc.lo23.sharutc.ui.custom.card.SongRightCard;
 import fr.utc.lo23.sharutc.util.CollectionChangeListener;
 import fr.utc.lo23.sharutc.util.CollectionEvent;
+import fr.utc.lo23.sharutc.util.DialogBoxBuilder;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -429,28 +430,48 @@ public class GroupRightController extends DragPreviewDrawer implements Initializ
     public void onSongRightCardRemove(SongRightCard songRightCard) {
         initCommand(songRightCard);
 
+        String messageToShow = "Do you want to ";
+
         if (mCurrentRightsSongCard == mListenSongCard) {
             //remove listen right
             manageRightsCommand.setMayListen(false);
+            messageToShow += "take off \"listen right\" for ";
         } else if (mCurrentRightsSongCard == mReadSongCard) {
             //remove read info right
             manageRightsCommand.setMayReadInfo(false);
+            messageToShow += "take off \"read info right\" for ";
         } else if (mCurrentRightsSongCard == mCommentAndNoteSongCard) {
             //remove comment and note right
             manageRightsCommand.setMayCommentAndScore(false);
+            messageToShow += "take off \"comment and not right\" for ";
         } else if (mCurrentRightsSongCard == mAllRightsSongCard) {
             //remove all right
             manageRightsCommand.setMayCommentAndScore(false);
             manageRightsCommand.setMayListen(false);
             manageRightsCommand.setMayReadInfo(false);
+            messageToShow += "take off \"all rights\" for ";
         } else if (mCurrentRightsSongCard == mNoneRightsSongCard) {
             //reset all right
             manageRightsCommand.setMayCommentAndScore(true);
             manageRightsCommand.setMayListen(true);
             manageRightsCommand.setMayReadInfo(true);
+            messageToShow += "grant \"all rights\" for ";
         }
 
-        manageRightsCommand.execute();
+        messageToShow += songRightCard.getMusic().getTitle() + "?";
+
+        DialogBoxBuilder.createConfirmBox(messageToShow,
+                this.getClass().getResource("/fr/utc/lo23/sharutc/ui/css/modal.css").toExternalForm(),
+                songsContainer.getScene().getRoot(),
+                new DialogBoxBuilder.IConfirmBox() {
+                    @Override
+                    public void onChoiceMade(boolean answer) {
+                        if (answer) {
+                            manageRightsCommand.execute();
+                        }
+                    }
+                }).show();
+
     }
 
     @Override
