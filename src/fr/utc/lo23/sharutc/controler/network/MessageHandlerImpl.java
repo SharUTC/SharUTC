@@ -38,6 +38,7 @@ public class MessageHandlerImpl implements MessageHandler {
     private final MusicService musicService;
     private final UserService userService;
     private Command command = null;
+    public MessageType previousMessageType = null; // this attribute is used only for messages using conversationId
 
     @Inject
     public MessageHandlerImpl(AppModel appModel, MessageParser messageParser,
@@ -112,7 +113,7 @@ public class MessageHandlerImpl implements MessageHandler {
                         command = sendCatalogCommand;
                         break;
                     case MUSIC_SEND_CATALOG:
-                        if (isMessageForCurrentConversation()) {
+                        if (isMessageForCurrentConversation() || getPreviousMessageType().equals(MessageType.MUSIC_GET_TO_PLAY)) {
                             integrateRemoteCatalogCommand.setPeer(messageParser.getSource());
                             integrateRemoteCatalogCommand.setCatalog((Catalog) messageParser.getValue(Message.CATALOG));
                             command = integrateRemoteCatalogCommand;
@@ -125,7 +126,7 @@ public class MessageHandlerImpl implements MessageHandler {
                         break;
                     case TAG_MAP:
                         // we must check the conversation ID, the user may have left the cloud of tags screen
-                        if (isMessageForCurrentConversation()) {
+                        if (isMessageForCurrentConversation() || getPreviousMessageType().equals(MessageType.MUSIC_GET_TO_PLAY)) {
                             integrateRemoteTagMapCommand.setTagMap((TagMap) messageParser.getValue(Message.TAG_MAP));
                             command = integrateRemoteTagMapCommand;
                         }
@@ -168,7 +169,7 @@ public class MessageHandlerImpl implements MessageHandler {
                         command = performMusicSearchCommand;
                         break;
                     case MUSIC_RESULTS:
-                        if (isMessageForCurrentConversation()) {
+                        if (isMessageForCurrentConversation() || getPreviousMessageType().equals(MessageType.MUSIC_GET_TO_PLAY)) {
                             integrateMusicSearchCommand.setResultsCatalog((Catalog) messageParser.getValue(Message.CATALOG));
                             command = integrateMusicSearchCommand;
                         }
@@ -245,5 +246,21 @@ public class MessageHandlerImpl implements MessageHandler {
      */
     private boolean isMessageForCurrentConversation() {
         return appModel.getCurrentConversationId().equals(messageParser.getValue(Message.CONVERSATION_ID));
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+     public void setPreviousMessageType(MessageType newMessageType) {
+        previousMessageType = newMessageType; 
+    }
+    
+     /**
+     * {@inheritDoc}
+     */
+     @Override
+     public MessageType getPreviousMessageType() {
+        return previousMessageType;
     }
 }

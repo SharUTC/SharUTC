@@ -14,6 +14,7 @@ import fr.utc.lo23.sharutc.ui.custom.card.SimpleCard;
 import fr.utc.lo23.sharutc.ui.custom.card.SongRightCard;
 import fr.utc.lo23.sharutc.util.CollectionChangeListener;
 import fr.utc.lo23.sharutc.util.CollectionEvent;
+import fr.utc.lo23.sharutc.util.DialogBoxBuilder;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -67,6 +68,7 @@ public class GroupRightController extends DragPreviewDrawer implements Initializ
     private RightCard mCommentAndNoteSongCard;
     private RightCard mAllRightsSongCard;
     private RightCard mNoneRightsSongCard;
+    private SimpleCard mCurrentRightsSongCard;
     /**
      * Display message to the user
      */
@@ -99,8 +101,14 @@ public class GroupRightController extends DragPreviewDrawer implements Initializ
         displayAllMusic();
     }
 
+
+    /**
+     * display matching song according to the current selected right.
+     *
+     * @param rightIdentifier
+     */
     private void displayMusicByRight(final int rightIdentifier) {
-        clearView();
+        clearSongContainer();
 
         final List<Music> matchingMusics = getMusicByRights(rightIdentifier);
         final RightsList rightsList = mAppModel.getRightsList();
@@ -153,15 +161,14 @@ public class GroupRightController extends DragPreviewDrawer implements Initializ
         final List<Music> result = new ArrayList<Music>();
 
         if (musics.isEmpty()) {
-            showPlaceHolder("There is no song in your catalogue. Go to the Songs tab first.");
+            //showPlaceHolder("There is no song in your catalogue. Go to the Songs tab first.");
         } else {
             for (Music m : musics) {
                 //for each music check rights
 
                 final Rights rights = rightsList.getByMusicIdAndCategoryId(m.getId(), mCurrentCategory.getId());
-
+                boolean shouldAdd = false;
                 if (rights != null) {
-                    boolean shouldAdd = false;
                     //are rights matching to requested one ?
                     switch (rightIdentifier) {
                         case RIGHT_LISTEN:
@@ -187,10 +194,13 @@ public class GroupRightController extends DragPreviewDrawer implements Initializ
                             break;
                     }
 
-                    if (shouldAdd) {
-                        //add music to the resultList
-                        result.add(m);
-                    }
+                } else {
+                    //no rights for this music but should add for none section
+                    if (rightIdentifier == RIGHT_NONE) shouldAdd = true;
+                }
+                if (shouldAdd) {
+                    //add music to the resultList
+                    result.add(m);
                 }
             }
         }
@@ -202,7 +212,7 @@ public class GroupRightController extends DragPreviewDrawer implements Initializ
      * Display all local music with rights according to the category selected
      */
     private void displayAllMusic() {
-        clearView();
+        clearSongContainer();
 
         final List<Music> musics = mAppModel.getLocalCatalog().getMusics();
         final RightsList rightsList = mAppModel.getRightsList();
@@ -247,22 +257,26 @@ public class GroupRightController extends DragPreviewDrawer implements Initializ
         mAllSongCard.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent mouseEvent) {
+                mCurrentRightsSongCard = mAllSongCard;
+                cleanRightContainer();
                 displayAllMusic();
             }
         });
 
-        mReadSongCard = new RightCard("Read", this);
+        mReadSongCard = new RightCard("Read", RIGHT_READ, this);
 
-        mListenSongCard = new RightCard("Listen", this);
+        mListenSongCard = new RightCard("Listen", RIGHT_LISTEN, this);
 
-        mCommentAndNoteSongCard = new RightCard("Note", this);
+        mCommentAndNoteSongCard = new RightCard("Note", RIGHT_NOTE, this);
 
-        mAllRightsSongCard = new RightCard("All Right", this);
-        
-        mNoneRightsSongCard= new RightCard("None", this);
+        mAllRightsSongCard = new RightCard("All Right", RIGHT_ALL, this);
+
+        mNoneRightsSongCard = new RightCard("None", RIGHT_NONE, this);
+
+        mCurrentRightsSongCard = mAllSongCard;
 
         rightContainer.getChildren().addAll(mAllSongCard, mReadSongCard, mListenSongCard, mCommentAndNoteSongCard,
-                mAllRightsSongCard , mNoneRightsSongCard);
+                mAllRightsSongCard, mNoneRightsSongCard);
     }
 
 
@@ -290,27 +304,71 @@ public class GroupRightController extends DragPreviewDrawer implements Initializ
     /**
      * used to clear songs container
      */
-    private void clearView() {
+    private void clearSongContainer() {
         songsContainer.getChildren().clear();
         hidePlaceHolder();
+    }
+
+    /**
+     * used to clean style of right card
+     */
+    private void cleanRightContainer() {
+        mAllRightsSongCard.setSelected(false);
+        mListenSongCard.setSelected(false);
+        mReadSongCard.setSelected(false);
+        mCommentAndNoteSongCard.setSelected(false);
+        mNoneRightsSongCard.setSelected(false);
+    }
+
+    /**
+     * Display highlight on each right card matching with the given rights
+     *
+     * @param rights which be used to find matching rightCard
+     */
+    private void selectedMatchingRight(Rights rights) {
+        final Boolean mayListen = rights.getMayListen();
+        final Boolean mayReadInfo = rights.getMayReadInfo();
+        final Boolean mayCommentAndNote = rights.getMayNoteAndComment();
+
+        if (mayListen & mayReadInfo & mayCommentAndNote) {
+            mAllRightsSongCard.setSelected(true);
+        }
+
+        if (mayListen | mayReadInfo | mayCommentAndNote) {
+            if (mayListen) mListenSongCard.setSelected(true);
+            if (mayReadInfo) mReadSongCard.setSelected(true);
+            if (mayCommentAndNote) mCommentAndNoteSongCard.setSelected(true);
+        } else {
+            mNoneRightsSongCard.setSelected(true);
+        }
+    }
+
+    /**
+     * init command with current song's right values
+     *
+     * @param songRightCard
+     */
+    private void initCommand(SongRightCard songRightCard) {
+        //recover the music
+        final Music m = songRightCard.getMusic();
+
+        //get the current rights
+        Rights rights = songRightCard.getRights();
+
+        //initialize the command
+        manageRightsCommand.setCategory(mCurrentCategory);
+        manageRightsCommand.setMusic(m);
+        manageRightsCommand.setMayCommentAndScore(rights.getMayNoteAndComment());
+        manageRightsCommand.setMayListen(rights.getMayListen());
+        manageRightsCommand.setMayReadInfo(rights.getMayReadInfo());
     }
 
     @Override
     public void onSongAdded(RightCard card) {
         //for all selected Music dropped
         for (SongRightCard songRightCard : mSongRightCardSelected) {
-            //recover the music
-            final Music m = songRightCard.getMusic();
 
-            //get the current rights
-            Rights rights = songRightCard.getRights();
-
-            //initialize the command
-            manageRightsCommand.setCategory(mCurrentCategory);
-            manageRightsCommand.setMusic(m);
-            manageRightsCommand.setMayCommentAndScore(rights.getMayNoteAndComment());
-            manageRightsCommand.setMayListen(rights.getMayListen());
-            manageRightsCommand.setMayReadInfo(rights.getMayReadInfo());
+            initCommand(songRightCard);
 
             //change according to the drop area
             if (card.equals(mAllRightsSongCard)) {
@@ -327,7 +385,7 @@ public class GroupRightController extends DragPreviewDrawer implements Initializ
             } else if (card.equals(mCommentAndNoteSongCard)) {
                 log.info("song dropped in comment right card : ");
                 manageRightsCommand.setMayCommentAndScore(true);
-            }else if (card.equals(mNoneRightsSongCard)) {
+            } else if (card.equals(mNoneRightsSongCard)) {
                 log.info("song dropped in none right card : ");
                 manageRightsCommand.setMayCommentAndScore(false);
                 manageRightsCommand.setMayListen(false);
@@ -340,20 +398,15 @@ public class GroupRightController extends DragPreviewDrawer implements Initializ
     }
 
     @Override
-    public void onRightCardClicked(RightCard card) {
-        //clear the songRightCard container
-        if (card.equals(mListenSongCard)) {
-            displayMusicByRight(RIGHT_LISTEN);
-        } else if (card.equals(mReadSongCard)) {
-            displayMusicByRight(RIGHT_READ);
-        } else if (card.equals(mCommentAndNoteSongCard)) {
-            displayMusicByRight(RIGHT_NOTE);
-        } else if (card.equals(mAllRightsSongCard)) {
-            displayMusicByRight(RIGHT_ALL);
-        } else if (card.equals(mNoneRightsSongCard)) {
-            displayMusicByRight(RIGHT_NONE);
+    public void onRightCardClicked(RightCard card, MouseEvent event) {
+        //select the right one and unselected the other
+        if (mCurrentRightsSongCard != mAllSongCard) {
+            mCurrentRightsSongCard.setSelected(false);
         }
+        mCurrentRightsSongCard = card;
+        mCurrentRightsSongCard.setSelected(true);
 
+        displayMusicByRight(card.getIdentifier());
     }
 
     @Override
@@ -363,6 +416,78 @@ public class GroupRightController extends DragPreviewDrawer implements Initializ
         } else {
             mSongRightCardSelected.add(songCardRight);
         }
+    }
+
+    @Override
+    public void onSongRightCardHovered(SongRightCard songRightCard, boolean isHover) {
+        if (isHover) {
+            selectedMatchingRight(songRightCard.getRights());
+            songRightCard.setDeletable(mCurrentRightsSongCard != mAllSongCard);
+
+        } else {
+            //hide all
+            cleanRightContainer();
+            songRightCard.setDeletable(false);
+        }
+    }
+
+    @Override
+    public void onSongRightCardBasketHovered(SongRightCard songRightCard, boolean isHover) {
+        if (isHover) {
+            cleanRightContainer();
+        } else {
+            selectedMatchingRight(songRightCard.getRights());
+        }
+    }
+
+    @Override
+    public void onSongRightCardRemove(SongRightCard songRightCard) {
+        initCommand(songRightCard);
+
+        String messageToShow = "Do you want to ";
+
+        if (mCurrentRightsSongCard == mListenSongCard) {
+            //remove listen right
+            manageRightsCommand.setMayListen(false);
+            messageToShow += "take off \"listen right\" for ";
+        } else if (mCurrentRightsSongCard == mReadSongCard) {
+            //remove read info right
+            manageRightsCommand.setMayReadInfo(false);
+            messageToShow += "take off \"read info right\" for ";
+        } else if (mCurrentRightsSongCard == mCommentAndNoteSongCard) {
+            //remove comment and note right
+            manageRightsCommand.setMayCommentAndScore(false);
+            messageToShow += "take off \"comment and not right\" for ";
+        } else if (mCurrentRightsSongCard == mAllRightsSongCard) {
+            //remove all right
+            manageRightsCommand.setMayCommentAndScore(false);
+            manageRightsCommand.setMayListen(false);
+            manageRightsCommand.setMayReadInfo(false);
+            messageToShow += "take off \"all rights\" for ";
+        } else if (mCurrentRightsSongCard == mNoneRightsSongCard) {
+            //reset all right
+            manageRightsCommand.setMayCommentAndScore(true);
+            manageRightsCommand.setMayListen(true);
+            manageRightsCommand.setMayReadInfo(true);
+            messageToShow += "grant \"all rights\" for ";
+        }
+
+        messageToShow += songRightCard.getMusic().getTitle() + "?";
+
+        DialogBoxBuilder.createConfirmBox(messageToShow,
+                this.getClass().getResource("/fr/utc/lo23/sharutc/ui/css/modal.css").toExternalForm(),
+                songsContainer.getScene().getRoot(),
+                new DialogBoxBuilder.IConfirmBox() {
+                    @Override
+                    public void onChoiceMade(boolean answer) {
+                        cleanRightContainer();
+                        mCurrentRightsSongCard.setSelected(true);
+                        if (answer) {
+                            manageRightsCommand.execute();
+                        }
+                    }
+                }).show();
+
     }
 
     @Override
@@ -402,7 +527,12 @@ public class GroupRightController extends DragPreviewDrawer implements Initializ
         if (CollectionEvent.Type.UPDATE.equals(type)) {
             if (item instanceof Rights) {
                 //update UI
-                displayAllMusic();
+                if (mCurrentRightsSongCard == mAllSongCard) {
+                    displayAllMusic();
+                } else {
+                    displayMusicByRight(((RightCard) mCurrentRightsSongCard).getIdentifier());
+                }
+
                 log.info("Rights updated : " + ((Rights) item).getMusicId());
             }
         }

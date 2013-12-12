@@ -16,12 +16,12 @@ public class SimpleCard extends VBox {
     protected final int STATE_CLICKED = 1;
 
     public final static int WIDTH = 180;
-    
+
     protected int mState;
 
     /**
      * Creates a SimpleCard from an FXML resource.
-     * 
+     *
      * @param resourceFXML the FXML resource that will be loaded.
      */
     public SimpleCard(String resourceFXML) {
@@ -47,11 +47,11 @@ public class SimpleCard extends VBox {
 
     /**
      * Creates a SimpleCard with a given size and alignement.
-     * 
+     *
      * @param resourceFXML the FXML resource that will be loaded.
-     * @param width the pref width of the card.
-     * @param height the pref height of the card.
-     * @param alignement the alignement policy of the card.
+     * @param width        the pref width of the card.
+     * @param height       the pref height of the card.
+     * @param alignement   the alignement policy of the card.
      */
     public SimpleCard(String resourceFXML, double width, double height, Pos alignement) {
         this(resourceFXML);
@@ -65,7 +65,7 @@ public class SimpleCard extends VBox {
 
     /**
      * Adapts the style of the card according to the {@link MouseEvent}
-     * 
+     *
      * @param mouseEvent
      */
     public void adaptStyle(MouseEvent mouseEvent) {
@@ -77,6 +77,19 @@ public class SimpleCard extends VBox {
                 mState = STATE_CLICKED;
                 getStyleClass().add("simpleCardClicked");
             }
+        }
+    }
+
+    /**
+     * Allow to add or remove selection style
+     *
+     * @param selected true if selection must be displayed
+     */
+    public void setSelected(boolean selected) {
+        if (selected) {
+            getStyleClass().add("simpleCardClicked");
+        } else {
+            getStyleClass().remove("simpleCardClicked");
         }
     }
 
