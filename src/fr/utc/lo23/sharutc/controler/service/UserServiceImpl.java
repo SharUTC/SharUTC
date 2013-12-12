@@ -4,16 +4,11 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import fr.utc.lo23.sharutc.model.AppModel;
 import fr.utc.lo23.sharutc.model.ErrorMessage;
-import fr.utc.lo23.sharutc.model.userdata.ActivePeerList;
-import fr.utc.lo23.sharutc.model.userdata.Category;
-import fr.utc.lo23.sharutc.model.userdata.Contact;
-import fr.utc.lo23.sharutc.model.userdata.Peer;
-import fr.utc.lo23.sharutc.model.userdata.Profile;
-import fr.utc.lo23.sharutc.model.userdata.UserInfo;
-import java.util.Set;
+import fr.utc.lo23.sharutc.model.userdata.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import fr.utc.lo23.sharutc.model.userdata.KnownPeerList;
+
+import java.util.Set;
 
 /**
  * Implementation of UserService
@@ -26,9 +21,9 @@ public class UserServiceImpl implements UserService {
     private final AppModel appModel;
     private final FileService fileService;
 
-     /**
+    /**
      * Constructor
-     * 
+     *
      * @param appModel
      * @param fileService
      */
@@ -38,9 +33,9 @@ public class UserServiceImpl implements UserService {
         this.fileService = fileService;
     }
 
-     /**
+    /**
      * Return user's profile
-     * 
+     *
      * @return user's profile
      */
     private Profile getProfile() {
@@ -91,7 +86,16 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public void deleteContact(Contact contact) {
+        //stock categories ids from which the contact will be deleted
+        final Set<Integer> categoriesIds = contact.getCategoryIds();
+
+        //process the deletion
         getProfile().getContacts().remove(contact);
+
+        //fire event for each category which has lost the contact
+        for (Category c : getProfile().getCategories().getCategories()) {
+            if (categoriesIds.contains(c.getId())) getProfile().getCategories().notifyCategoryUpdate(c);
+        }
     }
 
     /**
@@ -106,7 +110,7 @@ public class UserServiceImpl implements UserService {
          *  with the same name.
          */
         boolean present = getProfile().getCategories().isNamePresent(categoryName);
-        
+
         if (!present) {
             Category c = new Category(getProfile().getNewCategoryId(), categoryName);
             getProfile().getCategories().add(c);
@@ -138,7 +142,7 @@ public class UserServiceImpl implements UserService {
             appModel.getErrorBus().pushErrorMessage(nErrorMessage);
         }
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -146,7 +150,7 @@ public class UserServiceImpl implements UserService {
     public void setCategoryName(Integer categoryId, String newCategoryName) {
         //Check if the category is not the category Public
         if (categoryId != Category.PUBLIC_CATEGORY_ID) {
-            
+
             Category category = appModel.getProfile().getCategories().findCategoryById(categoryId);
 
             //Check if the category exists
@@ -157,23 +161,23 @@ public class UserServiceImpl implements UserService {
                 * (since there are IDs), we consider that a user can't create two categories
                 *  with the same name.
                 */
-               boolean present = getProfile().getCategories().isNamePresent(newCategoryName);
+                boolean present = getProfile().getCategories().isNamePresent(newCategoryName);
 
-               if (!present) {
-                   category.setName(newCategoryName);
-                   getProfile().getCategories().notifyCategoryUpdate(category);
-               } else {
-                   log.warn("This category name already exists, you can't rename the category");
-                   ErrorMessage nErrorMessage = new ErrorMessage("This category name already exists, you can't rename the category");
-                   appModel.getErrorBus().pushErrorMessage(nErrorMessage);
-               }
-               
+                if (!present) {
+                    category.setName(newCategoryName);
+                    getProfile().getCategories().notifyCategoryUpdate(category);
+                } else {
+                    log.warn("This category name already exists, you can't rename the category");
+                    ErrorMessage nErrorMessage = new ErrorMessage("This category name already exists, you can't rename the category");
+                    appModel.getErrorBus().pushErrorMessage(nErrorMessage);
+                }
+
             } else {
                 log.warn("This category does not exist");
                 ErrorMessage nErrorMessage = new ErrorMessage("This category does not exist");
                 appModel.getErrorBus().pushErrorMessage(nErrorMessage);
             }
-            
+
         } else {
             log.warn("You can't rename the category Public");
             ErrorMessage nErrorMessage = new ErrorMessage("You can't rename the category Public");
@@ -210,6 +214,7 @@ public class UserServiceImpl implements UserService {
                 }
             }
             getProfile().getContacts().findById(contactId).addCategoryId(category.getId());
+            getProfile().getCategories().notifyCategoryUpdate(category);
         } else {
             log.warn("This contact already exists in this category");
             ErrorMessage nErrorMessage = new ErrorMessage("This contact already exists in this category");
@@ -230,12 +235,14 @@ public class UserServiceImpl implements UserService {
             // if this category was the only one, we put the contact in the public one
             if (c.getCategoryIds().isEmpty()) {
                 c.addCategoryId(Category.PUBLIC_CATEGORY_ID);
+                getProfile().getCategories().notifyCategoryUpdate(getProfile().getCategories().getCategories().get(0));
             }
         } else {
             log.warn("Can't remove contact from Public category");
             ErrorMessage nErrorMessage = new ErrorMessage("Can't remove contact from Public category");
             appModel.getErrorBus().pushErrorMessage(nErrorMessage);
         }
+        getProfile().getCategories().notifyCategoryUpdate(category);
     }
 
     /**
