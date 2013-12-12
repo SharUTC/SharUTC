@@ -313,11 +313,11 @@ public class GroupRightController extends DragPreviewDrawer implements Initializ
      * used to clean style of right card
      */
     private void cleanRightContainer() {
-        mAllRightsSongCard.getStyleClass().remove("simpleCardClicked");
-        mListenSongCard.getStyleClass().remove("simpleCardClicked");
-        mReadSongCard.getStyleClass().remove("simpleCardClicked");
-        mCommentAndNoteSongCard.getStyleClass().remove("simpleCardClicked");
-        mNoneRightsSongCard.getStyleClass().remove("simpleCardClicked");
+        mAllRightsSongCard.setSelected(false);
+        mListenSongCard.setSelected(false);
+        mReadSongCard.setSelected(false);
+        mCommentAndNoteSongCard.setSelected(false);
+        mNoneRightsSongCard.setSelected(false);
     }
 
     /**
@@ -331,15 +331,15 @@ public class GroupRightController extends DragPreviewDrawer implements Initializ
         final Boolean mayCommentAndNote = rights.getMayNoteAndComment();
 
         if (mayListen & mayReadInfo & mayCommentAndNote) {
-            mAllRightsSongCard.getStyleClass().add("simpleCardClicked");
+            mAllRightsSongCard.setSelected(true);
         }
 
         if (mayListen | mayReadInfo | mayCommentAndNote) {
-            if (mayListen) mListenSongCard.getStyleClass().add("simpleCardClicked");
-            if (mayReadInfo) mReadSongCard.getStyleClass().add("simpleCardClicked");
-            if (mayCommentAndNote) mCommentAndNoteSongCard.getStyleClass().add("simpleCardClicked");
+            if (mayListen) mListenSongCard.setSelected(true);
+            if (mayReadInfo) mReadSongCard.setSelected(true);
+            if (mayCommentAndNote) mCommentAndNoteSongCard.setSelected(true);
         } else {
-            mNoneRightsSongCard.getStyleClass().add("simpleCardClicked");
+            mNoneRightsSongCard.setSelected(true);
         }
     }
 
@@ -401,10 +401,10 @@ public class GroupRightController extends DragPreviewDrawer implements Initializ
     public void onRightCardClicked(RightCard card, MouseEvent event) {
         //select the right one and unselected the other
         if (mCurrentRightsSongCard != mAllSongCard) {
-            mCurrentRightsSongCard.getStyleClass().remove("simpleCardClicked");
+            mCurrentRightsSongCard.setSelected(false);
         }
         mCurrentRightsSongCard = card;
-        mCurrentRightsSongCard.getStyleClass().add("simpleCardClicked");
+        mCurrentRightsSongCard.setSelected(true);
 
         displayMusicByRight(card.getIdentifier());
     }
@@ -481,7 +481,7 @@ public class GroupRightController extends DragPreviewDrawer implements Initializ
                     @Override
                     public void onChoiceMade(boolean answer) {
                         cleanRightContainer();
-                        mCurrentRightsSongCard.getStyleClass().add("simpleCardClicked");
+                        mCurrentRightsSongCard.setSelected(true);
                         if (answer) {
                             manageRightsCommand.execute();
                         }
