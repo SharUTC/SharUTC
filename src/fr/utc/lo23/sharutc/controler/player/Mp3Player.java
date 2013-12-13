@@ -111,17 +111,20 @@ public class Mp3Player {
     public boolean play(int frameIndexStart, int frameIndexFinal, int correctionFactorInFrames) throws Exception {
         terminated = false;
         bitstream = new Bitstream(urlToStreamFrom.openStream());
-        audioDevice = FactoryRegistry.systemRegistry().createAudioDevice();
-        decoder = new Decoder();
-        audioDevice.open(decoder);
-
+        try {
+            audioDevice = FactoryRegistry.systemRegistry().createAudioDevice();
+            decoder = new Decoder();
+            audioDevice.open(decoder);
+        } catch (Exception ex) {
+            log.warn("Cannot create AudioDevice");
+        }
         while (stillFramesToRead
                 && frameIndexCurrent < frameIndexStart - correctionFactorInFrames) {
             stillFramesToRead = skipFrame();
             updateCurrentFrameIndex(false);
         }
 
-        listener.playbackEvent(new PlayerEvent(this, PlayerEventType.STARTED, audioDevice.getPosition()));
+        listener.playbackEvent(new PlayerEvent(this, PlayerEventType.STARTED, audioDevice != null ? audioDevice.getPosition() : 0));
 
         if (frameIndexFinal < 0) {
             frameIndexFinal = Integer.MAX_VALUE;
@@ -142,7 +145,9 @@ public class Mp3Player {
                 }
                 stillFramesToRead = decodeFrame();
                 if (gain != null) {
-                    getMasterGainControl().setValue(gain);
+                    if (getMasterGainControl() != null) {
+                        getMasterGainControl().setValue(gain);
+                    }
                     gain = null;
                 }
                 updateCurrentFrameIndex(true);
@@ -198,10 +203,13 @@ public class Mp3Player {
                 log.error("failed to create bitsream");
             }
             frameIndexCurrent = 0;
-            audioDevice = FactoryRegistry.systemRegistry().createAudioDevice();
-            decoder = new Decoder();
-            audioDevice.open(decoder);
-
+            try {
+                audioDevice = FactoryRegistry.systemRegistry().createAudioDevice();
+                decoder = new Decoder();
+                audioDevice.open(decoder);
+            } catch (Exception ex) {
+                log.warn("Cannot create AudioDevice");
+            }
             while (stillFramesToRead == true && frameIndexCurrent < frameIndexStart - correctionFactorInFrames) {
                 stillFramesToRead = skipFrame();
                 updateCurrentFrameIndex(false);
@@ -218,7 +226,7 @@ public class Mp3Player {
      */
     public void pause() {
         paused = true;
-        listener.playbackEvent(new PlayerEvent(this, PlayerEventType.PAUSED, audioDevice.getPosition()));
+        listener.playbackEvent(new PlayerEvent(this, PlayerEventType.PAUSED, audioDevice != null ? audioDevice.getPosition() : 0));
     }
 
     /**
@@ -226,7 +234,7 @@ public class Mp3Player {
      */
     public void unpause() {
         paused = false;
-        listener.playbackEvent(new PlayerEvent(this, PlayerEventType.STARTED, audioDevice.getPosition()));
+        listener.playbackEvent(new PlayerEvent(this, PlayerEventType.STARTED, audioDevice != null ? audioDevice.getPosition() : 0));
     }
 
     /**

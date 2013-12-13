@@ -29,7 +29,8 @@ public class PlaybackListenerImpl implements Runnable, PlaybackListener {
     private final PlayerService playerService;
 
     /**
-     * Create a new instance of the PlaybackListener, one instance is needed by music file
+     * Create a new instance of the PlaybackListener, one instance is needed by
+     * music file
      */
     @Inject
     public PlaybackListenerImpl(PlayerService playerService, PropertyChangeListener pcl, FileService fileService, String filePath) {
@@ -147,7 +148,7 @@ public class PlaybackListenerImpl implements Runnable, PlaybackListener {
      */
     @Override
     public void setVolume(int volume) {
-        log.debug("Setting volume (current value = {})", player.getMasterGainControl().getValue());
+        log.debug("Setting volume (current value = {})", player != null && player.getMasterGainControl() != null ? player.getMasterGainControl().getValue() : "?");
         if (player != null && player.getMasterGainControl() != null) {
             double gain = volumeToGain(volume);
             player.getMasterGainControl().setValue((float) gain);
