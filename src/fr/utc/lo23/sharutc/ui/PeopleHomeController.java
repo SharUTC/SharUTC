@@ -274,19 +274,19 @@ public class PeopleHomeController extends DragPreviewDrawer implements Initializ
             final HashMap<UserInfo, Date> currentConnectedPeer = mAppModel.getActivePeerList().getActivePeers();
             if (currentConnectedPeer.size() == 0) {
                 //TODO display no user connected
-                //showPlaceHolder("Currently, there is no connected user.");
+                showPlaceHolder("Currently, there is no connected user.");
                 log.info("No user connected");
 
                 //TODO Remove once we get the real peersList
-                for (int i = 10; i < 25; i++) {
-                    final UserInfo userInfo = new UserInfo();
-                    userInfo.setLogin("Login " + String.valueOf(i));
-                    userInfo.setLastName("LastName");
-                    userInfo.setFirstName("FirstName");
-                    userInfo.setPeerId((long) i);
-                    PeopleCard newCard = new PeopleCard(userInfo, this, PeopleCard.USAGE_CONNECTED);
-                    peopleContainer.getChildren().add(newCard);
-                }
+//                for (int i = 10; i < 25; i++) {
+//                    final UserInfo userInfo = new UserInfo();
+//                    userInfo.setLogin("Login " + String.valueOf(i));
+//                    userInfo.setLastName("LastName");
+//                    userInfo.setFirstName("FirstName");
+//                    userInfo.setPeerId((long) i);
+//                    PeopleCard newCard = new PeopleCard(userInfo, this, PeopleCard.USAGE_CONNECTED);
+//                    peopleContainer.getChildren().add(newCard);
+//                }
             } else {
                 for (UserInfo userInfo : currentConnectedPeer.keySet()) {
                     peopleContainer.getChildren().add(new PeopleCard(userInfo, this, PeopleCard.USAGE_CONNECTED));
