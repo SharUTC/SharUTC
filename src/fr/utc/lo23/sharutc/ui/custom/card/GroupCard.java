@@ -139,8 +139,20 @@ public class GroupCard extends SimpleCard implements EventHandler<Event> {
      */
     public void setModel(Category category, int membersNumber) {
         mModel = category;
-        groupMembers.setText(String.valueOf(membersNumber));
+        this.setMembersNumbers(membersNumber);
 
+    }
+
+    /**
+     * set number of member
+     * //TODO should be part of the model
+     *
+     * @param membersNumber
+     */
+    public void setMembersNumbers(int membersNumber) {
+        if (membersNumber >= 0) {
+            groupMembers.setText(String.valueOf(membersNumber));
+        }
     }
 
     /**

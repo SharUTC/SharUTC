@@ -77,6 +77,7 @@ public class PeopleHomeController extends DragPreviewDrawer implements Initializ
     private Category mCurrentCategory;
     private GroupCard mVirtualConnectedGroup;
     private GroupCard mAskForDeletionCard;
+    private GroupCard mAllContactCard;
     /**
      * + card for create a new category
      */
@@ -291,6 +292,17 @@ public class PeopleHomeController extends DragPreviewDrawer implements Initializ
                     peopleContainer.getChildren().add(new PeopleCard(userInfo, this, PeopleCard.USAGE_CONNECTED));
                 }
             }
+        } else if (c.getId().equals(0)) {
+            //display contact from all Categories
+            ArrayList<Contact> allContact = mAppModel.getProfile().getContacts().getContacts();
+            if (allContact.size() == 0) {
+                showPlaceHolder("You have no contact in \"" + c.getName() + "\". Select \"Connected\" and Drag&Drop a user to a category.");
+            } else {
+                for (Contact contact : allContact) {
+                    PeopleCard newCard = new PeopleCard(contact.getUserInfo(), this, PeopleCard.USAGE_CATEGORY);
+                    peopleContainer.getChildren().add(newCard);
+                }
+            }
 
         } else {
             //check if user are in mCurrentCategory
@@ -324,7 +336,7 @@ public class PeopleHomeController extends DragPreviewDrawer implements Initializ
         //Display Existing Category
         for (Category c : categories) {
             if (c.getId().equals(0)) {
-                addNewGroupCard(c, getMembersNumbers(c), false);
+                mAllContactCard = addNewGroupCard(c, mAppModel.getProfile().getContacts().size(), false);
             } else {
                 addNewGroupCard(c, getMembersNumbers(c), true);
             }
@@ -370,7 +382,7 @@ public class PeopleHomeController extends DragPreviewDrawer implements Initializ
      * @param editable      true is the card can be deleted and edited
      * @param membersNumber number of contact in this category //TODO remove after fix
      */
-    private void addNewGroupCard(Category category, int membersNumber, boolean editable) {
+    private GroupCard addNewGroupCard(Category category, int membersNumber, boolean editable) {
         hideAddNewGroupCard();
         final GroupCard newGroupCard = new GroupCard(category, membersNumber, PeopleHomeController.this);
         //need some improvement, remove mouse enter behaviour which display buttons for edition
@@ -379,6 +391,8 @@ public class PeopleHomeController extends DragPreviewDrawer implements Initializ
         }
         addSimpleCardIngroupContainer(newGroupCard);
         displayAddNewGroupCard();
+
+        return newGroupCard;
 
     }
 
@@ -520,6 +534,7 @@ public class PeopleHomeController extends DragPreviewDrawer implements Initializ
                                 ((GroupCard) n).setModel(c, getMembersNumbers(c));
                             }
                         }
+                        mAllContactCard.setMembersNumbers(mAppModel.getProfile().getContacts().size());
                     }
                 });
             }
