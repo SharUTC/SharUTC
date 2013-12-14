@@ -196,18 +196,22 @@ public class PlayerController implements Initializable, PropertyChangeListener {
             playerTimeSlider.setValue(0d);
             displayCurrentRating();
         } else {
-            playerProgressBar.setProgress(0d);
-            playerTimeSlider.setValue(0d);
-            playerMaxTime.setText(timeInSecondsToString(0));
-            playerCurrentTime.setText(timeInSecondsToString(0));
-            currentMusicAlbum.setText("");
-            currentMusicArtist.setText("");
-            currentMusicTitle.setText("");
-            removeScoreListener();
-            mCurrentMusic = null;
-            mCurrentScore = null;
-            fillRatingStar(0);
+            resetPlayerUi();
         }
+    }
+
+    public void resetPlayerUi() {
+        playerProgressBar.setProgress(0d);
+        playerTimeSlider.setValue(0d);
+        playerMaxTime.setText(timeInSecondsToString(0));
+        playerCurrentTime.setText(timeInSecondsToString(0));
+        currentMusicAlbum.setText("");
+        currentMusicArtist.setText("");
+        currentMusicTitle.setText("");
+        removeScoreListener();
+        mCurrentMusic = null;
+        mCurrentScore = null;
+        fillRatingStar(0);
     }
 
     private void updateSpeakerLevel(double oldValue, double newValue) {

@@ -412,7 +412,7 @@ public class MainController extends NavigationController implements Initializabl
                 if (target instanceof ImageView) {
                     ImageView skin = (ImageView) target;
                     if (skin.getId().equals("deleteButton")) {
-                        List<Integer> indexs = new ArrayList<Integer>();
+                        List<Integer> indexs = new ArrayList<Integer>();                       
                         Music m = ((PlayListMusic) listView.getSelectionModel().getSelectedItem()).music;
                         indexs.add(listView.getSelectionModel().getSelectedIndex());
                         mRemoveFromPlaylistCommand.setMusicsIndex(indexs);
@@ -454,6 +454,11 @@ public class MainController extends NavigationController implements Initializabl
     @Override
     public void onTagFilterRequested(String tagName) {
         showLocalCatalogWithTagFilter(tagName);
+    }
+    
+    @Override
+    public void onSongPlayRequest(Music music) {
+        mPlayerController.resetPlayerUi();
     }
 
     private void showGroupRights(Category category) {

@@ -18,16 +18,13 @@ public class SongSelectorController extends DragPreviewDrawer implements SongCar
 
     private static final Logger log = LoggerFactory
             .getLogger(SongSelectorController.class);
-
     private ISongListController mInterface;
     /**
      * Song Card selected by the user
      */
     protected ArrayList<SongCard> mSongCardSelected;
-
     @Inject
     private PlayMusicCommand mPlayMusicCommand;
-
     @Inject
     private AddToPlaylistCommand mAddToPlaylistCommand;
 
@@ -81,7 +78,9 @@ public class SongSelectorController extends DragPreviewDrawer implements SongCar
     @Override
     public void onPlayRequested(Music music) {
         log.info("onPlayRequested: " + music.getTitle());
-
+        if (mInterface != null) {
+            mInterface.onSongPlayRequest(music);
+        }
         mPlayMusicCommand.setMusic(music);
         mPlayMusicCommand.execute();
 
@@ -121,6 +120,8 @@ public class SongSelectorController extends DragPreviewDrawer implements SongCar
     public interface ISongListController {
 
         void onSongDetailRequested(Music music);
+
+        void onSongPlayRequest(Music music);
 
         void onTagDetailRequested(Music music);
     }
