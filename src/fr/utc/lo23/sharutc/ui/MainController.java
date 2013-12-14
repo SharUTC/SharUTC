@@ -131,6 +131,8 @@ public class MainController extends NavigationController implements Initializabl
                 MainController.this.onPeopleDetailRequested(mAppModel.getProfile().getUserInfo());
             }
         });
+        
+        showLocalCatalog();
     }
 
     /**
