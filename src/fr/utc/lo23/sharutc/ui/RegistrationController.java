@@ -38,6 +38,9 @@ public class RegistrationController extends NavigationController implements Init
 
     private static final Logger log = LoggerFactory
             .getLogger(RegistrationController.class);
+    private static final String DEFAULT_FIRST_NAME = "First Name";
+    private static final String DEFAULT_LAST_NAME = "Last Name";
+    private static final int DEFAULT_AGE = 20;
     /*
      * The UI attributs
      */
@@ -112,11 +115,15 @@ public class RegistrationController extends NavigationController implements Init
             displayErrorMessages();
         } else {
             final UserInfo userInfo = new UserInfo();
+            //mandatory fields
             userInfo.setLogin(userNameField.getText());
-            userInfo.setFirstName(firstNameField.getText());
-            userInfo.setLastName(lastNameField.getText());
             userInfo.setPassword(passwordField.getText());
-            userInfo.setAge(Integer.valueOf(ageField.getText()));
+            
+            //optionnal fields with default value
+            userInfo.setFirstName(firstNameField.getText().isEmpty() ? DEFAULT_FIRST_NAME : firstNameField.getText());
+            userInfo.setLastName(lastNameField.getText().isEmpty() ? DEFAULT_LAST_NAME : lastNameField.getText());
+            userInfo.setAge(ageField.getText().isEmpty() ? DEFAULT_AGE : Integer.valueOf(ageField.getText()));
+            
             mAccountCreationCommand.setUserInfo(userInfo);
             mAccountCreationCommand.execute();
         }
@@ -156,8 +163,10 @@ public class RegistrationController extends NavigationController implements Init
 
         //Check username, firstname and lastname
         checkEmptyField(emptyFields, userNameField, "User name");
-        checkEmptyField(emptyFields, firstNameField, "First name");
-        checkEmptyField(emptyFields, lastNameField, "Last name");
+        
+        //According to the specification first name, last name are optionnal.        
+        //checkEmptyField(emptyFields, firstNameField, "First name");
+        //checkEmptyField(emptyFields, lastNameField, "Last name");
 
         //Check password & password confirmation
         final boolean isPasswordEmpty = checkEmptyField(emptyFields,
@@ -170,8 +179,9 @@ public class RegistrationController extends NavigationController implements Init
         }
 
         //Check Age
-        final boolean isAgeEmpty = checkEmptyField(emptyFields, ageField, "Age");
-        if (!isAgeEmpty && !isAgeValid()) {
+        //According to the specification age is optionnal.
+        //final boolean isAgeEmpty = checkEmptyField(emptyFields, ageField, "Age");
+        if (!ageField.getText().isEmpty() && !isAgeValid()) {
             mErrorMessages.add("Age is not valid.");
         }
 
@@ -234,7 +244,6 @@ public class RegistrationController extends NavigationController implements Init
     public boolean isAgeValid() {
         final String ageStr = ageField.getText();
         boolean isAgeValid = false;
-
         try {
             final Integer age = Integer.parseInt(ageStr);
             if (age > 0 && age < 120) {
