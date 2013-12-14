@@ -89,8 +89,6 @@ public class MainController extends NavigationController implements Initializabl
     private AppModel mAppModel;
     @Inject
     private DisconnectionCommand mDisconnectionCommand;
-    //TODO Remove once we get a real list of Musics
-    static public ArrayList<Music> population;
     public ObservableList<PlayListMusic> mPlayListData;
     @Inject
     private PlayerService mPlayerService;
@@ -105,11 +103,7 @@ public class MainController extends NavigationController implements Initializabl
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        //TODO Remove once we get a real list of Musics        
         addListeners();
-
-        population = new ArrayList();
-        populateMusics();
 
         try {
             //Load the music player
@@ -437,24 +431,6 @@ public class MainController extends NavigationController implements Initializabl
         });
 
         listView.getSelectionModel().select(1);
-    }
-
-    //TODO Remove once we get a real list of Musics
-    private void populateMusics() {
-        for (int i = 0; i < 5; i++) {
-            for (int j = 0; j < 3; j++) {
-                for (int k = 0; k < 3; k++) {
-                    Music m = new Music();
-                    m.setTitle("Music " + String.valueOf(k + 3 * j));
-                    m.setArtist("Artist " + String.valueOf(i));
-                    m.setAlbum("Album " + String.valueOf(j));
-                    m.setId(0l);
-                    m.setOwnerPeerId(0l);
-                    m.setHash(0);
-                    population.add(m);
-                }
-            }
-        }
     }
 
     @Override

@@ -210,19 +210,6 @@ public class SongListController extends SongSelectorController implements Initia
         showTags();
     }
 
-    public void createCards(String artistName, String albumName) {
-        for (Music m : MainController.population) {
-            if ((m.getArtist().equals(artistName) && m.getAlbum().equals(albumName)) || (artistName.equals("") && albumName.equals(""))) {
-                SongCard newCard = new SongCard(m, this, mAppModel);
-                songsContainer.getChildren().add(newCard);
-            }
-        }
-    }
-
-    public void createCards() {
-        createCards("", "");
-    }
-
     /**
      * user add a new song
      *
