@@ -232,7 +232,7 @@ public class NetworkServiceImpl implements NetworkService {
      */
     @Override
     public void editComment(Peer peer, Peer author, Music music, String comment, Integer commentIndex) {
-        Message message = messageParser.write(MessageType.EDIT_COMMENT, new Object[][]{{Message.OWNER_PEER, peer}, {Message.AUTHOR_PEER, author}, {Message.MUSIC, music}, {Message.COMMENT, comment}});
+        Message message = messageParser.write(MessageType.EDIT_COMMENT, new Object[][]{{Message.OWNER_PEER, peer}, {Message.AUTHOR_PEER, author}, {Message.MUSIC, music}, {Message.COMMENT, comment}, {Message.COMMENT_ID, commentIndex}});
         sendUnicast(message, peer);
 
     }
