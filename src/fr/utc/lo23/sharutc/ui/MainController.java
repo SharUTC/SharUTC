@@ -412,8 +412,12 @@ public class MainController extends NavigationController implements Initializabl
                 if (target instanceof ImageView) {
                     ImageView skin = (ImageView) target;
                     if (skin.getId().equals("deleteButton")) {
-                        List<Integer> indexs = new ArrayList<Integer>();                       
-                        Music m = ((PlayListMusic) listView.getSelectionModel().getSelectedItem()).music;
+                        List<Integer> indexs = new ArrayList<Integer>();
+                        //Hot fix issue #169
+                        final PlayListMusic playListMusic = ((PlayListMusic) listView.getSelectionModel().getSelectedItem());
+                        if(playListMusic.isPlaying()) {
+                            mPlayerController.resetPlayerUi();
+                        }
                         indexs.add(listView.getSelectionModel().getSelectedIndex());
                         mRemoveFromPlaylistCommand.setMusicsIndex(indexs);
                         mRemoveFromPlaylistCommand.execute();
