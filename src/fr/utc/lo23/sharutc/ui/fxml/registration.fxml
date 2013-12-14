@@ -61,7 +61,7 @@
                     </VBox.margin>
         
                     <fr.utc.lo23.sharutc.ui.custom.SharutcLogo 
-                            fx:id="sharutcLogo" />
+                        fx:id="sharutcLogo" />
 
                 </HBox> 
             
@@ -139,17 +139,19 @@
                             </javafx.geometry.Insets>
                         </HBox.margin>
                     </Button>
-            
-                    <Button minWidth="100" styleClass="formButton" text="Sign Up"
-                            fx:id="buttonSignUp" GridPane.rowIndex="3"
-                            GridPane.columnIndex="1"
-                            onAction="#handleSignUp" >
+                    <StackPane minWidth="100" GridPane.rowIndex="3"
+                               GridPane.columnIndex="1"> 
                         <HBox.margin>
                             <javafx.geometry.Insets >
                                 <left>10</left>
                             </javafx.geometry.Insets>
                         </HBox.margin>
-                    </Button>
+                        <Button minWidth="100" styleClass="formButton" text="Sign Up"
+                                fx:id="buttonSignUp" 
+                                onAction="#handleSignUp" />                            
+                        <ProgressIndicator fx:id="progressIndicatorSignUp" progress="-1" StackPane.alignment="CENTER"/>
+                    </StackPane >
+                    
                 </HBox>
                 
                 <VBox fx:id="errorContainer" alignment="CENTER" styleClass="errorMessageContainer"  >

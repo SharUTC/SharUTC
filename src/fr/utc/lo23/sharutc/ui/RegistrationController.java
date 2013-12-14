@@ -29,6 +29,8 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
+import javafx.application.Platform;
+import javafx.scene.control.ProgressIndicator;
 
 /**
  * A FXML Controller that displays a registration page.
@@ -64,6 +66,10 @@ public class RegistrationController extends NavigationController implements Init
     public TextField lastNameField;
     @FXML
     public TextField ageField;
+    @FXML
+    public ProgressIndicator progressIndicatorSignUp;
+    @FXML
+    public Button buttonSignUp;
     /*
      * The private attributs
      */
@@ -99,6 +105,9 @@ public class RegistrationController extends NavigationController implements Init
 
         //listen to changes made on the ErrorBus
         mAppModel.getErrorBus().addPropertyChangeListener(this);
+
+        //Hide the progress indicator
+        progressIndicatorSignUp.setVisible(false);
     }
 
     /**
@@ -114,18 +123,31 @@ public class RegistrationController extends NavigationController implements Init
         if (!validateForm()) {
             displayErrorMessages();
         } else {
-            final UserInfo userInfo = new UserInfo();
-            //mandatory fields
-            userInfo.setLogin(userNameField.getText());
-            userInfo.setPassword(passwordField.getText());
             
-            //optionnal fields with default value
-            userInfo.setFirstName(firstNameField.getText().isEmpty() ? DEFAULT_FIRST_NAME : firstNameField.getText());
-            userInfo.setLastName(lastNameField.getText().isEmpty() ? DEFAULT_LAST_NAME : lastNameField.getText());
-            userInfo.setAge(ageField.getText().isEmpty() ? DEFAULT_AGE : Integer.valueOf(ageField.getText()));
+            //update the UI to notify the user that their account is being 
+            //created
+            progressIndicatorSignUp.setVisible(true);
+            buttonCancel.setDisable(true);
+            buttonSignUp.setVisible(false);
             
-            mAccountCreationCommand.setUserInfo(userInfo);
-            mAccountCreationCommand.execute();
+            final Runnable accountCreationRunnable = new Runnable() {
+                @Override
+                public void run() {
+                    final UserInfo userInfo = new UserInfo();
+                    //mandatory fields
+                    userInfo.setLogin(userNameField.getText());
+                    userInfo.setPassword(passwordField.getText());
+
+                    //optionnal fields with default value
+                    userInfo.setFirstName(firstNameField.getText().isEmpty() ? DEFAULT_FIRST_NAME : firstNameField.getText());
+                    userInfo.setLastName(lastNameField.getText().isEmpty() ? DEFAULT_LAST_NAME : lastNameField.getText());
+                    userInfo.setAge(ageField.getText().isEmpty() ? DEFAULT_AGE : Integer.valueOf(ageField.getText()));
+
+                    mAccountCreationCommand.setUserInfo(userInfo);
+                    mAccountCreationCommand.execute();
+                }
+            };       
+            new Thread(accountCreationRunnable, "Account Creation").start();
         }
     }
 
@@ -163,7 +185,7 @@ public class RegistrationController extends NavigationController implements Init
 
         //Check username, firstname and lastname
         checkEmptyField(emptyFields, userNameField, "User name");
-        
+
         //According to the specification first name, last name are optionnal.        
         //checkEmptyField(emptyFields, firstNameField, "First name");
         //checkEmptyField(emptyFields, lastNameField, "Last name");
@@ -261,7 +283,20 @@ public class RegistrationController extends NavigationController implements Init
      * @param evt {@link PropertyChangeEvent}
      */
     @Override
-    public void propertyChange(PropertyChangeEvent evt) {
+    public void propertyChange(final PropertyChangeEvent evt) {
+        if(Platform.isFxApplicationThread()) {
+            handlePropertyChangeEvent(evt);
+        } else {
+          Platform.runLater(new Runnable() {
+              @Override
+              public void run() {
+                  handlePropertyChangeEvent(evt);
+              }
+          });
+        }
+    }
+    
+    private void handlePropertyChangeEvent(PropertyChangeEvent evt) {
         final String propertyName = evt.getPropertyName();
         if (AppModelImpl.Property.PROFILE.name().equals(propertyName)) {
             goToLoginPage();
@@ -270,7 +305,7 @@ public class RegistrationController extends NavigationController implements Init
             errorContainer.getChildren().clear();
             errorContainer.getChildren().add(new Label(((ErrorMessage) evt.getNewValue()).getMessage()));
         }
-    }
+    }    
 
     /**
      * Load the login page properly.
