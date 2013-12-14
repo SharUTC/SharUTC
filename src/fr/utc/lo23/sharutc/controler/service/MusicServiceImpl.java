@@ -356,7 +356,7 @@ public class MusicServiceImpl implements MusicService {
             if (m != null) {
                 Comment myComment = m.getComment(peer, commentIndex);
                 if (myComment != null) {
-                    music.removeComment(myComment);
+                    m.removeComment(myComment);
                 } else {
                     log.warn("removeComment : Comment to remove not found");
                 }
