@@ -105,12 +105,21 @@
                         </GridPane>
                     </HBox>
                     
-                    <VBox fx:id="errorContainer" alignment="CENTER" styleClass="errorMessageContainer"  >
+                    <StackPane> 
                         <VBox.margin>
                             <javafx.geometry.Insets top="20"/>
                         </VBox.margin>
-                    </VBox>
+                        <HBox fx:id="hboxWorkInProgress" alignment="CENTER" visible="false" >                        
+                            <ProgressIndicator progress="-1">
+                                <HBox.margin>
+                                    <javafx.geometry.Insets right="5" />
+                                </HBox.margin>
+                            </ProgressIndicator>
+                            <Label fx:id="labelWorkInProgress" text="Connection in progress" />
+                        </HBox>
                     
+                        <VBox fx:id="errorContainer" alignment="CENTER" styleClass="errorMessageContainer"  />
+                    </StackPane>    
                 </VBox>
             </center>
         

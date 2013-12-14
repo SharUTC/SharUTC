@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -29,6 +30,7 @@ import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.TransferMode;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
@@ -66,6 +68,10 @@ public class LoginController extends NavigationController implements Initializab
     public Label dropOverlayLabel;
     @FXML
     public VBox errorContainer;
+    @FXML
+    public HBox hboxWorkInProgress;
+    @FXML
+    public Label labelWorkInProgress;
     /*
      * The private attributs
      */
@@ -244,9 +250,21 @@ public class LoginController extends NavigationController implements Initializab
         if (!validateForm()) {
             displayErrorMessages();
         } else {
-            mConnectionRequestCommand.setLogin(userNameField.getText());
-            mConnectionRequestCommand.setPassword(passwordField.getText());
-            mConnectionRequestCommand.execute();
+
+            //update the UI to notify the user that the connection is in 
+            //progress.
+            startWorkInProgress("Connecting");
+
+            final Runnable connectionRequestRunnable = new Runnable() {
+                @Override
+                public void run() {
+                    mConnectionRequestCommand.setLogin(userNameField.getText());
+                    mConnectionRequestCommand.setPassword(passwordField.getText());
+                    mConnectionRequestCommand.execute();
+                }
+            };
+            new Thread(connectionRequestRunnable, "Connection Request").start();
+
         }
     }
 
@@ -307,8 +325,22 @@ public class LoginController extends NavigationController implements Initializab
      * @param evt {@link PropertyChangeEvent}
      */
     @Override
-    public void propertyChange(PropertyChangeEvent evt) {
+    public void propertyChange(final PropertyChangeEvent evt) {
+        if(Platform.isFxApplicationThread()) {
+            handlePropertyChangeEvent(evt);
+        } else {
+            Platform.runLater(new Runnable() {
+                @Override
+                public void run() {
+                    handlePropertyChangeEvent(evt);
+                }
+            });
+        }
+    }
+
+    private void handlePropertyChangeEvent(PropertyChangeEvent evt) {
         final String propertyName = evt.getPropertyName();
+        resetWorkInProgress();
         if (AppModelImpl.Property.PROFILE.name().equals(propertyName)) {
             log.info("Profile Changed");
             goToMainPage();
@@ -317,6 +349,21 @@ public class LoginController extends NavigationController implements Initializab
             errorContainer.getChildren().clear();
             errorContainer.getChildren().add(new Label(((ErrorMessage) evt.getNewValue()).getMessage()));
         }
+    }
+    
+    private void startWorkInProgress(final String message) {
+        hboxWorkInProgress.setVisible(true);
+        labelWorkInProgress.setText(message);
+        buttonImport.setDisable(true);
+        buttonSignIn.setDisable(true);
+        buttonSignUp.setDisable(true);
+    }
+    
+    private void resetWorkInProgress() {
+        hboxWorkInProgress.setVisible(false);
+        buttonImport.setDisable(false);
+        buttonSignIn.setDisable(false);
+        buttonSignUp.setDisable(false);
     }
 
     /**
