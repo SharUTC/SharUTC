@@ -30,6 +30,7 @@ import java.util.ResourceBundle;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
+import javafx.scene.control.ProgressIndicator;
 
 /**
  * FXML Controller class
@@ -59,6 +60,7 @@ public class PlayerController implements Initializable, PropertyChangeListener {
     public Label currentMusicTitle;
     public Label currentMusicAlbum;
     public Label currentMusicArtist;
+    public ProgressIndicator progressIndicatorLoading;
     private RatingStar[] mRatingStars;
     @Inject
     private PlayerService mPlayerService;
@@ -214,6 +216,10 @@ public class PlayerController implements Initializable, PropertyChangeListener {
         fillRatingStar(0);
     }
 
+    public void setLoadingMusic(boolean isLoading) {
+        progressIndicatorLoading.setVisible(isLoading);
+    }
+
     private void updateSpeakerLevel(double oldValue, double newValue) {
         speakerLevel.getPoints().clear();
         speakerLevel.getPoints().addAll(new Double[]{0.0, 20.0, 25 + 60.0 * newValue, 20.0, 25 + 60.0 * newValue, 15.0 * (1 - newValue)});
@@ -341,15 +347,19 @@ public class PlayerController implements Initializable, PropertyChangeListener {
         //Warning - most of the changes on the PlayerService properties
         //are not fired from the UI thread but from the AudioPlayerThread
         //therefore you can't update the UI directly.
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                handlePropertyChangeFromAudioPlayerThread(evt);
-            }
-        });
+        if (Platform.isFxApplicationThread()) {
+            handlePropertyChangeEvent(evt);
+        } else {
+            Platform.runLater(new Runnable() {
+                @Override
+                public void run() {
+                    handlePropertyChangeEvent(evt);
+                }
+            });
+        }
     }
 
-    private void handlePropertyChangeFromAudioPlayerThread(final PropertyChangeEvent evt) {
+    private void handlePropertyChangeEvent(final PropertyChangeEvent evt) {
         final String propertyName = evt.getPropertyName();
         log.debug("PropertyChangeEvent Name : " + propertyName);
         if (propertyName.equals(PlayerService.Property.CURRENT_MUSIC_INDEX.name())) {

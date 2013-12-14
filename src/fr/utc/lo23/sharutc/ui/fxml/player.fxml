@@ -15,21 +15,29 @@
         <URL value="@../css/player.css"/>
     </stylesheets>
     
-    <VBox >
-        <Label fx:id="currentMusicTitle" text="" />
-        <HBox >
-            <Label fx:id="currentMusicAlbum" text="">
-                <HBox.margin>
-                    <javafx.geometry.Insets right="4" />
-                </HBox.margin>
-            </Label>
-            <Label fx:id="currentMusicArtist" text="" >
-                <HBox.margin>
-                    <javafx.geometry.Insets left="4" />
-                </HBox.margin>
-            </Label>
-        </HBox>        
-    </VBox>
+    <StackPane >
+        
+        <ProgressIndicator fx:id="progressIndicatorLoading" progress="-1"
+                           maxWidth="25" StackPane.alignment="CENTER"
+                           visible="false" />
+        
+        <VBox >
+            <Label fx:id="currentMusicTitle" text="" />
+            <HBox >
+                <Label fx:id="currentMusicAlbum" text="">
+                    <HBox.margin>
+                        <javafx.geometry.Insets right="4" />
+                    </HBox.margin>
+                </Label>
+                <Label fx:id="currentMusicArtist" text="" >
+                    <HBox.margin>
+                        <javafx.geometry.Insets left="4" />
+                    </HBox.margin>
+                </Label>
+            </HBox>        
+        </VBox>
+    </StackPane>
+    
     
     
     <HBox alignment="CENTER">
