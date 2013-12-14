@@ -2,6 +2,8 @@ package fr.utc.lo23.sharutc.model.userdata;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Set;
 
 /**
  * Represents a user profile
@@ -175,5 +177,26 @@ public class Profile implements Serializable {
      */
     public void setCategoryIdSequence(Integer categoryIdSequence) {
         this.categoryIdSequence = categoryIdSequence;
+    }
+    
+    /**
+     * give the number of contact in <i>category</i>
+     * @param category
+     * @return number of contacts
+     */
+    public int getNumberOfContact(Category category) {
+        Integer id = category.getId();
+        int count = 0;
+        ArrayList<Contact> contacts = mContacts.getContacts();
+        for(Contact contact : contacts) {
+            Set<Integer> categoriesIds = contact.getCategoryIds();
+            for(Integer categoryId : categoriesIds){
+                if(id == categoryId) {
+                    ++count;
+                    break;
+                }
+            }
+        }
+        return count;
     }
 }

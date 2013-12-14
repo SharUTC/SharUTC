@@ -49,10 +49,10 @@ public interface UserService {
     /**
      * It allows users to set a category name
      * 
-     * @param oldCategoryId
+     * @param categoryId
      * @param newCategoryName
      */
-    public void setCategoryName(Integer oldCategoryId, String newCategoryName);
+    public void setCategoryName(Integer categoryId, String newCategoryName);
 
     /**
      * Add a contact to a specified category

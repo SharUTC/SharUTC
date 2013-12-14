@@ -338,39 +338,9 @@ public class PeopleHomeController extends DragPreviewDrawer implements Initializ
             if (c.getId().equals(0)) {
                 mAllContactCard = addNewGroupCard(c, mAppModel.getProfile().getContacts().size(), false);
             } else {
-                addNewGroupCard(c, getMembersNumbers(c), true);
+                addNewGroupCard(c, mAppModel.getProfile().getNumberOfContact(c), true);
             }
         }
-    }
-
-    /**
-     * Retrieve the number of contact for a given category
-     * //TODO remove when Category model will offer a such feature
-     * Hot fix as it's impossible to know the number of contact in each category...
-     *
-     * @param category
-     * @return
-     */
-    private int getMembersNumbers(Category category) {
-        //init result
-        int result = 0;
-        ArrayList<Contact> allContact = mAppModel.getProfile().getContacts().getContacts();
-
-        //For all contact
-        for (Contact contact : allContact) {
-            final Set<Integer> contactCategoryIds = contact.getCategoryIds();
-
-            //For all category ids of the contact
-            for (Integer contactCategoryId : contactCategoryIds) {
-
-                //increase number if ids match
-                if (category.getId().intValue() == contactCategoryId.intValue()) {
-                    result++;
-                }
-            }
-        }
-
-        return result;
     }
 
     /**
@@ -531,7 +501,7 @@ public class PeopleHomeController extends DragPreviewDrawer implements Initializ
                     public void run() {
                         for (Node n : groupContainer.getChildren()) {
                             if (n instanceof GroupCard && ((GroupCard) n).getModel().equals(c)) {
-                                ((GroupCard) n).setModel(c, getMembersNumbers(c));
+                                ((GroupCard) n).setModel(c, mAppModel.getProfile().getNumberOfContact(c));
                             }
                         }
                         mAllContactCard.setMembersNumbers(mAppModel.getProfile().getContacts().size());
