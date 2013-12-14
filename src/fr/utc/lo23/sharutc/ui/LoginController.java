@@ -18,6 +18,8 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 import javafx.application.Platform;
+import javafx.concurrent.Task;
+import javafx.concurrent.WorkerStateEvent;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -326,7 +328,8 @@ public class LoginController extends NavigationController implements Initializab
      */
     @Override
     public void propertyChange(final PropertyChangeEvent evt) {
-        if(Platform.isFxApplicationThread()) {
+        log.debug("propertyChangeEvent -> " + evt.getPropertyName());
+        if (Platform.isFxApplicationThread()) {
             handlePropertyChangeEvent(evt);
         } else {
             Platform.runLater(new Runnable() {
@@ -350,7 +353,7 @@ public class LoginController extends NavigationController implements Initializab
             errorContainer.getChildren().add(new Label(((ErrorMessage) evt.getNewValue()).getMessage()));
         }
     }
-    
+
     private void startWorkInProgress(final String message) {
         hboxWorkInProgress.setVisible(true);
         labelWorkInProgress.setText(message);
@@ -358,7 +361,7 @@ public class LoginController extends NavigationController implements Initializab
         buttonSignIn.setDisable(true);
         buttonSignUp.setDisable(true);
     }
-    
+
     private void resetWorkInProgress() {
         hboxWorkInProgress.setVisible(false);
         buttonImport.setDisable(false);
@@ -389,9 +392,26 @@ public class LoginController extends NavigationController implements Initializab
      *
      * @param filePath the path of the file that contains the profile.
      */
-    private void importProfile(String filePath) {
+    private void importProfile(final String filePath) {
+        startWorkInProgress("Importing");
         errorContainer.getChildren().clear();
-        mImportProfileCommand.setPath(filePath);
-        mImportProfileCommand.execute();
+        
+        final Task<Void> importProfileTask = new Task<Void>() {
+            @Override
+            protected Void call() throws Exception {
+                mImportProfileCommand.setPath(filePath);
+                mImportProfileCommand.execute();
+                return null;
+            }            
+        };
+        
+        importProfileTask.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+            @Override
+            public void handle(WorkerStateEvent t) {
+                resetWorkInProgress();
+            }
+        });
+        
+        new Thread(importProfileTask, "Import Profile").start();
     }
 }
