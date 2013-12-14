@@ -132,14 +132,14 @@ public class MessageHandlerImpl implements MessageHandler {
                         }
                         break;
                     case COMMENT_ADD:
-                        addCommentCommand.setAuthorPeer(messageParser.getSource());
+                        addCommentCommand.setAuthorPeer((Peer) messageParser.getValue(Message.AUTHOR_PEER));
                         addCommentCommand.setMusic((Music) messageParser.getValue(Message.MUSIC_ID));
                         addCommentCommand.setOwnerPeer((Peer) messageParser.getValue(Message.OWNER_PEER));
                         addCommentCommand.setComment((String) messageParser.getValue(Message.COMMENT));
                         command = addCommentCommand;
                         break;
                     case EDIT_COMMENT:
-                        editCommentCommand.setAuthorPeer(messageParser.getSource());
+                        editCommentCommand.setAuthorPeer((Peer) messageParser.getValue(Message.AUTHOR_PEER));
                         editCommentCommand.setComment((String) messageParser.getValue(Message.COMMENT));
                         editCommentCommand.setMusic((Music) messageParser.getValue(Message.MUSIC));
                         editCommentCommand.setOwnerPeer((Peer) messageParser.getValue(Message.OWNER_PEER));

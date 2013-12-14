@@ -122,7 +122,7 @@ public class AddCommentCommandImpl implements AddCommentCommand {
             musicService.saveUserMusicFile();
             userService.saveProfileFiles();
         } else {
-            networkService.addComment(mOwnerPeer, mMusic, mComment); // distant
+            networkService.addComment(mOwnerPeer, mAuthorPeer, mMusic, mComment); // distant
         }
         log.info("AddCommentCommandImpl DONE");
     }
