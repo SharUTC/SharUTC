@@ -10,6 +10,7 @@ import fr.utc.lo23.sharutc.model.ErrorMessage;
 import fr.utc.lo23.sharutc.model.userdata.UserInfo;
 import fr.utc.lo23.sharutc.ui.custom.SharutcLogo;
 import fr.utc.lo23.sharutc.ui.navigation.NavigationController;
+import fr.utc.lo23.sharutc.ui.util.FormUtils;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import javafx.event.ActionEvent;
@@ -203,7 +204,7 @@ public class RegistrationController extends NavigationController implements Init
         //Check Age
         //According to the specification age is optionnal.
         //final boolean isAgeEmpty = checkEmptyField(emptyFields, ageField, "Age");
-        if (!ageField.getText().isEmpty() && !isAgeValid()) {
+        if (!ageField.getText().isEmpty() && !FormUtils.isAgeValid(ageField.getText())) {
             mErrorMessages.add("Age is not valid.");
         }
 
@@ -257,25 +258,7 @@ public class RegistrationController extends NavigationController implements Init
         return errorMessage + " can't be empty.";
     }
 
-    /**
-     * Returns true is the {@code ageField} contains a integer between 0 and
-     * 120, false otherwise.
-     *
-     * @return
-     */
-    public boolean isAgeValid() {
-        final String ageStr = ageField.getText();
-        boolean isAgeValid = false;
-        try {
-            final Integer age = Integer.parseInt(ageStr);
-            if (age > 0 && age < 120) {
-                isAgeValid = true;
-            }
-        } catch (NumberFormatException e) {
-        }
-
-        return isAgeValid;
-    }
+    
 
     /**
      * This method gets called when a bound property is changed.
