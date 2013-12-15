@@ -83,13 +83,24 @@ public class ProfileEditionController implements Initializable {
         showCurrentUserInfo();
     }
     
+    private void editUserInfo(final UserInfo userInfo) {
+        final Runnable editUserInfoRunnable = new Runnable() {
+            @Override
+            public void run() {
+                log.debug("Edit User Info !");
+                mEditUserInfoCommand.setUserInfo(userInfo);
+                mEditUserInfoCommand.execute();
+            }
+        };
+        new Thread(editUserInfoRunnable, "Edit User Info").start();
+    }
+    
     private void changePassword() {
         final UserInfo userInfo = mAppModel.getProfile().getUserInfo().clone();
         final String newPassword = passwordFieldNew.getText();
         userInfo.setPassword(UserInfo.sha1(newPassword));
         log.debug("Change password !");
-        mEditUserInfoCommand.setUserInfo(userInfo);
-        mEditUserInfoCommand.execute();
+        editUserInfo(userInfo);
     }
     
     private void editProfile() {
@@ -107,8 +118,7 @@ public class ProfileEditionController implements Initializable {
             userInfo.setLastName(newLastName);
             userInfo.setAge(newAge);
             log.debug("Edit user info !");
-            mEditUserInfoCommand.setUserInfo(userInfo);
-            mEditUserInfoCommand.execute();
+            editUserInfo(userInfo);
         }
     }
     
