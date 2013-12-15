@@ -245,7 +245,9 @@ public class MainController extends NavigationController implements Initializabl
                 log.info("Playlist Change : " + ev.getType());
                 switch (ev.getType()) {
                     case ADD:
-                        mPlayListData.add(ev.getIndex(), new PlayListMusic((Music) ev.getItem()));
+                        final PlayListMusic playListMusic = new PlayListMusic((Music) ev.getItem());
+                        if(mPlayListData.isEmpty()) playListMusic.setPlaying(true);
+                        mPlayListData.add(ev.getIndex(), playListMusic);
                         break;
                     case REMOVE:
                         mPlayListData.remove(ev.getIndex());
