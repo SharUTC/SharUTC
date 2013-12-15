@@ -90,6 +90,12 @@ public class ProfileEditionController implements Initializable {
         mCallback = new DummyCallBack();
     }
 
+    /**
+     * Set an {@link IProfileEditionController} that will be notified on profile
+     * edition.
+     *
+     * @param callback {@link IProfileEditionController} to be notified.
+     */
     public void setInterface(IProfileEditionController callback) {
         if (callback == null) {
             mCallback = new DummyCallBack();
@@ -98,6 +104,13 @@ public class ProfileEditionController implements Initializable {
         }
     }
 
+    /**
+     * Edit the current UserInfo.
+     *
+     * Run a new {@link Task} that executes an {@link EditUserInfoCommand}.
+     *
+     * @param userInfo the new {@link UserInfo} to be set.
+     */
     private void editUserInfo(final UserInfo userInfo) {
         final Task<Void> editUserInfoRunnable = new Task<Void>() {
             @Override
@@ -119,6 +132,11 @@ public class ProfileEditionController implements Initializable {
         new Thread(editUserInfoRunnable, "Edit User Info").start();
     }
 
+    /**
+     * Change the current password.
+     *
+     * The new password is retrieved from the passwordFieldNew.
+     */
     private void changePassword() {
         final UserInfo userInfo = mAppModel.getProfile().getUserInfo().clone();
         final String newPassword = passwordFieldNew.getText();
@@ -127,6 +145,9 @@ public class ProfileEditionController implements Initializable {
         editUserInfo(userInfo);
     }
 
+    /**
+     * Edit the current profile.
+     */
     private void editProfile() {
         final UserInfo userInfo = mAppModel.getProfile().getUserInfo().clone();
         final Integer newAge = Integer.valueOf(textFieldAge.getText());
@@ -147,6 +168,9 @@ public class ProfileEditionController implements Initializable {
         }
     }
 
+    /**
+     * Show the information stored in the current {@link UserInfo}.
+     */
     private void showCurrentUserInfo() {
         final UserInfo userInfo = mAppModel.getProfile().getUserInfo();
         textFieldLastName.setText(userInfo.getLastName());
@@ -154,6 +178,11 @@ public class ProfileEditionController implements Initializable {
         textFieldAge.setText(String.valueOf(userInfo.getAge()));
     }
 
+    /**
+     * Check if the edition form is valid.
+     *
+     * @return true is the form is valid, false otherwise.
+     */
     private boolean isEditFormValid() {
         final String lastName = textFieldLastName.getText();
         final String firstName = textFieldFirstName.getText();
@@ -172,6 +201,11 @@ public class ProfileEditionController implements Initializable {
         return isValid;
     }
 
+    /**
+     * Check if the password form is valid.
+     *
+     * @return true is the form is valid, false otherwise.
+     */
     private boolean isPasswordFormValid() {
         final String passwordCurrent = passwordFieldCurrent.getText();
         final String passwordNew = passwordFieldNew.getText();
@@ -194,6 +228,11 @@ public class ProfileEditionController implements Initializable {
         return isValid;
     }
 
+    /**
+     * Show an error message.
+     *
+     * @param errorMessage the message to be shown.
+     */
     private void showErrorMessage(String errorMessage) {
         errorContainer.getChildren().add(new Label(errorMessage));
     }
