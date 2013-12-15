@@ -1,6 +1,7 @@
 package fr.utc.lo23.sharutc.ui;
 
 import com.google.inject.Inject;
+import fr.utc.lo23.sharutc.controler.command.account.EditUserInfoCommand;
 import fr.utc.lo23.sharutc.model.AppModel;
 import fr.utc.lo23.sharutc.model.userdata.UserInfo;
 import fr.utc.lo23.sharutc.ui.util.FormUtils;
@@ -46,6 +47,8 @@ public class ProfileEditionController implements Initializable {
     private EventHandler<ActionEvent> mButtonHandler;
     @Inject
     AppModel mAppModel;
+    @Inject
+    private EditUserInfoCommand mEditUserInfoCommand;
 
     /**
      * Initializes the controller class.
@@ -64,6 +67,7 @@ public class ProfileEditionController implements Initializable {
                     errorContainer.getChildren().clear();
                     if (isEditFormValid()) {
                         //TODO edit profile
+                        editProfile();
                     }
                 } else if (source.equals(buttonChangePassword)) {
                     log.debug("change password clicked !");
@@ -78,6 +82,26 @@ public class ProfileEditionController implements Initializable {
         buttonSaveProfile.setOnAction(mButtonHandler);
         
         showCurrentUserInfo();
+    }
+    
+    private void editProfile() {
+        final UserInfo userInfo = mAppModel.getProfile().getUserInfo().clone();
+        final Integer newAge = Integer.valueOf(textFieldAge.getText());
+        final String newLastName = textFieldLastName.getText();
+        final String newFirstName = textFieldFirstName.getText();
+        
+        if(newLastName.equals(userInfo.getLastName())
+                && newFirstName.equals(userInfo.getFirstName())
+                && newAge.equals(userInfo.getAge())) {
+            log.debug("There is nothing to change !");
+        } else {
+            userInfo.setFirstName(newFirstName);
+            userInfo.setLastName(newLastName);
+            userInfo.setAge(newAge);
+            log.debug("Edit user info !");
+            mEditUserInfoCommand.setUserInfo(userInfo);
+            mEditUserInfoCommand.execute();
+        }
     }
     
     private void showCurrentUserInfo() {
