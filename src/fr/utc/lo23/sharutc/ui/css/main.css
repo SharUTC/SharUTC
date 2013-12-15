@@ -102,7 +102,15 @@
     -fx-padding: 8;
 }
 
-.formButton:hover {
+.formButtonDark {
+    -fx-text-fill: #ECF0F1;
+    -fx-background-color: #95A5A6;
+    -fx-border-radius: 0;
+    -fx-background-radius: 0;
+    -fx-padding: 8;
+}
+
+.formButton:hover, .formButtonDark:hover {
     -fx-opacity: 0.7;
 }
 
@@ -227,7 +235,13 @@
     -fx-text-fill: #BDC3C7;
 }
 
-.largeTextGreyBold{
+.largeTextGreyDark,
+.largeTextGreyDarkBold{
+    -fx-font-size : 18 px;
+    -fx-text-fill : #95A5A6;
+}
+
+.largeTextGreyBold, .largeTextGreyDarkBold{
     -fx-font-weight: bold;
 }
 
@@ -362,7 +376,7 @@
 }
 
 #playList .playListCardPlaying {
-     -fx-background-color: rgba(51,181,229,0.5);
+    -fx-background-color: rgba(51,181,229,0.5);
 }
 
 #playList .playListCardPlaying .playListCardMusicTitle {
@@ -390,14 +404,14 @@
 }
 
 .check-box{
-	-fx-text-fill: #BDC3C7;
+    -fx-text-fill: #BDC3C7;
 }
 .check-box:hover{
     -fx-opacity: 1.0;
 }
 
 .check-box .text {
-   -fx-font-weight: bold;
+    -fx-font-weight: bold;
 }
 
 .check-box:disabled {
@@ -406,6 +420,10 @@
 
 .check-box:selected .mark {
     -fx-background-color: #BDC3C7;
-	-fx-background-insets: 1 0 -1 0, 0;
-	-fx-shape: "M0,4H2L3,6L6,0H8L4,8H2Z";
+    -fx-background-insets: 1 0 -1 0, 0;
+    -fx-shape: "M0,4H2L3,6L6,0H8L4,8H2Z";
+}
+
+.errorMessageContainer > .label {
+    -fx-text-fill: #CC0000;
 }

@@ -502,6 +502,13 @@ public class MainController extends NavigationController implements Initializabl
     private void showProfileEdition() {
         //TODO
         log.debug("Show Profile Edition !");
+        try {
+            detachRightpane();
+            mCurrentLoadedRighpaneResult = mFxmlLoader.load(getClass().getResource("/fr/utc/lo23/sharutc/ui/fxml/profile_edition.fxml"));
+            attachRightpane(mCurrentLoadedRighpaneResult);
+        } catch (IOException e) {
+            log.error(e.getMessage());
+        }
     }
 
     private void showGroupRights(Category category) {
