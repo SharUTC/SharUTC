@@ -7,6 +7,8 @@ import fr.utc.lo23.sharutc.model.userdata.UserInfo;
 import fr.utc.lo23.sharutc.ui.util.FormUtils;
 import java.net.URL;
 import java.util.ResourceBundle;
+import javafx.concurrent.Task;
+import javafx.concurrent.WorkerStateEvent;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -49,6 +51,7 @@ public class ProfileEditionController implements Initializable {
     AppModel mAppModel;
     @Inject
     private EditUserInfoCommand mEditUserInfoCommand;
+    private IProfileEditionController mCallback;
 
     /**
      * Initializes the controller class.
@@ -79,22 +82,40 @@ public class ProfileEditionController implements Initializable {
         };
         buttonChangePassword.setOnAction(mButtonHandler);
         buttonSaveProfile.setOnAction(mButtonHandler);
-        
+
         showCurrentUserInfo();
+
+        mCallback = new DummyCallBack();
     }
-    
+
+    public void setInterface(IProfileEditionController callback) {
+        if (callback == null) {
+            mCallback = new DummyCallBack();
+        } else {
+            mCallback = callback;
+        }
+    }
+
     private void editUserInfo(final UserInfo userInfo) {
-        final Runnable editUserInfoRunnable = new Runnable() {
+        final Task<Void> editUserInfoRunnable = new Task<Void>() {
             @Override
-            public void run() {
+            protected Void call() throws Exception {
                 log.debug("Edit User Info !");
                 mEditUserInfoCommand.setUserInfo(userInfo);
                 mEditUserInfoCommand.execute();
+                return null;
             }
         };
+
+        editUserInfoRunnable.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+            @Override
+            public void handle(WorkerStateEvent t) {
+                mCallback.onUserInfoEdition();
+            }
+        });
         new Thread(editUserInfoRunnable, "Edit User Info").start();
     }
-    
+
     private void changePassword() {
         final UserInfo userInfo = mAppModel.getProfile().getUserInfo().clone();
         final String newPassword = passwordFieldNew.getText();
@@ -102,14 +123,14 @@ public class ProfileEditionController implements Initializable {
         log.debug("Change password !");
         editUserInfo(userInfo);
     }
-    
+
     private void editProfile() {
         final UserInfo userInfo = mAppModel.getProfile().getUserInfo().clone();
         final Integer newAge = Integer.valueOf(textFieldAge.getText());
         final String newLastName = textFieldLastName.getText();
         final String newFirstName = textFieldFirstName.getText();
-        
-        if(newLastName.equals(userInfo.getLastName())
+
+        if (newLastName.equals(userInfo.getLastName())
                 && newFirstName.equals(userInfo.getFirstName())
                 && newAge.equals(userInfo.getAge())) {
             log.debug("There is nothing to change !");
@@ -121,7 +142,7 @@ public class ProfileEditionController implements Initializable {
             editUserInfo(userInfo);
         }
     }
-    
+
     private void showCurrentUserInfo() {
         final UserInfo userInfo = mAppModel.getProfile().getUserInfo();
         textFieldLastName.setText(userInfo.getLastName());
@@ -171,5 +192,28 @@ public class ProfileEditionController implements Initializable {
 
     private void showErrorMessage(String errorMessage) {
         errorContainer.getChildren().add(new Label(errorMessage));
+    }
+
+    /**
+     * A simple interface used as a callback since the edition of the
+     * {@link UserInfo} does not trigger any events.
+     */
+    public interface IProfileEditionController {
+
+        /**
+         * The {@link IProfileEditionController} is being notified that the
+         * {@link UserInfo} has just been edited.
+         */
+        void onUserInfoEdition();
+    }
+
+    /**
+     * A dummy implementation of the {@link IProfileEditionController}.
+     */
+    private class DummyCallBack implements IProfileEditionController {
+
+        @Override
+        public void onUserInfoEdition() {
+        }
     }
 }
