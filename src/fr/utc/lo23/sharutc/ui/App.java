@@ -17,6 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
+import javafx.scene.image.Image;
 
 public class App extends GuiceApplication implements NavigationHandler {
 
@@ -31,6 +32,8 @@ public class App extends GuiceApplication implements NavigationHandler {
     @Override
     public void start(Stage stage) throws Exception {
         mStage = stage;
+        mStage.setTitle("SharUTC");
+        mStage.getIcons().add(new Image("fr/utc/lo23/sharutc/ui/drawable/ic_icon.png"));
         goToLoginPage();
     }
 
@@ -89,6 +92,7 @@ public class App extends GuiceApplication implements NavigationHandler {
             mCurrentNavigationController.setNavigationHandler(this);
             if (mScene == null) {
                 mScene = new Scene(root);
+
                 mScene.getStylesheets().add(this.getClass().getResource("/fr/utc/lo23/sharutc/ui/css/main.css").toExternalForm());
                 mStage.setScene(mScene);
                 mStage.show();
