@@ -57,11 +57,12 @@
         </VBox>        
     </HBox>
     
-   <VBox fx:id="errorContainer" alignment="CENTER" styleClass="errorMessageContainer" >    
-       <VBox.margin>
-           <javafx.geometry.Insets top="10" />
-       </VBox.margin>
-       <Label text="Something went wrong !" />
-   </VBox>
+    <StackPane alignment="CENTER"> 
+        <VBox.margin>
+            <javafx.geometry.Insets top="10" />
+        </VBox.margin>
+        <VBox fx:id="errorContainer" alignment="CENTER" styleClass="errorMessageContainer" />           
+        <Label fx:id="labelChangeSaved" text="Changes saved!"  visible="false" />
+    </StackPane>
     
 </VBox>

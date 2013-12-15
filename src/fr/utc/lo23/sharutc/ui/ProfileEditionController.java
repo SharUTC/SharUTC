@@ -46,6 +46,8 @@ public class ProfileEditionController implements Initializable {
     public Button buttonSaveProfile;
     @FXML
     public Button buttonChangePassword;
+    @FXML
+    public Label labelChangeSaved;
     private EventHandler<ActionEvent> mButtonHandler;
     @Inject
     AppModel mAppModel;
@@ -58,8 +60,6 @@ public class ProfileEditionController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        errorContainer.getChildren().clear();
-
         //Listen to ActionEvent on the two buttons
         mButtonHandler = new EventHandler<ActionEvent>() {
             @Override
@@ -67,12 +67,14 @@ public class ProfileEditionController implements Initializable {
                 final Object source = t.getSource();
                 if (source.equals(buttonSaveProfile)) {
                     log.debug("save profile clicked !");
+                    labelChangeSaved.setVisible(false);
                     errorContainer.getChildren().clear();
                     if (isEditFormValid()) {
                         editProfile();
                     }
                 } else if (source.equals(buttonChangePassword)) {
                     log.debug("change password clicked !");
+                    labelChangeSaved.setVisible(false);
                     errorContainer.getChildren().clear();
                     if (isPasswordFormValid()) {
                         changePassword();
@@ -111,6 +113,7 @@ public class ProfileEditionController implements Initializable {
             @Override
             public void handle(WorkerStateEvent t) {
                 mCallback.onUserInfoEdition();
+                labelChangeSaved.setVisible(true);
             }
         });
         new Thread(editUserInfoRunnable, "Edit User Info").start();
