@@ -80,20 +80,22 @@ public interface NetworkService {
      * Add a comment on a music owned by another peer.
      *
      * @param peer the music owner
+     * @param author the author of the comment
      * @param music the music to comment
      * @param comment the comment to add
      */
-    public void addComment(Peer peer, Music music, String comment);
+    public void addComment(Peer peer, Peer author, Music music, String comment);
 
     /**
      * Edit a comment the user made on another peer's music.
      *
      * @param peer the music owner
+     * @param author the author of the comment
      * @param music the commented music
      * @param comment the comment's new text
      * @param commentIndex the comment's identifier
      */
-    public void editComment(Peer peer, Music music, String comment, Integer commentIndex);
+    public void editComment(Peer peer, Peer author, Music music, String comment, Integer commentIndex);
 
     /**
      * Remove a comment from another peer's music.

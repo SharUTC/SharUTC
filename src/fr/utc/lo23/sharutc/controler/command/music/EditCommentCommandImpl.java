@@ -134,7 +134,7 @@ public class EditCommentCommandImpl implements EditCommentCommand {
             appModel.getProfile().getKnownPeerList().update(mAuthorPeer);
             musicService.saveUserMusicFile();
         } else {
-            networkService.editComment(mOwnerPeer, mMusic, mComment, mCommentId); // distant
+            networkService.editComment(mOwnerPeer, mAuthorPeer, mMusic, mComment, mCommentId); // distant
         }
         log.info("EditCommentCommandImpl DONE");
     }

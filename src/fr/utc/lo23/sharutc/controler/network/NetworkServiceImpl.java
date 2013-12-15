@@ -222,8 +222,8 @@ public class NetworkServiceImpl implements NetworkService {
      * {inheritDoc}
      */
     @Override
-    public void addComment(Peer peer, Music music, String comment) {
-        Message message = messageParser.write(MessageType.COMMENT_ADD, new Object[][]{{Message.OWNER_PEER, peer}, {Message.MUSIC_ID, music}, {Message.COMMENT, comment}});
+    public void addComment(Peer peer, Peer author, Music music, String comment) {
+        Message message = messageParser.write(MessageType.COMMENT_ADD, new Object[][]{{Message.OWNER_PEER, peer}, {Message.AUTHOR_PEER, author}, {Message.MUSIC_ID, music}, {Message.COMMENT, comment}});
         sendUnicast(message, peer);
     }
 
@@ -231,8 +231,8 @@ public class NetworkServiceImpl implements NetworkService {
      * {inheritDoc}
      */
     @Override
-    public void editComment(Peer peer, Music music, String comment, Integer commentIndex) {
-        Message message = messageParser.write(MessageType.EDIT_COMMENT, new Object[][]{{Message.OWNER_PEER, peer}, {Message.MUSIC, music}, {Message.COMMENT, comment}});
+    public void editComment(Peer peer, Peer author, Music music, String comment, Integer commentIndex) {
+        Message message = messageParser.write(MessageType.EDIT_COMMENT, new Object[][]{{Message.OWNER_PEER, peer}, {Message.AUTHOR_PEER, author}, {Message.MUSIC, music}, {Message.COMMENT, comment}, {Message.COMMENT_ID, commentIndex}});
         sendUnicast(message, peer);
 
     }
@@ -250,8 +250,8 @@ public class NetworkServiceImpl implements NetworkService {
      * {inheritDoc}
      */
     @Override
-    public void setScore(Peer peer, Peer scoringPeer, Music music, Integer score) {
-        Message message = messageParser.write(MessageType.SCORE_SET, new Object[][]{{Message.AUTHOR_PEER, scoringPeer}, {Message.MUSIC, music}, {Message.SCORE, score}});
+    public void setScore(Peer peer, Peer scoringPeer, Music music, Integer rating) {
+        Message message = messageParser.write(MessageType.SCORE_SET, new Object[][]{{Message.AUTHOR_PEER, scoringPeer}, {Message.MUSIC, music}, {Message.SCORE, rating}});
         sendUnicast(message, peer);
     }
 
