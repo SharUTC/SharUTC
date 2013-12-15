@@ -136,7 +136,7 @@ public class MainController extends NavigationController implements Initializabl
                 MainController.this.onPeopleDetailRequested(mAppModel.getProfile().getUserInfo());
             }
         });
-        
+
         showLocalCatalog();
     }
 
@@ -240,13 +240,14 @@ public class MainController extends NavigationController implements Initializabl
     private void addListeners() {
         //Listen to playlist changes
         mChangeListenerPlayList = new CollectionChangeListener() {
-            
             private void handleCollectionEvent(final CollectionEvent ev) {
                 log.info("Playlist Change : " + ev.getType());
                 switch (ev.getType()) {
                     case ADD:
                         final PlayListMusic playListMusic = new PlayListMusic((Music) ev.getItem());
-                        if(mPlayListData.isEmpty()) playListMusic.setPlaying(true);
+                        if (mPlayListData.isEmpty()) {
+                            playListMusic.setPlaying(true);
+                        }
                         mPlayListData.add(ev.getIndex(), playListMusic);
                         break;
                     case REMOVE:
@@ -261,13 +262,13 @@ public class MainController extends NavigationController implements Initializabl
                         break;
                 }
             }
-            
+
             @Override
             public void collectionChanged(final CollectionEvent evt) {
-                if(Platform.isFxApplicationThread()) {
+                if (Platform.isFxApplicationThread()) {
                     handleCollectionEvent(evt);
                 } else {
-                    Platform.runLater(new Runnable(){
+                    Platform.runLater(new Runnable() {
                         @Override
                         public void run() {
                             handleCollectionEvent(evt);
@@ -375,7 +376,15 @@ public class MainController extends NavigationController implements Initializabl
                 //mPlayerController.addSong(droppedCard.getMusic());
                 mAddToPlaylistCommand.setMusic(droppedCard.getModel());
             }
-            mAddToPlaylistCommand.execute();
+
+            final Runnable addToPlayListRunnable = new Runnable() {
+                @Override
+                public void run() {
+                    log.debug("Add to play list command");
+                    mAddToPlaylistCommand.execute();
+                }
+            };
+            new Thread(addToPlayListRunnable, "Add to Play List").start();
         }
         dragEvent.setDropCompleted(success);
         dragEvent.consume();
@@ -434,7 +443,7 @@ public class MainController extends NavigationController implements Initializabl
                         List<Integer> indexs = new ArrayList<Integer>();
                         //Hot fix issue #169
                         final PlayListMusic playListMusic = ((PlayListMusic) listView.getSelectionModel().getSelectedItem());
-                        if(playListMusic.isPlaying()) {
+                        if (playListMusic.isPlaying()) {
                             mPlayerController.resetPlayerUi();
                         }
                         indexs.add(listView.getSelectionModel().getSelectedIndex());
@@ -478,7 +487,7 @@ public class MainController extends NavigationController implements Initializabl
     public void onTagFilterRequested(String tagName) {
         showLocalCatalogWithTagFilter(tagName);
     }
-    
+
     @Override
     public void onSongPlayRequest(Music music) {
         mPlayerController.resetPlayerUi();
