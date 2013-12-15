@@ -250,7 +250,13 @@ public class PlayerController implements Initializable, PropertyChangeListener {
     }
 
     public void handlePrevAction(ActionEvent actionEvent) {
-        mPlayerService.playerPrevious();
+        final Runnable playerPreviousRunnable = new Runnable() {
+            @Override
+            public void run() {
+                mPlayerService.playerPrevious();
+            }
+        };
+        new Thread(playerPreviousRunnable, "Player previous").start();        
     }
 
     public void handleNextAction(ActionEvent actionEvent) {
