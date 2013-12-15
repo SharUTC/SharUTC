@@ -494,6 +494,16 @@ public class MainController extends NavigationController implements Initializabl
         mPlayerController.setLoadingMusic(true);
     }
 
+    @Override
+    public void onProfileEditionRequested() {
+        showProfileEdition();
+    }
+
+    private void showProfileEdition() {
+        //TODO
+        log.debug("Show Profile Edition !");
+    }
+
     private void showGroupRights(Category category) {
         if (loadDragPreviewDrawer("/fr/utc/lo23/sharutc/ui/fxml/group_rights.fxml")) {
             ((GroupRightController) mCurrentLoadedRighpaneResult.getController()).setGroupInfo(category);

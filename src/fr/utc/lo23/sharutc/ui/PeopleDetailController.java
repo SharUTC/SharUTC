@@ -94,6 +94,7 @@ public class PeopleDetailController extends SongSelectorController implements Ri
                 @Override
                 public void handle(ActionEvent t) {
                     log.debug("Edit profile requested !");
+                    mCallBack.onProfileEditionRequested();
                 }
             });
 
@@ -246,5 +247,7 @@ public class PeopleDetailController extends SongSelectorController implements Ri
         public void onArtistDetailRequested(final String artistName, SongDetailController.CatalogType type);
 
         public void onTagFilterRequested(final String tagName);
+
+        public void onProfileEditionRequested();
     }
 }
