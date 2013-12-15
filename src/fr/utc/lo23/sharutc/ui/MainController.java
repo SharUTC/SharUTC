@@ -64,7 +64,8 @@ public class MainController extends NavigationController implements Initializabl
         AlbumsDetailController.IAlbumsDetailController,
         SongSelectorController.ISongListController,
         SongDetailController.ISongDetailController,
-        PeopleDetailController.IPeopleDetailController {
+        PeopleDetailController.IPeopleDetailController,
+        ProfileEditionController.IProfileEditionController {
 
     private static final Logger log = LoggerFactory.getLogger(MainController.class);
     @Inject
@@ -127,8 +128,7 @@ public class MainController extends NavigationController implements Initializabl
         mDragPreview.toFront();
 
         //Set User name
-        final UserInfo currentUser = mAppModel.getProfile().getUserInfo();
-        labelMyProfile.setText(currentUser.getFirstName() + " " + currentUser.getLastName());
+        showUserName();
         labelMyProfile.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent mouseEvent) {
@@ -138,6 +138,11 @@ public class MainController extends NavigationController implements Initializabl
         });
 
         showLocalCatalog();
+    }
+
+    private void showUserName() {
+        final UserInfo currentUser = mAppModel.getProfile().getUserInfo();
+        labelMyProfile.setText(currentUser.getFirstName() + " " + currentUser.getLastName());
     }
 
     /**
@@ -499,12 +504,18 @@ public class MainController extends NavigationController implements Initializabl
         showProfileEdition();
     }
 
+    @Override
+    public void onUserInfoEdition() {
+        showUserName();
+    }
+
     private void showProfileEdition() {
         //TODO
         log.debug("Show Profile Edition !");
         try {
             detachRightpane();
             mCurrentLoadedRighpaneResult = mFxmlLoader.load(getClass().getResource("/fr/utc/lo23/sharutc/ui/fxml/profile_edition.fxml"));
+            ((ProfileEditionController) mCurrentLoadedRighpaneResult.getController()).setInterface(this);
             attachRightpane(mCurrentLoadedRighpaneResult);
         } catch (IOException e) {
             log.error(e.getMessage());
