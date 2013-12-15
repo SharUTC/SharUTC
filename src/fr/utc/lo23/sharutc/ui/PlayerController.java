@@ -254,7 +254,13 @@ public class PlayerController implements Initializable, PropertyChangeListener {
     }
 
     public void handleNextAction(ActionEvent actionEvent) {
-        mPlayerService.playerNext();
+        final Runnable playerNextRunnable = new Runnable() {
+            @Override
+            public void run() {
+                mPlayerService.playerNext();
+            }
+        };
+        new Thread(playerNextRunnable, "Player next").start();
     }
 
     public void handlePlayAction(ActionEvent actionEvent) {
