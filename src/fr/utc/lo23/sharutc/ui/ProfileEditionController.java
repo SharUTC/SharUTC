@@ -137,6 +137,7 @@ public class ProfileEditionController implements Initializable {
                 && newFirstName.equals(userInfo.getFirstName())
                 && newAge.equals(userInfo.getAge())) {
             log.debug("There is nothing to change !");
+            showErrorMessage("Nothing to change!");
         } else {
             userInfo.setFirstName(newFirstName);
             userInfo.setLastName(newLastName);
