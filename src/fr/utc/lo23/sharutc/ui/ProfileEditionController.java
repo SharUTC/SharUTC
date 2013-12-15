@@ -66,14 +66,13 @@ public class ProfileEditionController implements Initializable {
                     log.debug("save profile clicked !");
                     errorContainer.getChildren().clear();
                     if (isEditFormValid()) {
-                        //TODO edit profile
                         editProfile();
                     }
                 } else if (source.equals(buttonChangePassword)) {
                     log.debug("change password clicked !");
                     errorContainer.getChildren().clear();
                     if (isPasswordFormValid()) {
-                        //TODO change password
+                        changePassword();
                     }
                 }
             }
@@ -82,6 +81,15 @@ public class ProfileEditionController implements Initializable {
         buttonSaveProfile.setOnAction(mButtonHandler);
         
         showCurrentUserInfo();
+    }
+    
+    private void changePassword() {
+        final UserInfo userInfo = mAppModel.getProfile().getUserInfo().clone();
+        final String newPassword = passwordFieldNew.getText();
+        userInfo.setPassword(UserInfo.sha1(newPassword));
+        log.debug("Change password !");
+        mEditUserInfoCommand.setUserInfo(userInfo);
+        mEditUserInfoCommand.execute();
     }
     
     private void editProfile() {
