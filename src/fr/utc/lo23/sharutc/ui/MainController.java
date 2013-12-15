@@ -20,6 +20,10 @@ import fr.utc.lo23.sharutc.ui.custom.card.SongCard;
 import fr.utc.lo23.sharutc.ui.navigation.NavigationController;
 import fr.utc.lo23.sharutc.util.CollectionChangeListener;
 import fr.utc.lo23.sharutc.util.CollectionEvent;
+import static fr.utc.lo23.sharutc.util.CollectionEvent.Type.ADD;
+import static fr.utc.lo23.sharutc.util.CollectionEvent.Type.CLEAR;
+import static fr.utc.lo23.sharutc.util.CollectionEvent.Type.REMOVE;
+import static fr.utc.lo23.sharutc.util.CollectionEvent.Type.UPDATE;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
@@ -51,6 +55,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
+import javafx.application.Platform;
 
 public class MainController extends NavigationController implements Initializable,
         PeopleHomeController.IPeopleHomeController,
@@ -235,11 +240,10 @@ public class MainController extends NavigationController implements Initializabl
     private void addListeners() {
         //Listen to playlist changes
         mChangeListenerPlayList = new CollectionChangeListener() {
-            @Override
-            public void collectionChanged(CollectionEvent ev) {
+            
+            private void handleCollectionEvent(final CollectionEvent ev) {
                 log.info("Playlist Change : " + ev.getType());
                 switch (ev.getType()) {
-
                     case ADD:
                         mPlayListData.add(ev.getIndex(), new PlayListMusic((Music) ev.getItem()));
                         break;
@@ -253,7 +257,20 @@ public class MainController extends NavigationController implements Initializabl
                         mPlayListData.remove(ev.getIndex());
                         mPlayListData.add(ev.getIndex(), new PlayListMusic((Music) ev.getItem()));
                         break;
-
+                }
+            }
+            
+            @Override
+            public void collectionChanged(final CollectionEvent evt) {
+                if(Platform.isFxApplicationThread()) {
+                    handleCollectionEvent(evt);
+                } else {
+                    Platform.runLater(new Runnable(){
+                        @Override
+                        public void run() {
+                            handleCollectionEvent(evt);
+                        }
+                    });
                 }
             }
         };

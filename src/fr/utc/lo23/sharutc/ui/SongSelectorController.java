@@ -95,12 +95,18 @@ public class SongSelectorController extends DragPreviewDrawer implements SongCar
     }
 
     @Override
-    public void onSongAddToPlayList(Music music) {
-        log.info("onSongAddToPlayList: " + music.getTitle());
-        List<Music> musics = new ArrayList<Music>();
-        musics.add(music);
-        mAddToPlaylistCommand.setMusics(musics);
-        mAddToPlaylistCommand.execute();
+    public void onSongAddToPlayList(final Music music) {
+        final Runnable addToPlaylistRunnable = new Runnable() {
+            @Override
+            public void run() {
+                log.info("onSongAddToPlayList: " + music.getTitle());
+                List<Music> musics = new ArrayList<Music>();
+                musics.add(music);
+                mAddToPlaylistCommand.setMusics(musics);
+                mAddToPlaylistCommand.execute();
+            }
+        };
+        new Thread(addToPlaylistRunnable, "Add to playlist").start();
     }
 
     @Override
