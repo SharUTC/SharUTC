@@ -76,6 +76,15 @@ public class ProfileEditionController implements Initializable {
         };
         buttonChangePassword.setOnAction(mButtonHandler);
         buttonSaveProfile.setOnAction(mButtonHandler);
+        
+        showCurrentUserInfo();
+    }
+    
+    private void showCurrentUserInfo() {
+        final UserInfo userInfo = mAppModel.getProfile().getUserInfo();
+        textFieldLastName.setText(userInfo.getLastName());
+        textFieldFirstName.setText(userInfo.getFirstName());
+        textFieldAge.setText(String.valueOf(userInfo.getAge()));
     }
 
     private boolean isEditFormValid() {
