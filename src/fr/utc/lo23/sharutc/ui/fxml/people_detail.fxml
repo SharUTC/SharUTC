@@ -18,13 +18,27 @@
     
     <VBox fx:id="scrollPaneContent" >
         <GridPane>
-        <padding>
-            <javafx.geometry.Insets top="10"/>
-        </padding>
-        <AnchorPane GridPane.rowIndex="1" GridPane.hgrow="ALWAYS" maxWidth="700">
-            <Label fx:id="login" styleClass="panetitle" GridPane.rowIndex="0"/>
-            <Button text="Add to friends" fx:id="addToFriendsButton" onAction="#handleAddToFriendsClicked" AnchorPane.rightAnchor="10" styleClass="rectButton"/>
-        </AnchorPane>
+            <padding>
+                <javafx.geometry.Insets top="10"/>
+            </padding>
+            <AnchorPane GridPane.rowIndex="1" GridPane.hgrow="ALWAYS" maxWidth="700">
+                <HBox>
+                    <Label fx:id="login" styleClass="panetitle" GridPane.rowIndex="0"/>
+                    <Button fx:id="editButton" styleClass="imageButton" visible="false">
+                        <HBox.margin>
+                            <Insets left="10"/>
+                        </HBox.margin>
+                        <graphic>
+                            <ImageView fitWidth="30" fitHeight="30">
+                                <image>
+                                    <Image url="@../drawable/ic_edit.png"/>
+                                </image>
+                            </ImageView>
+                        </graphic>
+                    </Button>
+                </HBox>            
+                <Button text="Add to friends" fx:id="addToFriendsButton" onAction="#handleAddToFriendsClicked" AnchorPane.rightAnchor="10" styleClass="rectButton"/>
+            </AnchorPane>
         </GridPane>
     </VBox>
 </ScrollPane>

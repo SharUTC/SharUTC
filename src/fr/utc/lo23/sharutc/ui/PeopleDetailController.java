@@ -27,27 +27,25 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.Set;
+import javafx.event.EventHandler;
 import javafx.scene.layout.VBox;
 
 public class PeopleDetailController extends SongSelectorController implements RighpaneInterface, Initializable, TagCard.ITagCard, CollectionChangeListener, ArtistCard.IArtistCard {
 
     private static final Logger log = LoggerFactory
             .getLogger(SongListController.class);
-
     public Label login;
     public Button addToFriendsButton;
     public VBox scrollPaneContent;
-
+    public Button editButton;
     @Inject
     private AppModel mAppModel;
-
     @Inject
     private FetchRemoteCatalogCommand fetchRemoteCatalogCommand;
     @Inject
     private AddContactToCategoryCommand addContactToCategoryCommand;
     @Inject
     private AddTagCommand mAddTagCommand;
-
     private UserInfo mUserInfo;
     private Set<String> mArtistsFound = new LinkedHashSet<String>();
     private Set<String> mTagsFound = new LinkedHashSet<String>();
@@ -59,14 +57,14 @@ public class PeopleDetailController extends SongSelectorController implements Ri
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         addToFriendsButton.getStyleClass().add("bgGreen");
-       
+
         mSongList = new CardList("Songs", "bgBlue");
         mArtistList = new CardList("Artists", "bgRed");
         mTagList = new CardList("Tags", "");
         scrollPaneContent.getChildren().add(mSongList);
         scrollPaneContent.getChildren().add(mArtistList);
         scrollPaneContent.getChildren().add(mTagList);
-        
+
         mAppModel.getProfile().getContacts().addPropertyChangeListener(this);
         mAppModel.getRemoteUserCatalog().addPropertyChangeListener(this);
 
@@ -89,6 +87,15 @@ public class PeopleDetailController extends SongSelectorController implements Ri
         if (userInfo.getPeerId() == mAppModel.getProfile().getUserInfo().getPeerId()) {
             //the current user info
             login.setText("Your profile");
+
+            //Enable the edit button
+            editButton.setVisible(true);
+            editButton.setOnAction(new EventHandler<ActionEvent>() {
+                @Override
+                public void handle(ActionEvent t) {
+                    log.debug("Edit profile requested !");
+                }
+            });
 
             //hide add to friends
             addToFriendsButton.setVisible(false);
@@ -136,8 +143,6 @@ public class PeopleDetailController extends SongSelectorController implements Ri
         addContactToCategoryCommand.execute();
 
     }
-
-    
 
     @Override
     public void onTagSelected(String tagName) {
@@ -200,7 +205,7 @@ public class PeopleDetailController extends SongSelectorController implements Ri
 
         //display the new music card
         final SongCard newSongCard = new SongCard(music, PeopleDetailController.this, mAppModel);
-        
+
         mSongList.addChild(newSongCard);
     }
 
@@ -213,12 +218,12 @@ public class PeopleDetailController extends SongSelectorController implements Ri
 
         for (String artist : mArtistsFound) {
             ArtistCard newCard = new ArtistCard(artist, this);
-            if(!(mUserInfo.getPeerId()==mAppModel.getProfile().getUserInfo().getPeerId())){
-              newCard.setCatalogType(SongDetailController.CatalogType.remote);  
+            if (!(mUserInfo.getPeerId() == mAppModel.getProfile().getUserInfo().getPeerId())) {
+                newCard.setCatalogType(SongDetailController.CatalogType.remote);
             }
-            
-        
-        
+
+
+
             mArtistList.addChild(newCard);
         }
 
