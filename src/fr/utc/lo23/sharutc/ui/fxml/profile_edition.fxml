@@ -31,7 +31,7 @@
                 <TextField fx:id="textFieldFirstName" text="your first name" GridPane.rowIndex="1" GridPane.columnIndex="1" />
                 <Label text="Age" styleClass="largeTextGreyDark" GridPane.rowIndex="2" GridPane.columnIndex="0" />
                 <TextField fx:id="textFieldAge" text="your age" GridPane.rowIndex="2" GridPane.columnIndex="1" />
-                <Button text="Save" minWidth="75" styleClass="formButtonDark" GridPane.rowIndex="3" GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.halignment="CENTER" />
+                <Button fx:id="buttonSaveProfile" text="Save" minWidth="75" styleClass="formButtonDark" GridPane.rowIndex="3" GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.halignment="CENTER" />
             </GridPane>
             
         </VBox>
@@ -46,12 +46,12 @@
                     <javafx.geometry.Insets top="10" />
                 </VBox.margin>
                 <Label text="Current Password" styleClass="largeTextGreyDark" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
-                <PasswordField fx:id="passwordFieldCurrentPassword" GridPane.rowIndex="0" GridPane.columnIndex="1" /> 
+                <PasswordField fx:id="passwordFieldCurrent" GridPane.rowIndex="0" GridPane.columnIndex="1" /> 
                 <Label text="New Password" styleClass="largeTextGreyDark" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
-                <PasswordField fx:id="passwordFieldNewPassword" GridPane.rowIndex="1" GridPane.columnIndex="1" />
+                <PasswordField fx:id="passwordFieldNew" GridPane.rowIndex="1" GridPane.columnIndex="1" />
                 <Label text="Confirm New Password" styleClass="largeTextGreyDark" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
-                <PasswordField fx:id="passwordFieldConfirmNewPassword" GridPane.rowIndex="2" GridPane.columnIndex="1" />
-                <Button text="Change" minWidth="75" styleClass="formButtonDark" GridPane.rowIndex="3" GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.halignment="CENTER" />
+                <PasswordField fx:id="passwordFieldConfirmNew" GridPane.rowIndex="2" GridPane.columnIndex="1" />
+                <Button fx:id="buttonChangePassword" text="Change" minWidth="75" styleClass="formButtonDark" GridPane.rowIndex="3" GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.halignment="CENTER" />
             </GridPane>
             
         </VBox>        
