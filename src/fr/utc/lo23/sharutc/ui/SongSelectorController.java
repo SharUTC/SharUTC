@@ -76,14 +76,19 @@ public class SongSelectorController extends DragPreviewDrawer implements SongCar
     }
 
     @Override
-    public void onPlayRequested(Music music) {
-        log.info("onPlayRequested: " + music.getTitle());
+    public void onPlayRequested(final Music music) {
         if (mInterface != null) {
             mInterface.onSongPlayRequest(music);
-        }
-        mPlayMusicCommand.setMusic(music);
-        mPlayMusicCommand.execute();
-
+        }        
+        final Runnable songPlayRunnable = new Runnable() {
+            @Override
+            public void run() {
+                log.info("onPlayRequested: " + music.getTitle());
+                mPlayMusicCommand.setMusic(music);
+                mPlayMusicCommand.execute();
+            }
+        };
+        new Thread(songPlayRunnable, "Song Play Request").start();
     }
 
     @Override

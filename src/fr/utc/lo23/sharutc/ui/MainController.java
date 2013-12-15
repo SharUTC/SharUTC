@@ -482,6 +482,7 @@ public class MainController extends NavigationController implements Initializabl
     @Override
     public void onSongPlayRequest(Music music) {
         mPlayerController.resetPlayerUi();
+        mPlayerController.setLoadingMusic(true);
     }
 
     private void showGroupRights(Category category) {

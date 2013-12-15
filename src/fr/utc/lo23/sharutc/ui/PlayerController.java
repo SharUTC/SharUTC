@@ -190,6 +190,7 @@ public class PlayerController implements Initializable, PropertyChangeListener {
                 setCurrentScore();
                 addScoreListener();
             }
+            setLoadingMusic(false);
             playerMaxTime.setText(timeInSecondsToString(mPlayerService.getTotalTimeSec().intValue()));
             currentMusicTitle.setText(mCurrentMusic.getTitle());
             currentMusicAlbum.setText(mCurrentMusic.getAlbum());
