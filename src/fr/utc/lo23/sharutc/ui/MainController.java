@@ -489,8 +489,8 @@ public class MainController extends NavigationController implements Initializabl
     }
 
     @Override
-    public void onTagFilterRequested(String tagName) {
-        showLocalCatalogWithTagFilter(tagName);
+    public void onTagFilterRequested(String tagName, SongDetailController.CatalogType type) {
+        showLocalCatalogWithTagFilter(tagName, type);
     }
 
     @Override
@@ -606,9 +606,9 @@ public class MainController extends NavigationController implements Initializabl
         return success;
     }
 
-    private void showLocalCatalogWithTagFilter(String tagName) {
+    private void showLocalCatalogWithTagFilter(String tagName, SongDetailController.CatalogType type) {
         if (loadSongList()) {
-            ((SongListController) mCurrentLoadedRighpaneResult.getController()).showLocalCatalogWithTagFilter(tagName);
+            ((SongListController) mCurrentLoadedRighpaneResult.getController()).showCatalogWithTagFilter(type, tagName);
         }
     }
 

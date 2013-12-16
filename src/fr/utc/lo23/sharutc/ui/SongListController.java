@@ -142,9 +142,8 @@ public class SongListController extends SongSelectorController implements Initia
         titleLabel.setText("Manage your song list");
         showMusics(mAppModel.getLocalCatalog().getMusics());
     }
-
-    public void showLocalCatalogWithTagFilter(String tagFilter) {
-        final Catalog catalog = mAppModel.getLocalCatalog();
+    
+    public void showCatalogWithTagFilter(final Catalog catalog, final String tagFilter) {
         ArrayList<Music> musics = new ArrayList<Music>();
 
         titleLabel.setText("#" + tagFilter);
@@ -155,6 +154,20 @@ public class SongListController extends SongSelectorController implements Initia
             }
         }
         showMusics(musics);
+    }
+
+    public void showCatalogWithTagFilter(final SongDetailController.CatalogType type, final String tagFilter) {
+        if(SongDetailController.CatalogType.local.equals(type)) {
+            showLocalCatalogWithTagFilter(tagFilter);
+        } else if(SongDetailController.CatalogType.remote.equals(type)) {
+            showCatalogWithTagFilter(mAppModel.getRemoteUserCatalog(), tagFilter);
+        } else if(SongDetailController.CatalogType.search.equals(type)) {
+            showCatalogWithTagFilter(mAppModel.getSearchResults(), tagFilter);
+        }
+    }
+    
+    public void showLocalCatalogWithTagFilter(final String tagFilter) {
+        showCatalogWithTagFilter(mAppModel.getLocalCatalog(), tagFilter);
     }
 
     public void showLocalCatalogWithAlbumFilter(String albumFilter, SongDetailController.CatalogType type) {

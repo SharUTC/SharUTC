@@ -264,7 +264,12 @@ public class SongDetailController extends SongSelectorController implements Init
             tagCard.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent t) {
-                    mInteface.onTagFilterRequested(tag);
+                    if(mAppModel.getLocalCatalog().contains(mMusic)) {
+                        mInteface.onTagFilterRequested(tag, SongDetailController.CatalogType.local);
+                    } else {
+                        mInteface.onTagFilterRequested(tag, SongDetailController.CatalogType.remote);
+                    }
+                    
                 }
             });
             mTagContainer.getChildren().add(tagCard);
@@ -634,6 +639,6 @@ public class SongDetailController extends SongSelectorController implements Init
          *
          * @param tagName the tag used to filter the local catalog.
          */
-        public void onTagFilterRequested(String tagName);
+        public void onTagFilterRequested(String tagName, SongDetailController.CatalogType type);
     }
 }
