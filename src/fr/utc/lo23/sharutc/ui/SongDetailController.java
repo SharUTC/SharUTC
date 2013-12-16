@@ -1,14 +1,7 @@
 package fr.utc.lo23.sharutc.ui;
 
 import com.google.inject.Inject;
-import fr.utc.lo23.sharutc.controler.command.music.AddCommentCommand;
-import fr.utc.lo23.sharutc.controler.command.music.AddTagCommand;
-import fr.utc.lo23.sharutc.controler.command.music.EditCommentCommand;
-import fr.utc.lo23.sharutc.controler.command.music.FetchRemoteCatalogCommand;
-import fr.utc.lo23.sharutc.controler.command.music.RemoveCommentCommand;
-import fr.utc.lo23.sharutc.controler.command.music.RemoveFromLocalCatalogCommand;
-import fr.utc.lo23.sharutc.controler.command.music.RemoveTagCommand;
-import fr.utc.lo23.sharutc.controler.command.music.SetScoreCommand;
+import fr.utc.lo23.sharutc.controler.command.music.*;
 import fr.utc.lo23.sharutc.controler.command.search.DownloadMusicsCommand;
 import fr.utc.lo23.sharutc.model.AppModel;
 import fr.utc.lo23.sharutc.model.domain.Catalog;
@@ -24,6 +17,21 @@ import fr.utc.lo23.sharutc.ui.custom.card.TagDetailCard;
 import fr.utc.lo23.sharutc.util.CollectionChangeListener;
 import fr.utc.lo23.sharutc.util.CollectionEvent;
 import fr.utc.lo23.sharutc.util.CollectionEvent.Type;
+import javafx.application.Platform;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
+import javafx.geometry.Orientation;
+import javafx.scene.control.*;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.VBox;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
@@ -32,25 +40,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.Set;
-import javafx.application.Platform;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
-import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
-import javafx.geometry.Orientation;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.ProgressIndicator;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.FlowPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.VBox;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * A FXML Controller that displays the details of a song.
@@ -146,20 +135,20 @@ public class SongDetailController extends SongSelectorController implements Init
 
         //Intialize the stars for the user rating.
         mMyRatingStars = new RatingStar[]{
-            starMyRate1,
-            starMyRate2,
-            starMyRate3,
-            starMyRate4,
-            starMyRate5
+                starMyRate1,
+                starMyRate2,
+                starMyRate3,
+                starMyRate4,
+                starMyRate5
         };
 
         //Initialize the stars for the average rating.
         mAverageRatingStars = new RatingStar[]{
-            starAverageRate1,
-            starAverageRate2,
-            starAverageRate3,
-            starAverageRate4,
-            starAverageRate5
+                starAverageRate1,
+                starAverageRate2,
+                starAverageRate3,
+                starAverageRate4,
+                starAverageRate5
         };
 
         //Listen to the local catalog
@@ -383,7 +372,7 @@ public class SongDetailController extends SongSelectorController implements Init
     /**
      * Show a rate.
      *
-     * @param rate the rate to be shown.
+     * @param rate        the rate to be shown.
      * @param ratingStars the stars to be filled.
      */
     private void fillRatingStar(final int rate, final RatingStar[] ratingStars) {
@@ -398,10 +387,10 @@ public class SongDetailController extends SongSelectorController implements Init
 
     /**
      * HOT FIX
-     *
+     * <p/>
      * If the owner of the current music is not the current user, this method
      * fetch the remote catalog of the owner.
-     *
+     * <p/>
      * This method is used to update the UI after a modification on a remote
      * piece of {@link Music}.
      *
@@ -547,6 +536,16 @@ public class SongDetailController extends SongSelectorController implements Init
             }
             showMyRating();
             showAverageRating();
+        } else if (Music.Property.COMMENT_UPDATE.name().equals(propertyName)) {
+            final Comment c = (Comment) evt.getNewValue();
+            Platform.runLater(new Runnable() {
+                @Override
+                public void run() {
+                    log.info("comment added" + c.getText());
+                    showComments();
+                }
+            });
+
         }
     }
 

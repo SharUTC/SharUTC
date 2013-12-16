@@ -478,6 +478,7 @@ public class Music implements Serializable {
         }
     }
 
+
     /**
      * Add a comment
      *
@@ -486,6 +487,7 @@ public class Music implements Serializable {
     public void addComment(Comment comment) {
         comment.setIndex(++mCurrentMaxCommentIndex);
         this.mComments.add(comment);
+        propertyChangeSupport.firePropertyChange(Property.COMMENT_UPDATE.name(), null, comment);
     }
 
     /**
@@ -495,6 +497,7 @@ public class Music implements Serializable {
      */
     public void removeComment(Comment comment) {
         this.mComments.remove(comment);
+        propertyChangeSupport.firePropertyChange(Property.COMMENT_UPDATE.name(), null, comment);
     }
 
     /**
@@ -752,7 +755,11 @@ public class Music implements Serializable {
         /**
          *
          */
-        SCORES
+        SCORES,
+        /**
+         *
+         */
+        COMMENT_UPDATE
     }
 
     @Override
