@@ -24,14 +24,18 @@ public class TagCard extends SimpleCard implements EventHandler<Event> {
     @FXML
     public Label dropOverlayLabel;
     private String mTagName;
+    private Integer mTagWeight;
     private ITagCard mCallBack;
+    private boolean mIsDragEnable;
 
     public TagCard(String tagName, ITagCard callBack) {
         super("/fr/utc/lo23/sharutc/ui/fxml/tag_card.fxml");
         mCallBack = callBack;
         mTagName = tagName;
-        tagNameLabel.setText(mTagName);
-
+        tagNameLabel.setText(mTagName);        
+        setTagWeight(1);
+        mIsDragEnable = true;
+        
         setOnMouseClicked(this);
         setOnDragEntered(this);
         setOnDragOver(this);
@@ -46,8 +50,17 @@ public class TagCard extends SimpleCard implements EventHandler<Event> {
      * 
      * @param weight the weight of the tag
      */
-    public void setTagWeight(final Integer weight) {
-        tagWeightLabel.setText(String.valueOf(weight));
+    public final void setTagWeight(final Integer weight) {
+        mTagWeight = weight;
+        tagWeightLabel.setText(String.valueOf(mTagWeight));
+    }
+    
+    public void increaseTagWeight() {
+        setTagWeight(mTagWeight + 1);
+    }
+    
+    public void setDragEnable(boolean isDragEnable) {
+        mIsDragEnable = isDragEnable;
     }
 
     /**
@@ -58,7 +71,7 @@ public class TagCard extends SimpleCard implements EventHandler<Event> {
         final Object source = event.getSource();
         if (event.getEventType() == DragEvent.DRAG_OVER) {
             onDragOver((DragEvent) event);
-        } else if (event.getEventType() == DragEvent.DRAG_ENTERED) {
+        } else if (event.getEventType() == DragEvent.DRAG_ENTERED && mIsDragEnable) {
             onDragEntered((DragEvent) event);
         } else if (event.getEventType() == DragEvent.DRAG_EXITED) {
             onDragExited((DragEvent) event);

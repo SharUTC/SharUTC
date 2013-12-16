@@ -12,6 +12,7 @@ import fr.utc.lo23.sharutc.ui.custom.CardList;
 import fr.utc.lo23.sharutc.ui.custom.card.AlbumCard;
 import fr.utc.lo23.sharutc.ui.custom.card.ArtistCard;
 import fr.utc.lo23.sharutc.ui.custom.card.SongCard;
+import fr.utc.lo23.sharutc.ui.custom.card.TagCard;
 import fr.utc.lo23.sharutc.ui.custom.card.UserCard;
 import fr.utc.lo23.sharutc.util.CollectionChangeListener;
 import fr.utc.lo23.sharutc.util.CollectionEvent;
@@ -24,6 +25,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.Set;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
@@ -31,7 +33,10 @@ import javafx.scene.layout.VBox;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class SearchResultController extends SongSelectorController implements RighpaneInterface, CollectionChangeListener, Initializable, AlbumCard.IAlbumCard, UserCard.IUserCard, ArtistCard.IArtistCard {
+public class SearchResultController extends SongSelectorController implements
+        RighpaneInterface, CollectionChangeListener, Initializable,
+        AlbumCard.IAlbumCard, UserCard.IUserCard, ArtistCard.IArtistCard,
+        TagCard.ITagCard{
 
     private static final Logger log = LoggerFactory
             .getLogger(SearchResultController.class);
@@ -42,8 +47,10 @@ public class SearchResultController extends SongSelectorController implements Ri
     private CardList mFriendList;
     private CardList mArtistList;
     private CardList mAlbumList;
+    private CardList mTagList;
     private List<String> mArtistNameFound;
     private List<String> mAlbumNameFound;
+    private HashMap<String, TagCard> mTagFound;
     private ISearchResultController mInterface;
     @Inject
     private AppModel mAppModel;
@@ -59,12 +66,14 @@ public class SearchResultController extends SongSelectorController implements Ri
         mFriendList = new CardList("People", "bgGreen");
         mArtistList = new CardList("Artists", "bgRed");
         mAlbumList = new CardList("Albums", "bgOrange");
+        mTagList = new CardList("Tags", "bgBlue");
 
         mArtistNameFound = new ArrayList<String>();
         mAlbumNameFound = new ArrayList<String>();
+        mTagFound = new HashMap<String, TagCard> ();
 
         scrollPaneContent.getChildren().addAll(mSongList,
-                mFriendList, mArtistList, mAlbumList);
+                mFriendList, mArtistList, mAlbumList, mTagList);
 
     }
 
@@ -131,6 +140,8 @@ public class SearchResultController extends SongSelectorController implements Ri
             mArtistList.addChild(card);
         } else if (card instanceof AlbumCard) {
             mAlbumList.addChild(card);
+        } else if (card instanceof TagCard) {
+            mTagList.addChild(card);
         }
     }
 
@@ -139,6 +150,15 @@ public class SearchResultController extends SongSelectorController implements Ri
             @Override
             public void run() {
                 addChild(card);
+            }
+        });
+    }
+    
+    private void increaseTagCardWeight(final TagCard tagCard) {
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                tagCard.increaseTagWeight();
             }
         });
     }
@@ -192,6 +212,17 @@ public class SearchResultController extends SongSelectorController implements Ri
                     log.debug("add music -- song");
                     addChildFromOtherThread(new SongCard(m, SearchResultController.this, mAppModel));
                 }
+                final Set<String> tags = m.getTags();
+                for(final String tag : tags) {
+                    if(!mTagFound.containsKey(tag)) {
+                        final TagCard newTagCard = new TagCard(tag, this);
+                        newTagCard.setDragEnable(false);
+                        mTagFound.put(tag, newTagCard);
+                        addChildFromOtherThread(newTagCard);
+                    } else {
+                        increaseTagCardWeight(mTagFound.get(tag));
+                    }
+                }
                 break;
         }
 
@@ -200,6 +231,16 @@ public class SearchResultController extends SongSelectorController implements Ri
     @Override
     public void onDetach() {
         mAppModel.getSearchResults().removePropertyChangeListener(this);
+    }
+
+    @Override
+    public void onTagSelected(String tagName) {
+        mInterface.onTagFilterRequested(tagName);
+    }
+
+    @Override
+    public void onMusicDropOnTag(String tagName) {
+        //Do nothing.
     }
 
     public interface ISearchResultController extends SongListController.ISongListController {
@@ -224,5 +265,13 @@ public class SearchResultController extends SongSelectorController implements Ri
          * @param music
          */
         public void onAlbumDetailRequested(String albumName, SongDetailController.CatalogType type);
+        
+        /**
+         * The {@link ISongDetailController} is being asked to show the local
+         * catalog filtered with the tag.
+         *
+         * @param tagName the tag used to filter the local catalog.
+         */
+        public void onTagFilterRequested(String tagName);
     }
 }
