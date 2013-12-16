@@ -127,6 +127,7 @@ public class PlayerServiceImpl implements PlayerService, PropertyChangeListener,
     public synchronized void updateAndPlayMusic(Music musicWithBytes) {
         log.info("updateAndPlayMusic");
         if (musicWithBytes != null && mPlaylist.contains(musicWithBytes)) {
+            appModel.getTmpCatalog().add(musicWithBytes);
             playerStop();
             int musicIndex = mPlaylist.indexOf(musicWithBytes);
             Music musicFromPlaylist = mPlaylist.get(musicIndex);
