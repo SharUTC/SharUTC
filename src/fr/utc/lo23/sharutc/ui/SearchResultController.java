@@ -235,7 +235,7 @@ public class SearchResultController extends SongSelectorController implements
 
     @Override
     public void onTagSelected(String tagName) {
-        mInterface.onTagFilterRequested(tagName);
+        mInterface.onTagFilterRequested(tagName, SongDetailController.CatalogType.search);
     }
 
     @Override
@@ -272,6 +272,6 @@ public class SearchResultController extends SongSelectorController implements
          *
          * @param tagName the tag used to filter the local catalog.
          */
-        public void onTagFilterRequested(String tagName);
+        public void onTagFilterRequested(String tagName, SongDetailController.CatalogType type);
     }
 }
