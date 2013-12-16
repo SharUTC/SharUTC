@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import fr.utc.lo23.sharutc.model.userdata.Category;
 import fr.utc.lo23.sharutc.model.userdata.Peer;
+
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.Serializable;
@@ -21,13 +22,12 @@ import org.slf4j.LoggerFactory;
 /**
  * The main object of the application, contains all relatives informations about
  * the music file in memory via the catalogs.
- *
+ * <p/>
  * id3tags are parsed when the music is added locally, user changes are reported
  * to the file also, a copy of these informations is stored with the Music
  * object to enhance search trough a list of musics
- *
+ * <p/>
  * Music equality is based on the file Byte[] hash value only
- *
  */
 @JsonInclude(value = Include.NON_NULL)
 public class Music implements Serializable {
@@ -164,7 +164,6 @@ public class Music implements Serializable {
     }
 
     /**
-     *
      * @return
      */
     public Long getId() {
@@ -172,7 +171,6 @@ public class Music implements Serializable {
     }
 
     /**
-     *
      * @param id
      */
     public void setId(Long id) {
@@ -180,7 +178,6 @@ public class Music implements Serializable {
     }
 
     /**
-     *
      * @return
      */
     public String getFileName() {
@@ -188,7 +185,6 @@ public class Music implements Serializable {
     }
 
     /**
-     *
      * @param fileName
      */
     public void setFileName(String fileName) {
@@ -198,7 +194,6 @@ public class Music implements Serializable {
     }
 
     /**
-     *
      * @return
      */
     public String getRealName() {
@@ -206,7 +201,6 @@ public class Music implements Serializable {
     }
 
     /**
-     *
      * @param realName
      */
     public void setRealName(String realName) {
@@ -214,7 +208,6 @@ public class Music implements Serializable {
     }
 
     /**
-     *
      * @return
      */
     public Byte[] getFileBytes() {
@@ -222,7 +215,6 @@ public class Music implements Serializable {
     }
 
     /**
-     *
      * @param file
      */
     public void setFileBytes(Byte[] file) {
@@ -230,7 +222,6 @@ public class Music implements Serializable {
     }
 
     /**
-     *
      * @return
      */
     public Boolean getFileMissing() {
@@ -238,7 +229,6 @@ public class Music implements Serializable {
     }
 
     /**
-     *
      * @return
      */
     public Long getFrames() {
@@ -246,7 +236,6 @@ public class Music implements Serializable {
     }
 
     /**
-     *
      * @param frames
      */
     public void setFrames(Long frames) {
@@ -254,7 +243,6 @@ public class Music implements Serializable {
     }
 
     /**
-     *
      * @param fileMissing
      */
     public void setFileMissing(Boolean fileMissing) {
@@ -264,7 +252,6 @@ public class Music implements Serializable {
     }
 
     /**
-     *
      * @return
      */
     public Long getOwnerPeerId() {
@@ -272,7 +259,6 @@ public class Music implements Serializable {
     }
 
     /**
-     *
      * @param ownerPeerId
      */
     public void setOwnerPeerId(Long ownerPeerId) {
@@ -280,7 +266,6 @@ public class Music implements Serializable {
     }
 
     /**
-     *
      * @return
      */
     public Integer getHash() {
@@ -288,7 +273,6 @@ public class Music implements Serializable {
     }
 
     /**
-     *
      * @param hash
      */
     public void setHash(Integer hash) {
@@ -296,7 +280,6 @@ public class Music implements Serializable {
     }
 
     /**
-     *
      * @return
      */
     public Set<Integer> getCategoryIds() {
@@ -304,7 +287,6 @@ public class Music implements Serializable {
     }
 
     /**
-     *
      * @param categoryIds
      */
     public void setCategoryIds(Set<Integer> categoryIds) {
@@ -312,7 +294,6 @@ public class Music implements Serializable {
     }
 
     /**
-     *
      * @param categoryId
      */
     public void addCategoryId(Integer categoryId) {
@@ -325,7 +306,6 @@ public class Music implements Serializable {
     }
 
     /**
-     *
      * @param categoryId
      */
     public void removeCategoryId(Integer categoryId) {
@@ -338,7 +318,6 @@ public class Music implements Serializable {
     }
 
     /**
-     *
      * @return
      */
     public String getTitle() {
@@ -346,7 +325,6 @@ public class Music implements Serializable {
     }
 
     /**
-     *
      * @param title
      */
     public void setTitle(String title) {
@@ -356,7 +334,6 @@ public class Music implements Serializable {
     }
 
     /**
-     *
      * @return
      */
     public String getArtist() {
@@ -364,7 +341,6 @@ public class Music implements Serializable {
     }
 
     /**
-     *
      * @param artist
      */
     public void setArtist(String artist) {
@@ -374,7 +350,6 @@ public class Music implements Serializable {
     }
 
     /**
-     *
      * @return
      */
     public String getAlbum() {
@@ -382,7 +357,6 @@ public class Music implements Serializable {
     }
 
     /**
-     *
      * @param album
      */
     public void setAlbum(String album) {
@@ -392,7 +366,6 @@ public class Music implements Serializable {
     }
 
     /**
-     *
      * @return
      */
     public String getTrack() {
@@ -400,7 +373,6 @@ public class Music implements Serializable {
     }
 
     /**
-     *
      * @param num
      */
     public void setTrack(String track) {
@@ -440,7 +412,7 @@ public class Music implements Serializable {
     /**
      * Return a comment of the peer
      *
-     * @param peer The peer
+     * @param peer         The peer
      * @param commentIndex The index of comment
      * @return A comment of the peer
      */
@@ -451,7 +423,7 @@ public class Music implements Serializable {
     /**
      * Return a comment of the peer
      *
-     * @param peerId The id of the peer
+     * @param peerId       The id of the peer
      * @param commentIndex The index of comment
      * @return A comment of the peer
      */
@@ -478,6 +450,23 @@ public class Music implements Serializable {
         }
     }
 
+
+    /**
+     * use to edit a comment
+     *
+     * @param peer         editor id
+     * @param commentIndex comment index
+     * @param comment      new comment
+     */
+    public void editComment(Peer peer, Integer commentIndex, String comment) {
+        Comment commentToEdit = this.getComment(peer, commentIndex);
+        if (commentToEdit != null) {
+            commentToEdit.setText(comment);
+            propertyChangeSupport.firePropertyChange(Property.COMMENT_UPDATE.name(), null, commentToEdit);
+        } else {
+            log.warn("editComment : Comment to edit not found");
+        }
+    }
 
     /**
      * Add a comment
@@ -569,7 +558,6 @@ public class Music implements Serializable {
     }
 
     /**
-     *
      * @return
      */
     public Set<String> getTags() {
@@ -577,7 +565,6 @@ public class Music implements Serializable {
     }
 
     /**
-     *
      * @param tags
      */
     public void setTags(Set<String> tags) {
@@ -585,7 +572,6 @@ public class Music implements Serializable {
     }
 
     /**
-     *
      * @return
      */
     public Boolean getMayReadInfo() {
@@ -593,7 +579,6 @@ public class Music implements Serializable {
     }
 
     /**
-     *
      * @param mayReadInfo
      */
     public void setMayReadInfo(Boolean mayReadInfo) {
@@ -601,7 +586,6 @@ public class Music implements Serializable {
     }
 
     /**
-     *
      * @return
      */
     public Boolean getMayListen() {
@@ -609,7 +593,6 @@ public class Music implements Serializable {
     }
 
     /**
-     *
      * @param mayListen
      */
     public void setMayListen(Boolean mayListen) {
@@ -617,7 +600,6 @@ public class Music implements Serializable {
     }
 
     /**
-     *
      * @return
      */
     public Boolean getMayCommentAndNote() {
@@ -625,7 +607,6 @@ public class Music implements Serializable {
     }
 
     /**
-     *
      * @param mayCommentAndNote
      */
     public void setMayCommentAndNote(Boolean mayCommentAndNote) {
@@ -633,7 +614,6 @@ public class Music implements Serializable {
     }
 
     /**
-     *
      * @param listener
      */
     public void addPropertyChangeListener(PropertyChangeListener listener) {
@@ -641,7 +621,6 @@ public class Music implements Serializable {
     }
 
     /**
-     *
      * @param listener
      */
     public void removePropertyChangeListener(PropertyChangeListener listener) {
