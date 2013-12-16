@@ -287,6 +287,10 @@ public class RegistrationController extends NavigationController implements Init
             log.info("Application Error Message Changed");
             errorContainer.getChildren().clear();
             errorContainer.getChildren().add(new Label(((ErrorMessage) evt.getNewValue()).getMessage()));
+            //reset the UI
+            progressIndicatorSignUp.setVisible(false);
+            buttonCancel.setDisable(false);
+            buttonSignUp.setVisible(true);
         }
     }    
 
