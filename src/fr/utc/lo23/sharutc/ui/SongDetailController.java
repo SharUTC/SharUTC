@@ -52,11 +52,18 @@ import javafx.scene.layout.VBox;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * A FXML Controller that displays the details of a song.
+ */
 public class SongDetailController extends SongSelectorController implements Initializable,
         PropertyChangeListener, CollectionChangeListener<Music>, IComment,
         TagDetailCard.ITagDetailCard {
 
-    private static final Logger log = LoggerFactory.getLogger(SongDetailController.class);
+    private static final Logger log =
+            LoggerFactory.getLogger(SongDetailController.class);
+    /*
+     * The UI attributs
+     */
     @FXML
     public ProgressIndicator progressIndicatorAddRemove;
     @FXML
@@ -93,6 +100,9 @@ public class SongDetailController extends SongSelectorController implements Init
     public RatingStar starAverageRate4;
     @FXML
     public RatingStar starAverageRate5;
+    /*
+     * The private attributs
+     */
     @Inject
     private AppModel mAppModel;
     @Inject
@@ -134,6 +144,7 @@ public class SongDetailController extends SongSelectorController implements Init
     @Override
     public void initialize(URL url, ResourceBundle rb) {
 
+        //Intialize the stars for the user rating.
         mMyRatingStars = new RatingStar[]{
             starMyRate1,
             starMyRate2,
@@ -142,6 +153,7 @@ public class SongDetailController extends SongSelectorController implements Init
             starMyRate5
         };
 
+        //Initialize the stars for the average rating.
         mAverageRatingStars = new RatingStar[]{
             starAverageRate1,
             starAverageRate2,
@@ -150,6 +162,7 @@ public class SongDetailController extends SongSelectorController implements Init
             starAverageRate5
         };
 
+        //Listen to the local catalog
         mAppModel.getLocalCatalog().addPropertyChangeListener(this);
 
         mRemoteCatalogListener = new CollectionChangeListener<Music>() {
@@ -170,14 +183,25 @@ public class SongDetailController extends SongSelectorController implements Init
                 }
             }
         };
+        //Listen to the remote catalog
         mAppModel.getRemoteUserCatalog().addPropertyChangeListener(mRemoteCatalogListener);
     }
 
+    /**
+     * Set an {@link ISongDetailController} used as a callback.
+     *
+     * @param i {@link ISongDetailController} to be set.
+     */
     public void setInterface(ISongDetailController i) {
         super.setInterface(i);
         mInteface = i;
     }
 
+    /**
+     * Set the piece of {@link Music} to show.
+     *
+     * @param music {@link Music} to be shown.
+     */
     public void setMusic(final Music music) {
         mMusic = music;
         setUserScore();
@@ -186,6 +210,9 @@ public class SongDetailController extends SongSelectorController implements Init
         showAverageRating();
     }
 
+    /**
+     * Set the user rating and listen to the proper source of update.
+     */
     private void setUserScore() {
         mUserScore = mMusic.getScore(mAppModel.getProfile().getUserInfo().getPeerId());
         if (mAppModel.getProfile().getUserInfo().getPeerId().equals(mMusic.getOwnerPeerId())) {
@@ -197,6 +224,9 @@ public class SongDetailController extends SongSelectorController implements Init
         }
     }
 
+    /**
+     * Adapt the UI to show the tags linked to a piece of {@link Music}.
+     */
     public void showTags() {
         mTagContainer = new FlowPane(Orientation.HORIZONTAL);
         mTagContainer.setHgap(7);
@@ -224,6 +254,9 @@ public class SongDetailController extends SongSelectorController implements Init
         loadTags();
     }
 
+    /**
+     * Load the tags linked to a piece of {@link Music}
+     */
     private void loadTags() {
         final Set<String> tags = mMusic.getTags();
         for (final String tag : tags) {
@@ -238,6 +271,9 @@ public class SongDetailController extends SongSelectorController implements Init
         }
     }
 
+    /**
+     * Adapt the UI to show the comments linked to a piece of {@link Music}.
+     */
     public void showComments() {
         if (mCommentContainer == null) {
             mCommentContainer = new VBox();
@@ -262,6 +298,9 @@ public class SongDetailController extends SongSelectorController implements Init
         loadComments();
     }
 
+    /**
+     * Load the comments linked to a piece of {@link Music}
+     */
     private void loadComments() {
         final List<Comment> comments = mMusic.getComments();
         for (Comment comment : comments) {
@@ -273,6 +312,10 @@ public class SongDetailController extends SongSelectorController implements Init
         }
     }
 
+    /**
+     * Show the information associated with the piece of {@link Music} currently
+     * set.
+     */
     private void showMusicInfo() {
         topLeftContainer.getChildren().clear();
         final SongCard songCard = new SongCard(mMusic, this, mAppModel);
@@ -312,6 +355,9 @@ public class SongDetailController extends SongSelectorController implements Init
         }
     }
 
+    /**
+     * Show the average rating of the piece of {@link Music} currently set.
+     */
     private void showAverageRating() {
         final Set<Score> scores = mMusic.getScores();
         if (scores != null && scores.size() > 0) {
@@ -323,6 +369,9 @@ public class SongDetailController extends SongSelectorController implements Init
         }
     }
 
+    /**
+     * Show the user's rating.
+     */
     private void showMyRating() {
         int currentScoreValue = 0;
         if (mUserScore != null) {
@@ -331,6 +380,12 @@ public class SongDetailController extends SongSelectorController implements Init
         fillRatingStar(currentScoreValue, mMyRatingStars);
     }
 
+    /**
+     * Show a rate.
+     *
+     * @param rate the rate to be shown.
+     * @param ratingStars the stars to be filled.
+     */
     private void fillRatingStar(final int rate, final RatingStar[] ratingStars) {
         for (int i = 0; i < 5; i++) {
             if (i < rate) {
@@ -466,6 +521,9 @@ public class SongDetailController extends SongSelectorController implements Init
         removeListeners();
     }
 
+    /**
+     * Remove the {@link PropertyChangeListener}.
+     */
     private void removeListeners() {
         if (mUserScore != null) {
             mUserScore.removePropertyChangeListener(this);
@@ -558,10 +616,24 @@ public class SongDetailController extends SongSelectorController implements Init
         loadTags();
     }
 
+    /**
+     * A {@link ISongListController} notified on song deletion and tag filter
+     * request.
+     */
     public interface ISongDetailController extends ISongListController {
 
+        /**
+         * The {@link ISongDetailController} is being notified that a song has
+         * just been removed from the local catalog.
+         */
         public void onSongRemovedFromLocalCatalog();
 
+        /**
+         * The {@link ISongDetailController} is being asked to show the local
+         * catalog filtered with the tag.
+         *
+         * @param tagName the tag used to filter the local catalog.
+         */
         public void onTagFilterRequested(String tagName);
     }
 }
