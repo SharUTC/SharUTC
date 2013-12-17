@@ -534,19 +534,19 @@ public class Music implements Serializable {
         }
     }
 
-
     /**
      * use to edit a comment
      *
-     * @param peer         editor id
+     * @param peer editor id
      * @param commentIndex comment index
-     * @param comment      new comment
+     * @param comment new comment
      */
     public void editComment(Peer peer, Integer commentIndex, String comment) {
         Comment commentToEdit = this.getComment(peer, commentIndex);
         if (commentToEdit != null) {
+            final Comment oldComment = commentToEdit.clone();
             commentToEdit.setText(comment);
-            propertyChangeSupport.firePropertyChange(Property.COMMENT_UPDATE.name(), null, commentToEdit);
+            propertyChangeSupport.firePropertyChange(Property.COMMENTS.name(), oldComment, commentToEdit);
         } else {
             log.warn("editComment : Comment to edit not found");
         }

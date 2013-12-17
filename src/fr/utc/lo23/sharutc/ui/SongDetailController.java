@@ -541,12 +541,11 @@ public class SongDetailController extends SongSelectorController implements Init
             }
             showMyRating();
             showAverageRating();
-        } else if (Music.Property.COMMENT_UPDATE.name().equals(propertyName)) {
-            final Comment c = (Comment) evt.getNewValue();
+        } else if (Music.Property.COMMENTS.name().equals(propertyName)) {
             Platform.runLater(new Runnable() {
                 @Override
                 public void run() {
-                    log.info("comment added" + c.getText());
+                    log.info("comments updated");
                     showComments();
                 }
             });
