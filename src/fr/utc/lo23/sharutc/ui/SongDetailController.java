@@ -162,6 +162,7 @@ public class SongDetailController extends SongSelectorController implements Init
                     log.debug("Remote catalog updated");
                     final Music newMusic = ((Catalog) ev.getSource()).findMusicById(mMusic.getId());
                     removeListeners();
+                    mAppModel.getRemoteUserCatalog().addPropertyChangeListener(mRemoteCatalogListener);
                     Platform.runLater(new Runnable() {
                         @Override
                         public void run() {
