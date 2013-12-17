@@ -149,7 +149,12 @@ public class PeopleDetailController extends SongSelectorController implements Ri
     public void onTagSelected(String tagName) {
         log.debug("tag selected : " + tagName);
         if (mCallBack != null) {
-            mCallBack.onTagFilterRequested(tagName);
+            if (mUserInfo.getPeerId() == mAppModel.getProfile().getUserInfo().getPeerId()) {
+                mCallBack.onTagFilterRequested(tagName, SongDetailController.CatalogType.local);
+            } else {
+                mCallBack.onTagFilterRequested(tagName, SongDetailController.CatalogType.remote);
+            }
+                
         }
     }
 
@@ -246,7 +251,7 @@ public class PeopleDetailController extends SongSelectorController implements Ri
 
         public void onArtistDetailRequested(final String artistName, SongDetailController.CatalogType type);
 
-        public void onTagFilterRequested(final String tagName);
+        public void onTagFilterRequested(final String tagName, SongDetailController.CatalogType type);
 
         public void onProfileEditionRequested();
     }

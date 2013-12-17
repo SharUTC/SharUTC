@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import fr.utc.lo23.sharutc.model.userdata.Category;
 import fr.utc.lo23.sharutc.model.userdata.Peer;
+
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.Serializable;
@@ -21,13 +22,12 @@ import org.slf4j.LoggerFactory;
 /**
  * The main object of the application, contains all relatives informations about
  * the music file in memory via the catalogs.
- *
+ * <p/>
  * id3tags are parsed when the music is added locally, user changes are reported
  * to the file also, a copy of these informations is stored with the Music
  * object to enhance search trough a list of musics
- *
+ * <p/>
  * Music equality is based on the file Byte[] hash value only
- *
  */
 @JsonInclude(value = Include.NON_NULL)
 public class Music implements Serializable {
@@ -254,7 +254,6 @@ public class Music implements Serializable {
     }
 
     /**
-     *
      * @param fileMissing
      */
     public void setFileMissing(Boolean fileMissing) {
@@ -535,6 +534,24 @@ public class Music implements Serializable {
         }
     }
 
+
+    /**
+     * use to edit a comment
+     *
+     * @param peer         editor id
+     * @param commentIndex comment index
+     * @param comment      new comment
+     */
+    public void editComment(Peer peer, Integer commentIndex, String comment) {
+        Comment commentToEdit = this.getComment(peer, commentIndex);
+        if (commentToEdit != null) {
+            commentToEdit.setText(comment);
+            propertyChangeSupport.firePropertyChange(Property.COMMENT_UPDATE.name(), null, commentToEdit);
+        } else {
+            log.warn("editComment : Comment to edit not found");
+        }
+    }
+
     /**
      * Add a comment to this music. Send COMMENTS update
      *
@@ -709,7 +726,6 @@ public class Music implements Serializable {
     }
 
     /**
-     *
      * @param listener
      */
     public void addPropertyChangeListener(PropertyChangeListener listener) {
@@ -717,7 +733,6 @@ public class Music implements Serializable {
     }
 
     /**
-     *
      * @param listener
      */
     public void removePropertyChangeListener(PropertyChangeListener listener) {

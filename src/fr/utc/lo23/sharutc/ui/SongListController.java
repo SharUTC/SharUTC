@@ -142,9 +142,8 @@ public class SongListController extends SongSelectorController implements Initia
         titleLabel.setText("Manage your song list");
         showMusics(mAppModel.getLocalCatalog().getMusics());
     }
-
-    public void showLocalCatalogWithTagFilter(String tagFilter) {
-        final Catalog catalog = mAppModel.getLocalCatalog();
+    
+    public void showCatalogWithTagFilter(final Catalog catalog, final String tagFilter) {
         ArrayList<Music> musics = new ArrayList<Music>();
 
         titleLabel.setText("#" + tagFilter);
@@ -157,21 +156,33 @@ public class SongListController extends SongSelectorController implements Initia
         showMusics(musics);
     }
 
-    public void showLocalCatalogWithAlbumFilter(String albumFilter, SongDetailController.CatalogType type) {
-        Catalog catalog = null;
-        if(type.equals(SongDetailController.CatalogType.local)){
-             catalog = mAppModel.getLocalCatalog();
-        }else if(type.equals(SongDetailController.CatalogType.remote)){
-             catalog = mAppModel.getRemoteUserCatalog();
-        }else{
-            catalog = mAppModel.getSearchResults();
+    public void showCatalogWithTagFilter(final SongDetailController.CatalogType type, final String tagFilter) {
+        if(SongDetailController.CatalogType.local.equals(type)) {
+            showLocalCatalogWithTagFilter(tagFilter);
+        } else if(SongDetailController.CatalogType.remote.equals(type)) {
+            showCatalogWithTagFilter(mAppModel.getRemoteUserCatalog(), tagFilter);
+        } else if(SongDetailController.CatalogType.search.equals(type)) {
+            showCatalogWithTagFilter(mAppModel.getSearchResults(), tagFilter);
         }
-       
+    }
+    
+    public void showLocalCatalogWithTagFilter(final String tagFilter) {
+        showCatalogWithTagFilter(mAppModel.getLocalCatalog(), tagFilter);
+    }
+
+    public void showCatalogWithAlbumFilter(String albumFilter, SongDetailController.CatalogType type) {
+        if(type.equals(SongDetailController.CatalogType.local)){
+             showCatalogWithAlbumFilter(mAppModel.getLocalCatalog(), albumFilter);
+        }else if(type.equals(SongDetailController.CatalogType.remote)){
+             showCatalogWithAlbumFilter(mAppModel.getRemoteUserCatalog(), albumFilter);;
+        }else{
+            showCatalogWithAlbumFilter(mAppModel.getSearchResults(), albumFilter);;
+        }
+    }
+    
+    public void showCatalogWithAlbumFilter(Catalog catalog, String albumFilter) {
         ArrayList<Music> musics = new ArrayList<Music>();
-
-        titleLabel.setText(albumFilter + " Album");
-
-        
+        titleLabel.setText(albumFilter + " Album");        
         for (final Music m : catalog.getMusics()) {
             if (albumFilter == null || albumFilter.equals(m.getAlbum())) {
                 musics.add(m);

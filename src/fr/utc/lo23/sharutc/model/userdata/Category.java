@@ -15,7 +15,7 @@ public class Category implements Serializable {
     /**
     * Name of the category Public
     */
-    public static final String PUBLIC_CATEGORY_NAME = "Public";
+    public static final String PUBLIC_CATEGORY_NAME = "My Contacts";
 
     private Integer mId;
     private String mName;

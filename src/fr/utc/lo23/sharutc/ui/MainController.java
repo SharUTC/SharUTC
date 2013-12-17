@@ -422,7 +422,7 @@ public class MainController extends NavigationController implements Initializabl
     @Override
     public void onAlbumDetailRequested(String albumName, SongDetailController.CatalogType type) {
         log.info("Album detail requested : " + albumName);
-        showLocalCatalogWithAlbumFilter(albumName, type);
+        showCatalogWithAlbumFilter(albumName, type);
     }
 
     //Need some improvements
@@ -489,8 +489,8 @@ public class MainController extends NavigationController implements Initializabl
     }
 
     @Override
-    public void onTagFilterRequested(String tagName) {
-        showLocalCatalogWithTagFilter(tagName);
+    public void onTagFilterRequested(String tagName, SongDetailController.CatalogType type) {
+        showCatalogWithTagFilter(tagName, type);
     }
 
     @Override
@@ -606,15 +606,15 @@ public class MainController extends NavigationController implements Initializabl
         return success;
     }
 
-    private void showLocalCatalogWithTagFilter(String tagName) {
+    private void showCatalogWithTagFilter(String tagName, SongDetailController.CatalogType type) {
         if (loadSongList()) {
-            ((SongListController) mCurrentLoadedRighpaneResult.getController()).showLocalCatalogWithTagFilter(tagName);
+            ((SongListController) mCurrentLoadedRighpaneResult.getController()).showCatalogWithTagFilter(type, tagName);
         }
     }
 
-    private void showLocalCatalogWithAlbumFilter(String albumName, SongDetailController.CatalogType type) {
+    private void showCatalogWithAlbumFilter(String albumName, SongDetailController.CatalogType type) {
         if (loadSongList()) {
-            ((SongListController) mCurrentLoadedRighpaneResult.getController()).showLocalCatalogWithAlbumFilter(albumName, type);
+            ((SongListController) mCurrentLoadedRighpaneResult.getController()).showCatalogWithAlbumFilter(albumName, type);
         }
     }
 

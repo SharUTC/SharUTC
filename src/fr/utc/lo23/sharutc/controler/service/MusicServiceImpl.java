@@ -4,30 +4,24 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import fr.utc.lo23.sharutc.model.AppModel;
 import fr.utc.lo23.sharutc.model.ErrorMessage;
-import fr.utc.lo23.sharutc.model.domain.Catalog;
-import fr.utc.lo23.sharutc.model.domain.Comment;
-import fr.utc.lo23.sharutc.model.domain.Music;
-import fr.utc.lo23.sharutc.model.domain.Rights;
-import fr.utc.lo23.sharutc.model.domain.RightsList;
-import fr.utc.lo23.sharutc.model.domain.Score;
-import fr.utc.lo23.sharutc.model.domain.SearchCriteria;
-import fr.utc.lo23.sharutc.model.domain.TagMap;
+import fr.utc.lo23.sharutc.model.domain.*;
 import fr.utc.lo23.sharutc.model.userdata.Category;
 import fr.utc.lo23.sharutc.model.userdata.Contact;
 import fr.utc.lo23.sharutc.model.userdata.Peer;
 import fr.utc.lo23.sharutc.util.Utils;
-import java.io.File;
-import java.io.IOException;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 import org.jaudiotagger.audio.AudioFile;
 import org.jaudiotagger.audio.AudioFileIO;
 import org.jaudiotagger.tag.FieldKey;
 import org.jaudiotagger.tag.Tag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * {@inheritDoc}
@@ -45,7 +39,7 @@ public class MusicServiceImpl implements MusicService {
     /**
      * Constructor of MusicServiceImpl
      *
-     * @param appModel The model of the application
+     * @param appModel    The model of the application
      * @param userService The service of users
      * @param fileService The service of files
      */
@@ -331,14 +325,7 @@ public class MusicServiceImpl implements MusicService {
             throwMissingParameter();
         } else {
             Music m = appModel.getLocalCatalog().findMusicById(music.getId());
-            if (m != null) {
-                Comment commentToEdit = m.getComment(peer, commentIndex);
-                if (commentToEdit != null) {
-                    commentToEdit.setText(comment);
-                } else {
-                    log.warn("editComment : Comment to edit not found");
-                }
-            }
+            m.editComment(peer, commentIndex, comment);
         }
         log.debug("editComment DONE");
     }
@@ -873,7 +860,8 @@ public class MusicServiceImpl implements MusicService {
             /*
              * we need to check if musicId is found, and also need to check the owner id else client
              * might be trying to change a music that doesn't belongs to him
-             */ if (localMusic != null && localMusic.getOwnerPeerId().equals(music.getOwnerPeerId())) {
+             */
+            if (localMusic != null && localMusic.getOwnerPeerId().equals(music.getOwnerPeerId())) {
                 boolean atLeastOneId3TagHasChanged = false;
                 if (title != null && localMusic.getTitle() != null && !localMusic.getTitle().equals(title)
                         || artist != null && localMusic.getArtist() != null && !localMusic.getArtist().equals(artist)
