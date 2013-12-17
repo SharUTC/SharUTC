@@ -299,6 +299,9 @@ public class FileServiceImpl implements FileService {
         for (int i = 0; i < byteArray.length; i++) {
             bytes[i] = byteArray[i];
         }
+        if (title == null || title.trim().isEmpty()) {
+            title = file.getName().replace(DOT_MP3, "").replace(DOT_MP3.toUpperCase(), "");
+        }
         Music music = new Music(appModel.getProfile().getNewMusicId(),
                 appModel.getProfile().getUserInfo().getPeerId(), bytes,
                 file.getName(), file.getName(), file.hashCode(), title, artist, album, year, track,
