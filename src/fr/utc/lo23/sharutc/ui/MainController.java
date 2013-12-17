@@ -18,12 +18,10 @@ import fr.utc.lo23.sharutc.ui.custom.PlayListListCell;
 import fr.utc.lo23.sharutc.ui.custom.PlayListMusic;
 import fr.utc.lo23.sharutc.ui.custom.card.SongCard;
 import fr.utc.lo23.sharutc.ui.navigation.NavigationController;
+import fr.utc.lo23.sharutc.ui.util.Toast;
 import fr.utc.lo23.sharutc.util.CollectionChangeListener;
 import fr.utc.lo23.sharutc.util.CollectionEvent;
-import static fr.utc.lo23.sharutc.util.CollectionEvent.Type.ADD;
-import static fr.utc.lo23.sharutc.util.CollectionEvent.Type.CLEAR;
-import static fr.utc.lo23.sharutc.util.CollectionEvent.Type.REMOVE;
-import static fr.utc.lo23.sharutc.util.CollectionEvent.Type.UPDATE;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
@@ -55,7 +53,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
-import javafx.application.Platform;
 
 public class MainController extends NavigationController implements Initializable,
         PeopleHomeController.IPeopleHomeController,
@@ -91,6 +88,8 @@ public class MainController extends NavigationController implements Initializabl
     public Label labelMyProfile;
     public ProgressIndicator exportProgress;
     public TextField textFieldSearch;
+    public HBox messageBox;
+    public Label messageBoxLabel;
     @Inject
     private AppModel mAppModel;
     @Inject
@@ -100,12 +99,14 @@ public class MainController extends NavigationController implements Initializabl
     private PlayerService mPlayerService;
     private CollectionChangeListener mChangeListenerPlayList;
     private PropertyChangeListener mChangeListenerAppModel;
+    private CollectionChangeListener mPeerConnectionListener;
     @Inject
     private ExportProfileCommand mExportProfileCommand;
     @Inject
     private RemoveFromPlaylistCommand mRemoveFromPlaylistCommand;
     @Inject
     private FileService mFileService;
+    private Toast mToast;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -126,6 +127,9 @@ public class MainController extends NavigationController implements Initializabl
         mDragPreview.setOpacity(0.6);
         mDragPreview.setMouseTransparent(true);
         mDragPreview.toFront();
+
+        //init Toaster
+        mToast = new Toast(messageBox, messageBoxLabel);
 
         //Set User name
         showUserName();
@@ -162,6 +166,7 @@ public class MainController extends NavigationController implements Initializabl
             }
         });
         root.getChildren().add(mDragPreview);
+        mToast.make("Welcome (=");
     }
 
     /**
@@ -240,6 +245,7 @@ public class MainController extends NavigationController implements Initializabl
     private void removeListeners() {
         mPlayerService.getPlaylist().removePropertyChangeListener(mChangeListenerPlayList);
         mAppModel.removePropertyChangeListener(mChangeListenerAppModel);
+        mAppModel.getActivePeerList().removePropertyChangeListener(mPeerConnectionListener);
     }
 
     private void addListeners() {
@@ -301,6 +307,32 @@ public class MainController extends NavigationController implements Initializabl
             }
         };
         mAppModel.addPropertyChangeListener(mChangeListenerAppModel);
+
+        mPeerConnectionListener = new CollectionChangeListener() {
+            @Override
+            public void collectionChanged(CollectionEvent ev) {
+                final CollectionEvent.Type type = ev.getType();
+                final Object item = ev.getItem();
+                String action = new String();
+                if (type.equals(CollectionEvent.Type.ADD)) {
+                    action = " join";
+                } else if (type.equals(CollectionEvent.Type.REMOVE)) {
+                    action = " leave";
+                }
+                if (item instanceof UserInfo) {
+                    final String message = ((UserInfo) item).getLogin() + action;
+                    Platform.runLater(new Runnable() {
+                        @Override
+                        public void run() {
+                            mToast.make(message);
+                        }
+                    });
+                }
+
+
+            }
+        };
+        mAppModel.getActivePeerList().addPropertyChangeListener(mPeerConnectionListener);
     }
 
     private void logout() {
@@ -315,7 +347,9 @@ public class MainController extends NavigationController implements Initializabl
         mDisconnectionCommand.execute();
     }
 
+
     public void detachRightpane() {
+
         if (mCurrentLoadedRighpaneResult != null && mCurrentLoadedRighpaneResult.getController() instanceof RighpaneInterface) {
             ((RighpaneInterface) mCurrentLoadedRighpaneResult.getController()).onDetach();
         }
