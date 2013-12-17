@@ -12,7 +12,6 @@ import fr.utc.lo23.sharutc.ui.custom.card.GroupCard;
 import fr.utc.lo23.sharutc.ui.custom.card.PeopleCard;
 import fr.utc.lo23.sharutc.ui.custom.card.SimpleCard;
 import fr.utc.lo23.sharutc.ui.util.DialogBoxBuilder;
-import fr.utc.lo23.sharutc.ui.util.Toast;
 import fr.utc.lo23.sharutc.util.CollectionChangeListener;
 import fr.utc.lo23.sharutc.util.CollectionEvent;
 import javafx.application.Platform;
@@ -119,22 +118,33 @@ public class PeopleHomeController extends DragPreviewDrawer implements Initializ
     }
 
     @Override
-    public void onPeopleDeletetionRequested(PeopleCard peopleCard) {
+    public void onPeopleDeletetionRequested(final PeopleCard peopleCard) {
         log.info("onPeopleDeletetionRequested " + peopleCard.getModel().getLogin());
-        peopleContainer.getChildren().remove(peopleCard);
 
         //TODO improve, create card with Contact model
         final UserInfo user = peopleCard.getModel();
 
-        if (mCurrentCategory.getId() == 0) {
-            //from Public, remove contact from all category
-            deleteContactCommand.setContact(mAppModel.getProfile().getContacts().findById(user.getPeerId()));
-            deleteContactCommand.execute();
-        } else {
-            removeContactFromCategoryCommand.setContact(mAppModel.getProfile().getContacts().findById(user.getPeerId()));
-            removeContactFromCategoryCommand.setCategory(mCurrentCategory);
-            removeContactFromCategoryCommand.execute();
-        }
+        DialogBoxBuilder.createConfirmBox("Do you want to remove " + user.getLogin() + " from "
+                + mCurrentCategory.getName() + " ?",
+                this.getClass().getResource("/fr/utc/lo23/sharutc/ui/css/modal.css").toExternalForm(),
+                groupContainer.getScene().getRoot(),
+                new DialogBoxBuilder.IConfirmBox() {
+                    @Override
+                    public void onChoiceMade(boolean answer) {
+                        if (answer) {
+                            if (mCurrentCategory.getId() == 0) {
+                                //from Public, remove contact from all category
+                                deleteContactCommand.setContact(mAppModel.getProfile().getContacts().findById(user.getPeerId()));
+                                deleteContactCommand.execute();
+                            } else {
+                                removeContactFromCategoryCommand.setContact(mAppModel.getProfile().getContacts().findById(user.getPeerId()));
+                                removeContactFromCategoryCommand.setCategory(mCurrentCategory);
+                                removeContactFromCategoryCommand.execute();
+                            }
+                            peopleContainer.getChildren().remove(peopleCard);
+                        }
+                    }
+                }).show();
     }
 
     @Override
