@@ -263,13 +263,19 @@ public class MainController extends NavigationController implements Initializabl
                         break;
                     case REMOVE:
                         mPlayListData.remove(ev.getIndex());
-                        break;
+                        for (int i = 0; i < mPlayListData.size(); i++) {
+                            ((PlayListMusic) mPlayListData.get(i)).setPlaying(i == mPlayerController.getCurrentMusicIndex());
+                        }
+                         break;
                     case CLEAR:
                         mPlayListData.clear();
                         break;
                     case UPDATE:
                         mPlayListData.remove(ev.getIndex());
                         mPlayListData.add(ev.getIndex(), new PlayListMusic((Music) ev.getItem()));
+                        for (int i = 0; i < mPlayListData.size(); i++) {
+                            ((PlayListMusic) mPlayListData.get(i)).setPlaying(i == mPlayerController.getCurrentMusicIndex());
+                        }
                         break;
                 }
             }

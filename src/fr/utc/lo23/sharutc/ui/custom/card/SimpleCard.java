@@ -15,7 +15,7 @@ public class SimpleCard extends VBox {
     protected final int STATE_NORMAL = 0;
     protected final int STATE_CLICKED = 1;
 
-    public final static int WIDTH = 180;
+    public final static int WIDTH = 250;
 
     protected int mState;
 
