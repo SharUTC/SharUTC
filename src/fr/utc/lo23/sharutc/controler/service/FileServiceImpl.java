@@ -37,6 +37,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import fr.utc.lo23.sharutc.model.domain.Catalog;
 import fr.utc.lo23.sharutc.model.userdata.Profile;
+import org.jaudiotagger.tag.KeyNotFoundException;
 
 /**
  *
@@ -272,41 +273,56 @@ public class FileServiceImpl implements FileService {
         String track;
         Integer trackLength;
         Long frames;
+        Music music;
         try {
             AudioFile audioFile = AudioFileIO.read(file);
             AudioHeader ah = audioFile.getAudioHeader();
-            MP3AudioHeader mp3AudioHeader = (MP3AudioHeader) ah;
-            Tag tag = audioFile.getTag();
-            title = tag.getFirst(FieldKey.TITLE);
-            artist = tag.getFirst(FieldKey.ARTIST);
-            album = tag.getFirst(FieldKey.ALBUM);
-            year = tag.getFirst(FieldKey.YEAR);
-            track = tag.getFirst(FieldKey.TRACK);
             trackLength = ah.getTrackLength();
+            MP3AudioHeader mp3AudioHeader = (MP3AudioHeader) ah;
             frames = mp3AudioHeader.getNumberOfFrames();
+            Tag tag = audioFile.getTag();
+            try {
+                title = tag.getFirst(FieldKey.TITLE);
+            } catch (KeyNotFoundException knfe) {
+                title = null;
+            }
+            try {
+                artist = tag.getFirst(FieldKey.ARTIST);
+            } catch (KeyNotFoundException knfe) {
+                artist = null;
+            }
+            try {
+                album = tag.getFirst(FieldKey.ALBUM);
+            } catch (KeyNotFoundException knfe) {
+                album = null;
+            }
+            try {
+                year = tag.getFirst(FieldKey.YEAR);
+            } catch (KeyNotFoundException knfe) {
+                year = null;
+            }
+            try {
+                track = tag.getFirst(FieldKey.TRACK);
+            } catch (KeyNotFoundException knfe) {
+                track = null;
+            }
+            byte[] byteArray = getFileAsByteArray(file);
+            Byte[] bytes = new Byte[byteArray.length];
+            for (int i = 0; i < byteArray.length; i++) {
+                bytes[i] = byteArray[i];
+            }
+            if (title == null || title.trim().isEmpty()) {
+                title = file.getName().replace(DOT_MP3, "").replace(DOT_MP3.toUpperCase(), "");
+            }
+            music = new Music(appModel.getProfile().getNewMusicId(),
+                    appModel.getProfile().getUserInfo().getPeerId(), bytes,
+                    file.getName(), file.getName(), file.hashCode(), title, artist, album, year, track,
+                    trackLength, frames);
+            log.debug("createMusicFromFile DONE");
         } catch (Exception ex) {
-            log.error("Unable to read music file informations : {}", ex.toString());
-            title = null;
-            artist = null;
-            album = null;
-            year = null;
-            track = null;
-            trackLength = null;
-            frames = 0L;
+            log.warn("Unable to read music file informations, music not created : {}", ex.toString());
+            throw new Exception("Couldn't create a music", ex);
         }
-        byte[] byteArray = getFileAsByteArray(file);
-        Byte[] bytes = new Byte[byteArray.length];
-        for (int i = 0; i < byteArray.length; i++) {
-            bytes[i] = byteArray[i];
-        }
-        if (title == null || title.trim().isEmpty()) {
-            title = file.getName().replace(DOT_MP3, "").replace(DOT_MP3.toUpperCase(), "");
-        }
-        Music music = new Music(appModel.getProfile().getNewMusicId(),
-                appModel.getProfile().getUserInfo().getPeerId(), bytes,
-                file.getName(), file.getName(), file.hashCode(), title, artist, album, year, track,
-                trackLength, frames);
-        log.debug("createMusicFromFile DONE");
         return music;
     }
 
