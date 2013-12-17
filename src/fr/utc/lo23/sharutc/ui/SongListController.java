@@ -15,7 +15,7 @@ import fr.utc.lo23.sharutc.ui.custom.card.TagCard;
 import fr.utc.lo23.sharutc.util.CollectionChangeListener;
 import fr.utc.lo23.sharutc.util.CollectionEvent;
 import fr.utc.lo23.sharutc.util.CollectionEvent.Type;
-import fr.utc.lo23.sharutc.util.DialogBoxBuilder;
+import fr.utc.lo23.sharutc.ui.util.DialogBoxBuilder;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;

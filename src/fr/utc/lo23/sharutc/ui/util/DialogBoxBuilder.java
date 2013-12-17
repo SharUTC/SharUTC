@@ -1,4 +1,4 @@
-package fr.utc.lo23.sharutc.util;
+package fr.utc.lo23.sharutc.ui.util;
 
 
 import javafx.event.ActionEvent;
