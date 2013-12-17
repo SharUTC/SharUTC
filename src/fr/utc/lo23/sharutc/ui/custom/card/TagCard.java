@@ -45,6 +45,10 @@ public class TagCard extends SimpleCard implements EventHandler<Event> {
         setDropOverlayVisibility(false);
     }
 
+    public void setTagWeightVisibility(boolean visibility) {
+        tagWeightLabel.setVisible(visibility);
+    }
+
     /**
      * Set the weight of the tag.
      * 
