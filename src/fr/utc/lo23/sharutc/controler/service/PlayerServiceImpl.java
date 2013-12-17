@@ -129,11 +129,13 @@ public class PlayerServiceImpl implements PlayerService, PropertyChangeListener,
         if (musicWithBytes != null && mPlaylist.contains(musicWithBytes)) {
             appModel.getTmpCatalog().add(musicWithBytes);
             playerStop();
-            int musicIndex = mPlaylist.indexOf(musicWithBytes);
+            int musicIndex = getCurrentMusicIndex();
             Music musicFromPlaylist = mPlaylist.get(musicIndex);
-            musicFromPlaylist.setFileBytes(musicWithBytes.getFileBytes());
-            setCurrentMusicByIndex(musicIndex);
-            playerPlay();
+            if (musicFromPlaylist.equals(musicWithBytes)) {
+                musicFromPlaylist.setFileBytes(musicWithBytes.getFileBytes());
+                setCurrentMusicByIndex(musicIndex);
+                playerPlay();
+            }
         }
     }
 
@@ -216,7 +218,7 @@ public class PlayerServiceImpl implements PlayerService, PropertyChangeListener,
         if (!mPlaylist.isEmpty()) {
             int nextIndex = 0;
             if (mCurrentMusic != null) {
-                nextIndex = mPlaylist.indexOf(mCurrentMusic) + 1;
+                nextIndex = getCurrentMusicIndex() + 1;
                 nextIndex %= mPlaylist.size();
             }
             setCurrentMusicByIndex(nextIndex);
@@ -241,8 +243,8 @@ public class PlayerServiceImpl implements PlayerService, PropertyChangeListener,
         // set current to previous or last
         if (!mPlaylist.isEmpty()) {
             int previousIndex = mPlaylist.size() - 1;
-            if (mCurrentMusic != null && mPlaylist.indexOf(mCurrentMusic) > 0) {
-                previousIndex = mPlaylist.indexOf(mCurrentMusic) - 1;
+            if (mCurrentMusic != null && getCurrentMusicIndex() > 0) {
+                previousIndex = getCurrentMusicIndex() - 1;
             }
             setCurrentMusicByIndex(previousIndex);
         } else {
