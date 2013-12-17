@@ -39,6 +39,7 @@ public class PlayerServiceImpl implements PlayerService, PropertyChangeListener,
     private static PlaybackListener player;
     private final Catalog mPlaylist;
     private Music mCurrentMusic;
+    private int mCurrentMusicIndex = -1;
     private Long mCurrentTimeSec = 0L;
     private Integer volume = 100;
     private boolean mute = false;
@@ -309,8 +310,9 @@ public class PlayerServiceImpl implements PlayerService, PropertyChangeListener,
      */
     private synchronized void setCurrentMusicByIndex(int musicIndex) {
         log.trace("setCurrentMusic ...");
+        int oldMusicIndex = -1;//mCurrentMusicIndex;
+        mCurrentMusicIndex = musicIndex;
         if (musicIndex == -1) {
-            int oldMusicIndex = mPlaylist.indexOf(mCurrentMusic);
             this.mCurrentMusic = null;
             propertyChangeSupport.firePropertyChange(Property.CURRENT_MUSIC_INDEX.name(), oldMusicIndex, musicIndex);
         } else {
@@ -320,8 +322,7 @@ public class PlayerServiceImpl implements PlayerService, PropertyChangeListener,
                     && !music.getOwnerPeerId().equals(appModel.getProfile().getUserInfo().getPeerId())) {
                 log.debug("setCurrentMusic : delayed, fetching remote music data ...");
                 fetchMusicDataThenPlay(music);
-            } else if (music != mCurrentMusic) {
-                int oldMusicIndex = mPlaylist.indexOf(mCurrentMusic);
+            } else {
                 if (music != null && (music.getFileBytes() == null || music.getFileBytes().length == 0)) {
                     musicService.loadMusicFile(music);
                 }
@@ -506,8 +507,10 @@ public class PlayerServiceImpl implements PlayerService, PropertyChangeListener,
                     // deleted : one of playlist except last
                     newIndex = ev.getIndex();
                 }
-            } else {
-                // other music was removed, no need to stop music or change currentMusic reference
+            } else if(getCurrentMusicIndex()>ev.getIndex()){
+                mCurrentMusicIndex--;
+            }else{
+                 // other music was removed, no need to stop music or change currentMusic reference
             }
         }
         if (newIndex != null) {
@@ -554,10 +557,6 @@ public class PlayerServiceImpl implements PlayerService, PropertyChangeListener,
      */
     @Override
     public int getCurrentMusicIndex() {
-        int currentMusicIndex = -1;
-        if (mCurrentMusic != null) {
-            currentMusicIndex = mPlaylist.indexOf(mCurrentMusic);
-        }
-        return currentMusicIndex;
+        return mCurrentMusicIndex;
     }
 }

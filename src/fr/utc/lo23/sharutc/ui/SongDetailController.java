@@ -254,12 +254,12 @@ public class SongDetailController extends SongSelectorController implements Init
             tagCard.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent t) {
-                    if(mAppModel.getLocalCatalog().contains(mMusic)) {
+                    if (mAppModel.getLocalCatalog().contains(mMusic)) {
                         mInteface.onTagFilterRequested(tag, SongDetailController.CatalogType.local);
                     } else {
                         mInteface.onTagFilterRequested(tag, SongDetailController.CatalogType.remote);
                     }
-                    
+
                 }
             });
             mTagContainer.getChildren().add(tagCard);
@@ -274,19 +274,25 @@ public class SongDetailController extends SongSelectorController implements Init
             mCommentContainer = new VBox();
             centralScrollPane.setContent(mCommentContainer);
             centralSectionTitle.setText("Comments");
-            mCommentInputTextArea = new TextArea();
-            mCommentInputTextArea.getStyleClass().add("commentTextArea");
-            mCommentInputTextArea.setPrefRowCount(3);
-            mCommentInputTextArea.setPromptText("Type your comment...");
-            HBox.setHgrow(mCommentInputTextArea, Priority.ALWAYS);
-            inputContainer.getChildren().add(mCommentInputTextArea);
-            addInputButton.setText("Comment");
-            addInputButton.setOnAction(new EventHandler<ActionEvent>() {
-                @Override
-                public void handle(ActionEvent t) {
-                    handleAddCommentAction(t);
-                }
-            });
+            //hot fix
+            if (mMusic.getMayCommentAndNote() == null || !mMusic.getMayCommentAndNote()) {
+                mCommentInputTextArea = new TextArea();
+                mCommentInputTextArea.getStyleClass().add("commentTextArea");
+                mCommentInputTextArea.setPrefRowCount(3);
+                mCommentInputTextArea.setPromptText("Type your comment...");
+                HBox.setHgrow(mCommentInputTextArea, Priority.ALWAYS);
+                inputContainer.getChildren().add(mCommentInputTextArea);
+                addInputButton.setText("Comment");
+                addInputButton.setOnAction(new EventHandler<ActionEvent>() {
+                    @Override
+                    public void handle(ActionEvent t) {
+                        handleAddCommentAction(t);
+                    }
+                });
+            } else {
+                addInputButton.setVisible(false);
+            }
+
         } else {
             mCommentContainer.getChildren().clear();
         }
@@ -399,8 +405,6 @@ public class SongDetailController extends SongSelectorController implements Init
      * <p/>
      * This method is used to update the UI after a modification on a remote
      * piece of {@link Music}.
-     *
-     * @param ownerPeer the {@link Peer} of the owner
      */
     private void fetchIfNeeded() {
         final Peer ownerPeer = mAppModel.getActivePeerList().getPeerByPeerId(mMusic.getOwnerPeerId());

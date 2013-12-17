@@ -16,10 +16,10 @@ import java.io.IOException;
 /**
  * A {@link DraggableCard} that shows the information of a piece of
  * {@link Music}.
- *
+ * <p/>
  * This card has three buttons to add the song to the play list, to view the
  * details of the song and to view the tags associated with the song.
- *
+ * <p/>
  * This class notifies a {@link ISongCard} on click, double click, and when one
  * of the three buttons is clicked.
  */
@@ -50,7 +50,7 @@ public class SongCard extends DraggableCard implements EventHandler<Event> {
         mModel = m;
         songTitle.setText(mModel.getTitle());
         songArtist.setText(mModel.getArtist());
-        setOnMouseClicked(this);
+
         setOnMouseEntered(this);
         setOnMouseExited(this);
         if (appModel.getProfile().getUserInfo().getPeerId().equals(mModel.getOwnerPeerId())) {
@@ -58,6 +58,12 @@ public class SongCard extends DraggableCard implements EventHandler<Event> {
         } else {
             mIsOwned = false;
             ownerLogin.setText(appModel.getActivePeerList().getPeerByPeerId(m.getOwnerPeerId()).getDisplayName());
+        }
+
+
+        //TODO improve, contruct music with at least initialized Boolean
+        if (mIsOwned || m.getMayListen()) {
+            setOnMouseClicked(this);
         }
 
     }
@@ -77,9 +83,19 @@ public class SongCard extends DraggableCard implements EventHandler<Event> {
      * @param isVisible the visibility to be set.
      */
     public void setButtonVisibility(boolean isVisible) {
-        detailButton.setVisible(isVisible);
-        addToPlayListButton.setVisible(isVisible);
-        tagEditionButton.setVisible(isVisible);
+        //TODO Boolean should be initialized
+        //TODO improve model
+        if (mIsOwned || mModel.getMayListen()) {
+            addToPlayListButton.setVisible(isVisible);
+        }
+
+        if (mIsOwned || mModel.getMayReadInfo()) {
+            detailButton.setVisible(isVisible);
+        }
+
+        if (mIsOwned) {
+            tagEditionButton.setVisible(isVisible);
+        }
     }
 
     /**

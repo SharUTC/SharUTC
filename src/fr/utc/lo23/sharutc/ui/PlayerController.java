@@ -44,6 +44,7 @@ public class PlayerController implements Initializable, PropertyChangeListener {
     private static final ImageView BT_PLAY = new ImageView("/fr/utc/lo23/sharutc/ui/drawable/play_button_small.png");
     private static final Logger log = LoggerFactory
             .getLogger(PlayerController.class);
+    private int currentMusicIndex = -1;
     public Slider playerTimeSlider;
     public ProgressBar playerProgressBar;
     public Label playerCurrentTime;
@@ -381,16 +382,17 @@ public class PlayerController implements Initializable, PropertyChangeListener {
         final String propertyName = evt.getPropertyName();
         log.debug("PropertyChangeEvent Name : " + propertyName);
         if (propertyName.equals(PlayerService.Property.CURRENT_MUSIC_INDEX.name())) {
-            int index = (Integer) evt.getNewValue();
-            if (index != -1) {
+            currentMusicIndex = (Integer) evt.getNewValue();
+            
+            if (currentMusicIndex != -1) {
                 for (int i = 0; i < mPlayListData.size(); i++) {
-                    ((PlayListMusic) mPlayListData.get(i)).setPlaying(i == index);
+                    ((PlayListMusic) mPlayListData.get(i)).setPlaying(i == currentMusicIndex);
                 }
                 if (mPlayListData.size() > 0) {
                     PlayListMusic e = mPlayListData.remove(0);
                     mPlayListData.add(0, e);
                 }
-                onCurrentMusicUpdate(mPlayerService.getPlaylist().get(index));
+                onCurrentMusicUpdate(mPlayerService.getPlaylist().get(currentMusicIndex));
             } else {
                 onCurrentMusicUpdate(null);
             }
@@ -416,5 +418,9 @@ public class PlayerController implements Initializable, PropertyChangeListener {
 
     void setPlayList(ObservableList<PlayListMusic> mPlayListData) {
         this.mPlayListData = mPlayListData;
+    }
+
+    int getCurrentMusicIndex() {
+        return currentMusicIndex;
     }
 }
