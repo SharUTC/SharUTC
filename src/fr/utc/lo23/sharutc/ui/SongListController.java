@@ -161,8 +161,10 @@ public class SongListController extends SongSelectorController implements Initia
             showLocalCatalogWithTagFilter(tagFilter);
         } else if(SongDetailController.CatalogType.remote.equals(type)) {
             showCatalogWithTagFilter(mAppModel.getRemoteUserCatalog(), tagFilter);
+             tagContainer.getChildren().clear();
         } else if(SongDetailController.CatalogType.search.equals(type)) {
             showCatalogWithTagFilter(mAppModel.getSearchResults(), tagFilter);
+             tagContainer.getChildren().clear();
         }
     }
     
