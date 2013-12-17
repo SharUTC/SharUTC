@@ -9,7 +9,7 @@
       fx:controller="fr.utc.lo23.sharutc.ui.PeopleHomeController">
 
     <Label xmlns:fx="http://javafx.com/fxml"
-           text="Manage your contact" styleClass="panetitle"/>
+           text="Manage your contacts" styleClass="panetitle"/>
 
     <StackPane fx:id="contentContainer" VBox.vgrow="ALWAYS">
         <ScrollPane styleClass="myScrollPane"

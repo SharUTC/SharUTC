@@ -71,6 +71,20 @@
                         fx:id="artistsbutton"/>
                 <Button minWidth="200" minHeight="40" text="Albums" onAction="#handleMenuButtonAction"
                         fx:id="albumsbutton"/>
+                <HBox GridPane.vgrow="ALWAYS" fx:id="messageBox" opacity="0.0">
+                    <VBox.margin>
+                        <Insets left="10" top="10"/>
+                    </VBox.margin>
+                    <ImageView fitWidth="30" fitHeight="30">
+                        <HBox.margin>
+                            <Insets right="10"/>
+                        </HBox.margin>
+                        <image>
+                            <Image url="@../drawable/ic_icon.png"/>
+                        </image>
+                    </ImageView>
+                    <Label alignment="CENTER_LEFT" fx:id="messageBoxLabel"  styleClass="largeTextGrey"/>
+                </HBox>
             </VBox>
 
             <GridPane fx:id="rightpane" GridPane.columnIndex="1" GridPane.vgrow="ALWAYS" GridPane.hgrow="ALWAYS">

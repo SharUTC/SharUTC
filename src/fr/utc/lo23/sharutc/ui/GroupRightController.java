@@ -1,6 +1,7 @@
 package fr.utc.lo23.sharutc.ui;
 
 import com.google.inject.Inject;
+import fr.utc.lo23.sharutc.controler.command.music.AddMusicToCategoryCommand;
 import fr.utc.lo23.sharutc.controler.command.profile.ManageRightsCommand;
 import fr.utc.lo23.sharutc.model.AppModel;
 import fr.utc.lo23.sharutc.model.domain.Music;
@@ -12,9 +13,9 @@ import fr.utc.lo23.sharutc.ui.custom.card.DraggableCard;
 import fr.utc.lo23.sharutc.ui.custom.card.RightCard;
 import fr.utc.lo23.sharutc.ui.custom.card.SimpleCard;
 import fr.utc.lo23.sharutc.ui.custom.card.SongRightCard;
+import fr.utc.lo23.sharutc.ui.util.DialogBoxBuilder;
 import fr.utc.lo23.sharutc.util.CollectionChangeListener;
 import fr.utc.lo23.sharutc.util.CollectionEvent;
-import fr.utc.lo23.sharutc.util.DialogBoxBuilder;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -46,6 +47,8 @@ public class GroupRightController extends DragPreviewDrawer implements Initializ
 
     @Inject
     private ManageRightsCommand manageRightsCommand;
+    @Inject
+    private AddMusicToCategoryCommand addMusicToCategoryCommand;
     @Inject
     public AppModel mAppModel;
     @FXML
@@ -367,6 +370,10 @@ public class GroupRightController extends DragPreviewDrawer implements Initializ
     public void onSongAdded(RightCard card) {
         //for all selected Music dropped
         for (SongRightCard songRightCard : mSongRightCardSelected) {
+
+            addMusicToCategoryCommand.setCategory(mCurrentCategory);
+            addMusicToCategoryCommand.setMusic(songRightCard.getMusic());
+            addMusicToCategoryCommand.execute();
 
             initCommand(songRightCard);
 

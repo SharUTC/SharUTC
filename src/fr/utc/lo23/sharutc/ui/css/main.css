@@ -232,7 +232,7 @@
 .largeTextGrey ,
 .largeTextGreyBold{
     -fx-font-size : 18px;
-    -fx-text-fill: #BDC3C7;
+    -fx-text-fill: #95A5A6;
 }
 
 .largeTextGreyDark,
@@ -247,7 +247,7 @@
 
 .smallGreyText {
     -fx-font-size : 12px;
-    -fx-text-fill: #BDC3C7;
+    -fx-text-fill: #95A5A6;
 }
 
 .plusText{
@@ -257,7 +257,7 @@
 }
 
 #boxtitle{
-    -fx-border-color: #BDC3C7;
+    -fx-border-color: #95A5A6;
     -fx-border-width: 0px 0px 2px 0px;
 
 }
@@ -301,6 +301,10 @@
 
 .bgOrange{
     -fx-background-color: #FFBB33;
+}
+
+.bgGray{
+    -fx-background-color: #BDC3C7;
 }
 
 

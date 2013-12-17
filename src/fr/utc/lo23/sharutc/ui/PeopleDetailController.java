@@ -6,6 +6,7 @@ import fr.utc.lo23.sharutc.controler.command.music.FetchRemoteCatalogCommand;
 import fr.utc.lo23.sharutc.controler.command.profile.AddContactToCategoryCommand;
 import fr.utc.lo23.sharutc.model.AppModel;
 import fr.utc.lo23.sharutc.model.domain.Music;
+import fr.utc.lo23.sharutc.model.domain.TagMap;
 import fr.utc.lo23.sharutc.model.userdata.Contact;
 import fr.utc.lo23.sharutc.model.userdata.UserInfo;
 import fr.utc.lo23.sharutc.ui.custom.CardList;
@@ -23,10 +24,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.net.URL;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.ResourceBundle;
-import java.util.Set;
+import java.util.*;
+
 import javafx.event.EventHandler;
 import javafx.scene.layout.VBox;
 
@@ -53,6 +52,7 @@ public class PeopleDetailController extends SongSelectorController implements Ri
     private CardList mSongList;
     private CardList mTagList;
     private CardList mArtistList;
+    private boolean mCurrentUser;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -60,7 +60,7 @@ public class PeopleDetailController extends SongSelectorController implements Ri
 
         mSongList = new CardList("Songs", "bgBlue");
         mArtistList = new CardList("Artists", "bgRed");
-        mTagList = new CardList("Tags", "");
+        mTagList = new CardList("Tags", "bgGray");
         scrollPaneContent.getChildren().add(mSongList);
         scrollPaneContent.getChildren().add(mArtistList);
         scrollPaneContent.getChildren().add(mTagList);
@@ -85,6 +85,8 @@ public class PeopleDetailController extends SongSelectorController implements Ri
         mUserInfo = userInfo;
 
         if (userInfo.getPeerId() == mAppModel.getProfile().getUserInfo().getPeerId()) {
+
+            mCurrentUser = true;
             //the current user info
             login.setText("Your profile");
 
@@ -110,6 +112,7 @@ public class PeopleDetailController extends SongSelectorController implements Ri
             //show artist and tag
             displayRetrieveData();
         } else {
+            mCurrentUser = false;
             if (isFriend(mUserInfo)) {
                 //hide add to friend button if already in friend list
                 addToFriendsButton.setVisible(false);
@@ -233,8 +236,18 @@ public class PeopleDetailController extends SongSelectorController implements Ri
             mArtistList.addChild(newCard);
         }
 
-        for (String tag : mTagsFound) {
-            TagCard newCard = new TagCard(tag, this);
+        TagMap map;
+
+        if(mCurrentUser) {
+            map = new TagMap(mAppModel.getLocalCatalog());
+        } else {
+            map = new TagMap(mAppModel.getRemoteUserCatalog());
+        }
+
+        for (Map.Entry<String, Integer> tag : map.getMap().entrySet()) {
+            TagCard newCard = new TagCard(tag.getKey(), this);
+            newCard.setTagWeight(tag.getValue());
+
             mTagList.addChild(newCard);
         }
     }

@@ -8,8 +8,8 @@
          xmlns:fx="http://javafx.com/fxml">
     <HBox>
         <VBox alignment="CENTER_LEFT">
-            <Label fx:id="userLogin" text="login"/>
-            <Label fx:id="userName" text="firstName lastName"/>
+            <Label fx:id="userLogin" text="login" styleClass="largeTextGreyBold"/>
+            <Label fx:id="userName" text="firstName lastName" styleClass="largeTextGrey"/>
         </VBox>
         <VBox alignment="CENTER_RIGHT" HBox.hgrow="ALWAYS">
             <Button fx:id="deleteButton" styleClass="imageButton" visible="false">

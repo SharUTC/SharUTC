@@ -186,16 +186,13 @@ public class MusicServiceImpl implements MusicService {
                             }
                         }
                     }
-                    if (mayReadInfo) {
-                        Music musicToReturn = music.clone();
-                        musicToReturn.setMayReadInfo(true);
-                        musicToReturn.setMayListen(mayListen);
-                        musicToReturn.setMayCommentAndNote(mayNoteAndComment);
-                        fillCommentAuthorNames(musicToReturn);
-                        musicToReturn.cleanForPreview();
-
-                        userFilteredCatalog.add(musicToReturn);
-                    }
+                    Music musicToReturn = music.clone();
+                    musicToReturn.setMayReadInfo(mayReadInfo);
+                    musicToReturn.setMayListen(mayListen);
+                    musicToReturn.setMayCommentAndNote(mayNoteAndComment);
+                    fillCommentAuthorNames(musicToReturn);
+                    musicToReturn.cleanForPreview();
+                    userFilteredCatalog.add(musicToReturn);
                 }
             } else {
                 // peer isn't a contact, only check PUBLIC category and associated rights values, as they may change like others
@@ -538,20 +535,17 @@ public class MusicServiceImpl implements MusicService {
                                     }
                                 }
                             }
-                            // if the peer is autorized to get the music
-                            if (mayReadInfo) {
-                                // using a new instance to set specific attributes
-                                Music musicToReturn = music.clone();
-                                // copying rights values
-                                musicToReturn.setMayReadInfo(true); // useless... not used by other peers
-                                musicToReturn.setMayListen(mayListen);
-                                musicToReturn.setMayCommentAndNote(mayNoteAndComment);
-                                // loading last used and known peer name
-                                fillCommentAuthorNames(musicToReturn);
-                                musicToReturn.cleanForPreview();
-                                // add the music to the returned set of music
-                                catalogResult.add(musicToReturn);
-                            }
+                            // using a new instance to set specific attributes
+                            Music musicToReturn = music.clone();
+                            // copying rights values
+                            musicToReturn.setMayReadInfo(mayReadInfo); // useless... not used by other peers
+                            musicToReturn.setMayListen(mayListen);
+                            musicToReturn.setMayCommentAndNote(mayNoteAndComment);
+                            // loading last used and known peer name
+                            fillCommentAuthorNames(musicToReturn);
+                            musicToReturn.cleanForPreview();
+                            // add the music to the returned set of music
+                            catalogResult.add(musicToReturn);
                         }
                     }
                 } else {
@@ -575,20 +569,17 @@ public class MusicServiceImpl implements MusicService {
                                 if (rights.getMayNoteAndComment()) {
                                     mayNoteAndComment = true;
                                 }
-                                // if the peer is autorized to get the music
-                                if (mayReadInfo) {
-                                    // using a new instance to set specific attributes
-                                    Music musicToReturn = music.clone();
-                                    // copying rights values
-                                    musicToReturn.setMayReadInfo(true); // useless... not used by other peers
-                                    musicToReturn.setMayListen(mayListen);
-                                    musicToReturn.setMayCommentAndNote(mayNoteAndComment);
-                                    // loading last used and known peer name
-                                    fillCommentAuthorNames(musicToReturn);
-                                    musicToReturn.cleanForPreview();
-                                    // add the music to the returned set of music
-                                    catalogResult.add(musicToReturn);
-                                }
+                                // using a new instance to set specific attributes
+                                Music musicToReturn = music.clone();
+                                // copying rights values
+                                musicToReturn.setMayReadInfo(mayReadInfo); // useless... not used by other peers
+                                musicToReturn.setMayListen(mayListen);
+                                musicToReturn.setMayCommentAndNote(mayNoteAndComment);
+                                // loading last used and known peer name
+                                fillCommentAuthorNames(musicToReturn);
+                                musicToReturn.cleanForPreview();
+                                // add the music to the returned set of music
+                                catalogResult.add(musicToReturn);
                             }
                         } else {
                             log.warn("Wrong state of categories, peer isn't a contact and there should be a Rights for music ({}) and PUBLIC category", music.getRealName());

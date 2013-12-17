@@ -4,7 +4,7 @@
 
 <fx:root type="fr.utc.lo23.sharutc.ui.custom.card.AlbumCard"
          xmlns:fx="http://javafx.com/fxml">
-    <Label fx:id="albumNameLabel" styleClass="albumCard" />
-    <Label fx:id="artistNameLabel" />
+    <Label fx:id="albumNameLabel" styleClass="largeTextGreyBold"/>
+    <Label fx:id="artistNameLabel" styleClass="largeTextGrey"/>
 </fx:root>
 

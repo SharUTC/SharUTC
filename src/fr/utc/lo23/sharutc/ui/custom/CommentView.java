@@ -1,7 +1,7 @@
 package fr.utc.lo23.sharutc.ui.custom;
 
 import fr.utc.lo23.sharutc.model.domain.Comment;
-import fr.utc.lo23.sharutc.util.DialogBoxBuilder;
+import fr.utc.lo23.sharutc.ui.util.DialogBoxBuilder;
 import java.io.IOException;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
