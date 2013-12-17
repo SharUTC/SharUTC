@@ -164,82 +164,93 @@ public class Music implements Serializable {
     }
 
     /**
-     * @return
+     * The id of this music, unique only locally
+     *
+     * @return the id of this music
      */
     public Long getId() {
         return mId;
     }
 
     /**
-     * @param id
+     * Set the id of this music
+     *
+     * @param id the id of this music
      */
     public void setId(Long id) {
         this.mId = id;
     }
 
     /**
-     * @return
+     * Return the name of the local music file, may differ from RealName if
+     * several files have the same RealName
+     *
+     * @return the name of the local music file
      */
     public String getFileName() {
         return mFileName;
     }
 
     /**
-     * @param fileName
+     * Set the name of the local music file.
+     *
+     * @param fileName the name of the local music file (as stored on HDD)
      */
     public void setFileName(String fileName) {
         String oldFileName = this.mFileName;
         this.mFileName = fileName;
-        propertyChangeSupport.firePropertyChange(Property.FILENAME.name(), oldFileName, fileName);
+        propertyChangeSupport.firePropertyChange(Music.Property.FILENAME.name(), oldFileName, fileName);
     }
 
     /**
-     * @return
+     * Return the name of the local music file as it was before adding it to the
+     * application
+     *
+     * @return the real name of the local music file (its original name)
      */
     public String getRealName() {
         return mRealName;
     }
 
     /**
-     * @param realName
+     * Set the original name of the file, the one used out of the application
+     *
+     * @param realName the original name of the file, the one used out of the
+     * application
      */
     public void setRealName(String realName) {
         this.mRealName = realName;
     }
 
     /**
-     * @return
+     * Return the content of the file if loaded. Most of the time this value is
+     * empty, only the player needs these data, and 2 commands (for sending a
+     * music).
+     *
+     * @return the content of the file, if loaded
      */
     public Byte[] getFileBytes() {
         return mFile;
     }
 
     /**
-     * @param file
+     * Set the content of the file. A copy of the local music should be used to
+     * load the data, instead of setting this value and save it with the model
+     * tree
+     *
+     * @param bytes the file content to set
      */
-    public void setFileBytes(Byte[] file) {
-        this.mFile = file;
+    public void setFileBytes(Byte[] bytes) {
+        this.mFile = bytes;
     }
 
     /**
-     * @return
+     * Return true if the file has not been found
+     *
+     * @return true if the file has not been found
      */
     public Boolean getFileMissing() {
         return mFileMissing;
-    }
-
-    /**
-     * @return
-     */
-    public Long getFrames() {
-        return mFrames;
-    }
-
-    /**
-     * @param frames
-     */
-    public void setFrames(Long frames) {
-        this.mFrames = frames;
     }
 
     /**
@@ -248,156 +259,227 @@ public class Music implements Serializable {
     public void setFileMissing(Boolean fileMissing) {
         Boolean oldFileMissing = this.mFileMissing;
         this.mFileMissing = fileMissing;
-        propertyChangeSupport.firePropertyChange(Property.FILE_MISSING.name(), oldFileMissing, fileMissing);
+        propertyChangeSupport.firePropertyChange(Music.Property.FILE_MISSING.name(), oldFileMissing, fileMissing);
     }
 
     /**
-     * @return
+     * Return the length of the music in frames
+     *
+     * @return the length of the music in frames
+     */
+    public Long getFrames() {
+        return mFrames;
+    }
+
+    /**
+     * Set the length of the music in frames
+     *
+     * @param frames the length of the music in frames
+     */
+    public void setFrames(Long frames) {
+        this.mFrames = frames;
+    }
+
+    /**
+     * Return the id of the music owner, where is stored this music
+     *
+     * @return the id of the music owner, where is stored this music
      */
     public Long getOwnerPeerId() {
         return mOwnerPeerId;
     }
 
     /**
-     * @param ownerPeerId
+     * Set the id of the music owner, where is stored this music
+     *
+     * @param ownerPeerId the id of the music owner, where is stored this music
      */
     public void setOwnerPeerId(Long ownerPeerId) {
         this.mOwnerPeerId = ownerPeerId;
     }
 
     /**
-     * @return
+     * The hash value of the music
+     *
+     * @return the hash value of the music
      */
     public Integer getHash() {
         return mHash;
     }
 
     /**
-     * @param hash
+     * Set the hash value of the music
+     *
+     * @param hash the hash value of the music
      */
     public void setHash(Integer hash) {
         this.mHash = hash;
     }
 
     /**
-     * @return
+     * Return the list of categories to which this music is linked
+     *
+     * @return the list of categories to which this music is linked
      */
     public Set<Integer> getCategoryIds() {
         return Collections.unmodifiableSet(mCategoryIds);
     }
 
     /**
-     * @param categoryIds
+     * Set the list of categories to which this music is linked
+     *
+     * @param categoryIds the list of categories to which this music is linked
      */
     public void setCategoryIds(Set<Integer> categoryIds) {
         this.mCategoryIds = categoryIds;
     }
 
     /**
-     * @param categoryId
+     * Attach this music to a categorie.
+     *
+     * @param categoryId the id of the category that is to be linked to this
+     * music
      */
     public void addCategoryId(Integer categoryId) {
         Set<Integer> oldCategoryIds = this.mCategoryIds;
         Set<Integer> categoryIds = new HashSet<Integer>(this.mCategoryIds);
         if (categoryIds.add(categoryId)) {
             this.mCategoryIds = categoryIds;
-            propertyChangeSupport.firePropertyChange(Property.CATEGORY_IDS.name(), oldCategoryIds, this.mCategoryIds);
+            propertyChangeSupport.firePropertyChange(Music.Property.CATEGORY_IDS.name(), oldCategoryIds, this.mCategoryIds);
         }
     }
 
     /**
-     * @param categoryId
+     * Detach this music from a categorie.
+     *
+     * @param categoryId the id of the category that is to be unlinked to this
+     * music
      */
     public void removeCategoryId(Integer categoryId) {
         Set<Integer> oldCategoryIds = this.mCategoryIds;
         Set<Integer> categoryIds = new HashSet<Integer>(this.mCategoryIds);
         if (categoryIds.remove(categoryId)) {
             this.mCategoryIds = categoryIds;
-            propertyChangeSupport.firePropertyChange(Property.CATEGORY_IDS.name(), oldCategoryIds, this.mCategoryIds);
+            propertyChangeSupport.firePropertyChange(Music.Property.CATEGORY_IDS.name(), oldCategoryIds, this.mCategoryIds);
         }
     }
 
     /**
-     * @return
+     * Return the title of the music (from id3Tag)
+     *
+     * @return the title of the music
      */
     public String getTitle() {
         return mTitle;
     }
 
     /**
-     * @param title
+     * Set the title of the music
+     *
+     * @param title the title of the music
      */
     public void setTitle(String title) {
         String oldTitle = this.mTitle;
         this.mTitle = title;
-        propertyChangeSupport.firePropertyChange(Property.TITLE.name(), oldTitle, title);
+        propertyChangeSupport.firePropertyChange(Music.Property.TITLE.name(), oldTitle, title);
     }
 
     /**
-     * @return
+     * Return the artist of the music
+     *
+     * @return the artist of the music
      */
     public String getArtist() {
         return mArtist;
     }
 
     /**
-     * @param artist
+     * Set the artist of the music
+     *
+     * @param artist the artist of the music
      */
     public void setArtist(String artist) {
         String oldArtist = this.mArtist;
         this.mArtist = artist;
-        propertyChangeSupport.firePropertyChange(Property.ARTIST.name(), oldArtist, artist);
+        propertyChangeSupport.firePropertyChange(Music.Property.ARTIST.name(), oldArtist, artist);
     }
 
     /**
-     * @return
+     * Return the album of the music
+     *
+     * @return the album of the music
      */
     public String getAlbum() {
         return mAlbum;
     }
 
     /**
-     * @param album
+     * Set the album of the music
+     *
+     * @param album the album of the music
      */
     public void setAlbum(String album) {
         String oldAlbum = this.mAlbum;
         this.mAlbum = album;
-        propertyChangeSupport.firePropertyChange(Property.ALBUM.name(), oldAlbum, album);
+        propertyChangeSupport.firePropertyChange(Music.Property.ALBUM.name(), oldAlbum, album);
     }
 
     /**
-     * @return
+     * Return the track of the music
+     *
+     * @return the track of the music
      */
     public String getTrack() {
         return mTrack;
     }
 
     /**
-     * @param num
+     * Set the track of the music
+     *
+     * @param num the track of the music
      */
     public void setTrack(String track) {
         String oldTrack = this.mTrack;
         this.mTrack = track;
-        propertyChangeSupport.firePropertyChange(Property.TRACK.name(), oldTrack, track);
+        propertyChangeSupport.firePropertyChange(Music.Property.TRACK.name(), oldTrack, track);
     }
 
+    /**
+     * Return the music duration in seconds
+     *
+     * @return the music duration in seconds
+     */
     public Integer getTrackLength() {
         return mTrackLength;
     }
 
+    /**
+     * Set the music duration in seconds
+     *
+     * @param trackLength the music duration in seconds
+     */
     public void setTrackLength(Integer trackLength) {
         this.mTrackLength = trackLength;
     }
 
+    /**
+     * Return the year of the music
+     *
+     * @return the year of the music
+     */
     public String getYear() {
         return mYear;
     }
 
+    /**
+     * Set the year of the music
+     *
+     * @param year the year of the music
+     */
     public void setYear(String year) {
         String oldYear = this.mYear;
         this.mYear = year;
-        propertyChangeSupport.firePropertyChange(Property.YEAR.name(), oldYear, year);
-
+        propertyChangeSupport.firePropertyChange(Music.Property.YEAR.name(), oldYear, year);
     }
 
     /**
@@ -412,9 +494,9 @@ public class Music implements Serializable {
     /**
      * Return a comment of the peer
      *
-     * @param peer         The peer
+     * @param peer The author of the comment
      * @param commentIndex The index of comment
-     * @return A comment of the peer
+     * @return A comment of the peer if it is attached and found in this music
      */
     public Comment getComment(Peer peer, Integer commentIndex) {
         return peer == null ? null : getComment(peer.getId(), commentIndex);
@@ -423,16 +505,18 @@ public class Music implements Serializable {
     /**
      * Return a comment of the peer
      *
-     * @param peerId       The id of the peer
+     * @param peerId The peerId of the author of the comment
      * @param commentIndex The index of comment
-     * @return A comment of the peer
+     * @return A comment of the peer if it is attached and found in this music
      */
     public Comment getComment(Long peerId, Integer commentIndex) {
         Comment comment = null;
-        for (Comment tmpComment : getComments()) {
-            if (tmpComment.getAuthorPeerId().equals(peerId)
-                    && tmpComment.getIndex().equals(commentIndex)) {
-                comment = tmpComment;
+        if (peerId != null && commentIndex != null) {
+            for (Comment tmpComment : getComments()) {
+                if (tmpComment.getAuthorPeerId().equals(peerId)
+                        && tmpComment.getIndex().equals(commentIndex)) {
+                    comment = tmpComment;
+                }
             }
         }
         return comment;
@@ -450,43 +534,45 @@ public class Music implements Serializable {
         }
     }
 
-
     /**
      * use to edit a comment
      *
-     * @param peer         editor id
+     * @param peer editor id
      * @param commentIndex comment index
-     * @param comment      new comment
+     * @param comment new comment
      */
     public void editComment(Peer peer, Integer commentIndex, String comment) {
         Comment commentToEdit = this.getComment(peer, commentIndex);
         if (commentToEdit != null) {
+            final Comment oldComment = commentToEdit.clone();
             commentToEdit.setText(comment);
-            propertyChangeSupport.firePropertyChange(Property.COMMENT_UPDATE.name(), null, commentToEdit);
+            propertyChangeSupport.firePropertyChange(Property.COMMENTS.name(), oldComment, commentToEdit);
         } else {
             log.warn("editComment : Comment to edit not found");
         }
     }
 
     /**
-     * Add a comment
+     * Add a comment to this music. Send COMMENTS update
      *
-     * @param comment The comment
+     * @param comment The comment to add
      */
     public void addComment(Comment comment) {
         comment.setIndex(++mCurrentMaxCommentIndex);
-        this.mComments.add(comment);
-        propertyChangeSupport.firePropertyChange(Property.COMMENT_UPDATE.name(), null, comment);
+        if (mComments.add(comment)) {
+            propertyChangeSupport.firePropertyChange(Music.Property.COMMENTS.name(), null, mComments);
+        }
     }
 
     /**
-     * Remove a comment
+     * Remove a comment from this music. Send COMMENTS update
      *
-     * @param comment The comment
+     * @param comment The comment to remove
      */
     public void removeComment(Comment comment) {
-        this.mComments.remove(comment);
-        propertyChangeSupport.firePropertyChange(Property.COMMENT_UPDATE.name(), null, comment);
+        if (mComments.remove(comment)) {
+            propertyChangeSupport.firePropertyChange(Music.Property.COMMENTS.name(), null, mComments);
+        }
     }
 
     /**
@@ -516,9 +602,11 @@ public class Music implements Serializable {
      */
     public Score getScore(Long peerId) {
         Score score = null;
-        for (Score tmpScore : getScores()) {
-            if (tmpScore.getPeerId().equals(peerId)) {
-                score = tmpScore;
+        if (peerId != null) {
+            for (Score tmpScore : getScores()) {
+                if (tmpScore.getPeerId().equals(peerId)) {
+                    score = tmpScore;
+                }
             }
         }
         return score;
@@ -534,7 +622,8 @@ public class Music implements Serializable {
     }
 
     /**
-     * Add a score to the list of scores
+     * Add a score to the list of scores. Send new average score in new value,
+     * previous in old value
      *
      * @param score The score to add
      */
@@ -542,11 +631,12 @@ public class Music implements Serializable {
         int oldAverageScore = getAverageScore();
         this.mScores.add(score);
         int averageScore = getAverageScore();
-        propertyChangeSupport.firePropertyChange(Property.SCORES.name(), oldAverageScore, averageScore);
+        propertyChangeSupport.firePropertyChange(Music.Property.SCORES.name(), oldAverageScore, averageScore);
     }
 
     /**
-     * Remove a score to the list of scores
+     * Remove a score to the list of scores. Send new average score in new
+     * value, previous in old value
      *
      * @param score The score to remove
      */
@@ -554,60 +644,82 @@ public class Music implements Serializable {
         int oldAverageScore = getAverageScore();
         this.mScores.remove(score);
         int averageScore = getAverageScore();
-        propertyChangeSupport.firePropertyChange(Property.SCORES.name(), oldAverageScore, averageScore);
+        propertyChangeSupport.firePropertyChange(Music.Property.SCORES.name(), oldAverageScore, averageScore);
     }
 
     /**
-     * @return
+     * Return the list of user tag of this music
+     *
+     * @return the list of user tag of this music
      */
     public Set<String> getTags() {
         return Collections.unmodifiableSet(mTags);
     }
 
     /**
-     * @param tags
+     * Set the list of user tag of this music
+     *
+     * @param tags the list of user tag of this music
      */
     public void setTags(Set<String> tags) {
         this.mTags = tags;
     }
 
     /**
-     * @return
+     * Tmp remote value to inform user if the music is accessible to another
+     * peer
+     *
+     * @return true if this music is authorized to be read by another peer
      */
     public Boolean getMayReadInfo() {
         return mMayReadInfo;
     }
 
     /**
-     * @param mayReadInfo
+     * Set the right value telling if this music may be read by another peer
+     *
+     * @param mayReadInfo true if this music is authorized to be read by another
+     * peer
      */
     public void setMayReadInfo(Boolean mayReadInfo) {
         this.mMayReadInfo = mayReadInfo;
     }
 
     /**
-     * @return
+     * Tmp remote value to inform user if the music is playable by another peer
+     *
+     * @return true if this music is authorized to be played by another peer
      */
     public Boolean getMayListen() {
         return mMayListen;
     }
 
     /**
-     * @param mayListen
+     * Set the right value telling if this music may be played by another peer
+     *
+     * @param mayListen true if this music is authorized to be played by another
+     * peer
      */
     public void setMayListen(Boolean mayListen) {
         this.mMayListen = mayListen;
     }
 
     /**
-     * @return
+     * Tmp remote value to inform user if another peer may Comment and Note a
+     * music
+     *
+     * @return true if this music is authorized to be commented and noted
      */
     public Boolean getMayCommentAndNote() {
         return mMayCommentAndNote;
     }
 
     /**
-     * @param mayCommentAndNote
+     * Set the right value telling if this music may be commented and noted by
+     * another peer
+     *
+     * @param mayCommentAndNote true if this music is authorized to be commented
+     * and noted by another peer
      */
     public void setMayCommentAndNote(Boolean mayCommentAndNote) {
         this.mMayCommentAndNote = mayCommentAndNote;
@@ -627,26 +739,41 @@ public class Music implements Serializable {
         propertyChangeSupport.removePropertyChangeListener(listener);
     }
 
+    /**
+     * Attach a new tag to a music. Whatever is the String in argument, only the
+     * first letter will be upper case, other will be lower case. Send TAGS
+     * update.
+     *
+     * @param tag the name of the tag
+     * @return true is the tag was added
+     */
     public boolean addTag(String tag) {
         boolean added = false;
         if (tag != null && tag.trim().length() > 0) {
             tag = tag.toLowerCase();
             tag = tag.substring(0, 1).toUpperCase() + (tag.length() > 1 ? tag.substring(1) : "");
             if (mTags.add(tag)) {
-                propertyChangeSupport.firePropertyChange(Property.TAGS.name(), null, tag);
+                propertyChangeSupport.firePropertyChange(Music.Property.TAGS.name(), null, tag);
                 added = true;
             }
         }
         return added;
     }
 
+    /**
+     * Removes the given tag from this music. The tag value is also formatted
+     * before removal. Send TAGS update.
+     *
+     * @param tag the name of the tag
+     * @return true is the tag was removed
+     */
     public boolean removeTag(String tag) {
         boolean removed = false;
         if (tag != null && tag.trim().length() > 0) {
             tag = tag.toLowerCase();
             tag = tag.substring(0, 1).toUpperCase() + (tag.length() > 1 ? tag.substring(1) : "");
             if (mTags.remove(tag)) {
-                propertyChangeSupport.firePropertyChange(Property.TAGS.name(), tag, null);
+                propertyChangeSupport.firePropertyChange(Music.Property.TAGS.name(), tag, null);
                 removed = true;
             }
         }
@@ -667,6 +794,10 @@ public class Music implements Serializable {
         return hash;
     }
 
+    /**
+     * Clear categories list and set fileMissing to false, in order to send this
+     * music to a remote Peer
+     */
     public void cleanForPreview() {
         mCategoryIds.clear();
         mFileMissing = false;
@@ -692,53 +823,51 @@ public class Music implements Serializable {
     public enum Property {
 
         /**
-         *
+         * On filename value change
          */
         FILENAME,
         /**
-         *
-         */
-        LOCAL,
-        /**
-         *
+         * On title value change
          */
         TITLE,
         /**
-         *
+         * On title value change
          */
         ARTIST,
         /**
-         *
+         * On artist value change
          */
         ALBUM,
         /**
-         *
+         * On album value change
          */
         TRACK,
         /**
-         *
+         * On fileMissing value change
          */
         FILE_MISSING,
         /**
-         *
+         * On year value change
          */
         YEAR,
         /**
-         *
+         * When a tag is added, its name is available in new Value, when
+         * removed, new value is null, removed tag name is available in old
+         * value of event
          */
         TAGS,
         /**
-         *
+         * When the list of categories is updated
          */
         CATEGORY_IDS,
         /**
-         *
+         * When a score is added or removed
          */
         SCORES,
         /**
-         *
+         * When a comment is added or removed, whole comments list is sent
          */
-        COMMENT_UPDATE
+        COMMENTS
     }
 
     @Override
