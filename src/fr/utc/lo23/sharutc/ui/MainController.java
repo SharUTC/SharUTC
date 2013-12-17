@@ -315,9 +315,9 @@ public class MainController extends NavigationController implements Initializabl
                 final Object item = ev.getItem();
                 String action = new String();
                 if (type.equals(CollectionEvent.Type.ADD)) {
-                    action = " join";
+                    action = " joined";
                 } else if (type.equals(CollectionEvent.Type.REMOVE)) {
-                    action = " leave";
+                    action = " left";
                 }
                 if (item instanceof UserInfo) {
                     final String message = ((UserInfo) item).getLogin() + action;
