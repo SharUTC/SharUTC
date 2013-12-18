@@ -49,6 +49,7 @@ public class CommandModule extends AbstractModule {
         bind(UnsetScoreCommand.class).to(UnsetScoreCommandImpl.class);
 
         bind(AddMusicToCategoryCommand.class).to(AddMusicToCategoryCommandImpl.class);
+        bind(RemoveMusicFromCategoryCommand.class).to(RemoveMusicFromCategoryCommandImpl.class);
         // more...
 
         //player
