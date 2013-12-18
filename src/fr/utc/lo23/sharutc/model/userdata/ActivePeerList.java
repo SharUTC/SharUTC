@@ -8,6 +8,7 @@ import fr.utc.lo23.sharutc.util.CollectionEvent;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 /**
@@ -52,6 +53,13 @@ public class ActivePeerList implements Serializable {
      * @param peer
      */
     public void update(UserInfo peer) {
+        Iterator<UserInfo> iter = mActivePeers.keySet().iterator();
+        while (iter.hasNext()) {
+            UserInfo ui = iter.next();
+            if (ui.getPeerId().equals(peer.getPeerId()) && !ui.equals(peer)) {
+                iter.remove();
+            }
+        }
         boolean update = mActivePeers.put(peer, new Date()) == null;
         if (update) {
             mCollectionChangeSupport.fireCollectionChanged(peer, CollectionEvent.Type.ADD);
@@ -141,8 +149,8 @@ public class ActivePeerList implements Serializable {
     }
 
     /**
-     * Return the peer corresponding to the UserInfo id given in parameter
-     * if it exists
+     * Return the peer corresponding to the UserInfo id given in parameter if it
+     * exists
      *
      * @param peerId
      * @return a peer or null if it does not exist
