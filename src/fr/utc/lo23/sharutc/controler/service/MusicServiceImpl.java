@@ -920,12 +920,12 @@ public class MusicServiceImpl implements MusicService {
         //Check that the music does not exist in this category
         if (!music.getCategoryIds().contains(category.getId())) {
             appModel.getLocalCatalog().findMusicById(music.getId()).addCategoryId(category.getId());
+            appModel.getRightsList().setRights(new Rights(category.getId(), music.getId(), false, false, false));
         } else {
             log.warn("This music already exists in this category");
             ErrorMessage nErrorMessage = new ErrorMessage("This music already exists in this category");
             appModel.getErrorBus().pushErrorMessage(nErrorMessage);
         }
-        appModel.getRightsList().setRights(new Rights(category.getId(), music.getId(), Rights.DEFAULT_MAY_READ_INFO, Rights.DEFAULT_LISTEN, Rights.DEFAULT_MAY_NOTE_AND_COMMENT));
     }
 
     /**
