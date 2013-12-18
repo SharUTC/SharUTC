@@ -17,17 +17,16 @@ import fr.utc.lo23.sharutc.util.CollectionChangeListener;
 import fr.utc.lo23.sharutc.util.CollectionEvent;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.layout.VBox;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.net.URL;
 import java.util.*;
-
-import javafx.event.EventHandler;
-import javafx.scene.layout.VBox;
 
 public class PeopleDetailController extends SongSelectorController implements RighpaneInterface, Initializable, TagCard.ITagCard, CollectionChangeListener, ArtistCard.IArtistCard {
 
@@ -157,7 +156,7 @@ public class PeopleDetailController extends SongSelectorController implements Ri
             } else {
                 mCallBack.onTagFilterRequested(tagName, SongDetailController.CatalogType.remote);
             }
-                
+
         }
     }
 
@@ -212,10 +211,15 @@ public class PeopleDetailController extends SongSelectorController implements Ri
         //add music artist to the artist list
         mArtistsFound.add(music.getArtist());
 
-        //display the new music card
-        final SongCard newSongCard = new SongCard(music, PeopleDetailController.this, mAppModel);
+        //display the new music card unless all right are false
+        //TODO remove null test when Music model will be correctly initialized
+        if (music.getMayListen() == null || music.getMayListen() || music.getMayReadInfo() == null || music.getMayReadInfo()
+                || music.getMayCommentAndNote() == null || music.getMayCommentAndNote()) {
+            final SongCard newSongCard = new SongCard(music, PeopleDetailController.this, mAppModel);
+            mSongList.addChild(newSongCard);
+        }
 
-        mSongList.addChild(newSongCard);
+
     }
 
     /**
@@ -232,13 +236,12 @@ public class PeopleDetailController extends SongSelectorController implements Ri
             }
 
 
-
             mArtistList.addChild(newCard);
         }
 
         TagMap map;
 
-        if(mCurrentUser) {
+        if (mCurrentUser) {
             map = new TagMap(mAppModel.getLocalCatalog());
         } else {
             map = new TagMap(mAppModel.getRemoteUserCatalog());
