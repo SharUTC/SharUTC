@@ -68,6 +68,10 @@ public class SongDetailController extends SongSelectorController implements Init
     @FXML
     public ScrollPane centralScrollPane;
     @FXML
+    public Label myRateText;
+    @FXML
+    public HBox myRateSystem;
+    @FXML
     public RatingStar starMyRate1;
     @FXML
     public RatingStar starMyRate2;
@@ -198,6 +202,11 @@ public class SongDetailController extends SongSelectorController implements Init
         showMusicInfo();
         showMyRating();
         showAverageRating();
+        //TODO remove check null when model will be correctly initialize
+        if (mMusic.getMayCommentAndNote() == null || mMusic.getMayCommentAndNote()) {
+            myRateText.setVisible(true);
+            myRateSystem.setVisible(true);
+        }
     }
 
     /**
@@ -274,8 +283,8 @@ public class SongDetailController extends SongSelectorController implements Init
             mCommentContainer = new VBox();
             centralScrollPane.setContent(mCommentContainer);
             centralSectionTitle.setText("Comments");
-            //hot fix
-            if (mMusic.getMayCommentAndNote() == null || !mMusic.getMayCommentAndNote()) {
+            //hot fix, display comment box if comments are allowed
+            if (mMusic.getMayCommentAndNote() == null || mMusic.getMayCommentAndNote()) {
                 mCommentInputTextArea = new TextArea();
                 mCommentInputTextArea.getStyleClass().add("commentTextArea");
                 mCommentInputTextArea.setPrefRowCount(3);
