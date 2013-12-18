@@ -394,6 +394,9 @@ public class GroupRightController extends DragPreviewDrawer implements Initializ
                 manageRightsCommand.setMayReadInfo(true);
             } else if (card.equals(mCommentAndNoteSongCard)) {
                 log.info("song dropped in comment right card : ");
+                //also add the right to read song info
+                // doesn't make sens to be able comment a song without seeing comments
+                manageRightsCommand.setMayReadInfo(true);
                 manageRightsCommand.setMayCommentAndScore(true);
             } else if (card.equals(mNoneRightsSongCard)) {
                 log.info("song dropped in none right card : ");
