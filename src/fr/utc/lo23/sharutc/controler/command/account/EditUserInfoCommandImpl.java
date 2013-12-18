@@ -5,6 +5,7 @@
 package fr.utc.lo23.sharutc.controler.command.account;
 
 import com.google.inject.Inject;
+import fr.utc.lo23.sharutc.controler.network.NetworkService;
 import fr.utc.lo23.sharutc.controler.service.UserService;
 import fr.utc.lo23.sharutc.model.AppModel;
 import fr.utc.lo23.sharutc.model.userdata.UserInfo;
@@ -19,6 +20,7 @@ public class EditUserInfoCommandImpl implements EditUserInfoCommand {
         .getLogger(EditUserInfoCommandImpl.class);
     private final UserService userService;
     private final AppModel appModel;
+    private final NetworkService networkService;
     private UserInfo mUserInfo;
     
     /**
@@ -28,9 +30,10 @@ public class EditUserInfoCommandImpl implements EditUserInfoCommand {
      * @param userService
      */
     @Inject
-    public EditUserInfoCommandImpl(AppModel appModel, UserService userService) {
+    public EditUserInfoCommandImpl(AppModel appModel, UserService userService, NetworkService networkService) {
         this.appModel = appModel;
         this.userService = userService;
+        this.networkService = networkService;
     }
     
     /**
@@ -52,6 +55,7 @@ public class EditUserInfoCommandImpl implements EditUserInfoCommand {
         // update user info.
         appModel.getProfile().setUserInfo(mUserInfo);
         userService.saveProfileFiles();
+        networkService.updateUserInfo(mUserInfo);
 
         log.info("EditUserInfoCommandImpl DONE");
     }

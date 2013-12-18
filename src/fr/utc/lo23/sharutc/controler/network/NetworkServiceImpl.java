@@ -364,4 +364,15 @@ public class NetworkServiceImpl implements NetworkService {
         Message message = messageParser.write(MessageType.CONNECTION_RESPONSE, new Object[][]{{Message.USER_INFO, ui}});
         sendUnicast(message, peer);
     }
+
+    /**
+     * {inheritDoc}
+     */
+    @Override
+    public void updateUserInfo(UserInfo userInfo) {
+        UserInfo ui = userInfo.clone();
+        ui.setPassword(null);
+        Message message = messageParser.write(MessageType.UPDATE_USER_INFO, new Object[][]{{Message.USER_INFO, ui}});
+        sendBroadcast(message);
+    }
 }

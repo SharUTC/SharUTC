@@ -88,5 +88,9 @@ public enum MessageType {
     /**
      * Send a heartbeat message.
      */
-    HEARTBEAT
+    HEARTBEAT,
+    /**
+     * Notify of UserInfo update.
+     */
+    UPDATE_USER_INFO
 }

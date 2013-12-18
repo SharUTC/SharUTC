@@ -208,4 +208,11 @@ public interface NetworkService {
      * @param userInfo the userInfo to include in the reply
      */
     public void sendConnectionResponse(Peer peer, UserInfo userInfo);
+
+    /**
+     * Notify all the connected peer of user info update.
+     *
+     * @param userInfo the new userInfo
+     */
+    public void updateUserInfo(UserInfo userInfo);
 }

@@ -205,6 +205,7 @@ public class MessageHandlerImpl implements MessageHandler {
                         command = integrateUserInfoAndReplyCommand;
                         break;
                     case CONNECTION_RESPONSE:
+                    case UPDATE_USER_INFO:
                         integrateUserInfoCommand.setUserInfo((UserInfo) messageParser.getValue(Message.USER_INFO));
                         command = integrateUserInfoCommand;
                         break;
