@@ -2,6 +2,7 @@ package fr.utc.lo23.sharutc.ui;
 
 import com.google.inject.Inject;
 import fr.utc.lo23.sharutc.controler.command.music.AddMusicToCategoryCommand;
+import fr.utc.lo23.sharutc.controler.command.music.RemoveMusicFromCategoryCommand;
 import fr.utc.lo23.sharutc.controler.command.profile.ManageRightsCommand;
 import fr.utc.lo23.sharutc.model.AppModel;
 import fr.utc.lo23.sharutc.model.domain.Music;
@@ -49,6 +50,8 @@ public class GroupRightController extends DragPreviewDrawer implements Initializ
     private ManageRightsCommand manageRightsCommand;
     @Inject
     private AddMusicToCategoryCommand addMusicToCategoryCommand;
+    @Inject
+    private RemoveMusicFromCategoryCommand removeMusicFromCategoryCommand;
     @Inject
     public AppModel mAppModel;
     @FXML
@@ -391,12 +394,19 @@ public class GroupRightController extends DragPreviewDrawer implements Initializ
                 manageRightsCommand.setMayReadInfo(true);
             } else if (card.equals(mCommentAndNoteSongCard)) {
                 log.info("song dropped in comment right card : ");
+                //also add the right to read song info
+                // doesn't make sens to be able comment a song without seeing comments
+                manageRightsCommand.setMayReadInfo(true);
                 manageRightsCommand.setMayCommentAndScore(true);
             } else if (card.equals(mNoneRightsSongCard)) {
                 log.info("song dropped in none right card : ");
                 manageRightsCommand.setMayCommentAndScore(false);
                 manageRightsCommand.setMayListen(false);
                 manageRightsCommand.setMayReadInfo(false);
+
+                removeMusicFromCategoryCommand.setMusic(songRightCard.getMusic());
+                removeMusicFromCategoryCommand.setCategory(mCurrentCategory);
+                removeMusicFromCategoryCommand.execute();
             }
 
             //execute the command
