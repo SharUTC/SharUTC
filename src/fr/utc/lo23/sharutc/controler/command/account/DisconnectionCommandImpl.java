@@ -29,6 +29,7 @@ public class DisconnectionCommandImpl implements DisconnectionCommand {
      * @param userService
      * @param musicService
      * @param networkService
+     * @param playerService
      */
     @Inject
     public DisconnectionCommandImpl(AppModel appModel, UserService userService, MusicService musicService, NetworkService networkService, PlayerService playerService) {

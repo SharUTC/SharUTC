@@ -27,6 +27,7 @@ public class ManageRightsCommandImpl implements ManageRightsCommand {
      * Constructor
      *
      * @param appModel
+     * @param musicService
      */
     @Inject
     public ManageRightsCommandImpl(AppModel appModel, MusicService musicService) {

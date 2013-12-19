@@ -28,6 +28,7 @@ public class EditUserInfoCommandImpl implements EditUserInfoCommand {
      * 
      * @param appModel - Application Model
      * @param userService
+     * @param networkService
      */
     @Inject
     public EditUserInfoCommandImpl(AppModel appModel, UserService userService, NetworkService networkService) {
