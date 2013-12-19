@@ -194,20 +194,21 @@ public class UserInfo implements Serializable {
         userInfo.setPassword(mPassword);
         return userInfo;
     }
-    
+
     @Override
-    public boolean equals(Object obj){
+    public boolean equals(Object obj) {
         if (obj == null || getClass() != obj.getClass()) {
             return false;
         }
 
         final UserInfo userInfo = (UserInfo) obj;
         boolean avatarPath = true;
-        if(mAvatarFile != null)
+        if (mAvatarFile != null) {
             avatarPath = mAvatarFile.getPath().equals(userInfo.mAvatarFile.getPath());
-        return (mPeerId.equals(userInfo.mPeerId) 
+        }
+        return (mPeerId.equals(userInfo.mPeerId)
                 && mLogin.equals(userInfo.mLogin)
-                && mPassword.equals(userInfo.mPassword)
+                && (mPassword == null && userInfo.mPassword == null || mPassword != null && userInfo.mPassword != null && mPassword.equals(userInfo.mPassword))
                 && mFirstName.equals(userInfo.mFirstName)
                 && mLastName.equals(userInfo.mLastName)
                 && mAge.equals(userInfo.mAge)
@@ -226,16 +227,16 @@ public class UserInfo implements Serializable {
         hash = 97 * hash + (this.mAvatarFile != null ? this.mAvatarFile.hashCode() : 0);
         return hash;
     }
-    
+
     /**
      * Return the SHA-1 of a string
-     * 
+     *
      * @param s the string
      * @return the SHA-1 of s
      */
     public static String sha1(String s) {
         String sha1 = "";
-        
+
         try {
             MessageDigest d = MessageDigest.getInstance("SHA-1");
             d.reset();
@@ -244,13 +245,13 @@ public class UserInfo implements Serializable {
         } catch (Exception ex) {
             LoggerFactory.getLogger(UserInfo.class).error("Error during creation of the SHA-1 of: " + s + " <> error: ", ex.toString());
         }
-        
+
         return sha1;
     }
-    
+
     /**
      * Convert a bite array to a string
-     * 
+     *
      * @param b the bite array
      * @return the string corresponding to the byte array
      */
