@@ -176,7 +176,7 @@ class TestModule extends AbstractModule {
 
         bind(AddContactToCategoryCommand.class).to(AddContactToCategoryCommandImpl.class);
         bind(RemoveContactFromCategoryCommand.class).to(RemoveContactFromCategoryCommandImpl.class);
-        
+
         bind(ManageRightsCommand.class).to(ManageRightsCommandImpl.class);
 
 

@@ -11,5 +11,4 @@ public class PlaylistTestModule extends TestModule {
     protected void configure() {
         super.configure();
     }
-
 }

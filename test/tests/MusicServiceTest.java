@@ -172,7 +172,7 @@ public class MusicServiceTest {
         int scoreTest = catalogToTest.getMusics().get(2).getScore(Long.MAX_VALUE - 1).getValue();
         Assert.assertEquals("good score value has been successfully saved and loaded from a user music file", 2, scoreTest);
 
-        Long peerIdComment = catalogToTest.getMusics().get(0).getComment(Long.MIN_VALUE, 2).getAuthorPeerId();
+        Long peerIdComment = catalogToTest.getMusics().get(0).getComment(Long.MIN_VALUE, 1).getAuthorPeerId();
         Assert.assertEquals("good peerId has been successfully saved and loaded from a user music file", (Long) Long.MIN_VALUE, peerIdComment);
 
     }

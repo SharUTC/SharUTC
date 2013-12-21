@@ -133,7 +133,7 @@ public class CommandTestModule extends AbstractModule {
         bind(PlayIncomingMusicCommand.class).to(PlayIncomingMusicCommandImpl.class);
         bind(AddToPlaylistCommand.class).to(AddToPlaylistCommandImpl.class);
         bind(RemoveFromPlaylistCommand.class).to(RemoveFromPlaylistCommandImpl.class);
-        
+
         //profile
         bind(AddContactCommand.class).to(AddContactCommandImpl.class);
         bind(AddContactToCategoryCommand.class).to(AddContactToCategoryCommandImpl.class);

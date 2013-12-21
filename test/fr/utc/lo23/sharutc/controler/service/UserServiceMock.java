@@ -77,5 +77,4 @@ public class UserServiceMock extends UserServiceImpl implements UserService {
     public void saveProfileFiles() {
         super.saveProfileFiles();
     }
-
 }

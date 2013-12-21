@@ -9,9 +9,9 @@ package tests;
  * @author Alexandre
  */
 public class ProfileConnectedPeersTestModule extends TestModule {
-    
+
     @Override
-    public void configure(){
+    public void configure() {
         super.configure();
     }
 }

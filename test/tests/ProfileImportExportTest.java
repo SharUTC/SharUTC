@@ -131,12 +131,13 @@ public class ProfileImportExportTest {
         } catch (IOException ex) {
             java.util.logging.Logger.getLogger(ProfileImportExportTest.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }
 
-    @Test
-    public void importProfileCommand() {
-        String usersPath = fileService.getAppFolder() + FileService.ROOT_FOLDER_USERS;
-        String userName = "profileTest";
+        /*
+         * Second part of test, import command test, to be sure that the tested file exist (
+         */
+
+        //String usersPath = fileService.getAppFolder() + FileService.ROOT_FOLDER_USERS;
+        //String userName = "profileTest";
         String zipPath = fileService.getAppFolder() + userName + ".zip";
 
         if (new File(zipPath).exists()) {
@@ -165,7 +166,7 @@ public class ProfileImportExportTest {
                 java.util.logging.Logger.getLogger(ProfileImportExportTest.class.getName()).log(Level.SEVERE, null, ex);
             }
 
-            String dest = fileService.getAppFolder() + userName + ".zip";
+            //   String dest = fileService.getAppFolder() + userName + ".zip";
             exportProfileCommand.setSrcFile(usersPath + File.separator + userName);
             exportProfileCommand.setDestFolder(dest);
             exportProfileCommand.execute();

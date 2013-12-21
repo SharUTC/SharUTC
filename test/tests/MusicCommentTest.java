@@ -82,10 +82,10 @@ public class MusicCommentTest {
         addCommentCommand.setOwnerPeer(ownerPeer);
 
         addCommentCommand.setComment("This is a comment");
-        
+
         addCommentCommand.execute();
 
-        Comment myComment = appModel.getLocalCatalog().get(0).getComment(authorPeer, 0);
+        Comment myComment = appModel.getLocalCatalog().get(0).getComment(authorPeer, 1);
 
         Assert.assertNotNull("addComment failed", myComment);
 
@@ -101,7 +101,6 @@ public class MusicCommentTest {
     @Test
     public void editComment() {
         Music music = appModel.getLocalCatalog().get(0);
-        music.setFileName("Dummy Music");
         addCommentCommand.setMusic(music);
 
         Peer authorPeer = appModel.getActivePeerList().getPeerByPeerId(1L);
@@ -117,12 +116,12 @@ public class MusicCommentTest {
         editCommentCommand.setMusic(appModel.getLocalCatalog().get(0));
         editCommentCommand.setAuthorPeer(authorPeer);
         editCommentCommand.setOwnerPeer(ownerPeer);
-        editCommentCommand.setCommentId(0);
+        editCommentCommand.setCommentId(1);
         editCommentCommand.setComment("This is the new comment");
 
         editCommentCommand.execute();
 
-        Comment myComment = appModel.getLocalCatalog().get(0).getComment(authorPeer, 0);
+        Comment myComment = appModel.getLocalCatalog().get(0).getComment(authorPeer, 1);
 
         Assert.assertNotNull("editComment failed", myComment);
 
@@ -155,10 +154,10 @@ public class MusicCommentTest {
 
         removeCommentCommand.setMusic(appModel.getLocalCatalog().get(0));
         removeCommentCommand.setPeer(authorPeer);
-        removeCommentCommand.setCommentId(0);
+        removeCommentCommand.setCommentId(1);
         removeCommentCommand.execute();
 
-        Comment myComment = appModel.getLocalCatalog().get(0).getComment(authorPeer, 0);
+        Comment myComment = appModel.getLocalCatalog().get(0).getComment(authorPeer, 1);
 
         Assert.assertNull("removeComment failed", myComment);
     }

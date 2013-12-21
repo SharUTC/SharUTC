@@ -5,7 +5,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  *
-
+ *
  */
 public class ShowTagMapCommandMock implements ShowTagMapCommand {
 

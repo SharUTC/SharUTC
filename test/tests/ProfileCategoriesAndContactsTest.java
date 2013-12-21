@@ -128,7 +128,7 @@ public class ProfileCategoriesAndContactsTest {
         Category catCree = new Category(1, "amis");
         createCategoryCommand.setCategoryName("amis");
         createCategoryCommand.execute();
-        
+
         addContactToCategoryCommand.setContact(cCree);
         addContactToCategoryCommand.setCategory(catCree);
         addContactToCategoryCommand.execute();
@@ -184,7 +184,7 @@ public class ProfileCategoriesAndContactsTest {
         Category catCree2 = new Category(2, "famille");
         createCategoryCommand.setCategoryName("famille");
         createCategoryCommand.execute();
-        
+
         addContactToCategoryCommand.setContact(cCree3);
         addContactToCategoryCommand.setCategory(catCree);
         addContactToCategoryCommand.execute();
@@ -253,7 +253,7 @@ public class ProfileCategoriesAndContactsTest {
         Category catCree = new Category(1, "amis");
         createCategoryCommand.setCategoryName("amis");
         createCategoryCommand.execute();
-        
+
         // Categories = {{0,PUBLIC}, {1,amis}}
         addContactToCategoryCommand.setContact(cCree);
         addContactToCategoryCommand.setCategory(catCree);
@@ -295,7 +295,7 @@ public class ProfileCategoriesAndContactsTest {
         Category catCree2 = new Category(2, "famille");
         createCategoryCommand.setCategoryName("famille");
         createCategoryCommand.execute();
-        
+
         addContactToCategoryCommand.setContact(cCree2);
         addContactToCategoryCommand.setCategory(catCree11);
         addContactToCategoryCommand.execute();
@@ -319,7 +319,7 @@ public class ProfileCategoriesAndContactsTest {
 
         Assert.assertTrue("deleteCategoryCommand failed : the test can't start",
                 appModel.getProfile().getCategories().contains(catCree3));
-        
+
         int idsCount = appModel.getProfile().getCategories().size();
 
         deleteCategoryCommand.setCategory(catCree3);
@@ -345,23 +345,23 @@ public class ProfileCategoriesAndContactsTest {
 
         addContactCommand.setContact(cCree);
         addContactCommand.execute();
-        
+
         Assert.assertTrue("deleteContactCommand failed : the test can't start",
                 appModel.getProfile().getContacts().contains(cCree));
-        
+
         Category catCree = new Category(1, "amis");
         createCategoryCommand.setCategoryName("amis");
         createCategoryCommand.execute();
         Category catCree2 = new Category(2, "famille");
         createCategoryCommand.setCategoryName("famille");
         createCategoryCommand.execute();
-        
+
         addContactToCategoryCommand.setContact(cCree);
         addContactToCategoryCommand.setCategory(catCree);
         addContactToCategoryCommand.execute();
         addContactToCategoryCommand.setCategory(catCree2);
         addContactToCategoryCommand.execute();
-        
+
         Assert.assertTrue("deleteContactCommand failed : the test can't start",
                 appModel.getProfile().getContacts().contains(cCree));
 
@@ -389,7 +389,7 @@ public class ProfileCategoriesAndContactsTest {
         Category catCree2 = new Category(2, "famille");
         createCategoryCommand.setCategoryName("famille");
         createCategoryCommand.execute();
-        
+
         addContactToCategoryCommand.setContact(cCree);
         addContactToCategoryCommand.setCategory(catCree);
         addContactToCategoryCommand.execute();
@@ -459,7 +459,7 @@ public class ProfileCategoriesAndContactsTest {
         addContactCommand.execute();
 
         Category catCree3 = new Category(Category.PUBLIC_CATEGORY_ID, Category.PUBLIC_CATEGORY_NAME);
-        
+
         removeContactFromCategoryCommand.setContact(cCree3);
         removeContactFromCategoryCommand.setCategory(catCree3);
         removeContactFromCategoryCommand.execute();
@@ -471,26 +471,26 @@ public class ProfileCategoriesAndContactsTest {
                 cCree3.getCategoryIds().size(), 1);
 
     }
-    
+
     @Test
     public void editCategoryNameCommand() {
 
         createCategoryCommand.setCategoryName("amis");
         createCategoryCommand.execute();
-        
+
         // A0 - Check if the category name is changed
         // category{1,famille}
         editCategoryNameCommand.setCategoryId(1);
         editCategoryNameCommand.setCategoryName("famille");
         editCategoryNameCommand.execute();
-        
+
         Category catTest = new Category(1, "famille");
         Category resultat = appModel.getProfile().getCategories().findCategoryById(1);
-        
+
         Assert.assertEquals("editCategoryNameCommand failed : the category name is not changed", catTest, resultat);
         Assert.assertEquals("editCategoryNameCommand failed : the category name is not changed", resultat.getName(), "famille");
-        
-        
+
+
         // A1 - Check if after renaming, a contact can be added in this category
         UserInfo u = new UserInfo();
         u.setAge(22);
@@ -501,72 +501,72 @@ public class ProfileCategoriesAndContactsTest {
         u.setPeerId(1L);
 
         Contact cCree = new Contact(u);
-        
+
         addContactToCategoryCommand.setContact(cCree);
         addContactToCategoryCommand.setCategory(resultat);
         addContactToCategoryCommand.execute();
 
-        
+
         Contact cTest = new Contact(u);
         cTest.addCategoryId(1);
-        
+
         Assert.assertEquals("editCategoryNameCommand failed : the contact was not added to the renamed category",
                 cCree, cTest);
-        
+
         Assert.assertTrue("editCategoryNameCommand failed : the contact was not added to the renamed category",
                 cCree.getCategoryIds().contains(1));
-        
-        
+
+
         // A2 - Check if we can delete the category after renaming it
-        
+
         Assert.assertEquals("editCategoryNameCommand failed : the test can't start",
                 appModel.getProfile().getCategories().getCategories().size(), 2);
-        
+
         deleteCategoryCommand.setCategory(resultat);
         deleteCategoryCommand.execute();
-        
+
         Assert.assertEquals("editCategoryNameCommand failed : the category is not deleted after renaming it",
-                appModel.getProfile().getCategories().getCategories().size(), 1); 
-        
-        
+                appModel.getProfile().getCategories().getCategories().size(), 1);
+
+
         // B - Check if the new name already exists
-        
+
         // category {2, famille}
         createCategoryCommand.setCategoryName("famille");
         createCategoryCommand.execute();
         // category {3, amis}
         createCategoryCommand.setCategoryName("amis");
         createCategoryCommand.execute();
-        
+
         Category catTest2 = new Category(2, "famille");
         Category resultat2 = appModel.getProfile().getCategories().findCategoryById(2);
-        
+
         Assert.assertEquals("editCategoryNameCommand failed : the test can't start", catTest2, resultat2);
-        
+
         Category catTest3 = new Category(3, "amis");
         Category resultat3 = appModel.getProfile().getCategories().findCategoryById(3);
-        
+
         Assert.assertEquals("editCategoryNameCommand failed : the test can't start", catTest3, resultat3);
-        
+
         editCategoryNameCommand.setCategoryId(3);
         editCategoryNameCommand.setCategoryName("famille");
         editCategoryNameCommand.execute();
-        
+
         Category resultat4 = appModel.getProfile().getCategories().findCategoryById(3);
-        
+
         Assert.assertEquals("editCategoryNameCommand failed : B - the category name has been changed (1)", catTest3, resultat4);
         Assert.assertEquals("editCategoryNameCommand failed : B - the category name has been changed (2)", resultat4.getName(), "amis");
-        
-        
+
+
         // C - Check that we can't change the name of the category Public
-        
+
         editCategoryNameCommand.setCategoryId(Category.PUBLIC_CATEGORY_ID);
         editCategoryNameCommand.setCategoryName("collegues");
         editCategoryNameCommand.execute();
-        
+
         Category catTest4 = new Category(Category.PUBLIC_CATEGORY_ID, Category.PUBLIC_CATEGORY_NAME);
         Category resultat5 = appModel.getProfile().getCategories().findCategoryById(Category.PUBLIC_CATEGORY_ID);
-        
+
         Assert.assertEquals("editCategoryNameCommand failed : C - the category name has been changed (1)", catTest4, resultat5);
         Assert.assertEquals("editCategoryNameCommand failed : C - the category name has been changed (2)", resultat5.getName(), Category.PUBLIC_CATEGORY_NAME);
     }

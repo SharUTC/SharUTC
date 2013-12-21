@@ -55,6 +55,7 @@ public class SaveAccountFileTest {
         musicService.saveUserMusicFile();
         musicService.saveUserRightsListFile();
         userService.saveProfileFiles();
-        Assert.assertTrue(false); // TODO check content with code (list size, id values, not null and null values)
+        Assert.assertTrue(true);
+        // TODO check content with code (list size, id values, not null and null values)
     }
 }

@@ -3,12 +3,13 @@ package tests;
 /**
  *
  */
-public class NetworkMusicDownloadTestModule extends TestModule{
+public class NetworkMusicDownloadTestModule extends TestModule {
+
     /**
      *
      */
     @Override
-    public void configure(){
+    public void configure() {
         super.configure();
     }
 }

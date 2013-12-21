@@ -1,14 +1,13 @@
-
 package tests;
 
 /**
  *
  * @author Olivier
  */
-public class ProfileImportExportTestModule extends TestModule{
-    
+public class ProfileImportExportTestModule extends TestModule {
+
     @Override
-    public void configure(){
+    public void configure() {
         super.configure();
     }
 }
