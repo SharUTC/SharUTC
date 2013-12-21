@@ -56,7 +56,7 @@ public class TagDetailCard extends SimpleCard {
 
         /**
          * the {@link ITagDetailCard} is being asked to delete a tag.
-         * 
+         *
          * @param tag the tag to be deleted.
          */
         public void onTagDeleted(final String tag);

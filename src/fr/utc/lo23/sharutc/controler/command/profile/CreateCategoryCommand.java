@@ -9,14 +9,14 @@ public interface CreateCategoryCommand extends Command {
 
     /**
      * Return the category name
-     * 
+     *
      * @return the category name
      */
     public String getCategoryName();
 
     /**
-     * Set the category name 
-     * 
+     * Set the category name
+     *
      * @param categoryName
      */
     public void setCategoryName(String categoryName);

@@ -7,7 +7,7 @@ import fr.utc.lo23.sharutc.model.userdata.UserInfo;
  * Edit the user info. of the current online user
  */
 public interface EditUserInfoCommand extends Command {
-    
+
     /**
      * Edit the user info. of the current online user
      *

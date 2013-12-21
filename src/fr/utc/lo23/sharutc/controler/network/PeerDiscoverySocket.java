@@ -129,7 +129,7 @@ public class PeerDiscoverySocket implements Runnable {
                 mSocket.receive(p);
                 // print information about the sender
                 log.info("<broadcast from " + p.getAddress().toString() + " : " + p.getPort() + " >");
-                log.info("Got packet " + Arrays.toString(p.getData()));
+                log.debug("Got packet " + Arrays.toString(p.getData()));
                 String json = new String(p.getData());
                 Message msgReceived = messageParser.fromJSON(json);
                 if (msgReceived.getFromPeerId().equals(appModel.getProfile().getUserInfo().getPeerId())) {

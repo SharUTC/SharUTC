@@ -16,16 +16,17 @@ import org.slf4j.LoggerFactory;
  *
  */
 public class EditUserInfoCommandImpl implements EditUserInfoCommand {
+
     private static final Logger log = LoggerFactory
-        .getLogger(EditUserInfoCommandImpl.class);
+            .getLogger(EditUserInfoCommandImpl.class);
     private final UserService userService;
     private final AppModel appModel;
     private final NetworkService networkService;
     private UserInfo mUserInfo;
-    
+
     /**
      * Constructor
-     * 
+     *
      * @param appModel - Application Model
      * @param userService
      * @param networkService
@@ -36,7 +37,7 @@ public class EditUserInfoCommandImpl implements EditUserInfoCommand {
         this.userService = userService;
         this.networkService = networkService;
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -44,10 +45,10 @@ public class EditUserInfoCommandImpl implements EditUserInfoCommand {
     public void setUserInfo(UserInfo userInfo) {
         mUserInfo = userInfo;
     }
-    
+
     /**
-     * Get the current online profile, then update its user info.
-     * Also persist new data
+     * Get the current online profile, then update its user info. Also persist
+     * new data
      */
     @Override
     public void execute() {
@@ -60,5 +61,4 @@ public class EditUserInfoCommandImpl implements EditUserInfoCommand {
 
         log.info("EditUserInfoCommandImpl DONE");
     }
-    
 }

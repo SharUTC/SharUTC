@@ -507,10 +507,10 @@ public class PlayerServiceImpl implements PlayerService, PropertyChangeListener,
                     // deleted : one of playlist except last
                     newIndex = ev.getIndex();
                 }
-            } else if(getCurrentMusicIndex()>ev.getIndex()){
+            } else if (getCurrentMusicIndex() > ev.getIndex()) {
                 mCurrentMusicIndex--;
-            }else{
-                 // other music was removed, no need to stop music or change currentMusic reference
+            } else {
+                // other music was removed, no need to stop music or change currentMusic reference
             }
         }
         if (newIndex != null) {

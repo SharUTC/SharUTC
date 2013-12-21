@@ -18,8 +18,8 @@ public class ArtistCard extends SimpleCard implements EventHandler<Event> {
     public Label artistNameLabel;
     private String mArtistName;
     private IArtistCard mInterface;
-
     private SongDetailController.CatalogType type = SongDetailController.CatalogType.local;
+
     public ArtistCard(String artistName, IArtistCard i) {
         super("/fr/utc/lo23/sharutc/ui/fxml/artist_card.fxml");
         setOnMouseClicked(this);
@@ -27,11 +27,10 @@ public class ArtistCard extends SimpleCard implements EventHandler<Event> {
         mArtistName = artistName;
         artistNameLabel.setText(artistName);
     }
-    
-    public void setCatalogType(SongDetailController.CatalogType type){
-        this.type= type;
+
+    public void setCatalogType(SongDetailController.CatalogType type) {
+        this.type = type;
     }
-    
 
     /**
      * Return the name of the artist.

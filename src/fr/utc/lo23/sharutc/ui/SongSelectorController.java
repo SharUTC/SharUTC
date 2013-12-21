@@ -79,7 +79,7 @@ public class SongSelectorController extends DragPreviewDrawer implements SongCar
     public void onPlayRequested(final Music music) {
         if (mInterface != null) {
             mInterface.onSongPlayRequest(music);
-        }        
+        }
         final Runnable songPlayRunnable = new Runnable() {
             @Override
             public void run() {

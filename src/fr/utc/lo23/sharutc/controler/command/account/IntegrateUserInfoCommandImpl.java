@@ -12,13 +12,13 @@ import org.slf4j.LoggerFactory;
 public class IntegrateUserInfoCommandImpl implements IntegrateUserInfoCommand {
 
     private static final Logger log = LoggerFactory
-        .getLogger(IntegrateUserInfoCommandImpl.class);
+            .getLogger(IntegrateUserInfoCommandImpl.class);
     private final UserService userService;
     private UserInfo mUserInfo;
 
-     /**
+    /**
      * Constructor
-     * 
+     *
      * @param userService
      */
     @Inject

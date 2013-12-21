@@ -26,7 +26,6 @@ public class SongRightCard extends DraggableCard implements EventHandler<Event> 
     public Label songArtist;
     @FXML
     public Button deleteButton;
-
     private Music mMusic;
     private Rights mRights;
     private ISongCardRight mInterface;
@@ -112,14 +111,14 @@ public class SongRightCard extends DraggableCard implements EventHandler<Event> 
         } else if (MouseEvent.MOUSE_ENTERED.equals(eventType)) {
             if (source.equals(this)) {
                 this.onHover(true);
-            }else if(source.equals(deleteButton)){
-                 mInterface.onSongRightCardBasketHovered(this,true);
+            } else if (source.equals(deleteButton)) {
+                mInterface.onSongRightCardBasketHovered(this, true);
             }
         } else if (MouseEvent.MOUSE_EXITED.equals(eventType)) {
             if (source.equals(this)) {
                 this.onHover(false);
-            } else if(source.equals(deleteButton)){
-                mInterface.onSongRightCardBasketHovered(this,false);
+            } else if (source.equals(deleteButton)) {
+                mInterface.onSongRightCardBasketHovered(this, false);
             }
         }
     }
@@ -135,7 +134,7 @@ public class SongRightCard extends DraggableCard implements EventHandler<Event> 
          * {@link SongCardRight} has just been selected.
          *
          * @param songCardRight the {@link SongRightCard} that has been
-         *                      selected.
+         * selected.
          */
         public void onSongRightCardSelected(SongRightCard songCardRight);
 
@@ -143,17 +142,15 @@ public class SongRightCard extends DraggableCard implements EventHandler<Event> 
          * The {@link ISongCardRight} is being notified that a
          * {@link SongCardRight} has just been hovered.
          *
-         * @param songCardRight the {@link SongRightCard} that has been
-         *                      hovered.
+         * @param songCardRight the {@link SongRightCard} that has been hovered.
          */
         public void onSongRightCardHovered(SongRightCard songRightCard, boolean isHover);
 
         /**
-         * The {@link ISongCardRight} is being notified that the
-         * basket of {@link SongCardRight} has just been hovered.
+         * The {@link ISongCardRight} is being notified that the basket of
+         * {@link SongCardRight} has just been hovered.
          *
-         * @param songCardRight the {@link SongRightCard} that has been
-         *                      hovered.
+         * @param songCardRight the {@link SongRightCard} that has been hovered.
          */
         public void onSongRightCardBasketHovered(SongRightCard songRightCard, boolean isHover);
 
@@ -161,8 +158,7 @@ public class SongRightCard extends DraggableCard implements EventHandler<Event> 
          * The {@link ISongCardRight} is being notified that a
          * {@link SongCardRight} has just been remove.
          *
-         * @param songCardRight the {@link SongRightCard} that has been
-         *                      hovered.
+         * @param songCardRight the {@link SongRightCard} that has been hovered.
          */
         public void onSongRightCardRemove(SongRightCard songRightCard);
     }

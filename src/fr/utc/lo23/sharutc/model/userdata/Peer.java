@@ -28,7 +28,7 @@ public class Peer implements Serializable {
 
     /**
      * Constructor
-     * 
+     *
      * @param id
      * @param displayName
      */
@@ -39,7 +39,7 @@ public class Peer implements Serializable {
 
     /**
      * Return the peer id
-     * 
+     *
      * @return the peer id
      */
     public long getId() {
@@ -48,7 +48,7 @@ public class Peer implements Serializable {
 
     /**
      * Set the peer id
-     * 
+     *
      * @param id - the peer id
      */
     public void setId(long id) {
@@ -57,7 +57,7 @@ public class Peer implements Serializable {
 
     /**
      * Return the peer name
-     * 
+     *
      * @return the peer name
      */
     public String getDisplayName() {
@@ -66,7 +66,7 @@ public class Peer implements Serializable {
 
     /**
      * Set the peer name
-     * 
+     *
      * @param displayName
      */
     public void setDisplayName(String displayName) {
@@ -102,10 +102,9 @@ public class Peer implements Serializable {
         DISPLAY_NAME
     }
 
-    
-     /**
+    /**
      * Override the method hashCode
-     * 
+     *
      * @return the hash
      */
     @Override
@@ -116,13 +115,12 @@ public class Peer implements Serializable {
         return hash;
     }
 
-    
-     /**
+    /**
      * Override the method equals
-     * 
+     *
      * @param obj
      * @return a boolean
-     */    
+     */
     @Override
     public boolean equals(Object obj) {
         if (obj == null) {
@@ -141,10 +139,9 @@ public class Peer implements Serializable {
         return true;
     }
 
-    
-     /**
+    /**
      * Override the method toString
-     * 
+     *
      * @return the string
      */
     @Override

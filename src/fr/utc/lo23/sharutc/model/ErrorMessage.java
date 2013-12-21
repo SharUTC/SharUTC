@@ -4,9 +4,10 @@ package fr.utc.lo23.sharutc.model;
  *
  */
 public class ErrorMessage {
+
     private String mMessage;
-    
-    public ErrorMessage(String msg){
+
+    public ErrorMessage(String msg) {
         mMessage = msg;
     }
 
@@ -18,4 +19,3 @@ public class ErrorMessage {
         this.mMessage = mMessage;
     }
 }
-

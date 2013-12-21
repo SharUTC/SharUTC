@@ -26,7 +26,7 @@ public class MusicSearchCommandImpl implements MusicSearchCommand {
     public MusicSearchCommandImpl(AppModel appModel, NetworkService networkService, MusicService musicService) {
         this.appModel = appModel;
         this.networkService = networkService;
-        this.musicService= musicService;
+        this.musicService = musicService;
     }
 
     /**
@@ -51,7 +51,7 @@ public class MusicSearchCommandImpl implements MusicSearchCommand {
     @Override
     public void execute() {
         log.info("MusicSearchCommand ...");
-        
+
         if (searchCriteria != null
                 && searchCriteria.getSearch() != null
                 && !searchCriteria.getSearch().trim().isEmpty()) {

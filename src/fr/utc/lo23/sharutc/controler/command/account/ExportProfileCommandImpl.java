@@ -10,13 +10,15 @@ import java.io.IOException;
  * implementation of the export profile command
  */
 public class ExportProfileCommandImpl implements ExportProfileCommand {
+
     private final FileService fs;
     private final AppModel appModel;
     private String mSrcFile;
     private String mDestFolder;
-    
+
     /**
      * Constructor
+     *
      * @param fs - File Service
      * @param appModel - Application Model
      */

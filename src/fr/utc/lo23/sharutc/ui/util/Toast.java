@@ -18,12 +18,10 @@ public class Toast {
     private static final int TOAST_IN_DURATION_MILLI = 500;
     private static final int TOAST_OUT_DURATION_MILLI = 500;
     private static final int TOAST_DURATION_MILLI = 1000;
-
     private ParallelTransition mToastInTransition;
     private ParallelTransition mToastOutTransition;
     private Pane mToastBox;
     private Label mToastText;
-
     private static final Logger log = LoggerFactory.getLogger(Toast.class);
 
     public Toast(Pane toastBox, Label toastText) {
@@ -47,7 +45,6 @@ public class Toast {
         }
     }
 
-
     private void initAnimation() {
         //init ToastOut animation
         FadeTransition fadeOut = new FadeTransition(Duration.millis(TOAST_OUT_DURATION_MILLI), mToastBox);
@@ -60,7 +57,7 @@ public class Toast {
         mToastOutTransition = new ParallelTransition();
         mToastOutTransition.getChildren().addAll(
                 fadeOut//TODO ,translateOut
-        );
+                );
         mToastOutTransition.setCycleCount(1);
         mToastOutTransition.setDelay(Duration.millis(TOAST_DURATION_MILLI));
 
@@ -75,7 +72,7 @@ public class Toast {
         mToastInTransition = new ParallelTransition();
         mToastInTransition.getChildren().addAll(
                 fadeIn//TODO ,translateIn
-        );
+                );
         mToastInTransition.setCycleCount(1);
         mToastInTransition.setAutoReverse(true);
         mToastInTransition.setOnFinished(new EventHandler<ActionEvent>() {
@@ -85,5 +82,4 @@ public class Toast {
             }
         });
     }
-
 }

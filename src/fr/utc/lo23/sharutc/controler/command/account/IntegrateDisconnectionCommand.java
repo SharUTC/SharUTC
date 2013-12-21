@@ -10,7 +10,8 @@ public interface IntegrateDisconnectionCommand extends Command {
     /**
      * Give the peer id of the peer to be removed from the connected peer list
      *
-     * @return Peer id of the peer about to be removed from the connected peer list
+     * @return Peer id of the peer about to be removed from the connected peer
+     * list
      */
     public long getPeerId();
 

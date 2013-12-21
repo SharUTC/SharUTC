@@ -10,14 +10,14 @@ public interface AccountCreationCommand extends Command {
 
     /**
      * Return user's information
-     * 
+     *
      * @return user's information
      */
     public UserInfo getUserInfo();
 
     /**
      * Set user's information
-     * 
+     *
      * @param userInfo
      */
     public void setUserInfo(UserInfo userInfo);

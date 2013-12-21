@@ -22,9 +22,9 @@ public class ConnectionRequestCommandImpl implements ConnectionRequestCommand {
     private final MusicService musicService;
     private final NetworkService networkService;
 
-     /**
+    /**
      * Constructor
-     * 
+     *
      * @param appModel
      * @param userservice
      * @param musicService

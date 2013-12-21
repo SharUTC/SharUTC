@@ -1,6 +1,5 @@
 package fr.utc.lo23.sharutc.ui;
 
-
 import fr.utc.lo23.sharutc.ui.custom.card.DraggableCard;
 import javafx.geometry.Insets;
 import javafx.scene.image.ImageView;
@@ -19,8 +18,8 @@ public abstract class DragPreviewDrawer implements RighpaneInterface {
     }
 
     /**
-     * Add card snapshot to the preview and move it to the right place
-     * Override this method to add item in the preview
+     * Add card snapshot to the preview and move it to the right place Override
+     * this method to add item in the preview
      *
      * @param event
      */
@@ -47,5 +46,4 @@ public abstract class DragPreviewDrawer implements RighpaneInterface {
         }
         mDragPreview.getChildren().clear();
     }
-
 }

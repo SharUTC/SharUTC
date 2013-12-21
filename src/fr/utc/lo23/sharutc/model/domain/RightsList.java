@@ -68,7 +68,7 @@ public class RightsList implements Serializable {
      * Add a Rights instancve to the RightsList at the specified index, send
      * update (ADD)
      *
-     * @param index  where to add the rights, must be inside [0; size()]
+     * @param index where to add the rights, must be inside [0; size()]
      * @param rights the rights to add
      */
     private void add(int index, Rights rights) {
@@ -79,8 +79,8 @@ public class RightsList implements Serializable {
     /**
      * Replace the Rights instance at the specified index, send update (UPDATE)
      *
-     * @param index  where to update the Rights instance, must be inside [0;
-     *               size()[
+     * @param index where to update the Rights instance, must be inside [0;
+     * size()[
      * @param rights the rights to add
      * @return the previously element at the given position
      */
@@ -146,7 +146,7 @@ public class RightsList implements Serializable {
      *
      * @param rights the right instance to find in this rightsList
      * @return index of the rights instance in this catalog, -1 if there's no
-     *         such instance
+     * such instance
      */
     private int indexOf(Rights rights) {
         return mRightsList.indexOf(rights);

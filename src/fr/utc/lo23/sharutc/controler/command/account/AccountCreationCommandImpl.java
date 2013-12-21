@@ -23,10 +23,10 @@ public class AccountCreationCommandImpl implements AccountCreationCommand {
     private final UserService userService;
     private final MusicService musicService;
     private final FileService fileService;
-    
-     /**
+
+    /**
      * Constructor
-     * 
+     *
      * @param appModel
      * @param userService
      * @param fileService
@@ -66,7 +66,7 @@ public class AccountCreationCommandImpl implements AccountCreationCommand {
         //Build the path name with the login of the new user in order to check if there is already a directory with the same name  
         StringBuilder builder = new StringBuilder(fileService.getAppFolder()).append(FileService.ROOT_FOLDER_USERS).append(File.separator).append(mUserInfo.getLogin());
         File file = new File(builder.toString());
-        
+
         //Check if there is already a directory with the same name as the new user login.
         if (file.exists() == false) {
             // FIXME userProfile validation ??
@@ -87,8 +87,8 @@ public class AccountCreationCommandImpl implements AccountCreationCommand {
             musicService.saveUserMusicFile();
             musicService.saveUserRightsListFile();
             log.info("AccountCreationCommand DONE");
-            
-          // If there is already a directory with the same name as the new user, the new profile can't be create, then an error is sent.  
+
+            // If there is already a directory with the same name as the new user, the new profile can't be create, then an error is sent.  
         } else {
             log.warn("Can't create the profile. A profile with the same login already exists.");
             ErrorMessage nErrorMessage = new ErrorMessage("Can't create the profile. A profile with the same login already exists.");

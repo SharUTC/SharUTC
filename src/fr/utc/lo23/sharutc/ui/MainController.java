@@ -266,7 +266,7 @@ public class MainController extends NavigationController implements Initializabl
                         for (int i = 0; i < mPlayListData.size(); i++) {
                             ((PlayListMusic) mPlayListData.get(i)).setPlaying(i == mPlayerController.getCurrentMusicIndex());
                         }
-                         break;
+                        break;
                     case CLEAR:
                         mPlayListData.clear();
                         break;
@@ -352,7 +352,6 @@ public class MainController extends NavigationController implements Initializabl
         removeListeners();
         mDisconnectionCommand.execute();
     }
-
 
     public void detachRightpane() {
 

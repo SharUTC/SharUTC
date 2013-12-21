@@ -94,7 +94,9 @@ public class UserServiceImpl implements UserService {
 
         //fire event for each category which has lost the contact
         for (Category c : getProfile().getCategories().getCategories()) {
-            if (categoriesIds.contains(c.getId())) getProfile().getCategories().notifyCategoryUpdate(c);
+            if (categoriesIds.contains(c.getId())) {
+                getProfile().getCategories().notifyCategoryUpdate(c);
+            }
         }
     }
 
@@ -156,11 +158,11 @@ public class UserServiceImpl implements UserService {
             //Check if the category exists
             if (category != null) {
                 /*
-                * check that the name of the category does not exist
-                * Indeed, even if it will be possible to have two categories with the same name
-                * (since there are IDs), we consider that a user can't create two categories
-                *  with the same name.
-                */
+                 * check that the name of the category does not exist
+                 * Indeed, even if it will be possible to have two categories with the same name
+                 * (since there are IDs), we consider that a user can't create two categories
+                 *  with the same name.
+                 */
                 boolean present = getProfile().getCategories().isNamePresent(newCategoryName);
 
                 if (!present) {

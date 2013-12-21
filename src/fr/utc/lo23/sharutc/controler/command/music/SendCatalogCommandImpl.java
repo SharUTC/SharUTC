@@ -67,8 +67,8 @@ public class SendCatalogCommandImpl implements SendCatalogCommand {
     @Override
     public void execute() {
         log.info("SendCatalogCommand ...");
-        Catalog mCatalog = musicService.getCatalogForPeer(mPeer); 
-        
+        Catalog mCatalog = musicService.getCatalogForPeer(mPeer);
+
         // FIXME : get local catalog and filter results like perform search command
         // a support class to factorize filter might be nice
         networkService.sendUnicastCatalog(mPeer, mConversationId, mCatalog);

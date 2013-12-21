@@ -30,7 +30,7 @@ public class RightCard extends SimpleCard implements EventHandler<Event> {
      * Card displayed to represent a right
      *
      * @param rightText text displayed to the user
-     * @param i         interface to get the callback
+     * @param i interface to get the callback
      */
     public RightCard(String rightText, int identifier, IRightCard i) {
         super("/fr/utc/lo23/sharutc/ui/fxml/right_card.fxml");
@@ -159,10 +159,10 @@ public class RightCard extends SimpleCard implements EventHandler<Event> {
         public void onSongAdded(RightCard card);
 
         /**
-         * The {@link IRightCard} is being informed that the
-         * {@link RightCard} has been clicked
+         * The {@link IRightCard} is being informed that the {@link RightCard}
+         * has been clicked
          *
-         * @param card       the {@link RightCard} that represent the right.
+         * @param card the {@link RightCard} that represent the right.
          * @param mouseEvent {@link MouseEvent} mouse event
          */
         public void onRightCardClicked(RightCard card, MouseEvent mouseEvent);

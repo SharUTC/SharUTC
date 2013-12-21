@@ -13,31 +13,31 @@ import fr.utc.lo23.sharutc.model.userdata.Category;
  *
  */
 public interface RemoveMusicFromCategoryCommand extends Command {
-      /**
+
+    /**
      * Return the category
-     * 
+     *
      * @return the category
      */
     public Category getCategory();
 
     /**
      * Set the category
-     * 
+     *
      * @param category
      */
     public void setCategory(Category category);
 
     /**
      *
-     * @return  the music
+     * @return the music
      */
     public Music getMusic();
-  
-    /**     
+
+    /**
      * Set the music
      *
      * @param music
      */
-
     public void setMusic(Music music);
 }

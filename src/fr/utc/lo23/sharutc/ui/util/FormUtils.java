@@ -1,7 +1,7 @@
 package fr.utc.lo23.sharutc.ui.util;
 
-
 public class FormUtils {
+
     /**
      * Returns true is the {@code ageField} contains a integer between 0 and
      * 120, false otherwise.

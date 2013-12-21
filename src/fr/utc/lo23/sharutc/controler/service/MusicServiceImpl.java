@@ -39,7 +39,7 @@ public class MusicServiceImpl implements MusicService {
     /**
      * Constructor of MusicServiceImpl
      *
-     * @param appModel    The model of the application
+     * @param appModel The model of the application
      * @param userService The service of users
      * @param fileService The service of files
      */

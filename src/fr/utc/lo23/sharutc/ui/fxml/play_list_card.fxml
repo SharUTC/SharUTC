@@ -9,32 +9,32 @@
 
 <fx:root type="fr.utc.lo23.sharutc.ui.custom.card.PlayListCard"
          xmlns:fx="http://javafx.com/fxml">
-        <VBox alignment="TOP_LEFT">
-            <ImageView fx:id="cdCover">
+    <VBox alignment="TOP_LEFT">
+        <ImageView fx:id="cdCover">
+            <image>
+                <Image url="/fr/utc/lo23/sharutc/ui/drawable/ic_vinyl.png" />            
+            </image>
+        </ImageView>
+        <Label fx:id="musicTitle" text="New York, New York" 
+               styleClass="playListCardMusicTitle"  wrapText="true" >
+            <VBox.margin>
+                <javafx.geometry.Insets top="10" left="5" right="5" />
+            </VBox.margin>
+        </Label>
+        <Label fx:id="musicArtist" text="Frank Sinatra" 
+               styleClass="playListCardMusicArtist" wrapText="true" >
+            <VBox.margin>
+                <javafx.geometry.Insets left="5" right="5" />
+            </VBox.margin>
+        </Label>
+    </VBox>
+    <AnchorPane fx:id="AnchorPane" prefHeight="1000">       
+        <children>
+            <ImageView fx:id="deleteButton" fitWidth="30" fitHeight="30" AnchorPane.bottomAnchor="1.0" AnchorPane.rightAnchor="1.0" > 
                 <image>
-                    <Image url="/fr/utc/lo23/sharutc/ui/drawable/ic_vinyl.png" />            
+                    <Image url="@../drawable/ic_delete.png"/>
                 </image>
             </ImageView>
-            <Label fx:id="musicTitle" text="New York, New York" 
-                   styleClass="playListCardMusicTitle"  wrapText="true" >
-                <VBox.margin>
-                    <javafx.geometry.Insets top="10" left="5" right="5" />
-                </VBox.margin>
-            </Label>
-            <Label fx:id="musicArtist" text="Frank Sinatra" 
-                    styleClass="playListCardMusicArtist" wrapText="true" >
-                <VBox.margin>
-                    <javafx.geometry.Insets left="5" right="5" />
-                </VBox.margin>
-            </Label>
-        </VBox>
-        <AnchorPane fx:id="AnchorPane" prefHeight="1000">       
-            <children>
-                <ImageView fx:id="deleteButton" fitWidth="30" fitHeight="30" AnchorPane.bottomAnchor="1.0" AnchorPane.rightAnchor="1.0" > 
-                    <image>
-                        <Image url="@../drawable/ic_delete.png"/>
-                    </image>
-                </ImageView>
-            </children>
-        </AnchorPane>
+        </children>
+    </AnchorPane>
 </fx:root>

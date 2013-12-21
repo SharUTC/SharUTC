@@ -20,5 +20,5 @@ public interface AddContactCommand extends Command {
      *
      * @param contact
      */
-    public void setContact(Contact contact) ;
+    public void setContact(Contact contact);
 }

@@ -9,14 +9,13 @@ public class Category implements Serializable {
 
     private static final long serialVersionUID = 3790688676428360970L;
     /**
-    * Id of the category Public
-    */
+     * Id of the category Public
+     */
     public static final Integer PUBLIC_CATEGORY_ID = new Integer(0);
     /**
-    * Name of the category Public
-    */
+     * Name of the category Public
+     */
     public static final String PUBLIC_CATEGORY_NAME = "My Contacts";
-
     private Integer mId;
     private String mName;
 
@@ -28,7 +27,7 @@ public class Category implements Serializable {
 
     /**
      * Constructor
-     * 
+     *
      * @param mId
      * @param mName
      */
@@ -39,7 +38,7 @@ public class Category implements Serializable {
 
     /**
      * Return the category id
-     * 
+     *
      * @return the category id
      */
     public Integer getId() {
@@ -48,7 +47,7 @@ public class Category implements Serializable {
 
     /**
      * Set the category id
-     * 
+     *
      * @param id - the category id
      */
     public void setId(Integer id) {
@@ -57,7 +56,7 @@ public class Category implements Serializable {
 
     /**
      * Return the name of the category
-     * 
+     *
      * @return the name of the category
      */
     public String getName() {
@@ -66,17 +65,16 @@ public class Category implements Serializable {
 
     /**
      * Set the name of the category
-     * 
+     *
      * @param name
      */
     public void setName(String name) {
         this.mName = name;
     }
 
-    
-     /**
+    /**
      * Override the method equals
-     * 
+     *
      * @param obj
      * @return a boolean
      */
@@ -98,10 +96,9 @@ public class Category implements Serializable {
         return true;
     }
 
-    
-     /**
+    /**
      * Override the method hashCode
-     * 
+     *
      * @return the hash
      */
     @Override
@@ -112,16 +109,13 @@ public class Category implements Serializable {
         return hash;
     }
 
-    
-     /**
+    /**
      * Override the method toString
-     * 
+     *
      * @return the string
      */
     @Override
     public String toString() {
         return "Category{" + "mId=" + mId + ", mName=" + mName + '}';
     }
-    
-    
 }

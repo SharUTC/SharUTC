@@ -37,28 +37,28 @@ public interface UserService {
     public void createCategory(String categoryName);
 
     /**
-     * Delete the category category (we can't delete the category Public)
-     * It removes the contacts from this category
-     * and manages the changes of categories. 
-     * For instance, if a contact was only in this category, we add it in the category Public.
-     * 
+     * Delete the category category (we can't delete the category Public) It
+     * removes the contacts from this category and manages the changes of
+     * categories. For instance, if a contact was only in this category, we add
+     * it in the category Public.
+     *
      * @param category
      */
     public void deleteCategory(Category category);
-    
+
     /**
      * It allows users to set a category name
-     * 
+     *
      * @param categoryId
      * @param newCategoryName
      */
     public void setCategoryName(Integer categoryId, String newCategoryName);
 
     /**
-     * Add a contact to a specified category
-     * It manages the changes of categories for a contact, if it is needed
-     * (particularly with the category Public : if the contact was previously
-     * present in the category Public, we remove the contact from it)
+     * Add a contact to a specified category It manages the changes of
+     * categories for a contact, if it is needed (particularly with the category
+     * Public : if the contact was previously present in the category Public, we
+     * remove the contact from it)
      *
      * @param contact
      * @param category
@@ -66,9 +66,10 @@ public interface UserService {
     public void addContactToCategory(Contact contact, Category category);
 
     /**
-     * Remove a contact from a specified category (we can't remove a contact from the category Public)
-     * It manages the changes of categories. 
-     * For instance, if the contact was only in this category, we add it in the category Public
+     * Remove a contact from a specified category (we can't remove a contact
+     * from the category Public) It manages the changes of categories. For
+     * instance, if the contact was only in this category, we add it in the
+     * category Public
      *
      * @param contact
      * @param category
@@ -77,42 +78,42 @@ public interface UserService {
 
     /**
      * Create and set the profile
-     * 
+     *
      * @param userInfo
      */
     public void createAndSetProfile(UserInfo userInfo);
 
     /**
      * loginRequest
-     * 
+     *
      * @param login
      * @param password
      */
     public void connectionRequest(String login, String password);
 
     /**
-     * Update the connected peers list with userInfo.
-     * If the peerId didn't exist in the list, it is added.
-     * Else, the peer info is updated
-     * 
+     * Update the connected peers list with userInfo. If the peerId didn't exist
+     * in the list, it is added. Else, the peer info is updated
+     *
      * @param userInfo
      */
     public void updateConnectedPeers(UserInfo userInfo);
 
     /**
      * Remove a peer from the connected peers list with id.
+     *
      * @param peerId
      */
     public void removeFromConnectedPeers(long peerId);
 
     /**
      * Find a contact thanks to its peerId
-     * 
+     *
      * @param peerId
      * @return the contact
      */
     public Contact findContactByPeerId(Long peerId);
-    
+
     /**
      * Clean the profile object by putting a null value in the object.
      *
@@ -124,5 +125,4 @@ public interface UserService {
      *
      */
     public void disconnectionRequest();
-    
 }

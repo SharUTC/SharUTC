@@ -19,7 +19,7 @@ public class EditCategoryNameCommandImpl implements EditCategoryNameCommand {
     private String mCategoryName;
     private Integer mCategoryId;
     final private UserService mUserService;
-    
+
     /**
      * Constructor
      *
@@ -29,7 +29,7 @@ public class EditCategoryNameCommandImpl implements EditCategoryNameCommand {
     public EditCategoryNameCommandImpl(UserService userService) {
         this.mUserService = userService;
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -44,9 +44,9 @@ public class EditCategoryNameCommandImpl implements EditCategoryNameCommand {
     @Override
     public void setCategoryName(String categoryName) {
         this.mCategoryName = categoryName;
-        
+
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -69,9 +69,8 @@ public class EditCategoryNameCommandImpl implements EditCategoryNameCommand {
     @Override
     public void execute() {
         log.info("EditCategoryNameCommand ...");
-        mUserService.setCategoryName(mCategoryId,mCategoryName);
+        mUserService.setCategoryName(mCategoryId, mCategoryName);
         mUserService.saveProfileFiles();
         log.info("EditCategoryNameCommand DONE");
     }
-    
 }

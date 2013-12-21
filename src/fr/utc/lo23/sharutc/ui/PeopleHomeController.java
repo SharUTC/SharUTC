@@ -129,22 +129,22 @@ public class PeopleHomeController extends DragPreviewDrawer implements Initializ
                 this.getClass().getResource("/fr/utc/lo23/sharutc/ui/css/modal.css").toExternalForm(),
                 groupContainer.getScene().getRoot(),
                 new DialogBoxBuilder.IConfirmBox() {
-                    @Override
-                    public void onChoiceMade(boolean answer) {
-                        if (answer) {
-                            if (mCurrentCategory.getId() == 0) {
-                                //from Public, remove contact from all category
-                                deleteContactCommand.setContact(mAppModel.getProfile().getContacts().findById(user.getPeerId()));
-                                deleteContactCommand.execute();
-                            } else {
-                                removeContactFromCategoryCommand.setContact(mAppModel.getProfile().getContacts().findById(user.getPeerId()));
-                                removeContactFromCategoryCommand.setCategory(mCurrentCategory);
-                                removeContactFromCategoryCommand.execute();
-                            }
-                            peopleContainer.getChildren().remove(peopleCard);
-                        }
+            @Override
+            public void onChoiceMade(boolean answer) {
+                if (answer) {
+                    if (mCurrentCategory.getId() == 0) {
+                        //from Public, remove contact from all category
+                        deleteContactCommand.setContact(mAppModel.getProfile().getContacts().findById(user.getPeerId()));
+                        deleteContactCommand.execute();
+                    } else {
+                        removeContactFromCategoryCommand.setContact(mAppModel.getProfile().getContacts().findById(user.getPeerId()));
+                        removeContactFromCategoryCommand.setCategory(mCurrentCategory);
+                        removeContactFromCategoryCommand.execute();
                     }
-                }).show();
+                    peopleContainer.getChildren().remove(peopleCard);
+                }
+            }
+        }).show();
     }
 
     @Override
@@ -170,14 +170,14 @@ public class PeopleHomeController extends DragPreviewDrawer implements Initializ
                 this.getClass().getResource("/fr/utc/lo23/sharutc/ui/css/modal.css").toExternalForm(),
                 groupContainer.getScene().getRoot(),
                 new DialogBoxBuilder.IConfirmBox() {
-                    @Override
-                    public void onChoiceMade(boolean answer) {
-                        if (answer) {
-                            deleteCategoryCommand.setCategory(g.getModel());
-                            deleteCategoryCommand.execute();
-                        }
-                    }
-                }).show();
+            @Override
+            public void onChoiceMade(boolean answer) {
+                if (answer) {
+                    deleteCategoryCommand.setCategory(g.getModel());
+                    deleteCategoryCommand.execute();
+                }
+            }
+        }).show();
     }
 
     @Override
@@ -188,14 +188,14 @@ public class PeopleHomeController extends DragPreviewDrawer implements Initializ
                 this.getClass().getResource("/fr/utc/lo23/sharutc/ui/css/modal.css").toExternalForm(),
                 groupContainer.getScene().getRoot(),
                 new DialogBoxBuilder.IEditBox() {
-                    @Override
-                    public void onValidate(String value) {
-                        //set the new name
-                        editCategoryNameCommand.setCategoryId(category.getId());
-                        editCategoryNameCommand.setCategoryName(value);
-                        editCategoryNameCommand.execute();
-                    }
-                }).show();
+            @Override
+            public void onValidate(String value) {
+                //set the new name
+                editCategoryNameCommand.setCategoryId(category.getId());
+                editCategoryNameCommand.setCategoryName(value);
+                editCategoryNameCommand.execute();
+            }
+        }).show();
     }
 
     @Override
@@ -358,13 +358,14 @@ public class PeopleHomeController extends DragPreviewDrawer implements Initializ
     }
 
     /**
-     * add a GroupCard to the GroupCard list
-     * //TODO improve the Category model, sad fix
-     * Since {@link Category} doesn't provide number of contacts, use the parameter
+     * add a GroupCard to the GroupCard list //TODO improve the Category model,
+     * sad fix Since {@link Category} doesn't provide number of contacts, use
+     * the parameter
      *
-     * @param category      the model og this card
-     * @param editable      true is the card can be deleted and edited
-     * @param membersNumber number of contact in this category //TODO remove after fix
+     * @param category the model og this card
+     * @param editable true is the card can be deleted and edited
+     * @param membersNumber number of contact in this category //TODO remove
+     * after fix
      */
     private GroupCard addNewGroupCard(Category category, int membersNumber, boolean editable) {
         hideAddNewGroupCard();
@@ -404,13 +405,13 @@ public class PeopleHomeController extends DragPreviewDrawer implements Initializ
                             this.getClass().getResource("/fr/utc/lo23/sharutc/ui/css/modal.css").toExternalForm(),
                             groupContainer.getScene().getRoot(),
                             new DialogBoxBuilder.IEditBox() {
-                                @Override
-                                public void onValidate(String value) {
-                                    //create the category with the entered name
-                                    createCategoryCommand.setCategoryName(value);
-                                    createCategoryCommand.execute();
-                                }
-                            }).show();
+                        @Override
+                        public void onValidate(String value) {
+                            //create the category with the entered name
+                            createCategoryCommand.setCategoryName(value);
+                            createCategoryCommand.execute();
+                        }
+                    }).show();
                 }
             }
         });

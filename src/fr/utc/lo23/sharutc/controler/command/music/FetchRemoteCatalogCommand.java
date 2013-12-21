@@ -9,17 +9,19 @@ import fr.utc.lo23.sharutc.model.userdata.Peer;
 public interface FetchRemoteCatalogCommand extends Command {
 
     /**
-     * 
-     * Gets the peer who will be asked for his catalog when the command is executed
-     * 
+     *
+     * Gets the peer who will be asked for his catalog when the command is
+     * executed
+     *
      * @return
      */
     public Peer getPeer();
 
     /**
      *
-     * Sets the peer who will be asked for his catalog when the command is executed
-     * 
+     * Sets the peer who will be asked for his catalog when the command is
+     * executed
+     *
      * @param peer
      */
     public void setPeer(Peer peer);

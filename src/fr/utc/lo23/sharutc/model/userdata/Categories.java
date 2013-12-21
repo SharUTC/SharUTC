@@ -8,8 +8,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 
-
-
 /**
  * Represents a list of categories
  *
@@ -63,9 +61,8 @@ public class Categories implements Serializable {
         }
         return category;
     }
-    
-    
-     /**
+
+    /**
      * Notify when a category is updated
      *
      * @param category
@@ -73,7 +70,6 @@ public class Categories implements Serializable {
     public void notifyCategoryUpdate(Category category) {
         mCollectionChangeSupport.fireCollectionChanged(category, -1, CollectionEvent.Type.UPDATE);
     }
-    
 
     /**
      * Add a category to the category list
@@ -144,8 +140,8 @@ public class Categories implements Serializable {
     public boolean contains(Category category) {
         return mCategories.contains(category);
     }
-    
-     /**
+
+    /**
      * Check if the category name already exists
      *
      * @param categoryName

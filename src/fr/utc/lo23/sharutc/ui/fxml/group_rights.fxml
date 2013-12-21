@@ -12,14 +12,14 @@
 <?import fr.utc.lo23.sharutc.ui.custom.card.SimpleCard?>
 <VBox xmlns:fx="http://javafx.com/fxml"
       fx:controller="fr.utc.lo23.sharutc.ui.GroupRightController" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS">
-     <HBox>
+    <HBox>
         <VBox alignment="CENTER_LEFT">
             <Label text="Edit right of group : " styleClass="panetitle"/>
         </VBox>
         <VBox  alignment="CENTER_RIGHT">
             <Label fx:id="Group" styleClass="panesubtitle"/>    
         </VBox>
-       </HBox>
+    </HBox>
     <StackPane fx:id="contentContainer" VBox.vgrow="ALWAYS">
         <ScrollPane styleClass="myScrollPane"
                     VBox.vgrow="ALWAYS" fitToWidth="true" fitToHeight="true">

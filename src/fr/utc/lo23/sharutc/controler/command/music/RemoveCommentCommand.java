@@ -16,7 +16,6 @@ public interface RemoveCommentCommand extends Command {
      */
     public Peer getPeer();
 
-
     /**
      * Set the owner of the comment
      *
@@ -40,13 +39,14 @@ public interface RemoveCommentCommand extends Command {
 
     /**
      * Get the id of the comment for the music
-     * 
+     *
      * @return The id of the comment for the music
      */
     public int getCommentId();
 
     /**
      * Set the id of the comment for the music
+     *
      * @param commentId The id of the comment for the music
      */
     public void setCommentId(int commentId);

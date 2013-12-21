@@ -34,8 +34,8 @@ public class AlbumCard extends SimpleCard implements EventHandler<Event> {
         artistNameLabel.setText(mArtistName);
         albumNameLabel.setText(mAlbumName);
     }
-    
-    public void setCatalogType(SongDetailController.CatalogType type){
+
+    public void setCatalogType(SongDetailController.CatalogType type) {
         this.type = type;
     }
 

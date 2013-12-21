@@ -32,10 +32,10 @@ public class TagCard extends SimpleCard implements EventHandler<Event> {
         super("/fr/utc/lo23/sharutc/ui/fxml/tag_card.fxml");
         mCallBack = callBack;
         mTagName = tagName;
-        tagNameLabel.setText(mTagName);        
+        tagNameLabel.setText(mTagName);
         setTagWeight(1);
         mIsDragEnable = true;
-        
+
         setOnMouseClicked(this);
         setOnDragEntered(this);
         setOnDragOver(this);
@@ -51,18 +51,18 @@ public class TagCard extends SimpleCard implements EventHandler<Event> {
 
     /**
      * Set the weight of the tag.
-     * 
+     *
      * @param weight the weight of the tag
      */
     public final void setTagWeight(final Integer weight) {
         mTagWeight = weight;
         tagWeightLabel.setText(String.valueOf(mTagWeight));
     }
-    
+
     public void increaseTagWeight() {
         setTagWeight(mTagWeight + 1);
     }
-    
+
     public void setDragEnable(boolean isDragEnable) {
         mIsDragEnable = isDragEnable;
     }
@@ -97,8 +97,8 @@ public class TagCard extends SimpleCard implements EventHandler<Event> {
     }
 
     /**
-     * The card received a {@link DragEvent.DRAG_OVER}.
-     * Accept the transfer if the source is a {@link SongCard}.
+     * The card received a {@link DragEvent.DRAG_OVER}. Accept the transfer if
+     * the source is a {@link SongCard}.
      *
      * @param dragEvent
      */
@@ -128,8 +128,8 @@ public class TagCard extends SimpleCard implements EventHandler<Event> {
     }
 
     /**
-     * The card received a {@link DragEvent.DRAG_EXITED}.
-     * Hide the drop overlay if the source is a {@link SongCard}.
+     * The card received a {@link DragEvent.DRAG_EXITED}. Hide the drop overlay
+     * if the source is a {@link SongCard}.
      *
      * @param dragEvent
      */
@@ -142,10 +142,10 @@ public class TagCard extends SimpleCard implements EventHandler<Event> {
     }
 
     /**
-     * The card received a {@link DragEvent.DRAG_DROPPED}.
-     * If the {@link Dragboard} has the {@link SongCard.DROP_KEY}, 
-     * this method notifies the {@link ITagCard}.
-     * 
+     * The card received a {@link DragEvent.DRAG_DROPPED}. If the
+     * {@link Dragboard} has the {@link SongCard.DROP_KEY}, this method notifies
+     * the {@link ITagCard}.
+     *
      * @param dragEvent
      */
     private void onDragDropped(DragEvent dragEvent) {
@@ -159,23 +159,24 @@ public class TagCard extends SimpleCard implements EventHandler<Event> {
     }
 
     /**
-     * A simple callback used by {@link TagCard} to notify that the user 
-     * wants to select a tag, or that the user has just dropped on it.
+     * A simple callback used by {@link TagCard} to notify that the user wants
+     * to select a tag, or that the user has just dropped on it.
      */
     public interface ITagCard {
 
         /**
          * The {@link ITagCard} is being asked to select a tag.
-         * 
+         *
          * @param tagName the tag name to be selected.
          */
         public void onTagSelected(String tagName);
 
         /**
-         * The {@link ITagCard} is being notified that a {@link SongCard}
-         * has just been dropped on a tag.
-         * 
-         * @param tagName the tag name on which the {@link SongCard} was dropped.
+         * The {@link ITagCard} is being notified that a {@link SongCard} has
+         * just been dropped on a tag.
+         *
+         * @param tagName the tag name on which the {@link SongCard} was
+         * dropped.
          */
         public void onMusicDropOnTag(String tagName);
     }

@@ -257,7 +257,7 @@ public class PlayerController implements Initializable, PropertyChangeListener {
                 mPlayerService.playerPrevious();
             }
         };
-        new Thread(playerPreviousRunnable, "Player previous").start();        
+        new Thread(playerPreviousRunnable, "Player previous").start();
     }
 
     public void handleNextAction(ActionEvent actionEvent) {
@@ -383,7 +383,7 @@ public class PlayerController implements Initializable, PropertyChangeListener {
         log.debug("PropertyChangeEvent Name : " + propertyName);
         if (propertyName.equals(PlayerService.Property.CURRENT_MUSIC_INDEX.name())) {
             currentMusicIndex = (Integer) evt.getNewValue();
-            
+
             if (currentMusicIndex != -1) {
                 for (int i = 0; i < mPlayListData.size(); i++) {
                     ((PlayListMusic) mPlayListData.get(i)).setPlaying(i == currentMusicIndex);

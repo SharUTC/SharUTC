@@ -16,7 +16,6 @@ public interface SetScoreCommand extends Command {
      */
     public Peer getPeer();
 
-
     /**
      * Set the peer who set the score
      *

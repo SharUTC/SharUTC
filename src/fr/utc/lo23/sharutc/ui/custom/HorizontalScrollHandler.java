@@ -11,7 +11,7 @@ import java.util.TimerTask;
 
 /**
  * A neat {@link EventHandler} that handles the Event DragEvent.DRAG_OVER to
- * scroll horizontally. 
+ * scroll horizontally.
  */
 public class HorizontalScrollHandler implements EventHandler<Event> {
 

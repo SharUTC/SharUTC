@@ -16,7 +16,6 @@ public interface UnsetScoreCommand extends Command {
      */
     public Peer getPeer();
 
-
     /**
      * Set the peer who unset the score
      *

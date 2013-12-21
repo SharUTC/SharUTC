@@ -36,7 +36,7 @@ import org.slf4j.LoggerFactory;
 public class SearchResultController extends SongSelectorController implements
         RighpaneInterface, CollectionChangeListener, Initializable,
         AlbumCard.IAlbumCard, UserCard.IUserCard, ArtistCard.IArtistCard,
-        TagCard.ITagCard{
+        TagCard.ITagCard {
 
     private static final Logger log = LoggerFactory
             .getLogger(SearchResultController.class);
@@ -70,7 +70,7 @@ public class SearchResultController extends SongSelectorController implements
 
         mArtistNameFound = new ArrayList<String>();
         mAlbumNameFound = new ArrayList<String>();
-        mTagFound = new HashMap<String, TagCard> ();
+        mTagFound = new HashMap<String, TagCard>();
 
         scrollPaneContent.getChildren().addAll(mSongList,
                 mFriendList, mArtistList, mAlbumList, mTagList);
@@ -153,7 +153,7 @@ public class SearchResultController extends SongSelectorController implements
             }
         });
     }
-    
+
     private void increaseTagCardWeight(final TagCard tagCard) {
         Platform.runLater(new Runnable() {
             @Override
@@ -191,20 +191,20 @@ public class SearchResultController extends SongSelectorController implements
                 if (m.getAlbum().toLowerCase().contains(mCurrentCriteriaSearch) && !mAlbumNameFound.contains(m.getAlbum())) {
                     log.debug("add music -- album");
                     mAlbumNameFound.add(m.getAlbum());
-                    
+
                     AlbumCard card = new AlbumCard(m, SearchResultController.this);
-                    if(!(mAppModel.getProfile().getUserInfo().getPeerId()==m.getOwnerPeerId())){
-                       card.setCatalogType(SongDetailController.CatalogType.search); 
+                    if (!(mAppModel.getProfile().getUserInfo().getPeerId() == m.getOwnerPeerId())) {
+                        card.setCatalogType(SongDetailController.CatalogType.search);
                     }
-                    
+
                     addChildFromOtherThread(card);
                 }
                 if (m.getArtist().toLowerCase().contains(mCurrentCriteriaSearch) && !mArtistNameFound.contains(m.getArtist())) {
                     log.debug("add music -- artist");
                     mArtistNameFound.add(m.getArtist());
                     ArtistCard card = new ArtistCard(m.getArtist(), SearchResultController.this);
-                    if(!(mAppModel.getProfile().getUserInfo().getPeerId()==m.getOwnerPeerId())){
-                       card.setCatalogType(SongDetailController.CatalogType.search); 
+                    if (!(mAppModel.getProfile().getUserInfo().getPeerId() == m.getOwnerPeerId())) {
+                        card.setCatalogType(SongDetailController.CatalogType.search);
                     }
                     addChildFromOtherThread(card);
                 }
@@ -213,8 +213,8 @@ public class SearchResultController extends SongSelectorController implements
                     addChildFromOtherThread(new SongCard(m, SearchResultController.this, mAppModel));
                 }
                 final Set<String> tags = m.getTags();
-                for(final String tag : tags) {
-                    if(!mTagFound.containsKey(tag)) {
+                for (final String tag : tags) {
+                    if (!mTagFound.containsKey(tag)) {
                         final TagCard newTagCard = new TagCard(tag, this);
                         newTagCard.setDragEnable(false);
                         mTagFound.put(tag, newTagCard);
@@ -265,7 +265,7 @@ public class SearchResultController extends SongSelectorController implements
          * @param music
          */
         public void onAlbumDetailRequested(String albumName, SongDetailController.CatalogType type);
-        
+
         /**
          * The {@link ISongDetailController} is being asked to show the local
          * catalog filtered with the tag.

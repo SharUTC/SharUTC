@@ -601,7 +601,7 @@ public class FileServiceImpl implements FileService {
         try {
             profile = mapper.readValue(new File(builder.toString()), Profile.class);
         } catch (IOException ex) {
-            log.error(ex.toString());
+            log.warn("No file to read or corrupted file : {}", ex.toString());
         }
         log.debug("readProfileFile ({}) DONE", login);
         return profile;

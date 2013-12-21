@@ -15,9 +15,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * A {@link SimpleCard} that is used to display a {@link Category}.
- * This class notifies a {@link IGroupCard} when the user interacts with the
- * card.
+ * A {@link SimpleCard} that is used to display a {@link Category}. This class
+ * notifies a {@link IGroupCard} when the user interacts with the card.
  */
 public class GroupCard extends SimpleCard implements EventHandler<Event> {
 
@@ -40,13 +39,14 @@ public class GroupCard extends SimpleCard implements EventHandler<Event> {
     private IGroupCard mInterface;
 
     /**
-     * Card use to display a {@link Category} to the user
-     * //TODO improve the Category model, sad fix
-     * Since {@link Category} doesn't provide number of contacts, use the parameter
+     * Card use to display a {@link Category} to the user //TODO improve the
+     * Category model, sad fix Since {@link Category} doesn't provide number of
+     * contacts, use the parameter
      *
-     * @param category     model of the card
-     * @param i            interface used for the callback
-     * @param memberNumber number of contact in this category //TODO remove after fix
+     * @param category model of the card
+     * @param i interface used for the callback
+     * @param memberNumber number of contact in this category //TODO remove
+     * after fix
      */
     public GroupCard(Category category, int memberNumber, IGroupCard i) {
         super("/fr/utc/lo23/sharutc/ui/fxml/group_card.fxml");
@@ -129,9 +129,8 @@ public class GroupCard extends SimpleCard implements EventHandler<Event> {
     }
 
     /**
-     * Set model of the card
-     * //TODO improve the Category model, sad fix
-     * Since {@link Category} doesn't provide number of contacts, use the parameter
+     * Set model of the card //TODO improve the Category model, sad fix Since
+     * {@link Category} doesn't provide number of contacts, use the parameter
      *
      * @param category
      * @param membersNumber
@@ -143,8 +142,7 @@ public class GroupCard extends SimpleCard implements EventHandler<Event> {
     }
 
     /**
-     * set number of member
-     * //TODO should be part of the model
+     * set number of member //TODO should be part of the model
      *
      * @param membersNumber
      */

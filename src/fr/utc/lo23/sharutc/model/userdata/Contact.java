@@ -95,8 +95,9 @@ public class Contact implements Serializable {
     @JsonIgnore
     public boolean isInPublic() {
         for (Integer c : mCategoryIds) {
-            if (c.equals(Category.PUBLIC_CATEGORY_ID))
+            if (c.equals(Category.PUBLIC_CATEGORY_ID)) {
                 return true;
+            }
         }
         return false;
     }

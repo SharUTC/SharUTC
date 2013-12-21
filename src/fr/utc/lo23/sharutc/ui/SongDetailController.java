@@ -139,20 +139,20 @@ public class SongDetailController extends SongSelectorController implements Init
 
         //Intialize the stars for the user rating.
         mMyRatingStars = new RatingStar[]{
-                starMyRate1,
-                starMyRate2,
-                starMyRate3,
-                starMyRate4,
-                starMyRate5
+            starMyRate1,
+            starMyRate2,
+            starMyRate3,
+            starMyRate4,
+            starMyRate5
         };
 
         //Initialize the stars for the average rating.
         mAverageRatingStars = new RatingStar[]{
-                starAverageRate1,
-                starAverageRate2,
-                starAverageRate3,
-                starAverageRate4,
-                starAverageRate5
+            starAverageRate1,
+            starAverageRate2,
+            starAverageRate3,
+            starAverageRate4,
+            starAverageRate5
         };
 
         //Listen to the local catalog
@@ -393,7 +393,7 @@ public class SongDetailController extends SongSelectorController implements Init
     /**
      * Show a rate.
      *
-     * @param rate        the rate to be shown.
+     * @param rate the rate to be shown.
      * @param ratingStars the stars to be filled.
      */
     private void fillRatingStar(final int rate, final RatingStar[] ratingStars) {

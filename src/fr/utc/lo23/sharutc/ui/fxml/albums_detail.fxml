@@ -20,10 +20,10 @@
         <ScrollPane styleClass="myScrollPane" fitToWidth="true" fitToHeight="true">
 
             <FlowPane GridPane.hgrow="ALWAYS"
-                  GridPane.vgrow="ALWAYS" fx:id="albumsContainer"
-                  prefHeight="-1.0" prefWidth="-1.0"
-                  prefWrapLength="230.0" vgap="10.0"
-                  hgap="10.0">
+                      GridPane.vgrow="ALWAYS" fx:id="albumsContainer"
+                      prefHeight="-1.0" prefWidth="-1.0"
+                      prefWrapLength="230.0" vgap="10.0"
+                      hgap="10.0">
                 <padding>
                     <javafx.geometry.Insets bottom="5" left="5" right="5" top="5"/>
                 </padding>

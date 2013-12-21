@@ -9,8 +9,9 @@ import java.util.Map;
  * It describes each value that can be set in a message to find it at reading.
  */
 public class Message {
+
     /**
-     * 
+     *
      */
     public final static String CONVERSATION_ID = "CONVERSATION_ID";
     /**
@@ -62,7 +63,7 @@ public class Message {
      */
     public final static String SEARCH = "SEARCH";
     /**
-     *  a music score (integer)
+     * a music score (integer)
      */
     public final static String SCORE = "SCORE";
     // more...
@@ -82,8 +83,8 @@ public class Message {
     /**
      * Dummy constructor.
      * <p>
-     * This constructor is used by the jackson library when deserializing.
-     * It is recommended the other constructor for any other use.
+     * This constructor is used by the jackson library when deserializing. It is
+     * recommended the other constructor for any other use.
      */
     public Message() {
     }

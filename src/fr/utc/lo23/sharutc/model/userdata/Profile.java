@@ -19,8 +19,7 @@ public class Profile implements Serializable {
     private Integer categoryIdSequence;
 
     /**
-     * Constructor
-     * keep no args constructor for parsing purpose
+     * Constructor keep no args constructor for parsing purpose
      */
     public Profile() {
         this.musicCounter = 0L;
@@ -28,8 +27,7 @@ public class Profile implements Serializable {
     }
 
     /**
-     * Constructor
-     * For ProfileCreationCommand at least
+     * Constructor For ProfileCreationCommand at least
      *
      * @param userInfo
      */
@@ -45,7 +43,7 @@ public class Profile implements Serializable {
 
     /**
      * Return a new unique music id and increment the music id sequence
-     * 
+     *
      * @return a new unique music id
      */
     @JsonIgnore
@@ -53,9 +51,9 @@ public class Profile implements Serializable {
         return ++musicCounter;
     }
 
-     /**
+    /**
      * Decrement the music id sequence
-     * 
+     *
      */
     public void decrementMusicId() {
         musicCounter--;
@@ -63,8 +61,8 @@ public class Profile implements Serializable {
 
     /**
      * Return a new unique category id and increment the category id sequence
-     * 
-     * @return a new unique category id 
+     *
+     * @return a new unique category id
      */
     @JsonIgnore
     public Integer getNewCategoryId() {
@@ -91,7 +89,7 @@ public class Profile implements Serializable {
 
     /**
      * Return the category list
-     * 
+     *
      * @return the category list
      */
     public Categories getCategories() {
@@ -100,7 +98,7 @@ public class Profile implements Serializable {
 
     /**
      * Set the category list
-     * 
+     *
      * @param categories
      */
     public void setCategories(Categories categories) {
@@ -109,7 +107,7 @@ public class Profile implements Serializable {
 
     /**
      * Return the contact list
-     * 
+     *
      * @return the contact list
      */
     public Contacts getContacts() {
@@ -118,7 +116,7 @@ public class Profile implements Serializable {
 
     /**
      * Set the contact list
-     * 
+     *
      * @param mContacts
      */
     public void setContacts(Contacts mContacts) {
@@ -127,7 +125,7 @@ public class Profile implements Serializable {
 
     /**
      * Return user's information
-     * 
+     *
      * @return user's information
      */
     public UserInfo getUserInfo() {
@@ -136,7 +134,7 @@ public class Profile implements Serializable {
 
     /**
      * Set user's information
-     * 
+     *
      * @param userInfo
      */
     public void setUserInfo(UserInfo userInfo) {
@@ -145,7 +143,7 @@ public class Profile implements Serializable {
 
     /**
      * Return the number of musics
-     * 
+     *
      * @return the number of musics
      */
     public Long getMusicCounter() {
@@ -154,7 +152,7 @@ public class Profile implements Serializable {
 
     /**
      * Set the number of musics
-     * 
+     *
      * @param musicCounter
      */
     public void setMusicCounter(Long musicCounter) {
@@ -163,7 +161,7 @@ public class Profile implements Serializable {
 
     /**
      * Return the number of categories
-     * 
+     *
      * @return the number of categories
      */
     public Integer getCategoryIdSequence() {
@@ -172,15 +170,16 @@ public class Profile implements Serializable {
 
     /**
      * Set the number of categories
-     * 
+     *
      * @param categoryIdSequence
      */
     public void setCategoryIdSequence(Integer categoryIdSequence) {
         this.categoryIdSequence = categoryIdSequence;
     }
-    
+
     /**
      * give the number of contact in <i>category</i>
+     *
      * @param category
      * @return number of contacts
      */
@@ -188,10 +187,10 @@ public class Profile implements Serializable {
         Integer id = category.getId();
         int count = 0;
         ArrayList<Contact> contacts = mContacts.getContacts();
-        for(Contact contact : contacts) {
+        for (Contact contact : contacts) {
             Set<Integer> categoriesIds = contact.getCategoryIds();
-            for(Integer categoryId : categoriesIds){
-                if(id == categoryId) {
+            for (Integer categoryId : categoriesIds) {
+                if (id == categoryId) {
                     ++count;
                     break;
                 }

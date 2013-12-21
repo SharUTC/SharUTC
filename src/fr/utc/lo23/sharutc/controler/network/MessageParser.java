@@ -5,12 +5,13 @@ import fr.utc.lo23.sharutc.model.userdata.Peer;
 /**
  * Used to write or read a Message.
  * <p>
- * Used to read a message and ease access to its values.
- * A Message must be read before using any other methods
+ * Used to read a message and ease access to its values. A Message must be read
+ * before using any other methods
  *
  * @see Message
  */
 public interface MessageParser {
+
     /**
      * Read and parse an incoming message.
      *

@@ -9,29 +9,29 @@ public interface EditCategoryNameCommand extends Command {
 
     /**
      * Return the category name
-     * 
+     *
      * @return the category name
      */
     public String getCategoryName();
 
     /**
-     * Set the category name 
-     * 
+     * Set the category name
+     *
      * @param categoryName
      */
     public void setCategoryName(String categoryName);
-    
+
     /**
      * Return the category id
-     * 
+     *
      * @return the category id
      */
     public Integer getCategoryId();
 
     /**
-     * Set the category id 
-     * 
+     * Set the category id
+     *
      * @param categoryId
      */
-    public void setCategoryId (Integer categoryId);
+    public void setCategoryId(Integer categoryId);
 }

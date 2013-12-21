@@ -9,9 +9,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 /**
- * Reprents a list of contact
- * Contains all Peers that user has promoted to Contact Status. Don't use index
- * from CollectionChangeSupport (HashSet inside)
+ * Reprents a list of contact Contains all Peers that user has promoted to
+ * Contact Status. Don't use index from CollectionChangeSupport (HashSet inside)
  */
 public class Contacts implements Serializable {
 
@@ -46,7 +45,7 @@ public class Contacts implements Serializable {
 
     /**
      * Return the contact list
-     * 
+     *
      * @return the contact list
      */
     public ArrayList<Contact> getContacts() {
@@ -70,7 +69,7 @@ public class Contacts implements Serializable {
 
     /**
      * Add a contact list
-     * 
+     *
      * @param contacts - a contact list
      */
     public void addAll(Collection<Contact> contacts) {
@@ -108,7 +107,7 @@ public class Contacts implements Serializable {
 
     /**
      * Return the size of the contact list
-     * 
+     *
      * @return the size of the contact list
      */
     public int size() {
@@ -117,7 +116,7 @@ public class Contacts implements Serializable {
 
     /**
      * Check if the contact list contains the contact given in parameter
-     * 
+     *
      * @param contact
      * @return a boolean
      */
@@ -127,7 +126,7 @@ public class Contacts implements Serializable {
 
     /**
      * Check if the contact list is empty
-     * 
+     *
      * @return a booelan
      */
     @JsonIgnore

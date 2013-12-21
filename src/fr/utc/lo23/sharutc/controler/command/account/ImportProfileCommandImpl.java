@@ -1,4 +1,3 @@
-
 package fr.utc.lo23.sharutc.controler.command.account;
 
 import com.google.inject.Inject;
@@ -9,14 +8,16 @@ import fr.utc.lo23.sharutc.model.ErrorMessage;
 /**
  * Implementation if the command to import a local profil
  */
-public class ImportProfileCommandImpl implements ImportProfileCommand{
+public class ImportProfileCommandImpl implements ImportProfileCommand {
+
     private final FileService fs;
     private final AppModel appModel;
     private String mPath;
     private boolean mForce;
-    
+
     /**
      * Constructor
+     *
      * @param fs - File Service
      * @param appModel - Application Model
      */

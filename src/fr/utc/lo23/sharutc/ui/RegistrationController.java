@@ -124,13 +124,13 @@ public class RegistrationController extends NavigationController implements Init
         if (!validateForm()) {
             displayErrorMessages();
         } else {
-            
+
             //update the UI to notify the user that their account is being 
             //created
             progressIndicatorSignUp.setVisible(true);
             buttonCancel.setDisable(true);
             buttonSignUp.setVisible(false);
-            
+
             final Runnable accountCreationRunnable = new Runnable() {
                 @Override
                 public void run() {
@@ -147,7 +147,7 @@ public class RegistrationController extends NavigationController implements Init
                     mAccountCreationCommand.setUserInfo(userInfo);
                     mAccountCreationCommand.execute();
                 }
-            };       
+            };
             new Thread(accountCreationRunnable, "Account Creation").start();
         }
     }
@@ -258,8 +258,6 @@ public class RegistrationController extends NavigationController implements Init
         return errorMessage + " can't be empty.";
     }
 
-    
-
     /**
      * This method gets called when a bound property is changed.
      *
@@ -267,18 +265,18 @@ public class RegistrationController extends NavigationController implements Init
      */
     @Override
     public void propertyChange(final PropertyChangeEvent evt) {
-        if(Platform.isFxApplicationThread()) {
+        if (Platform.isFxApplicationThread()) {
             handlePropertyChangeEvent(evt);
         } else {
-          Platform.runLater(new Runnable() {
-              @Override
-              public void run() {
-                  handlePropertyChangeEvent(evt);
-              }
-          });
+            Platform.runLater(new Runnable() {
+                @Override
+                public void run() {
+                    handlePropertyChangeEvent(evt);
+                }
+            });
         }
     }
-    
+
     private void handlePropertyChangeEvent(PropertyChangeEvent evt) {
         final String propertyName = evt.getPropertyName();
         if (AppModelImpl.Property.PROFILE.name().equals(propertyName)) {
@@ -292,7 +290,7 @@ public class RegistrationController extends NavigationController implements Init
             buttonCancel.setDisable(false);
             buttonSignUp.setVisible(true);
         }
-    }    
+    }
 
     /**
      * Load the login page properly.

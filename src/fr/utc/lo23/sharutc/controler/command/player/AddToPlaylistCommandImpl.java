@@ -3,7 +3,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package fr.utc.lo23.sharutc.controler.command.player;
 
 import com.google.inject.Inject;
@@ -17,24 +16,23 @@ import org.slf4j.LoggerFactory;
 /**
  * {@inheritDoc}
  */
-public class AddToPlaylistCommandImpl implements AddToPlaylistCommand{
-    
+public class AddToPlaylistCommandImpl implements AddToPlaylistCommand {
+
     private static final Logger log = LoggerFactory
             .getLogger(AddToPlaylistCommandImpl.class);
     private final PlayerService playerService;
     private List<Music> mPlaylist;
-    
+
     @Inject
     public AddToPlaylistCommandImpl(PlayerService playerService) {
         this.playerService = playerService;
     }
-    
-       
+
     /**
      * {@inheritDoc}
      */
     @Override
-    public List<Music> getMusics(){
+    public List<Music> getMusics() {
         return mPlaylist;
     }
 
@@ -42,36 +40,34 @@ public class AddToPlaylistCommandImpl implements AddToPlaylistCommand{
      * {@inheritDoc}
      */
     @Override
-    public void setMusics(List<Music> musics){
+    public void setMusics(List<Music> musics) {
         mPlaylist = musics;
     }
-    
+
     /**
      * {@inheritDoc}
      */
     @Override
-    public void setMusic(Music music){
-        if(mPlaylist == null){
+    public void setMusic(Music music) {
+        if (mPlaylist == null) {
             mPlaylist = new ArrayList<Music>();
         }
         mPlaylist.add(music);
     }
-    
-    
+
     /**
      * {@inheritDoc}
      */
     @Override
     public void execute() {
         log.info("AddToPlaylistCommand...");
-        
-        if(mPlaylist != null){
-            for(Music m : mPlaylist){
+
+        if (mPlaylist != null) {
+            for (Music m : mPlaylist) {
                 playerService.addToPlaylist(m);
             }
         }
-        
+
         log.info("AddToPlaylistCommand DONE");
     }
-
 }

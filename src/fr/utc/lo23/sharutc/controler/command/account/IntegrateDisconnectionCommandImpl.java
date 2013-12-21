@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory;
 public class IntegrateDisconnectionCommandImpl implements IntegrateDisconnectionCommand {
 
     private static final Logger log = LoggerFactory
-        .getLogger(IntegrateDisconnectionCommandImpl.class);
+            .getLogger(IntegrateDisconnectionCommandImpl.class);
     final private UserService mUserService;
     private long mPeerId;
 
@@ -51,5 +51,4 @@ public class IntegrateDisconnectionCommandImpl implements IntegrateDisconnection
         this.mUserService.removeFromConnectedPeers(mPeerId);
         log.info("Peer removed.");
     }
-
 }

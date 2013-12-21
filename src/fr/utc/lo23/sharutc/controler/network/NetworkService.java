@@ -17,6 +17,7 @@ import java.net.UnknownHostException;
  * connected peers and instantiate the right command to handle it.
  */
 public interface NetworkService {
+
     public static int defaultPort = 1337;
     public static String defaultGroup = "239.42.42.42";
 
@@ -41,8 +42,8 @@ public interface NetworkService {
     public void stop();
 
     /**
-     * Send a heartbeat message to all the connected peer
-     * to verify if a peer is always connected
+     * Send a heartbeat message to all the connected peer to verify if a peer is
+     * always connected
      */
     public void sendBroadcastHeartbeat();
 
@@ -187,6 +188,7 @@ public interface NetworkService {
      * @param userInfo the new user's info to broadcast
      */
     public void userInfoBroadcast(UserInfo userInfo);
+
     /**
      * Notify all user of the client's connection.
      * <p>

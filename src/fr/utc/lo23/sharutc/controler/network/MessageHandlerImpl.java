@@ -249,20 +249,20 @@ public class MessageHandlerImpl implements MessageHandler {
     private boolean isMessageForCurrentConversation() {
         return appModel.getCurrentConversationId().equals(messageParser.getValue(Message.CONVERSATION_ID));
     }
-    
+
     /**
      * {@inheritDoc}
      */
     @Override
-     public void setPreviousMessageType(MessageType newMessageType) {
-        previousMessageType = newMessageType; 
+    public void setPreviousMessageType(MessageType newMessageType) {
+        previousMessageType = newMessageType;
     }
-    
-     /**
+
+    /**
      * {@inheritDoc}
      */
-     @Override
-     public MessageType getPreviousMessageType() {
+    @Override
+    public MessageType getPreviousMessageType() {
         return previousMessageType;
     }
 }

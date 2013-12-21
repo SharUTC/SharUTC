@@ -31,8 +31,6 @@ public class AlbumsDetailController implements RighpaneInterface, Initializable,
     public Label titleLabel;
     @Inject
     private AppModel mAppModel;
-    
-   
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -41,26 +39,26 @@ public class AlbumsDetailController implements RighpaneInterface, Initializable,
     public void setInterface(IAlbumsDetailController i) {
         mInterface = i;
     }
-    
+
     public void showAlbums() {
         showAlbumsWithArtistFilter(null, SongDetailController.CatalogType.local);
     }
 
     public void showAlbumsWithArtistFilter(String artistFilter, SongDetailController.CatalogType type) {
         final ArrayList<Pair<String, String>> albumArtistPairs = new ArrayList<Pair<String, String>>();
-        
-        if(artistFilter != null) {
-            titleLabel.setText("Browse "+ artistFilter +"'s albums");
+
+        if (artistFilter != null) {
+            titleLabel.setText("Browse " + artistFilter + "'s albums");
         }
         List<Music> musics = null;
-        if(type.equals(SongDetailController.CatalogType.remote)){
+        if (type.equals(SongDetailController.CatalogType.remote)) {
             musics = mAppModel.getRemoteUserCatalog().getMusics();
-        }else if(type.equals(SongDetailController.CatalogType.local)){
+        } else if (type.equals(SongDetailController.CatalogType.local)) {
             musics = mAppModel.getLocalCatalog().getMusics();
-        }else{
+        } else {
             musics = mAppModel.getSearchResults().getMusics();
         }
-        
+
         //retrieve the albums from the local catalog
         for (Music m : musics) {
             final Pair<String, String> currentAlbumArtistPair =

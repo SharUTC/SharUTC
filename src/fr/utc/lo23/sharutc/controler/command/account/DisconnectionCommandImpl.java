@@ -65,7 +65,7 @@ public class DisconnectionCommandImpl implements DisconnectionCommand {
 
         //Turn down music player by clearing its playlist
         playerService.getPlaylist().clear();
-        
+
         log.info("DisconnectionCommand DONE");
     }
 }

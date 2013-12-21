@@ -345,10 +345,10 @@ public class LoginController extends NavigationController implements Initializab
         final String propertyName = evt.getPropertyName();
         resetWorkInProgress();
         if (AppModelImpl.Property.PROFILE.name().equals(propertyName)) {
-            log.info("Profile Changed");
+            log.debug("Profile Changed");
             goToMainPage();
         } else if (ErrorBus.Property.APPLICATION_ERROR_MESSAGE.name().equals(propertyName)) {
-            log.info("Application Error Message Changed");
+            log.debug("Application Error Message Changed");
             errorContainer.getChildren().clear();
             errorContainer.getChildren().add(new Label(((ErrorMessage) evt.getNewValue()).getMessage()));
         }
@@ -395,23 +395,23 @@ public class LoginController extends NavigationController implements Initializab
     private void importProfile(final String filePath) {
         startWorkInProgress("Importing");
         errorContainer.getChildren().clear();
-        
+
         final Task<Void> importProfileTask = new Task<Void>() {
             @Override
             protected Void call() throws Exception {
                 mImportProfileCommand.setPath(filePath);
                 mImportProfileCommand.execute();
                 return null;
-            }            
+            }
         };
-        
+
         importProfileTask.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
             @Override
             public void handle(WorkerStateEvent t) {
                 resetWorkInProgress();
             }
         });
-        
+
         new Thread(importProfileTask, "Import Profile").start();
     }
 }
